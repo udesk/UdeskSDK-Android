@@ -1,0 +1,1 @@
+package cn.udesk.voice;import udesk.core.model.MessageInfo;public interface RecordFilePlay {	public void click(MessageInfo message, RecordPlayCallback callback);	public void recycleRes();	public void recycleCallback();	public void toggle();	public String getMediaPath();		public MessageInfo getPlayAduioMessage();}

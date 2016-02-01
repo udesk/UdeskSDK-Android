@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_bottom"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:gravity="center_vertical"
+    android:paddingBottom="4dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="4dp" >
+     
+     <FrameLayout
+        android:id="@+id/udesk_bottom_right_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="8dp" >
+
+
+        <ImageView
+            android:id="@+id/udesk_bottom_record"
+            android:layout_width="@dimen/udesk_30"
+            android:layout_height="@dimen/udesk_30"
+            android:layout_gravity="center"
+            android:background="@drawable/udesk_record_img"
+            android:gravity="center" 
+            />
+        
+        <ImageView
+            android:id="@+id/udesk_bottom_keyboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/udesk_keyboard_img"
+            android:gravity="center" 
+            android:visibility="gone"
+            />
+        
+        
+    </FrameLayout> 
+     <EditText
+        android:id="@+id/udesk_bottom_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/udesk_bottom_right_panel"
+        android:layout_toLeftOf="@+id/udesk_bottom_show_emoji"
+        android:gravity="center_vertical"
+        android:background="@drawable/udesk_im_input_bg"
+        android:maxHeight="70dp"
+        android:singleLine="false"
+        android:textColor="#ff606060"
+        android:paddingLeft="10dp"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/udesk_im_long_voice_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:maxHeight="70dp"
+        android:layout_toRightOf="@id/udesk_bottom_right_panel"
+        android:layout_toLeftOf="@+id/udesk_bottom_show_emoji"
+        android:background="@drawable/udesk_im_record_long_bg"
+        android:focusable="true"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:scrollHorizontally="false"
+        android:text="@string/udesk_label_im_long_voice"
+        android:visibility="gone" />
+   
+     
+ <ImageView
+        android:id="@+id/udesk_bottom_show_emoji"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_toLeftOf="@+id/id_send_contener"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/udesk_10"
+        android:layout_marginRight="@dimen/udesk_5"
+        android:background="@drawable/udesk_emotion_img"
+         />
+
+ <FrameLayout 
+     android:layout_alignParentRight="true"
+     android:id="@+id/id_send_contener"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content"
+     android:layout_centerVertical="true"
+     android:paddingLeft="@dimen/udesk_8"
+     android:paddingRight="@dimen/udesk_8"
+     >
+    <ImageView
+        android:id="@+id/udesk_bottom_show_option"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:background="@drawable/udesk_choice_more"
+         />
+    <TextView
+            android:id="@+id/udesk_bottom_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/udesk_im_send_selector"
+            android:gravity="center"
+            android:lines="1"
+            android:padding="8dp"
+            android:text="发送"
+            android:textColor="#ffffffff"
+            android:textSize="16sp"
+            android:visibility="gone"/>
+ </FrameLayout>
+
+   
+    
+
+</RelativeLayout>

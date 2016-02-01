@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 整体界面中，顶部Title条的高度 -->
+    <dimen name="udesk_titlebar_height">48dp</dimen>
+
+    <!-- 整体界面中，TitleBar两侧的内边距 -->
+    <dimen name="udesk_titlebar_padding">2dp</dimen>
+    <dimen name="udesk_titlebar_right_margin">10dp</dimen> 
+    <dimen name="udesk_titlebar_left_margin">10dp</dimen> 
+     <!-- 整体界面中，TitleBar中中间title的大小 -->
+    <dimen name="udesk_titlebar_title_size">16sp</dimen>
+    <dimen name="udesk_titlebar_agent_state_size">12sp</dimen>
+   
+    
+    
+    
+    <dimen name="udesk_chat_head_margin_left_or_right">8dip</dimen>
+    <dimen name="udesk_1">1dip</dimen>
+    <dimen name="udesk_2">2dip</dimen>
+    <dimen name="udesk_3">3dip</dimen>
+    <dimen name="udesk_4">4dip</dimen>
+    <dimen name="udesk_5">5dip</dimen>
+    <dimen name="udesk_8">8dip</dimen>
+    <dimen name="udesk_10">10dip</dimen>
+    <dimen name="udesk_15">15dip</dimen>
+    <dimen name="udesk_20">20dip</dimen>
+    <dimen name="udesk_22">22dip</dimen>
+    <dimen name="udesk_25">25dip</dimen>
+    <dimen name="udesk_30">30dip</dimen>
+    <dimen name="udesk_35">35dip</dimen>
+    <dimen name="udesk_40">40dip</dimen>
+    <dimen name="udesk_45">45dip</dimen>
+    <dimen name="udesk_50">50dip</dimen>
+    <dimen name="udesk_55">55dip</dimen>
+    <dimen name="udesk_60">60dip</dimen>
+    <dimen name="udesk_70">70dip</dimen>
+    <dimen name="udesk_80">80dip</dimen>
+    
+    <dimen name="udesk_sp12">12sp</dimen>
+    <dimen name="udesk_sp14">14sp</dimen>
+    <dimen name="udesk_sp16">16sp</dimen>
+    <dimen name="udesk_sp18">18sp</dimen>
+    <dimen name="udesk_sp20">20sp</dimen>
+    <dimen name="udesk_chat_head">45dip</dimen>
+    <dimen name="udesk_chat_head_margin">3dip</dimen>
+    <dimen name="udesk_chat_msg_send_fail_pic">22dip</dimen>
+    <dimen name="udesk_chat_context_margin_other_derction">62dip</dimen>
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    <!-- 整体界面中，TitleBar中文字的大小 -->
+    <dimen name="udesk_navi_text_size">16sp</dimen>
+
+   
+
+    <!-- IM界面，圆形头像的宽度和高度 -->
+    <dimen name="udesk_im_avatar_width_height">45dp</dimen>
+
+    <!-- IM界面，圆形头像的边缘圆圈的宽度。 -->
+    <dimen name="udesk_im_avatar_border_width">2dp</dimen>
+
+    <!-- Im界面， 会话消息之间间隔的高度 -->
+    <dimen name="udesk_im_divider_height">0dp</dimen>
+
+    <!-- Im界面， 会话消息上下两部分的内边距 -->
+    <dimen name="udesk_im_item_padding_top_bottom">5dp</dimen>
+
+    <!-- Im界面， 会话消息左右两边的内边距，中间比较小的值 -->
+    <dimen name="udesk_im_item_padding_left_right_min">20dp</dimen>
+
+    <!-- Im界面， 会话消息左右两边的内边距，中间比较大的值 -->
+    <dimen name="udesk_im_item_padding_left_right_max">65dp</dimen>
+
+    <!-- IM界面，商品咨询中 缩略图的宽度和高度 -->
+    <dimen name="udesk_im_commondity_width_height">59dp</dimen>
+
+    <!-- IM界面中，底部Emoji按钮的宽度 -->
+    <dimen name="udesk_im_emoji_width">38dp</dimen>
+
+    <!-- IM界面中，底部Emoji按钮的高度 -->
+    <dimen name="udesk_im_emoji_height">46dp</dimen>
+
+    <!-- IM界面中，录音过程中，手指移动出录音按钮,并可以确认为取消状态的偏移量。 在这个偏移量之内，只是预准备取消状态 -->
+    <dimen name="udesk_im_move_to_cancel_offset">50dp</dimen>
+    <dimen name="udesk_im_record_popup_width">148dp</dimen>
+    <dimen name="udesk_im_record_popup_height">148dp</dimen>
+    <dimen name="udesk_im_record_popup_status_height">118dp</dimen>
+    <dimen name="udesk_im_record_popup_txt_height">30dp</dimen>
+    <dimen name="udesk_im_message_margin_left_right">75dp</dimen>
+    
+   
+    <dimen name="udesk_agent_state_bottom">0dp</dimen>
+    <dimen name="udesk_navi_title_padding">5dp</dimen>
+
+</resources>

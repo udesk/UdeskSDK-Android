@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:id="@+id/udesk_get_more_tips"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/udesk_50"
+            android:gravity="center"
+            android:text="@string/udesk_get_more_history"
+            android:textColor="#ff606060"
+            android:textSize="@dimen/udesk_sp14" />
+
+        <include
+            android:id="@+id/udesk_get_more_progress"
+            android:layout_width="@dimen/udesk_30"
+            android:layout_height="@dimen/udesk_50"
+            android:layout_marginLeft="@dimen/udesk_80"
+            layout="@layout/udesk_default_progressbar"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+</LinearLayout>
