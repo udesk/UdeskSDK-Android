@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_multi_horizontal_item"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical|center_horizontal"
+    android:gravity="center_horizontal|center_vertical"
+    android:paddingLeft="@dimen/udesk_15"
+    android:paddingRight="@dimen/udesk_15"
+    android:paddingTop="@dimen/udesk_5"
+    android:paddingBottom="@dimen/udesk_5"
+    android:textColor="@android:color/white"
+    android:textSize="@dimen/udesk_sp14" />

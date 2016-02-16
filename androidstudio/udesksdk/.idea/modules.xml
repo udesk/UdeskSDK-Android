@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Sdklibrary/Sdklibrary.iml" filepath="$PROJECT_DIR$/Sdklibrary/Sdklibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UdeskUIDemo/UdeskUIDemo.iml" filepath="$PROJECT_DIR$/UdeskUIDemo/UdeskUIDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Udesk_Separate_UI/Udesk_Separate_UI.iml" filepath="$PROJECT_DIR$/Udesk_Separate_UI/Udesk_Separate_UI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/udesksdk.iml" filepath="$PROJECT_DIR$/udesksdk.iml" />
+    </modules>
+  </component>
+</project>

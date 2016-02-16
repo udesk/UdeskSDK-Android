@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@android:color/white"
+    android:textColor="#ff606060"
+    android:textSize="16dp"
+    android:gravity="center_vertical"
+    android:padding="6dp"
+    android:drawablePadding="5dp"
+    android:singleLine="false"
+    android:drawableRight="@drawable/udesk_ic_arrow"
+    android:minHeight="50dp"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />

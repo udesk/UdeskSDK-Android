@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 分割线的颜色值 -->
+    <color name="udesk_divider">#cecdcd</color>
+    
+ 
+    
+    <!-- 会话界面，圆形头像的边缘圆圈的颜色值 -->
+    <color name="udesk_color_im_avatar_border">#FFEEEEEE</color>
+
+    <!-- IM界面，左侧文字的字体颜色 -->
+    <color name="udesk_color_im_text_left">#444444</color>
+
+    <!-- IM界面，右侧文字的字体颜色 -->
+    <color name="udesk_color_im_text_right">#FFFFFF</color>
+
+    <!-- IM界面，时间文字的字体颜色 -->
+    <color name="udesk_color_im_time_text">#c7c6c6</color>
+
+    <!-- 顶部TitleBar，左右两侧文字的颜色 -->
+    <color name="udesk_color_navi_text">#FFFFFF</color>
+
+
+
+    <!-- 商品咨询页面中，发送链接的字样颜色 -->
+    <color name="udesk_color_im_commondity_link">#1f54db</color>
+
+    <!-- 商品咨询页面中，商品介绍Title的字样颜色 -->
+    <color name="udesk_color_im_commondity_title">#444444</color>
+
+    <!-- 商品咨询页面中，商品介绍子Title的字样颜色 -->
+    <color name="udesk_color_im_commondity_subtitle">#a5adc1</color>
+    
+   
+
+    <!-- Im界面，会话列表的整体背景色 -->
+   <drawable name="udesk_im_conversation_bg">#F2F2F2</drawable>
+   
+       <!-- Im界面，会话列表会话消息之间间隔的背景色 -->
+   <drawable name="udesk_im_divider">@android:color/transparent</drawable>
+   
+       <!-- Im界面，会话列表的整体背景色 -->
+   <drawable name="udesk_im_conversation_list_selector">@android:color/transparent</drawable>
+   
+       <!-- IM界面，商品咨询中 缩略图的默认图片 -->
+    <drawable name="udesk_commondity_default_thumbnail">#a5adc1</drawable>
+    <color name="udesk_anim_color_background_yellow">#FF9900</color>
+    <color name="udesk_anim_color_background_red">#FF4040</color>
+    <!-- textview 超链接的颜色 -->
+    <color name="textlinkcolor">#ffffff</color>
+       <color name="udesk_loginDialog_background">#50000000</color>
+       <color name="udesk_statusbar_bg">#ff13ad67</color>
+       
+       
+       
+       
+    <!-- 顶部TitleBar的背景色 -->
+    <color name="udesk_titlebar_bg">#3565df</color>  
+    <!-- 顶部TitleBar，中间文字的颜色 -->
+    <color name="udesk_color_titlebar_text_center">#FFFFFF</color>
+         <!-- 界面中分割线的颜色值 -->
+    <color name="udesk_color_line">#e2e2eb</color>
+       
+       
+       
+</resources>
