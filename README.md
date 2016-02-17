@@ -186,7 +186,7 @@ SDK 提供的可选信息有：添加用户信息和用户自定义字段
 + 文本类型：首先我们也要获得”field_name”字段的字段的值作为key值，然后将"comment"字段的值作为value值存入即可；
 代码如下：
 
-![udesk](andriod-new-10.png)
+![udesk](/indeximg/andriod-new-10.png)
 
 可选字段信息如下：
 
