@@ -1,2 +1,0 @@
-# UdeskSDK-Android
-UdeskSDK-Android
