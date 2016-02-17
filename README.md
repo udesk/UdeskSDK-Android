@@ -11,7 +11,7 @@ UdeskSDK-Android
 
 ## 2.导入Udesk SDK
 
-1. [下载Udesk SDK](http://7u2pry.com2.z0.glb.qiniucdn.com/Udesk_SDK_andriod_3.0.rar);
+1. 
 2. 将所有jar包导入类库
 
 
