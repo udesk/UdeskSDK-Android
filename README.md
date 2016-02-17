@@ -7,7 +7,7 @@ UdeskSDK-Android
 
 ## 1.SDK工作流程
 
-![udesk](andriod-new-1.png)
+![udesk](/indeximg/andriod-new-1.png)
 
 ## 2.导入Udesk SDK
 
@@ -15,7 +15,7 @@ UdeskSDK-Android
 2. 将所有jar包导入类库
 
 
-![udesk](andriod-new-2.png)
+![udesk](/indeximg/andriod-new-2.png)
 
 >注：这些jar包都是必须的
 
@@ -86,18 +86,18 @@ UdeskSDK-Android
 
 首先，在Udesk官网http://udesk.udesk.cn/hc 注册，domain位置如下图：
 
-![udesk](Android4.png)
+![udesk](/indeximg/Android4.png)
 
 
 然后，点击“进入您的Udesk”，进入管理中心—设置管理—单点登录，即可看到共享秘钥（key即共享密钥）， 详情如图示：
 
-![udesk](Android5.png)
+![udesk](/indeximg/Android5.png)
 
 
 2）. 创建专属客服
 在管理中心—客服管理—客服列表即可添加客服， 添加位置如下图：
 
-![udesk](Android6.png)
+![udesk](/indeximg/Android6.png)
 
 
 注意：创建客服后，被添加的客服须进入邮箱验证并设置登录密码，所以务必保证添加的邮箱真实准确。
@@ -108,9 +108,9 @@ UdeskSDK-Android
 + 2、UdeskHelperActivity（帮助界面）
 + 3、UdeskHelperArticleActivity（帮助内容界面）
 ### 常用UI
-![udesk](andriod-new-7.png)
-![udesk](andriod-new-8.png)
-![udesk](andriod-new-9.png)
+![udesk](/indeximg/andriod-new-7.png)
+![udesk](/indeximg/andriod-new-8.png)
+![udesk](/indeximg/andriod-new-9.png)
 
 ## 7.接口详细说明
 
@@ -134,7 +134,7 @@ SDK 提供的可选信息有：添加用户信息和用户自定义字段
 注意：若要在SDK中使用 用户自定义字段 需先在网页端设置添加用户自定义字字段。此时需要调用commitSelffield()将信息插入;如果不需要用户自定义字段则可以直接调用setUserInfo()用于用户信息初始化。
 用户字段包含了一名联系人的所用数据。目前Udesk完全支持自定义用户字段，您可以选择输入型字段和选择型字段。如果是选择型字段，需要提供多个自定义的选项供您的客户进行选择。如果是输入型字段，用户会看到一个文本输入框输如数据。
 
-![udesk](Android7.png)
+![udesk](/indeximg/Android7.png)
 
 
 >注意：用户自定义字段类型有两种方式:1:下拉列表（"droplist"）;2:文本类型（"text"）。
@@ -204,48 +204,48 @@ SDK 提供的可选信息有：添加用户信息和用户自定义字段
 
 
 使用代码demo
-![udesk](andriod-new-11.png)
+![udesk](/indeximg/andriod-new-11.png)
 
 5）调用在线客服聊天界面，可根据不同需求进行设置并调用不同的接口，UdeskConversationArgs和UDeskSDK对这些设置提供了接口。
 常用接口：
 ### 创建用户的接口
-![udesk](andriod-new-12.png)
+![udesk](/indeximg/andriod-new-12.png)
 
 ### 获取自定义字段获取接口
-![udesk](andriod-new-13.png)
+![udesk](/indeximg/andriod-new-13.png)
 
 ### 设置用户信息接口
-![udesk](andriod-new-14.png)
+![udesk](/indeximg/andriod-new-14.png)
 
 ### 初始化接口
-![udesk](andriod-new-15.png)
+![udesk](/indeximg/andriod-new-15.png)
 
 ### 机器人接口
-![udesk](andriod-new-16.png)
+![udesk](/indeximg/andriod-new-16.png)
 
 ### 智能客服接口
-![udesk](andriod-new-17.png)
+![udesk](/indeximg/andriod-new-17.png)
 
 ### 上传客户信息
-![udesk](andriod-new-18.png)
+![udesk](/indeximg/andriod-new-18.png)
 
 ### 获取客服状态
-![udesk](andriod-new-19.png)
+![udesk](/indeximg/andriod-new-19.png)
 
 ### 获取帮助中心接口
-![udesk](andriod-new-20.png)
+![udesk](/indeximg/andriod-new-20.png)
 
 ### 获取帮助内容接口
-![udesk](andriod-new-21.png)
+![udesk](/indeximg/andriod-new-21.png)
 
 ### 搜索帮助内容接口
-![udesk](andriod-new-22.png)
+![udesk](/indeximg/andriod-new-22.png)
 >注：getDomen()获取的是公司申请的域名，getsecretKey()是公司的秘钥。
 
 ## 8.关于DB说明
 目前创建两张表：udeskMessageInfo消息表和udeskSendIngMsgs发送中消息表；表消息ID是MsgID，其他字段Time，MsgContent、MsgType
 ReadFlag、SendFlag、PlayedFlag、Direction、LocalPath、Duration
-![udesk](andriod-new-23.png)
+![udesk](/indeximg/andriod-new-23.png)
 
 
 
