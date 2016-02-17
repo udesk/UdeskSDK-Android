@@ -100,6 +100,8 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 	private Map<String, String> getUserInfo() {
 
 		Map<String, String> info = new HashMap<String, String>();
+		info.put(UdeskCoreConst.UdeskUserInfo.USER_SDK_TOKEN, mSdktoken.getText()
+				.toString());
 		if (!TextUtils.isEmpty(mEmail.getText().toString())) {
 			info.put(UdeskCoreConst.UdeskUserInfo.EMAIL, mEmail.getText()
 					.toString());
