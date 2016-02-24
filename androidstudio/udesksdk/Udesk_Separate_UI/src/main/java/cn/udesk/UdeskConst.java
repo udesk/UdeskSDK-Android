@@ -77,7 +77,7 @@ public class UdeskConst {
 	}
 	
 	public static class SharePreParams{
-		public static final String Udesk_Sharepre_Name = "udesk_sdk"; 
+		public static  String Udesk_Sharepre_Name = "udesk_sdk";
 		public static final String Udesk_Domain = "udesk_domain";
 		public static final String Udesk_SecretKey = "udesk_secretkey";
 		public static final String Udesk_SdkToken = "udesk_sdktoken";

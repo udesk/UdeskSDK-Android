@@ -62,8 +62,8 @@ public class UdeskHelperArticleActivity extends Activity {
 		private void getArticlesContentJsonApiById(int id) {
 			udeskLoading.setVisibility(View.VISIBLE);
 			UdeskHttpFacade.getInstance().getArticlesContentJsonApiById(
-					UdeskSDKManager.getInstance(this).getDomain(),
-					UdeskSDKManager.getInstance(this).getSecretKey(),
+					UdeskSDKManager.getInstance().getDomain(this),
+					UdeskSDKManager.getInstance().getSecretKey(this),
 					id, new UdeskCallBack() {
 				
 				@Override

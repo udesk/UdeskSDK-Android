@@ -19,28 +19,28 @@ public class UdeskCaseActivity extends Activity {
         findViewById(R.id.btn_open_im).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UdeskSDKManager.getInstance(UdeskCaseActivity.this).toLanuchChatAcitvity();
+                UdeskSDKManager.getInstance().toLanuchChatAcitvity(UdeskCaseActivity.this);
             }
         });
 
         findViewById(R.id.acess_html).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UdeskSDKManager.getInstance(UdeskCaseActivity.this).showRobot();
+                UdeskSDKManager.getInstance().showRobot(UdeskCaseActivity.this);
             }
         });
 
         findViewById(R.id.acess_intelligent_selection).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UdeskSDKManager.getInstance(UdeskCaseActivity.this).showRobotOrConversation();
+                UdeskSDKManager.getInstance().showRobotOrConversation(UdeskCaseActivity.this);
             }
         });
 
         findViewById(R.id.btn_open_helper).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UdeskSDKManager.getInstance(UdeskCaseActivity.this).toLanuchHelperAcitivty();
+                UdeskSDKManager.getInstance().toLanuchHelperAcitivty(UdeskCaseActivity.this);
             }
         });
     }

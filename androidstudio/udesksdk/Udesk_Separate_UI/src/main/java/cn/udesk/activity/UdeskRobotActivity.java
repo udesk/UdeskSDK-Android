@@ -48,9 +48,9 @@ public class UdeskRobotActivity extends Activity {
 		mwebView = (WebView) findViewById(R.id.udesk_robot_webview);
 		if (!TextUtils.isEmpty(h5Url)) {
 			String url = UdeskHttpFacade.getInstance().buildRobotUrlWithH5(
-					this, UdeskSDKManager.getInstance(this).getSecretKey(),
+					this, UdeskSDKManager.getInstance().getSecretKey(this),
 					h5Url,
-					UdeskSDKManager.getInstance(this).getSdkToken());
+					UdeskSDKManager.getInstance().getSdkToken(this));
 			settingWebView(url);
 		} else {
 			finish();
@@ -122,7 +122,7 @@ public class UdeskRobotActivity extends Activity {
 
 				@Override
 				public void onClick(View v) {
-					UdeskSDKManager.getInstance(UdeskRobotActivity.this).toLanuchChatAcitvity();
+					UdeskSDKManager.getInstance().toLanuchChatAcitvity(UdeskRobotActivity.this);
 				}
 			});
 		} else {

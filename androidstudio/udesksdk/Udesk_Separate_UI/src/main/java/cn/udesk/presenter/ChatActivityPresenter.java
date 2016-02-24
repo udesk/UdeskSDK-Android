@@ -1,22 +1,5 @@
 package cn.udesk.presenter;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.json.JSONObject;
-
-import udesk.core.UdeskCallBack;
-import udesk.core.UdeskCoreConst;
-import udesk.core.UdeskHttpFacade;
-import udesk.core.model.AgentInfo;
-import udesk.core.model.MessageInfo;
-import udesk.core.utils.UdeskIdBuild;
-import udesk.core.utils.UdeskUtils;
-import udesk.core.xmpp.XmppInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Message;
@@ -24,6 +7,19 @@ import android.text.Selection;
 import android.text.Spannable;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
+
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import cn.udesk.ChatMessageEvent;
 import cn.udesk.JsonUtils;
 import cn.udesk.UdeskConst;
@@ -36,9 +32,14 @@ import cn.udesk.voice.AudioRecordState;
 import cn.udesk.voice.AudioRecordingAacThread;
 import cn.udesk.voice.VoiceRecord;
 import cn.udesk.xmpp.UdeskMessageManager;
-
-import com.qiniu.android.http.ResponseInfo;
-import com.qiniu.android.storage.UpCompletionHandler;
+import udesk.core.UdeskCallBack;
+import udesk.core.UdeskCoreConst;
+import udesk.core.UdeskHttpFacade;
+import udesk.core.model.AgentInfo;
+import udesk.core.model.MessageInfo;
+import udesk.core.utils.UdeskIdBuild;
+import udesk.core.utils.UdeskUtils;
+import udesk.core.xmpp.XmppInfo;
 
 public class ChatActivityPresenter implements ChatMessageEvent {
 
@@ -104,7 +105,7 @@ public class ChatActivityPresenter implements ChatMessageEvent {
 	 */
 
 	public void getIMCustomerInfo() {
-		String userId = UdeskSDKManager.getInstance(mChatView.getContext()).getUserId();
+		String userId = UdeskSDKManager.getInstance().getUserId(mChatView.getContext());
 		if (TextUtils.isEmpty(userId)) {
 			getCustomerId();
 		} else {
@@ -113,14 +114,14 @@ public class ChatActivityPresenter implements ChatMessageEvent {
 	}
 	
 	public void getCustomerId(){
-		UdeskHttpFacade.getInstance().setUserInfo(UdeskSDKManager.getInstance(mChatView.getContext()).getDomain(),
-				UdeskSDKManager.getInstance(mChatView.getContext()).getSecretKey(),UdeskSDKManager.getInstance(mChatView.getContext()).getSdkToken(),
-				UdeskSDKManager.getInstance(mChatView.getContext()).getUserinfo(), UdeskSDKManager.getInstance(mChatView.getContext()).getTextField(),
-				UdeskSDKManager.getInstance(mChatView.getContext()).getRoplist(), new UdeskCallBack() {
+		UdeskHttpFacade.getInstance().setUserInfo(UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getUserinfo(), UdeskSDKManager.getInstance().getTextField(),
+				UdeskSDKManager.getInstance().getRoplist(), new UdeskCallBack() {
 					
 					@Override
 					public void onSuccess(String string) {
-						UdeskSDKManager.getInstance(mChatView.getContext()).parserCustomersJson(string);
+						UdeskSDKManager.getInstance().parserCustomersJson(mChatView.getContext(),string);
 						getIMCustomerInfo();
 					}
 					
@@ -132,8 +133,8 @@ public class ChatActivityPresenter implements ChatMessageEvent {
 	}
 	
 	public void getIMJson(String userId){
-		UdeskHttpFacade.getInstance().getIMJsonAPi(UdeskSDKManager.getInstance(mChatView.getContext()).getDomain(),
-				UdeskSDKManager.getInstance(mChatView.getContext()).getSecretKey(),userId,
+		UdeskHttpFacade.getInstance().getIMJsonAPi(UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),userId,
 				new UdeskCallBack() {
 
 					@Override
@@ -152,9 +153,9 @@ public class ChatActivityPresenter implements ChatMessageEvent {
 
 	public void putDevices() {
 		UdeskHttpFacade.getInstance().putDevicesJson(mChatView.getContext(),
-				UdeskSDKManager.getInstance(mChatView.getContext()).getDomain(),
-				UdeskSDKManager.getInstance(mChatView.getContext()).getSecretKey(),
-				UdeskSDKManager.getInstance(mChatView.getContext()).getUserId(),
+				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getUserId(mChatView.getContext()),
 				new UdeskCallBack() {
 
 					@Override
@@ -173,9 +174,9 @@ public class ChatActivityPresenter implements ChatMessageEvent {
 
 	public void getAgentInfo() {
 		UdeskHttpFacade.getInstance().getAgentJsonAPi(
-				UdeskSDKManager.getInstance(mChatView.getContext()).getDomain(),
-				UdeskSDKManager.getInstance(mChatView.getContext()).getSecretKey(),
-				UdeskSDKManager.getInstance(mChatView.getContext()).getUserId(),
+				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getUserId(mChatView.getContext()),
 				new UdeskCallBack() {
 
 			@Override
@@ -197,9 +198,9 @@ public class ChatActivityPresenter implements ChatMessageEvent {
 	
 	public void getRedirectAgentInfo(String agent_id,String group_id){
 		UdeskHttpFacade.getInstance().getRedirectAgentInfo(
-				UdeskSDKManager.getInstance(mChatView.getContext()).getDomain(),
-				UdeskSDKManager.getInstance(mChatView.getContext()).getSecretKey(),
-				UdeskSDKManager.getInstance(mChatView.getContext()).getSdkToken(),
+				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
 				agent_id, group_id, 
 				new UdeskCallBack() {
 					

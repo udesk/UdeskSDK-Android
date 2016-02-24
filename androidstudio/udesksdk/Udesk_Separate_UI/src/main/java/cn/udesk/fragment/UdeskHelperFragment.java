@@ -160,8 +160,8 @@ public class UdeskHelperFragment extends Fragment implements OnClickListener,OnI
 	private void getListArticles() {
 
 		UdeskHttpFacade.getInstance().getListArticlesJsonAPi(
-				UdeskSDKManager.getInstance(UdeskHelperFragment.this.getActivity()).getDomain(),
-				UdeskSDKManager.getInstance(UdeskHelperFragment.this.getActivity()).getSecretKey(),
+				UdeskSDKManager.getInstance().getDomain(UdeskHelperFragment.this.getActivity()),
+				UdeskSDKManager.getInstance().getSecretKey(UdeskHelperFragment.this.getActivity()),
 				new UdeskCallBack() {
 					@Override
 					public void onSuccess(String message) {
@@ -187,8 +187,8 @@ public class UdeskHelperFragment extends Fragment implements OnClickListener,OnI
 
 	private void getArticlesSearch(String query) {
 		UdeskHttpFacade.getInstance().getArticlesSearchJsonAPi(
-				UdeskSDKManager.getInstance(UdeskHelperFragment.this.getActivity()).getDomain(),
-				UdeskSDKManager.getInstance(UdeskHelperFragment.this.getActivity()).getSecretKey(),
+				UdeskSDKManager.getInstance().getDomain(UdeskHelperFragment.this.getActivity()),
+				UdeskSDKManager.getInstance().getSecretKey(UdeskHelperFragment.this.getActivity()),
 				query,
 				new UdeskCallBack() {
 

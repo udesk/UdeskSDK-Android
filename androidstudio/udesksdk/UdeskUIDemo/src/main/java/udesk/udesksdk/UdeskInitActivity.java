@@ -44,14 +44,16 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 //	private String UDESK_SECRETKEY = "3a4dc5e0cd39995448018c553048fdd4";//
 	private String UDESK_DOMAIN = "reocar.tiyanudesk.com";//
 	private String UDESK_SECRETKEY = "2f04e99ff44ec68165c585a209efdd6d";//
+//    private String UDESK_DOMAIN = "lancai.udesk.cn";// 在udesk平台申请的演示用域名。
+//	private String UDESK_SECRETKEY = "fe6b7fa066d2b36416925890f4fd06a4";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.udesk_init_activity_view);
 		initView();
 		settingTitlebar();
-		UdeskSDKManager.getInstance(this).initApiKey(UDESK_DOMAIN, UDESK_SECRETKEY);
-		UdeskSDKManager.getInstance(this).initImageLoaderConfig(this);
+		UdeskSDKManager.getInstance().initApiKey(this,UDESK_DOMAIN, UDESK_SECRETKEY);
+		UdeskSDKManager.getInstance().initImageLoaderConfig(this);
 	}
 
 	private void initView() {
@@ -96,7 +98,7 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 		}
 		UdeskDBManager.getInstance().release();
 		UdeskDBManager.getInstance().init(this, mSdktoken.getText().toString());
-		UdeskSDKManager.getInstance(this).setUserInfo(
+		UdeskSDKManager.getInstance().setUserInfo(this,
 				mSdktoken.getText().toString(), getUserInfo());
 		toUseCaseActivity();
 
@@ -178,7 +180,7 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 					UdeskDBManager.getInstance().release();
 					UdeskDBManager.getInstance().init(UdeskInitActivity.this,
 							mSdktoken.getText().toString());
-					UdeskSDKManager.getInstance(UdeskInitActivity.this).setUserInfo(
+					UdeskSDKManager.getInstance().setUserInfo(UdeskInitActivity.this,
 							mSdktoken.getText().toString(), getUserInfo(),
 							extraInfoTextField, extraInfodRoplist);
 					toUseCaseActivity();
