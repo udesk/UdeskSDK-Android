@@ -28,10 +28,11 @@ public class UdeskFormActivity extends Activity {
 
 	private void initView() {
 		mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
-		settingTitlebar();
+		mTitlebar.setVisibility(View.GONE);
+//		settingTitlebar();
 		mwebView = (WebView) findViewById(R.id.udesk_form_webview);
 		String url = "http://" + UdeskSDKManager.getInstance().getDomain(this)
-		+ "/hc_mobile/submit_a_request";
+				+ "/im_client/feedback.html";
 		settingWebView(url);
 
 	}
