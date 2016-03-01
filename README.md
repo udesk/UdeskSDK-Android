@@ -242,6 +242,32 @@ SDK 提供的可选信息有：添加用户信息和用户自定义字段
 ![udesk](/indeximg/andriod-new-22.png)
 >注：getDomen()获取的是公司申请的域名，getsecretKey()是公司的秘钥。
 
+### 满意度调查api
+private void getIMSurveyOptions(){
+		UdeskHttpFacade.getInstance().getIMSurveyOptions(
+				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),  new UdeskCallBack() {
+					
+					@Override
+					public void onSuccess(String message) {
+						String SurveyMsg = message;
+						SurveyOptionsModel model = JsonUtils.parseSurveyOptions(SurveyMsg);
+						if (mChatView.getHandler() != null) {
+								Message messge = mChatView.getHandler().obtainMessage(
+								MessageWhat.surveyNotify);
+								messge.obj = model;
+								mChatView.getHandler().sendMessage(messge);
+						}
+					}
+					
+					@Override
+					public void onFail(String message) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+	}
 ## 8.关于DB说明
 目前创建两张表：udeskMessageInfo消息表和udeskSendIngMsgs发送中消息表；表消息ID是MsgID，其他字段Time，MsgContent、MsgType
 ReadFlag、SendFlag、PlayedFlag、Direction、LocalPath、Duration
