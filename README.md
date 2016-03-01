@@ -242,6 +242,7 @@ private Map<String, String> getUserInfo() {
 常用接口：
 ### 创建用户的api
 public void getIMJson(String userId){
+
 		UdeskHttpFacade.getInstance().getIMJsonAPi(UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),userId,
 				new UdeskCallBack() {
@@ -262,6 +263,7 @@ public void getIMJson(String userId){
 
 ### 获取自定义字段获取api
 private void commitSelffield() {
+
 		UdeskDBManager.getInstance().release();
 		UdeskDBManager.getInstance().init(this, mSdktoken.getText().toString());
 		final HashMap<String, String> extraInfoTextField = new HashMap<String, String>();
@@ -323,6 +325,7 @@ private void commitSelffield() {
 
 ### 设置用户信息api
 public void getCustomerId(){
+
 		UdeskHttpFacade.getInstance().setUserInfo(UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getUserinfo(), UdeskSDKManager.getInstance().getTextField(),
@@ -343,6 +346,7 @@ public void getCustomerId(){
 
 ### 初始化api
 public void initApiKey(Context context,String domain, String secretKey){
+
 		this.domain = domain;
 		this.secretKey = secretKey;
 		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
@@ -386,6 +390,7 @@ public void showRobot(final Context context) {
 
 ### 智能客服api
 public void showRobotOrConversation(final Context context) {
+
 		if(!TextUtils.isEmpty(getH5Url(context))){
 			toLanuchRobotAcitivty(context,getH5Url(context), getTransfer(context));
 			return;
@@ -417,6 +422,7 @@ public void showRobotOrConversation(final Context context) {
 	}
 ### 上传客户信息api
 public void putDevices() {
+
 		UdeskHttpFacade.getInstance().putDevicesJson(mChatView.getContext(),
 				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
@@ -440,6 +446,7 @@ public void putDevices() {
 
 ### 获取客服状态api
 public void getAgentInfo() {
+
 		UdeskHttpFacade.getInstance().getAgentJsonAPi(
 				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
@@ -494,6 +501,7 @@ private void getListArticles() {
 
 ### 获取帮助内容api
 private void getArticlesContentJsonApiById(int id) {
+
 			udeskLoading.setVisibility(View.VISIBLE);
 			UdeskHttpFacade.getInstance().getArticlesContentJsonApiById(
 					UdeskSDKManager.getInstance().getDomain(this),
@@ -525,6 +533,7 @@ private void getArticlesContentJsonApiById(int id) {
 
 ### 搜索帮助内容api
 private void getArticlesSearch(String query) {
+
 		UdeskHttpFacade.getInstance().getArticlesSearchJsonAPi(
 				UdeskSDKManager.getInstance().getDomain(UdeskHelperFragment.this.getActivity()),
 				UdeskSDKManager.getInstance().getSecretKey(UdeskHelperFragment.this.getActivity()),
@@ -556,6 +565,7 @@ private void getArticlesSearch(String query) {
 
 ### 满意度调查api
 private void getIMSurveyOptions(){
+
 		UdeskHttpFacade.getInstance().getIMSurveyOptions(
 				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
