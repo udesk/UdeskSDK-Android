@@ -122,11 +122,11 @@ UdeskSDK-Android
 private  String UDESK_DOMAIN = "wkudesk.udesk.cn";// 在udesk平台申请的演示用域名。
 private  String UDESK_SECRETKEY = "500bd56126a2940f1a13a830e0ec3faf";// udesk平台分配的演示用secret
 
-private String sdk_Token = "xxxxxxxxx";//用户身份的唯一识别必填必须唯一
+private EditText mSdktoken //用户身份的唯一识别必填必须唯一
 
 ```
 
->注：sdk_Token是用户身份的唯一识别，必须唯一
+>注：mSdktoken是用户身份的唯一识别，必须唯一(必传字段)
 
 
 3）绑定公司的域名和密钥后，可选设置用户的信息和自定义用户信息：
@@ -204,42 +204,354 @@ SDK 提供的可选信息有：添加用户信息和用户自定义字段
 
 
 使用代码demo
-![udesk](/indeximg/andriod-new-11.png)
+private Map<String, String> getUserInfo() {
+
+		Map<String, String> info = new HashMap<String, String>();
+		info.put(UdeskCoreConst.UdeskUserInfo.USER_SDK_TOKEN, mSdktoken.getText()
+				.toString());
+		if (!TextUtils.isEmpty(mEmail.getText().toString())) {
+			info.put(UdeskCoreConst.UdeskUserInfo.EMAIL, mEmail.getText()
+					.toString());
+		}
+		if (!TextUtils.isEmpty(mNickname.getText().toString())) {
+			info.put(UdeskCoreConst.UdeskUserInfo.NICK_NAME, mNickname
+					.getText().toString());
+		}
+		if (!TextUtils.isEmpty(mCellphone.getText().toString())) {
+			info.put(UdeskCoreConst.UdeskUserInfo.CELLPHONE, mCellphone
+					.getText().toString());
+		}
+		if (!TextUtils.isEmpty(mWeixin.getText().toString())) {
+			info.put(UdeskCoreConst.UdeskUserInfo.WEIXIN_ID, mWeixin.getText()
+					.toString());
+		}
+		if (!TextUtils.isEmpty(mWeibo.getText().toString())) {
+			info.put(UdeskCoreConst.UdeskUserInfo.WEIBO_NAME, mWeibo.getText()
+					.toString());
+		}
+		if (!TextUtils.isEmpty(mDescriptionn.getText().toString())) {
+			info.put(UdeskCoreConst.UdeskUserInfo.DESCRIPTION, mDescriptionn
+					.getText().toString());
+		}
+		
+		return info;
+
+	}
 
 5）调用在线客服聊天界面，可根据不同需求进行设置并调用不同的接口，UdeskConversationArgs和UDeskSDK对这些设置提供了接口。
 常用接口：
-### 创建用户的接口
-![udesk](/indeximg/andriod-new-12.png)
+### 创建用户的api
+public void getIMJson(String userId){
+		UdeskHttpFacade.getInstance().getIMJsonAPi(UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),userId,
+				new UdeskCallBack() {
 
-### 获取自定义字段获取接口
-![udesk](/indeximg/andriod-new-13.png)
+					@Override
+					public void onSuccess(String message) {
+						// 成功之后，提交设备信息
+						putDevices();
+					}
 
-### 设置用户信息接口
-![udesk](/indeximg/andriod-new-14.png)
+					@Override
+					public void onFail(String message) {
+						// 失败给出错误提示 结束流程
+						mChatView.showFailToast(message);
+					}
+				});
+	}
 
-### 初始化接口
-![udesk](/indeximg/andriod-new-15.png)
+### 获取自定义字段获取api
+private void commitSelffield() {
+		UdeskDBManager.getInstance().release();
+		UdeskDBManager.getInstance().init(this, mSdktoken.getText().toString());
+		final HashMap<String, String> extraInfoTextField = new HashMap<String, String>();
+		final HashMap<String, String> extraInfodRoplist = new HashMap<String, String>();
+		UdeskHttpFacade.getInstance().getUserFields(UDESK_DOMAIN,UDESK_SECRETKEY, new UdeskCallBack() {
 
-### 机器人接口
-![udesk](/indeximg/andriod-new-16.png)
+			@Override
+			public void onSuccess(String result) {
+				try {
+					JSONObject jo = new JSONObject(result);
+					int status = jo.optInt("status");
+					if (status == 0) {
+						JSONArray jsonArray = jo.getJSONArray("user_fields");
+						for (int i = 0; i < jsonArray.length(); i++) {
+							JSONObject child = (JSONObject) jsonArray.get(i);
+							if (child.has("content_type")) {
+								String type = child.getString("content_type");
+								if (type.equals("droplist")) {
+									if (child.has("options")) {
+										// 想设置下拉列表的第几个值，则传入第几个key值字符串， 如下所示
+										extraInfodRoplist.put(
+												child.getString("field_name"),
+												"0");
+									}
+								} else if (type.equals("text")) {
+									extraInfoTextField.put(
+											child.getString("field_name"),
+											child.getString("comment"));
+								}
+							}
+						}
+					}
 
-### 智能客服接口
-![udesk](/indeximg/andriod-new-17.png)
+					if (TextUtils.isEmpty(mSdktoken.getText().toString())) {
+						Toast.makeText(UdeskInitActivity.this,
+								getString(R.string.udesk_sdktoken_toast),
+								Toast.LENGTH_SHORT).show();
+						return;
+					}
+					UdeskDBManager.getInstance().init(UdeskInitActivity.this,
+							mSdktoken.getText().toString());
+					UdeskSDKManager.getInstance().setUserInfo(
+							UdeskInitActivity.this,mSdktoken.getText().toString(), getUserInfo(),
+							extraInfoTextField, extraInfodRoplist);
+					toUseCaseActivity();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 
-### 上传客户信息
-![udesk](/indeximg/andriod-new-18.png)
+			}
 
-### 获取客服状态
-![udesk](/indeximg/andriod-new-19.png)
+			@Override
+			public void onFail(String arg0) {
 
-### 获取帮助中心接口
-![udesk](/indeximg/andriod-new-20.png)
+			}
+		});
 
-### 获取帮助内容接口
-![udesk](/indeximg/andriod-new-21.png)
+	}
 
-### 搜索帮助内容接口
-![udesk](/indeximg/andriod-new-22.png)
+### 设置用户信息api
+public void getCustomerId(){
+		UdeskHttpFacade.getInstance().setUserInfo(UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getUserinfo(), UdeskSDKManager.getInstance().getTextField(),
+				UdeskSDKManager.getInstance().getRoplist(), new UdeskCallBack() {
+					
+					@Override
+					public void onSuccess(String string) {
+						UdeskSDKManager.getInstance().parserCustomersJson(mChatView.getContext(),string);
+						getIMCustomerInfo();
+					}
+					
+					@Override
+					public void onFail(String string) {
+						mChatView.showFailToast(string);
+					}
+				});
+	}
+
+### 初始化api
+public void initApiKey(Context context,String domain, String secretKey){
+		this.domain = domain;
+		this.secretKey = secretKey;
+		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+				UdeskConst.SharePreParams.Udesk_Domain, domain);
+		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+				UdeskConst.SharePreParams.Udesk_SecretKey, secretKey);
+	}
+
+### 机器人api
+public void showRobot(final Context context) {
+		if(!TextUtils.isEmpty(getH5Url(context))){
+			toLanuchRobotAcitivty(context,getH5Url(context), getTransfer(context));
+			return;
+		}
+		
+		showLoading(context);
+		UdeskHttpFacade.getInstance().getRobotJsonApi(getDomain(context),getSecretKey(context),new UdeskCallBack() {
+
+			@Override
+			public void onSuccess(String message) {
+				dismiss();
+				RobotInfo item = JsonUtils.parseRobotJsonResult(message);
+				if (item != null && !TextUtils.isEmpty(item.h5_url)) {
+					toLanuchRobotAcitivty(context,item.h5_url, item.transfer);
+					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+							UdeskConst.SharePreParams.Udesk_Transfer, item.transfer);
+					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+							UdeskConst.SharePreParams.Udesk_h5url, item.h5_url);
+				} else {
+					UdeskUtils.showToast(context, context.getString(R.string.udesk_has_not_open_robot));
+				}
+			}
+
+			@Override
+			public void onFail(String message) {
+				dismiss();
+				UdeskUtils.showToast(context, message);
+			}
+		});
+	}
+
+### 智能客服api
+public void showRobotOrConversation(final Context context) {
+		if(!TextUtils.isEmpty(getH5Url(context))){
+			toLanuchRobotAcitivty(context,getH5Url(context), getTransfer(context));
+			return;
+		}
+		showLoading(context);
+		UdeskHttpFacade.getInstance().getRobotJsonApi(getDomain(context),getSecretKey(context),new UdeskCallBack() {
+			
+			@Override
+			public void onSuccess(String message) {
+				dismiss();
+				RobotInfo item = JsonUtils.parseRobotJsonResult(message);
+				if (item != null && !TextUtils.isEmpty(item.h5_url)) {
+					toLanuchRobotAcitivty(context,item.h5_url, item.transfer);
+					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+							UdeskConst.SharePreParams.Udesk_Transfer, item.transfer);
+					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+							UdeskConst.SharePreParams.Udesk_h5url, item.h5_url);
+				} else {
+					toLanuchChatAcitvity(context);
+				}
+			}
+			
+			@Override
+			public void onFail(String message) {
+				dismiss();
+				toLanuchChatAcitvity(context);
+			}
+		});
+	}
+### 上传客户信息api
+public void putDevices() {
+		UdeskHttpFacade.getInstance().putDevicesJson(mChatView.getContext(),
+				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getUserId(mChatView.getContext()),
+				new UdeskCallBack() {
+
+					@Override
+					public void onSuccess(String message) {
+						// 成功之后 获取客服
+						getAgentInfo();
+					}
+
+					@Override
+					public void onFail(String message) {
+						// 失败给出错误提示 结束流程
+						mChatView.showFailToast(message);
+					}
+				});
+	}
+
+
+### 获取客服状态api
+public void getAgentInfo() {
+		UdeskHttpFacade.getInstance().getAgentJsonAPi(
+				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getUserId(mChatView.getContext()),
+				new UdeskCallBack() {
+
+			@Override
+			public void onSuccess(String message) {
+				// 获取客户成功，显示在线客服的信息，连接xmpp，进行会话
+				AgentInfo agentInfo = JsonUtils.parseAgentResult(message);
+				mChatView.dealAgentInfo(agentInfo);
+
+			}
+
+			@Override
+			public void onFail(String message) {
+				// 失败给出错误提示 结束流程
+				mChatView.showFailToast(message);
+			}
+		});
+
+	}
+
+### 获取帮助中心api
+private void getListArticles() {
+
+		UdeskHttpFacade.getInstance().getListArticlesJsonAPi(
+				UdeskSDKManager.getInstance().getDomain(UdeskHelperFragment.this.getActivity()),
+				UdeskSDKManager.getInstance().getSecretKey(UdeskHelperFragment.this.getActivity()),
+				new UdeskCallBack() {
+					@Override
+					public void onSuccess(String message) {
+						List<UDHelperItem> helpItems = JsonUtils.parseListArticlesResult(message);
+						hideLoading();
+						if (helpItems != null && helpItems.size() > 0) {
+							mHelperAdapter.setList(helpItems);
+							showListView();
+						} else {
+							showNoDataVis(View.VISIBLE);
+						}
+					}
+
+					@Override
+					public void onFail(String message) {
+						hideLoading();
+						Toast.makeText(UdeskHelperFragment.this.getActivity(),
+								message, Toast.LENGTH_LONG).show();
+					}
+				});
+
+	}
+
+### 获取帮助内容api
+private void getArticlesContentJsonApiById(int id) {
+			udeskLoading.setVisibility(View.VISIBLE);
+			UdeskHttpFacade.getInstance().getArticlesContentJsonApiById(
+					UdeskSDKManager.getInstance().getDomain(this),
+					UdeskSDKManager.getInstance().getSecretKey(this),
+					id, new UdeskCallBack() {
+				
+				@Override
+				public void onSuccess(String message) {
+					udeskLoading.setVisibility(View.GONE);
+					UDHelperArticleContentItem item = JsonUtils.parseArticleContentItem(message);
+					udeskSubject.setText(item.subject);
+					String htmlData = item.content;
+					htmlData = htmlData.replaceAll("&amp;", "");
+			        htmlData = htmlData.replaceAll("quot;", "\"");
+			        htmlData = htmlData.replaceAll("lt;", "<");
+			        htmlData = htmlData.replaceAll("gt;", ">");
+			        udeskWebView.loadDataWithBaseURL(null, htmlData, "text/html", "utf-8", null);   
+					
+				}
+				
+				@Override
+				public void onFail(String message) {
+					udeskLoading.setVisibility(View.GONE);
+					Toast.makeText(UdeskHelperArticleActivity.this, message, Toast.LENGTH_SHORT).show();
+				}
+			});
+
+		}
+
+### 搜索帮助内容api
+private void getArticlesSearch(String query) {
+		UdeskHttpFacade.getInstance().getArticlesSearchJsonAPi(
+				UdeskSDKManager.getInstance().getDomain(UdeskHelperFragment.this.getActivity()),
+				UdeskSDKManager.getInstance().getSecretKey(UdeskHelperFragment.this.getActivity()),
+				query,
+				new UdeskCallBack() {
+
+					@Override
+					public void onSuccess(String message) {
+						List<UDHelperItem> searchitems = JsonUtils
+								.parseListArticlesResult(message);
+						hideLoading();
+						if (searchitems != null && searchitems.size() > 0) {
+							mHelperAdapter.setList(searchitems);
+							showListView();
+						} else {
+							showNoDataVis(View.VISIBLE);
+						}
+					}
+
+					@Override
+					public void onFail(String message) {
+						hideLoading();
+						showNoDataVis(View.VISIBLE);
+					}
+				});
+
+	}
 >注：getDomen()获取的是公司申请的域名，getsecretKey()是公司的秘钥。
 
 ### 满意度调查api
@@ -271,7 +583,20 @@ private void getIMSurveyOptions(){
 ## 8.关于DB说明
 目前创建两张表：udeskMessageInfo消息表和udeskSendIngMsgs发送中消息表；表消息ID是MsgID，其他字段Time，MsgContent、MsgType
 ReadFlag、SendFlag、PlayedFlag、Direction、LocalPath、Duration
-![udesk](/indeximg/andriod-new-23.png)
+public void onCreate(SQLiteDatabase db) {
+
+		db.execSQL("CREATE TABLE IF NOT EXISTS "
+				+ UdeskMessage
+				+ "(MsgID TEXT primary key,Time BIGINT,MsgContent TEXT,"
+				+ "MsgType TEXT, ReadFlag INTEGER,SendFlag INTEGER,"
+				+ "PlayedFlag INTEGER,Direction INTEGER,LocalPath Text,Duration INTEGER)");
+	
+
+		db.execSQL("CREATE TABLE IF NOT EXISTS "
+				+ UdeskSendIngMsgs
+				+ "( MsgID TEXT, SendFlag INTEGER, Time BIGINT, primary key(MsgID))");
+	}
+
 
 
 
