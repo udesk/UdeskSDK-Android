@@ -186,7 +186,34 @@ SDK 提供的可选信息有：添加用户信息和用户自定义字段
 + 文本类型：首先我们也要获得”field_name”字段的字段的值作为key值，然后将"comment"字段的值作为value值存入即可；
 代码如下：
 
-![udesk](/indeximg/andriod-new-10.png)
+UdeskHttpFacade.getInstance().getUserFields(UDESK_DOMAIN,UDESK_SECRETKEY, new UdeskCallBack() {
+
+			@Override
+			public void onSuccess(String result) {
+				try {
+					JSONObject jo = new JSONObject(result);
+					int status = jo.optInt("status");
+					if (status == 0) {
+						JSONArray jsonArray = jo.getJSONArray("user_fields");
+						for (int i = 0; i < jsonArray.length(); i++) {
+							JSONObject child = (JSONObject) jsonArray.get(i);
+							if (child.has("content_type")) {
+								String type = child.getString("content_type");
+								if (type.equals("droplist")) {
+									if (child.has("options")) {
+										// 想设置下拉列表的第几个值，则传入第几个key值字符串， 如下所示
+										extraInfodRoplist.put(
+												child.getString("field_name"),
+												"0");
+									}
+								} else if (type.equals("text")) {
+									extraInfoTextField.put(
+											child.getString("field_name"),
+											child.getString("comment"));
+								}
+							}
+						}
+					}
 
 可选字段信息如下：
 
@@ -357,11 +384,11 @@ public void initApiKey(Context context,String domain, String secretKey){
 
 ### 机器人api
 public void showRobot(final Context context) {
+
 		if(!TextUtils.isEmpty(getH5Url(context))){
 			toLanuchRobotAcitivty(context,getH5Url(context), getTransfer(context));
 			return;
 		}
-		
 		showLoading(context);
 		UdeskHttpFacade.getInstance().getRobotJsonApi(getDomain(context),getSecretKey(context),new UdeskCallBack() {
 
