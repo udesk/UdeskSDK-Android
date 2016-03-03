@@ -130,10 +130,4 @@ public class UdeskRobotActivity extends Activity {
 		}
 	}
 
-	@Override
-	protected void onDestroy() {
-
-		mwebView.destroy();
-		super.onDestroy();
-	}
 }

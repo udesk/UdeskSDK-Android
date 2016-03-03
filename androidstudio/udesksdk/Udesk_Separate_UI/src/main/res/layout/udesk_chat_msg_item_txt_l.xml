@@ -47,6 +47,7 @@
             android:gravity="left|center_vertical"
             android:lineSpacingExtra="3dip"
             android:textColor="#3B3A3C"
+            android:textColorLink="#3B3A3C"
             android:textSize="@dimen/udesk_sp16" />
 
         <ImageView

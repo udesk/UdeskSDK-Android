@@ -9,12 +9,11 @@ import android.widget.TextView;
 
 import cn.udesk.R;
 
-
 /**
  * 加载控件
  *
  */
-public class UdeskLoadingView extends LinearLayout{
+public class UdeskLoadingView extends LinearLayout {
 
 	private TextView loadingTxt;
   

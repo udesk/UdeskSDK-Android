@@ -1,18 +1,19 @@
 package cn.udesk;
 
-import android.text.TextUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import cn.udesk.model.OptionsModel;
+import cn.udesk.model.SurveyOptionsModel;
 import udesk.core.model.AgentInfo;
 import udesk.core.model.RobotInfo;
 import udesk.core.model.UDHelperArticleContentItem;
 import udesk.core.model.UDHelperItem;
+import android.text.TextUtils;
 
 public class JsonUtils {
 
@@ -117,6 +118,44 @@ public class JsonUtils {
 		}
 		return agentInfo;
 
+	}
+	
+	public static SurveyOptionsModel parseSurveyOptions(String response){
+		
+		SurveyOptionsModel optionsMode = new SurveyOptionsModel();
+		if (TextUtils.isEmpty(response)) {
+			return optionsMode;
+		}
+		
+		try {
+			JSONObject json = new JSONObject(response);
+			JSONObject result = json.getJSONObject("result");
+			if (result.has("title")) {
+				optionsMode.setTitle(result.getString("title"));
+			}
+			if (result.has("desc")) {
+				optionsMode.setDesc(result.getString("desc"));
+			}
+			if (result.has("options")) {
+				
+				List<OptionsModel> options = new ArrayList<OptionsModel>();
+				JSONArray optionsArray = result.optJSONArray("options");
+				if (optionsArray != null && optionsArray.length() > 0) {
+					for (int i = 0; i < optionsArray.length(); i++) {
+						JSONObject data = optionsArray.optJSONObject(i);
+						OptionsModel optionItem = new OptionsModel();
+						optionItem.setId(data.optString("id"));
+						optionItem.setText(data.getString("text"));
+						options.add(optionItem);
+					}
+				}
+				optionsMode.setOptions(options);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return optionsMode;
+		
 	}
 
 

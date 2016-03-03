@@ -17,8 +17,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.activity.UdeskHelperActivity;
@@ -30,14 +30,15 @@ import udesk.core.UdeskHttpFacade;
 import udesk.core.model.RobotInfo;
 import udesk.core.utils.UdeskUtils;
 
-public class UdeskSDKManager {
 
+public class UdeskSDKManager {
+	
 	private String domain = null;
 	private String secretKey = null;
 	private String userId = null;
 	private String transfer = null;
 	private String h5Url = null;
-
+	
 	/**
 	 * 用户唯一的标识
 	 */
@@ -50,15 +51,15 @@ public class UdeskSDKManager {
 	 * 用户自定义字段文本信息
 	 */
 	private Map<String, String> textField = null;
-
+	
 	/**
 	 * 用户自定义字段的列表信息
 	 */
 	private Map<String, String> roplist = null;
 	private UdeskDialog dialog;
-
+	
 	private volatile static UdeskSDKManager instance;
-	//	private Context mContext = null;
+//	private Context mContext = null;
 	private UdeskSDKManager() {
 //		this.mContext = context;
 	}
@@ -73,9 +74,8 @@ public class UdeskSDKManager {
 		}
 		return instance;
 	}
-
-
-
+	
+	
 
 
 	public Map<String, String> getUserinfo() {
@@ -89,7 +89,7 @@ public class UdeskSDKManager {
 	public Map<String, String> getRoplist() {
 		return roplist;
 	}
-
+	
 	public String getSdkToken(Context context) {
 		if(!TextUtils.isEmpty(sdkToken)){
 			return sdkToken;
@@ -103,7 +103,7 @@ public class UdeskSDKManager {
 		}
 		return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_Domain);
 	}
-
+	
 
 	public String getSecretKey(Context context) {
 		if(!TextUtils.isEmpty(secretKey)){
@@ -111,8 +111,8 @@ public class UdeskSDKManager {
 		}
 		return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_SecretKey);
 	}
-
-
+	
+	
 
 	public String getUserId(Context context) {
 		if(!TextUtils.isEmpty(userId)){
@@ -120,11 +120,11 @@ public class UdeskSDKManager {
 		}
 		return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_userid);
 	}
-
-
+	
+	
 
 	public String getTransfer(Context context) {
-
+		
 		if(!TextUtils.isEmpty(transfer)){
 			return transfer;
 		}
@@ -142,9 +142,10 @@ public class UdeskSDKManager {
 		try {
 			dialog = new UdeskDialog(context, R.style.udesk_dialog);
 			dialog.show();
-		} catch (Exception e) {
+		}catch (Exception e){
 			e.printStackTrace();
 		}
+
 	}
 
 	private void dismiss() {
@@ -175,22 +176,22 @@ public class UdeskSDKManager {
 		Intent intent = new Intent(context, UdeskHelperActivity.class);
 		context.startActivity(intent);
 	}
-
+	
 	public void showRobot(final Context context) {
 		if(!TextUtils.isEmpty(getH5Url(context))){
 			toLanuchRobotAcitivty(context,getH5Url(context), getTransfer(context));
 			return;
 		}
-
+		
 		showLoading(context);
-		UdeskHttpFacade.getInstance().getRobotJsonApi(getDomain(context),getSecretKey(context),new UdeskCallBack() {
+		UdeskHttpFacade.getInstance().getRobotJsonApi(getDomain(context), getSecretKey(context), new UdeskCallBack() {
 
 			@Override
 			public void onSuccess(String message) {
 				dismiss();
 				RobotInfo item = JsonUtils.parseRobotJsonResult(message);
 				if (item != null && !TextUtils.isEmpty(item.h5_url)) {
-					toLanuchRobotAcitivty(context,item.h5_url, item.transfer);
+					toLanuchRobotAcitivty(context, item.h5_url, item.transfer);
 					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
 							UdeskConst.SharePreParams.Udesk_Transfer, item.transfer);
 					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
@@ -207,7 +208,7 @@ public class UdeskSDKManager {
 			}
 		});
 	}
-
+	
 	public void showRobotOrConversation(final Context context) {
 		if(!TextUtils.isEmpty(getH5Url(context))){
 			toLanuchRobotAcitivty(context,getH5Url(context), getTransfer(context));
@@ -215,7 +216,7 @@ public class UdeskSDKManager {
 		}
 		showLoading(context);
 		UdeskHttpFacade.getInstance().getRobotJsonApi(getDomain(context),getSecretKey(context),new UdeskCallBack() {
-
+			
 			@Override
 			public void onSuccess(String message) {
 				dismiss();
@@ -230,7 +231,7 @@ public class UdeskSDKManager {
 					toLanuchChatAcitvity(context);
 				}
 			}
-
+			
 			@Override
 			public void onFail(String message) {
 				dismiss();
@@ -245,7 +246,7 @@ public class UdeskSDKManager {
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
 				context)
 				.threadPoolSize(3)
-						// 线程池内加载的数量
+				// 线程池内加载的数量
 				.threadPriority(Thread.NORM_PRIORITY - 2)
 				.denyCacheImageMultipleSizesInMemory()
 				.memoryCache(new WeakMemoryCache())
@@ -256,36 +257,32 @@ public class UdeskSDKManager {
 				.defaultDisplayImageOptions(DisplayImageOptions.createSimple())
 				.imageDownloader(
 						new BaseImageDownloader(context,
-								5 * 1000, 30 * 1000))
+								5 * 1000, 30 * 1000)) 
 				.build();// 开始构建
 		ImageLoader.getInstance().init(config);
 	}
-
+	
 	public void setUserInfo(Context context,String sdkToken,Map<String, String> info){
-		this.setUserInfo(context,sdkToken, info, null);
+		this.setUserInfo(context, sdkToken, info, null);
 	}
-
+	
 	public void setUserInfo(Context context,String sdkToken,Map<String, String> info,Map<String, String> textField){
 		this.setUserInfo(context,sdkToken, info, textField, null);
 	}
-
-	public void setUserInfo(final Context context,String sdkToken,Map<String, String> info,Map<String, String> textField,Map<String, String> roplist){
+	
+	public void setUserInfo(final  Context context,String sdkToken,Map<String, String> info,Map<String, String> textField,Map<String, String> roplist){
 		this.sdkToken = sdkToken;
 		UdeskConst.SharePreParams.Udesk_Sharepre_Name = sdkToken;
 		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
 				UdeskConst.SharePreParams.Udesk_SdkToken, sdkToken);
-		if(info == null){
-			info = new HashMap<String, String>();
-		}
-		info.put(UdeskCoreConst.UdeskUserInfo.USER_SDK_TOKEN,sdkToken);
 		this.userinfo = info;
 		this.textField = textField;
 		this.roplist = roplist;
-		UdeskHttpFacade.getInstance().setUserInfo(getDomain(context),getSecretKey(context),sdkToken, info, textField, roplist, new UdeskCallBack() {
+		UdeskHttpFacade.getInstance().setUserInfo(getDomain(context), getSecretKey(context), sdkToken, info, textField, roplist, new UdeskCallBack() {
 
 			@Override
 			public void onSuccess(String string) {
-				parserCustomersJson(context,string);
+				parserCustomersJson(context, string);
 			}
 
 			@Override
@@ -294,7 +291,7 @@ public class UdeskSDKManager {
 			}
 		});
 	}
-
+	
 	public void  parserCustomersJson(Context context,String jsonString){
 		try {
 			JSONObject resultJson = new JSONObject(jsonString);
@@ -325,5 +322,33 @@ public class UdeskSDKManager {
 		} catch (JSONException e) {
 		}
 	}
+//	Form
+	public String getFormUrlPara(Context context){
+		StringBuilder builder = new StringBuilder();
+		builder.append("?sdk_token=").append(getSdkToken(context))
+				.append("&sdk_version=").append(UdeskCoreConst.sdkversion);
+		if(userinfo != null && !userinfo.isEmpty()){
+			Set<String> keySet = userinfo.keySet();
+			for (String key : keySet) {
+				if(!TextUtils.isEmpty(userinfo.get(key))){
+					if(key.equals("sdk_token")){
+						continue;
+					}
+					builder.append("&").append(key).append("=").append(userinfo.get(key));
+				}
+			}
+		}
+		if(textField != null && !textField.isEmpty()){
+			Set<String> textFieldSet = textField.keySet();
+			for (String key : textFieldSet) {
+				if(!TextUtils.isEmpty(textField.get(key))){
+					builder.append("&c_cf_").append(key).append("=").append(textField.get(key));
+				}
+			}
+		}
+
+		return builder.toString();
+	}
+	
 
 }

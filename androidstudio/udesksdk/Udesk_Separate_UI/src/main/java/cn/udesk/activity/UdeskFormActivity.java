@@ -28,13 +28,13 @@ public class UdeskFormActivity extends Activity {
 
 	private void initView() {
 		mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
-		mTitlebar.setVisibility(View.GONE);
-//		settingTitlebar();
+		settingTitlebar();
 		mwebView = (WebView) findViewById(R.id.udesk_form_webview);
 		String url = "http://" + UdeskSDKManager.getInstance().getDomain(this)
-				+ "/im_client/feedback.html";
+				+ "/im_client/feedback.html"
+//				+ UdeskSDKManager.getInstance().getFormUrlPara(this)
+				;
 		settingWebView(url);
-
 	}
 
 
@@ -58,7 +58,7 @@ public class UdeskFormActivity extends Activity {
 		settings.setLoadWithOverviewMode(true);
 		settings.setDomStorageEnabled(true);
 		mwebView.getSettings()
-				.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+				.setCacheMode(WebSettings.LOAD_NO_CACHE);
 		mwebView.setWebChromeClient(new WebChromeClient());
 		mwebView.setWebViewClient(new WebViewClient());
 		mwebView.loadUrl(url);
@@ -93,9 +93,5 @@ public class UdeskFormActivity extends Activity {
 	}
 
 
-	@Override
-	protected void onDestroy() {
-		mwebView.destroy();
-		super.onDestroy();
-	}
+
 }

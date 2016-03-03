@@ -17,6 +17,10 @@ public class UdeskConst {
 	public final static String AUDIO_SUF = ".aac";
 	
 	public final static int recordStateNum = 8;
+	
+	public static String SurvyDialogKey = "survydialogkey";
+	public static String SurvyOptionIDKey = "survyoptionidkey";
+	
 	public static class SendFlag {
 		public final static int RESULT_SEND = 0;// 这个是默认值 发送中
 		public final static int RESULT_SUCCESS = 1;// 发送成功

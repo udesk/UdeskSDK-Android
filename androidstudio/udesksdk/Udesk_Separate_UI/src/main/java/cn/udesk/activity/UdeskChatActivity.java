@@ -50,6 +50,7 @@ import cn.udesk.UdeskUtil;
 import cn.udesk.activity.MessageAdatper.AudioViewHolder;
 import cn.udesk.adapter.UDEmojiAdapter;
 import cn.udesk.db.UdeskDBManager;
+import cn.udesk.model.SurveyOptionsModel;
 import cn.udesk.presenter.ChatActivityPresenter;
 import cn.udesk.presenter.IChatActivityView;
 import cn.udesk.voice.RecordFilePlay;
@@ -78,20 +79,20 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 		OnItemClickListener, RecordStateCallback, UdeskTimeEndCallback {
 
 	private UdeskTitleBar mTitlebar;
-	private ImageView recordView;
+	private ImageView recordView;//录音图片，用户可根据自己的需求自行设置。
 	private ImageView keyboardView;
 	private EditText mInputEditView;
 	private TextView tvSend;
 	private TextView recordBack;
 
-	private ImageView showEmjoImg;
+	private ImageView showEmjoImg;//表情选择图片，用户可根据自己的需求自行设置。
 	private GridView emjoGridView;
 	private View emojisPannel;
 	private UDEmojiAdapter mEmojiAdapter;
 
-	private ImageView showOptionMore;
+	private ImageView showOptionMore;//加号更多选择器图片，用户可根据自己的需求自行设置。
 	private View showImgPannel;
-	private View btnPhoto, btnCamera;
+	private View btnPhoto, btnCamera;//拍照和图片选择图标，用户可根据自己的需求自行设置。
 
 	private UDPullGetMoreListView mListView;
 	private MessageAdatper mChatAdapter;
@@ -106,6 +107,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 	private AgentInfo mAgentInfo;
 	private final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 101;
 	private final int SELECT_IMAGE_ACTIVITY_REQUEST_CODE = 102;
+	private final int SELECT_SURVY_OPTION_REQUEST_CODE = 103;
 	private final long QUEUE_RETEY_TIME = 10 * 1000;
 	private final int initViewMode = 1;
 	private final int pullRefreshModel = 2;
@@ -133,6 +135,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 		public static final int recordllegal = 13;
 		public static final int status_notify = 14;
 		public static final int redirectSuccess = 15;
+		public static final int surveyNotify = 16;
 	}
 
 	private BroadcastReceiver mConnectivityChangedReceiver = null;
@@ -316,10 +319,25 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 				showOnlieStatus(mAgentInfo);
 				currentStatusIsOnline = true;
 				break;
+			case MessageWhat.surveyNotify:
+				
+				SurveyOptionsModel surveyOptions = (SurveyOptionsModel) msg.obj;
+				if(surveyOptions != null){
+					toLuanchSurveyActivity(surveyOptions);
+				}
+				break;
 
 			}
 		}
 	};
+	
+	private void toLuanchSurveyActivity(SurveyOptionsModel surveyOptions){
+		Intent intent = new Intent();
+		intent.setClass(UdeskChatActivity.this, SurvyDialogActivity.class);
+		intent.putExtra(UdeskConst.SurvyDialogKey, surveyOptions);
+//		startActivity(intent);
+		startActivityForResult(intent, SELECT_SURVY_OPTION_REQUEST_CODE);
+	}
 	
 	private void showOnlieStatus(AgentInfo mAgentInfo){
 		if(mAgentInfo == null){
@@ -465,6 +483,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
 	private void setUdeskEmojisPannel(int vis) {
 		emojisPannel.setVisibility(vis);
+		emjoGridView.setVisibility(View.VISIBLE);
 	}
 
 	private void setUdeskEditClickabled(EditText editText) {
@@ -755,6 +774,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 		setUdeskEmojisPannel(View.GONE);
 		setUdeskKeyboardView(View.GONE);
 		setUdeskRecordView(View.VISIBLE);
+		emjoGridView.setVisibility(View.GONE);
 	}
 
 	private boolean isShowNotSendMsg() {
@@ -962,6 +982,13 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 				}
 			}
 
+		}else if(SELECT_SURVY_OPTION_REQUEST_CODE == requestCode){
+			if (resultCode != Activity.RESULT_OK || data == null) {
+				return;
+			}
+			Toast.makeText(UdeskChatActivity.this,"感谢您的评价！",Toast.LENGTH_SHORT).show();
+			String optionId =  data.getStringExtra(UdeskConst.SurvyOptionIDKey);
+			mPresenter.putIMSurveyResult(optionId);
 		}
 
 	}
@@ -1141,6 +1168,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 	protected void onDestroy() {
 		unRegister();
 		UdeskHttpFacade.getInstance().cancel();
+		UdeskMessageManager.getInstance().cancelXmppConnect();
 		super.onDestroy();
 		
 	}

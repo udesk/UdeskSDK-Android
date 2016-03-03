@@ -1,5 +1,11 @@
 apply plugin: 'com.android.application'
 
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 android {
     compileSdkVersion 'Google Inc.:Google APIs:19'
     buildToolsVersion "23.0.2"
@@ -33,5 +39,5 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':Udesk_Separate_UI')
+    compile(name: 'Udesk_Separate_UI-release', ext: 'aar')
 }

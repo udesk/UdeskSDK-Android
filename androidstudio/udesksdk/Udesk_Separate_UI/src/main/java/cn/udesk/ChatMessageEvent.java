@@ -22,5 +22,11 @@ public interface ChatMessageEvent {
 	 * @param onlineFlag
 	 */
 	void onPrenseMessage(String jid , int onlineFlag);
+	
+	/**
+	 * 收到评价邀请的通知
+	 * @param isSurvey
+	 */
+	void onReqsurveyMsg(boolean isSurvey);
 
 }

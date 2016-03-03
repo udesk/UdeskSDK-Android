@@ -60,7 +60,13 @@
     <color name="udesk_color_titlebar_text_center">#FFFFFF</color>
          <!-- 界面中分割线的颜色值 -->
     <color name="udesk_color_line">#e2e2eb</color>
+    
+    
+    <color name="udesk_color_text_light">#efeff3</color>
+    <color name="udesk_color_text_gray">#dadada</color>
        
+    
+    
        
        
 </resources>

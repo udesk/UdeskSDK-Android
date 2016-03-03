@@ -34,6 +34,10 @@
             android:name="cn.udesk.activity.UdeskZoomImageActivty"
             android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
             android:theme="@style/Udesk_Theme" />
+        <activity
+            android:name="cn.udesk.activity.SurvyDialogActivity"
+            android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
+            android:theme="@style/transcutestyle" />
     </application>
 
 </manifest>

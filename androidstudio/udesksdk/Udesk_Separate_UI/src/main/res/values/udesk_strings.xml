@@ -45,7 +45,7 @@
     <string name="udesk_success_save_image">成功保存</string>
     <string name="udesk_error_network">没有可用网络</string>
     <string name="udesk_cancel">取消</string>
-    <string name="udesk_ok">确定</string>
+    <string name="udesk_ok">留言</string>
     <string name="udesk_retry">重发</string>
     <string name="udesk_msg_retry">重发该消息</string>
     <string name="udesk_msg_offline_to_form">当前客服不在线，您可以选择提交表单来通知客服</string>
@@ -87,7 +87,7 @@
     <string name="udesk_im_time_format_date">"yyyy/MM/dd"</string>
     
     <string name="udesk_transfer_persion">转人工</string>
-    <string name="udesk_robot_title">智人机器人对话</string>
+    <string name="udesk_robot_title">智能机器人对话</string>
     <string name="udesk_has_not_open_robot">当前APP还没有开启智能机器人客服功能</string>
     <string name="udesk_has_wrong_net">网络出错了,请检查网络设置!</string>
     <string name="udesk_recordllegal">录音出错，请检查是否开启了应用的录音权限</string>

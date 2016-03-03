@@ -6,7 +6,6 @@ import android.view.View;
 
 import cn.udesk.R;
 
-
 public class RecordTouchListener implements View.OnTouchListener{
 	RecordStateCallback mRecordStateCallback;
 	private int OFFSET;

@@ -254,6 +254,7 @@ public class MessageAdatper extends BaseAdapter{
 			case MSG_TXT_R:
 			case MSG_AUDIO_R:
 			case MSG_IMG_R:
+				//UDESK系统默认的客户头像，用户可根据自己的需求自行设置。
 				ivHeader.setImageResource(R.drawable.udesk_im_default_user_avatar);
 				this.isLeft = false;
 				break;
@@ -261,6 +262,7 @@ public class MessageAdatper extends BaseAdapter{
 			case MSG_AUDIO_L:
 			case MSG_IMG_L:
 				this.isLeft = true;
+				//UDESK系统默认的客户头像，用户可根据自己的需求自行设置。
 				ivHeader.setImageResource(R.drawable.udesk_im_default_agent_avatar);
 				break;
 			default:

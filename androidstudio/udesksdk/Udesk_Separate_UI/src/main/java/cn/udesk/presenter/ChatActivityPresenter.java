@@ -28,6 +28,7 @@ import cn.udesk.UdeskUtil;
 import cn.udesk.activity.UdeskChatActivity.MessageWhat;
 import cn.udesk.adapter.UDEmojiAdapter;
 import cn.udesk.db.UdeskDBManager;
+import cn.udesk.model.SurveyOptionsModel;
 import cn.udesk.voice.AudioRecordState;
 import cn.udesk.voice.AudioRecordingAacThread;
 import cn.udesk.voice.VoiceRecord;
@@ -98,7 +99,67 @@ public class ChatActivityPresenter implements ChatMessageEvent {
 		}
 		
 	}
+	
+	@Override
+	public void onReqsurveyMsg(boolean isSurvey) {
 
+		if(isSurvey){
+			getIMSurveyOptions();
+		}
+	
+	}
+	
+	
+	private void getIMSurveyOptions(){
+		UdeskHttpFacade.getInstance().getIMSurveyOptions(
+				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),  new UdeskCallBack() {
+					
+					@Override
+					public void onSuccess(String message) {
+						String SurveyMsg = message;
+						SurveyOptionsModel model = JsonUtils.parseSurveyOptions(SurveyMsg);
+						if (mChatView.getHandler() != null) {
+								Message messge = mChatView.getHandler().obtainMessage(
+								MessageWhat.surveyNotify);
+								messge.obj = model;
+								mChatView.getHandler().sendMessage(messge);
+						}
+					}
+					
+					@Override
+					public void onFail(String message) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+	}
+	
+	public void putIMSurveyResult(String optionId){
+		
+		UdeskHttpFacade.getInstance().putSurveyVote(
+				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
+				mChatView.getAgentInfo().agent_id, 
+				UdeskSDKManager.getInstance().getUserId(mChatView.getContext()),
+				optionId, new UdeskCallBack() {
+					
+					@Override
+					public void onSuccess(String message) {
+						String SurveyMsg = message;
+						
+					}
+					
+					@Override
+					public void onFail(String message) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+	}
+	
 
 	/**
 	 * 先查看下终端用户账号ID是否创建， 如果终端用户账号ID没有创建，则先创建。 如果创建则直接使用获取 连接openfire的信息
@@ -708,5 +769,7 @@ public class ChatActivityPresenter implements ChatMessageEvent {
 		}
 
 	}
+
+
 
 }

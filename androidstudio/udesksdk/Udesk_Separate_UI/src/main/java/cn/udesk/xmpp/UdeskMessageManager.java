@@ -260,6 +260,14 @@ public class UdeskMessageManager implements OnMessageReceiveEvent{
 		
 	}
 
+	@Override
+	public void onReqsurveyMsg(boolean isSurvey) {
+		if(msgReceive != null){
+			msgReceive.onReqsurveyMsg(isSurvey);
+		}
+		
+	}
+
 
 	
 

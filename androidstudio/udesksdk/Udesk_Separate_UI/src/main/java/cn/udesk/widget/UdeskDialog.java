@@ -7,7 +7,6 @@ import android.widget.ProgressBar;
 
 import cn.udesk.R;
 
-
 public class UdeskDialog extends Dialog{
 	
 	Context context;

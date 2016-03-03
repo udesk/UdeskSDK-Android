@@ -40,12 +40,10 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 	private Button mCommitSelfBtn;
 //	private String UDESK_DOMAIN = "rd-dota.udesk.cn";//
 //	private String UDESK_SECRETKEY = "cc36f043f1e3bf71a0f73a51f4ac3fb5";//
-//	private String UDESK_DOMAIN = "reocar.udeskmonkey.com";//
-//	private String UDESK_SECRETKEY = "3a4dc5e0cd39995448018c553048fdd4";//
-	private String UDESK_DOMAIN = "reocar.tiyanudesk.com";//
-	private String UDESK_SECRETKEY = "2f04e99ff44ec68165c585a209efdd6d";//
-//    private String UDESK_DOMAIN = "lancai.udesk.cn";// 在udesk平台申请的演示用域名。
-//	private String UDESK_SECRETKEY = "fe6b7fa066d2b36416925890f4fd06a4";
+	private String UDESK_DOMAIN = "reocar.udeskmonkey.com";//
+	private String UDESK_SECRETKEY = "3a4dc5e0cd39995448018c553048fdd4";//
+//	private String UDESK_DOMAIN = "reocar.tiyanudesk.com";//
+//	private String UDESK_SECRETKEY = "2f04e99ff44ec68165c585a209efdd6d";//
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -98,8 +96,8 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 		}
 		UdeskDBManager.getInstance().release();
 		UdeskDBManager.getInstance().init(this, mSdktoken.getText().toString());
-		UdeskSDKManager.getInstance().setUserInfo(this,
-				mSdktoken.getText().toString(), getUserInfo());
+		UdeskSDKManager.getInstance().setUserInfo(
+				this,mSdktoken.getText().toString(), getUserInfo());
 		toUseCaseActivity();
 
 	}
@@ -107,8 +105,6 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 	private Map<String, String> getUserInfo() {
 
 		Map<String, String> info = new HashMap<String, String>();
-		info.put(UdeskCoreConst.UdeskUserInfo.USER_SDK_TOKEN, mSdktoken.getText()
-				.toString());
 		if (!TextUtils.isEmpty(mEmail.getText().toString())) {
 			info.put(UdeskCoreConst.UdeskUserInfo.EMAIL, mEmail.getText()
 					.toString());
