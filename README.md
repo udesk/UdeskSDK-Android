@@ -61,14 +61,14 @@ UdeskSDK-Android
 
 ## 4.SDK打包混淆
 
-在proguard-project.text文件中加入：
+在proguard-rules-pro文件中加入：
 
 ```
 -libraryjars libs/asmack-android-8-4.0.6.jar 
 -libraryjars libs/android-async-http.jar 
 -libraryjars libs/android-support-v4.jar 
 -libraryjars libs/qiniu-android-sdk-7.0.1.jar 
--libraryjars libs/udesk_sdkui.2.3.0.jar 
+-libraryjars libs/Udesk_SdkUI.jar 
 -libraryjars libs/universal-image-loader-1.9.4.jar 
 
 -keep class com.kenai.jbosh.** {*; }
