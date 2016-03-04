@@ -15,7 +15,7 @@ UdeskSDK-Android
 2. 将所有jar包导入类库
 
 
-![udesk](/indeximg/andriod-new-2.png)
+![udesk](/indeximg/android-new-2.png)
 
 >注：这些jar包都是必须的
 
