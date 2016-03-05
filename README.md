@@ -13,8 +13,11 @@ UdeskSDK-Android
 
 1. 将所有jar包导入类库
 
-
-![udesk](/indeximg/android-new-2.png)
+android-async-http-1.4.6.jar
+asmack-android-8-4.0.6.jar
+qiniu-android-sdk-7.0.1.jar
+udesk_sdk_1.1.jar
+universal-image-loader-1.9.4.jar
 
 >注：这些jar包都是必须的
 
@@ -67,7 +70,7 @@ UdeskSDK-Android
 -libraryjars libs/android-async-http.jar 
 -libraryjars libs/android-support-v4.jar 
 -libraryjars libs/qiniu-android-sdk-7.0.1.jar 
--libraryjars libs/Udesk_SdkUI.jar 
+-libraryjars libs/udesk_sdk_1.1.jar 
 -libraryjars libs/universal-image-loader-1.9.4.jar 
 
 -keep class com.kenai.jbosh.** {*; }
@@ -113,7 +116,7 @@ UdeskSDK-Android
 
 ## 7.接口详细说明
 
-1）初始化sdk ，将 SDK 文件添加到工程，将udesk sdk jar包拷贝到工程目录下libs文件中；
+1）初始化sdk ，将 SDK 文件添加到工程，将udesk_sdk_1.1.jar包拷贝到工程目录下libs文件中；
 
 2）绑定公司的域名和密钥和添加用户自定义唯一字段，即之前在Udesk官网注册的domain和key值和用户的自定义唯一字段，在SDK中设置如下：
 
