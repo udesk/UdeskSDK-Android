@@ -14,9 +14,13 @@ UdeskSDK-Android
 1. 将所有jar包导入类库
 
 android-async-http-1.4.6.jar
+
 asmack-android-8-4.0.6.jar
+
 qiniu-android-sdk-7.0.1.jar
+
 udesk_sdk_1.1.jar
+
 universal-image-loader-1.9.4.jar
 
 >注：这些jar包都是必须的
