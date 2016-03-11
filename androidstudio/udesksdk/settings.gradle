@@ -1,1 +1,1 @@
-include ':UdeskUIDemo', ':Sdklibrary', ':Udesk_Separate_UI'
+include ':UdeskUIDemo', ':Udesk_Separate_UI'

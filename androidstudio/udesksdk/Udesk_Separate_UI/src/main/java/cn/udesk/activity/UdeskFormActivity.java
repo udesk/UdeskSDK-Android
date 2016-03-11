@@ -32,7 +32,7 @@ public class UdeskFormActivity extends Activity {
 		mwebView = (WebView) findViewById(R.id.udesk_form_webview);
 		String url = "http://" + UdeskSDKManager.getInstance().getDomain(this)
 				+ "/im_client/feedback.html"
-//				+ UdeskSDKManager.getInstance().getFormUrlPara(this)
+				+ UdeskSDKManager.getInstance().getFormUrlPara(this)
 				;
 		settingWebView(url);
 	}

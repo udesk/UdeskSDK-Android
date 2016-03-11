@@ -44,6 +44,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.udesk.PreferenceHelper;
 import cn.udesk.R;
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskUtil;
@@ -357,8 +358,9 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 		initView();
 		settingTitlebar();
 	}
-
+	
 	private void initView() {
+		formWindow = new UdeskConfirmPopWindow(this);
 		recordView = (ImageView) findViewById(R.id.udesk_bottom_record);
 		keyboardView = (ImageView) findViewById(R.id.udesk_bottom_keyboard);
 		mInputEditView = (EditText) findViewById(R.id.udesk_bottom_input);
@@ -821,7 +823,6 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
 	private void confirmToForm() {
 		try {
-			formWindow = new UdeskConfirmPopWindow(this);
 
 			String positiveLabel = this.getString(R.string.udesk_ok);
 
@@ -833,6 +834,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 			if(UdeskChatActivity.this.isFinishing()){
 				return;
 			}
+			if(!formWindow.isShowing()){
 			formWindow.show(this, this.getWindow().getDecorView(),
 					positiveLabel, negativeLabel, title,
 					new OnPopConfirmClick() {
@@ -845,6 +847,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 						}
 
 					});
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1167,6 +1170,8 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 	@Override
 	protected void onDestroy() {
 		unRegister();
+		PreferenceHelper.write(UdeskChatActivity.this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+				UdeskConst.SharePreParams.Udesk_userid, "");
 		UdeskHttpFacade.getInstance().cancel();
 		UdeskMessageManager.getInstance().cancelXmppConnect();
 		super.onDestroy();

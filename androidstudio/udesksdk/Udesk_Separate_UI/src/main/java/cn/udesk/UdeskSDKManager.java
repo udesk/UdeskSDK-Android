@@ -76,7 +76,15 @@ public class UdeskSDKManager {
 	}
 	
 	
-
+  public void clean(){
+	  this.userId = null;
+	  this.transfer = null;
+	  this.h5Url = null;
+	  this.sdkToken = null;
+	  this.userinfo = null;
+	  this.textField = null;
+	  this. roplist = null;
+  }
 
 	public Map<String, String> getUserinfo() {
 		return userinfo;
@@ -334,7 +342,22 @@ public class UdeskSDKManager {
 					if(key.equals("sdk_token")){
 						continue;
 					}
-					builder.append("&").append(key).append("=").append(userinfo.get(key));
+					if(key.equals(UdeskCoreConst.UdeskUserInfo.NICK_NAME)){
+						builder.append("&c_name=").append(userinfo.get(key));
+					}else if(key.equals(UdeskCoreConst.UdeskUserInfo.CELLPHONE)){
+						builder.append("&c_phone=").append(userinfo.get(key));
+					}else if(key.equals(UdeskCoreConst.UdeskUserInfo.EMAIL)){
+						builder.append("&c_email=").append(userinfo.get(key));
+					}else if(key.equals(UdeskCoreConst.UdeskUserInfo.DESCRIPTION)){
+						builder.append("&c_desc=").append(userinfo.get(key));
+					}else if(key.equals(UdeskCoreConst.UdeskUserInfo.QQ)){
+						builder.append("&c_qq =").append(userinfo.get(key));
+					}else if (key.equals(UdeskCoreConst.UdeskUserInfo.WEIXIN_ID)){
+						builder.append("&c_wx =").append(userinfo.get(key));
+					}else if (key.equals(UdeskCoreConst.UdeskUserInfo.WEIBO_NAME)){
+						builder.append("&c_wb =").append(userinfo.get(key));
+					}
+
 				}
 			}
 		}
@@ -346,7 +369,6 @@ public class UdeskSDKManager {
 				}
 			}
 		}
-
 		return builder.toString();
 	}
 	

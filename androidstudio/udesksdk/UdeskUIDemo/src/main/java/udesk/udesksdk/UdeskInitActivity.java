@@ -94,6 +94,7 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
+		UdeskSDKManager.getInstance().clean();
 		UdeskDBManager.getInstance().release();
 		UdeskDBManager.getInstance().init(this, mSdktoken.getText().toString());
 		UdeskSDKManager.getInstance().setUserInfo(

@@ -9,7 +9,6 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/Sdklibrary" />
             <option value="$PROJECT_DIR$/UdeskUIDemo" />
             <option value="$PROJECT_DIR$/Udesk_Separate_UI" />
           </set>

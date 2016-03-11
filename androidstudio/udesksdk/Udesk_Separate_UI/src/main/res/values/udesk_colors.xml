@@ -64,9 +64,10 @@
     
     <color name="udesk_color_text_light">#efeff3</color>
     <color name="udesk_color_text_gray">#dadada</color>
-       
-    
-    
+    <color name="udesk_pw_text_color">#808080</color>
+
+    <!-- 默认白色背景 --><color name="udesk_color_bg_white">#FFFFFF</color>
+
        
        
 </resources>

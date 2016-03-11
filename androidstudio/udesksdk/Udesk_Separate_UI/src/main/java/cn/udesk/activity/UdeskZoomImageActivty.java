@@ -2,12 +2,17 @@ package cn.udesk.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
+
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,7 +37,14 @@ public class UdeskZoomImageActivty extends Activity implements
 		zoomImageView = (UdeskZoomImageView) findViewById(R.id.udesk_zoom_imageview);
 		Bundle bundle = getIntent().getExtras();
 		uri = (android.net.Uri) bundle.getParcelable("image_path");
-		zoomImageView.setImageURI(uri);
+//		zoomImageView.setImageURI(uri);
+		DisplayImageOptions options = new DisplayImageOptions.Builder()
+				.cacheInMemory(true)
+				.cacheOnDisk(true)
+				.bitmapConfig(Bitmap.Config.RGB_565)
+				.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+				.build();
+		ImageLoader.getInstance().displayImage( "file:///"+ uri.getPath(), zoomImageView, options);
 		saveIdBtn = findViewById(R.id.udesk_zoom_save);
 		saveIdBtn.setOnClickListener(this);
 	}
