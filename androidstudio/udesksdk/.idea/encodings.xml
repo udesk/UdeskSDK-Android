@@ -3,6 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/UdeskUIDemo/libs/Udesk_Separate_UI-release.aar" charset="GBK" />
     <file url="file://$PROJECT_DIR$/Udesk_Separate_UI/libs/udesk_sdk_1.1.jar" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Udesk_Separate_UI/libs/udesk_sdk_3.0.jar" charset="GBK" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

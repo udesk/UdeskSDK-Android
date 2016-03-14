@@ -90,8 +90,8 @@
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="qiniu-android-sdk-7.0.1" level="project" />
+    <orderEntry type="library" exported="" name="udesk_sdk_3.0" level="project" />
     <orderEntry type="library" exported="" name="android-support-v4" level="project" />
-    <orderEntry type="library" exported="" name="udesk_sdk_1.1" level="project" />
     <orderEntry type="library" exported="" name="asmack-android-8-4.0.6" level="project" />
     <orderEntry type="library" exported="" name="android-async-http-1.4.6" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.4" level="project" />

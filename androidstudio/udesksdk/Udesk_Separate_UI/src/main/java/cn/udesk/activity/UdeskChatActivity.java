@@ -358,7 +358,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 		initView();
 		settingTitlebar();
 	}
-	
+
 	private void initView() {
 		formWindow = new UdeskConfirmPopWindow(this);
 		recordView = (ImageView) findViewById(R.id.udesk_bottom_record);
