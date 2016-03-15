@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -283,7 +284,11 @@ public class UdeskSDKManager {
 		UdeskConst.SharePreParams.Udesk_Sharepre_Name = sdkToken;
 		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
 				UdeskConst.SharePreParams.Udesk_SdkToken, sdkToken);
+		if(info == null){
+			info = new HashMap<String, String>();
+		}
 		this.userinfo = info;
+		userinfo.put(UdeskCoreConst.UdeskUserInfo.USER_SDK_TOKEN, sdkToken);
 		this.textField = textField;
 		this.roplist = roplist;
 		UdeskHttpFacade.getInstance().setUserInfo(getDomain(context), getSecretKey(context), sdkToken, info, textField, roplist, new UdeskCallBack() {

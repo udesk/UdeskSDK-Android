@@ -39,14 +39,12 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 			mDescriptionn;
 	private Button mCommitInfoBtn;
 	private Button mCommitSelfBtn;
-//	private String UDESK_DOMAIN = "wkudesk.udesk.cn";//
-//	private String UDESK_SECRETKEY = "500bd56126a2940f1a13a830e0ec3faf";//
-//	private String UDESK_DOMAIN = "reocar.udeskmonkey.com";//
-//	private String UDESK_SECRETKEY = "3a4dc5e0cd39995448018c553048fdd4";//
+	private String UDESK_DOMAIN = "reocar.udeskmonkey.com";
+	private String UDESK_SECRETKEY = "3a4dc5e0cd39995448018c553048fdd4";
 //	private String UDESK_DOMAIN = "reocar.tiyanudesk.com";//
 //	private String UDESK_SECRETKEY = "2f04e99ff44ec68165c585a209efdd6d";//
-	private String UDESK_DOMAIN = "jiejunping.udesk.cn";//
-	private String UDESK_SECRETKEY = "6a1bc68d13600e80ed7b80958f0adb65";//
+//	private String UDESK_DOMAIN = "jiejunping.udesk.cn";//
+//	private String UDESK_SECRETKEY = "6a1bc68d13600e80ed7b80958f0adb65";//
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
