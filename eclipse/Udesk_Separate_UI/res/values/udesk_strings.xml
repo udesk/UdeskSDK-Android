@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string name="udesk_titlebar_back">返回</string>
+    
+    
+
+    <string name="udesk_navi_close">关闭</string>
+    <string name="udesk_navi_open_im">联系我们</string>
+    <string name="udesk_navi_im_title_online">会话</string>
+    <string name="udesk_navi_im_title_offline">离线消息</string>
+    <string name="udesk_navi_helper_title_main">帮助</string>
+    <string name="udesk_navi_helper_title_search">搜索</string>
+    <string name="udesk_navi_helper_title_content">问题</string>
+    <string name="udesk_take_camera">拍照</string>
+    <string name="udesk_take_photo">图片</string>
+    <string name="udesk_send_message">发送</string>
+    <string name="udesk_send_message_empty">不能发送空消息.</string>
+    <string name="udesk_domain_is_null">UDesk注册的域名不能为空！</string>
+    <string name="udesk_not_find_customer_service">没有找到可用的客服！</string>
+    <string name="udesk_download_image">正在下载图片&#8230;</string>
+    <string name="udesk_download_image_fail">图片下载失败！</string>
+    <string name="udesk_upload_image_forbidden">暂时无法上传，下载图片！</string>
+    <string name="udesk_upload_image_error">图片上传失败，请重试！</string>
+    <string name="udesk_upload_image_process">正在处理图片&#8230;</string>
+    <string name="udesk_upload_image">正在上传图片&#8230;</string>
+    <string name="udesk_get_more_history">拉取历史记录</string>
+    <string name="udesk_release_to_get_more">松开拉取记录</string>
+    <string name="udesk_loading_more">正在拉取记录</string>
+    <string name="udesk_no_more_history">本地已经没有历史记录了</string>
+    <string name="udesk_helper_loadding">正在获取，请稍候&#8230;</string>
+    <string name="udesk_navi_helper_input_hint">描述你的问题</string>
+    <string name="udesk_helper_get_article_failed">获取问题失败.</string>
+    <string name="udesk_helper_get_list_failed">获取问题列表失败.</string>
+    <string name="udesk_helper_search_empty">没有找到相关的知识点.</string>
+    <string name="udesk_error_network_parse">数据解析异常</string>
+    <string name="udesk_rate_dialog_title">给应用评分</string>
+    <string name="udesk_rate_dialog_message">如果你喜欢我们的应用，请花点时间给我们点赞</string>
+    <string name="udesk_rate_grade">评分</string>
+    <string name="udesk_rate_feedback">发送反馈</string>
+    <string name="udesk_error_no_store">你的手机上没有安装App市场类软件</string>
+    <string name="udesk_save">保存</string>
+    <string name="udesk_copy">复制</string>
+    <string name="udesk_fail_save_image">图片保存失败</string>
+    <string name="udesk_success_save_image">成功保存</string>
+    <string name="udesk_error_network">没有可用网络</string>
+    <string name="udesk_cancel">取消</string>
+    <string name="udesk_ok">留言</string>
+    <string name="udesk_retry">重发</string>
+    <string name="udesk_msg_retry">重发该消息</string>
+    <string name="udesk_msg_offline_to_form">当前客服不在线，您可以选择提交表单来通知客服</string>
+    <string name="udesk_msg_busyline_to_form">当前客服正繁忙，如需留言请点击按钮进入表单留言</string>
+    <string name="udesk_agent_offline_no_send">当前没有可用客服，不能发送消息</string>
+    <string name="udesk_label_search_fail">无法找到你搜索的内容么?</string>
+    <string name="udesk_label_no_sd">SD卡不可用，请检查</string>
+
+    <!-- 录音相关展示文字 -->
+    <string name="udesk_label_hint_recording">向上滑动 取消发送</string>
+    <string name="udesk_label_hint_cancel">松开手指 立即取消</string>
+    <string name="udesk_label_hint_too_short">说话时间太短</string>
+    <string name="udesk_im_record_error">录音出错，请检查是否开启了应用的录音权限</string>
+    <string name="udesk_upload_record">正在上传录音&#8230;</string>
+    <string name="udesk_upload_record_error">录音上传失败，请重试！</string>
+    <string name="udesk_upload_record_process">正在处理录音文件&#8230;</string>
+    <string name="udesk_upload_file">上传文件</string>
+
+    <!-- IM界面时间显示的格式，我们会用java.text.SimpleDateFormat配合使用 -->
+    <string name="udesk_im_time_format">"MM月dd日 EE HH时mm分"</string>
+
+    <!-- IM界面，时间格式的展示文字 -->
+    <string name="udesk_im_time_format_am">"上午"</string>
+    <string name="udesk_im_time_format_pm">"下午"</string>
+    <string name="udesk_im_time_format_yday">"昨天"</string>
+    <string name="udesk_im_time_format_dby">"前天"</string>
+
+    <!-- IM界面，客服状态的文字 -->
+    <string name="udesk_label_customer_online">"客服%1$s在线"</string>
+    <string name="udesk_label_customer_offline">客服不在线，请留言</string>
+
+    <!-- 商品咨询界面，链接按钮的展示文字 -->
+    <string name="udesk_label_send_commondity_link">"发送链接"</string>
+
+    <!-- IM界面，录音功能的展示文字 -->
+    <string name="udesk_label_im_long_voice">长按录音</string>
+
+    <!-- IM界面，日期格式的字符串。 如修改，请注意格式正确与否 -->
+    <string name="udesk_im_time_format_date">"yyyy/MM/dd"</string>
+    
+    <string name="udesk_transfer_persion">转人工</string>
+    <string name="udesk_robot_title">智能机器人对话</string>
+    <string name="udesk_has_not_open_robot">当前APP还没有开启智能机器人客服功能</string>
+    <string name="udesk_has_wrong_net">网络出错了,请检查网络设置!</string>
+    <string name="udesk_recordllegal">录音出错，请检查是否开启了应用的录音权限</string>
+     <string name="udesk_cancle_im_long_voice">松开 结束</string>
+     <string name="udesk_commit_form">提交请求</string>
+
+</resources>

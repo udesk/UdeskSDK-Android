@@ -1,0 +1,118 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="@color/udesk_white"
+    >
+
+    <EditText
+        android:layout_margin="@dimen/udesk_defult_margin5"
+        android:id="@+id/udesk_sdktoken"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/udesktitlebar"
+        android:gravity="center_vertical"
+        android:hint="@string/udesk_sdktoken"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/black" />
+
+    <EditText
+        android:layout_margin="@dimen/udesk_defult_margin5"
+        android:id="@+id/udesk_email"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/udesk_sdktoken"
+        android:gravity="center_vertical"
+        android:hint="@string/udesk_email"
+        android:inputType="textEmailAddress"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/black" />
+
+    <EditText
+        android:layout_margin="@dimen/udesk_defult_margin5"
+        android:id="@+id/udesk_nickname"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/udesk_email"
+        android:gravity="center_vertical"
+        android:hint="@string/udesk_nickname"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/black" />
+
+    <EditText
+        android:layout_margin="@dimen/udesk_defult_margin5"
+        android:id="@+id/udesk_cellphone"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/udesk_nickname"
+        android:gravity="center_vertical"
+        android:hint="@string/udesk_cellphone"
+        android:inputType="phone"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/black" />
+
+    <EditText
+        android:layout_margin="@dimen/udesk_defult_margin5"
+        android:id="@+id/udesk_weixin"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/udesk_cellphone"
+        android:gravity="center_vertical"
+        android:hint="@string/udesk_weixin_id"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/black" />
+
+    <EditText
+        android:layout_margin="@dimen/udesk_defult_margin5"
+        android:id="@+id/udesk_weibo_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/udesk_weixin"
+        android:gravity="center_vertical"
+        android:hint="@string/udesk_weibo_name"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/black" />
+
+    <EditText
+        android:layout_margin="@dimen/udesk_defult_margin5"
+        android:id="@+id/udesk_descriptionn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/udesk_weibo_name"
+        android:gravity="center_vertical"
+        android:hint="@string/udesk_descriptionn"
+        android:singleLine="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/black" />
+
+    <Button
+        android:layout_margin="@dimen/udesk_defult_margin15"
+        android:layout_below="@+id/udesk_descriptionn"
+        android:id="@+id/udesk_commituserinfo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/udesk_btn_bg_selector"
+        android:text="@string/udesk_setuserinfo"
+        android:textColor="@color/udesk_white"
+        android:padding="10dip"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+    <Button
+        android:layout_margin="@dimen/udesk_defult_margin15"
+        android:layout_below="@+id/udesk_commituserinfo"
+        android:id="@+id/udesk_commit_selffield"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/udesk_btn_bg_selector"
+        android:text="@string/udesk_commit_selffield"
+        android:textColor="@color/udesk_white"
+        android:padding="10dip"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</RelativeLayout>

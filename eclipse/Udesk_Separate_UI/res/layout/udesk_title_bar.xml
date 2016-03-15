@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_root"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/udesk_titlebar_height"
+    android:background="@color/udesk_titlebar_bg" >
+
+    <TextView
+        android:id="@+id/udesk_titlebar_right"
+        style="@style/udesk_titlebar_button_text_style"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:layout_marginRight="@dimen/udesk_titlebar_right_margin"
+           android:visibility="gone"
+         />
+
+    <LinearLayout
+        android:id="@+id/udesk_titlebar_center"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/udesk_titlebar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="@color/udesk_color_titlebar_text_center"
+            android:textSize="@dimen/udesk_titlebar_title_size"
+             />
+
+        <TextView
+            android:id="@+id/udesk_agent_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/udesk_titlebar_padding"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="@color/udesk_color_titlebar_text_center"
+            android:textSize="@dimen/udesk_titlebar_agent_state_size"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/udesk_titlebar_left"
+        style="@style/udesk_titlebar_button_text_style"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/udesk_titlebar_left_margin"
+        android:drawableLeft="@drawable/udesk_titlebar_back"
+        android:text="@string/udesk_titlebar_back" 
+        android:visibility="gone"
+        />
+
+</RelativeLayout>

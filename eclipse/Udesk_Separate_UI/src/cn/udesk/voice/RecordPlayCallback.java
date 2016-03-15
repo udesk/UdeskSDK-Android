@@ -1,0 +1,1 @@
+package cn.udesk.voice;import udesk.core.model.MessageInfo;public interface RecordPlayCallback {    public void onPlayComplete(MessageInfo message);    public void onPlayStart(MessageInfo message);    public void onPlayPause(MessageInfo message);    public void onPlayEnd(MessageInfo message);        public void endAnimation();}

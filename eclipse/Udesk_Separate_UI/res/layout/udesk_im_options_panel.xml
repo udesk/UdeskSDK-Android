@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_bottom_options"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/udesk_10"
+    android:paddingTop="@dimen/udesk_10"
+    android:visibility="gone"
+     >
+
+    <LinearLayout 
+        android:id="@+id/udesk_bottom_option_camera_container"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        >
+    <TextView
+        android:id="@+id/udesk_bottom_option_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_marginTop="@dimen/udesk_8"
+        android:drawablePadding="@dimen/udesk_8"
+        android:drawableTop="@drawable/udesk_ic_option_camera"
+        android:gravity="center"
+        android:text="@string/udesk_take_camera"
+        android:textColor="#808080"
+        android:textSize="@dimen/udesk_sp14" />
+    </LinearLayout>
+ <LinearLayout 
+        android:id="@+id/udesk_bottom_option_photo_container"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        >
+    <TextView
+        android:id="@+id/udesk_bottom_option_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_marginTop="@dimen/udesk_8"
+        android:drawablePadding="@dimen/udesk_8"
+        android:drawableTop="@drawable/udesk_ic_option_photo"
+        android:gravity="center"
+        android:text="@string/udesk_take_photo"
+        android:textColor="#808080"
+        android:textSize="@dimen/udesk_sp14" />
+    </LinearLayout>
+
+</LinearLayout>

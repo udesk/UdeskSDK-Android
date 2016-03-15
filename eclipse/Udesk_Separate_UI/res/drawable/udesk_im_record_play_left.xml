@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false"  >
+    
+    <!-- 第一个可以使用默认的背景图片. 您也可以自行添加图片 -->
+    <item android:drawable="@drawable/udesk_im_record_left_default" android:duration="150"></item>
+    <item android:drawable="@drawable/udesk_im_record_left_play1" android:duration="150"></item>
+    <item android:drawable="@drawable/udesk_im_record_left_play2" android:duration="150"></item>
+
+</animation-list>
