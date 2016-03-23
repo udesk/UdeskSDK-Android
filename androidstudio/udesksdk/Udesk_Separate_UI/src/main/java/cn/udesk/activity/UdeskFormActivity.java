@@ -13,6 +13,7 @@ import android.webkit.WebViewClient;
 
 import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
+import cn.udesk.UdeskUtil;
 import cn.udesk.widget.UdeskTitleBar;
 
 public class UdeskFormActivity extends Activity {
@@ -32,8 +33,7 @@ public class UdeskFormActivity extends Activity {
 		mwebView = (WebView) findViewById(R.id.udesk_form_webview);
 		String url = "http://" + UdeskSDKManager.getInstance().getDomain(this)
 				+ "/im_client/feedback.html"
-				+ UdeskSDKManager.getInstance().getFormUrlPara(this)
-				;
+				+ UdeskUtil.getFormUrlPara(this);
 		settingWebView(url);
 	}
 

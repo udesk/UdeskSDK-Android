@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -16,12 +15,11 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
-import cn.udesk.db.UdeskDBManager;
-import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskCallBack;
-import udesk.core.UdeskCoreConst;
 import udesk.core.UdeskHttpFacade;
 
 /**
@@ -31,51 +29,25 @@ import udesk.core.UdeskHttpFacade;
  * 返回创建分配终端用户账号ID的值,每个唯一的sdktoken值对应一个终端用户账号 ,
  */
 public class UdeskInitActivity extends Activity implements OnClickListener {
-
-	private UdeskTitleBar mTitlebar;
-
-	private EditText mSdktoken, mEmail, mNickname, mCellphone, mWeixin, mWeibo,
-			mDescriptionn;
-	private Button mCommitInfoBtn;
-	private Button mCommitSelfBtn;
-//	private String UDESK_DOMAIN = "rd-dota.udesk.cn";//
-//	private String UDESK_SECRETKEY = "cc36f043f1e3bf71a0f73a51f4ac3fb5";//
-	private String UDESK_DOMAIN = "reocar.udeskmonkey.com";//
-	private String UDESK_SECRETKEY = "3a4dc5e0cd39995448018c553048fdd4";//
-//	private String UDESK_DOMAIN = "reocar.tiyanudesk.com";//
-//	private String UDESK_SECRETKEY = "2f04e99ff44ec68165c585a209efdd6d";//
+	private EditText mSdktoken,  mNickname , mEmail;
+//	private String UDESK_DOMAIN = "reocar.udeskmonkey.com";//
+//	private String UDESK_SECRETKEY = "3a4dc5e0cd39995448018c553048fdd4";//
+	private String UDESK_DOMAIN = "rd-dota.udesk.cn";
+	private String UDESK_SECRETKEY = "cc36f043f1e3bf71a0f73a51f4ac3fb5";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.udesk_init_activity_view);
 		initView();
-		settingTitlebar();
-		UdeskSDKManager.getInstance().initApiKey(this,UDESK_DOMAIN, UDESK_SECRETKEY);
-		UdeskSDKManager.getInstance().initImageLoaderConfig(this);
+		UdeskSDKManager.getInstance().initApiKey(this, UDESK_DOMAIN, UDESK_SECRETKEY);
 	}
 
 	private void initView() {
-		mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
 		mSdktoken = (EditText) findViewById(R.id.udesk_sdktoken);
-		mEmail = (EditText) findViewById(R.id.udesk_email);
 		mNickname = (EditText) findViewById(R.id.udesk_nickname);
-		mCellphone = (EditText) findViewById(R.id.udesk_cellphone);
-		mWeixin = (EditText) findViewById(R.id.udesk_weixin);
-		mWeibo = (EditText) findViewById(R.id.udesk_weibo_name);
-		mDescriptionn = (EditText) findViewById(R.id.udesk_descriptionn);
-		mCommitInfoBtn = (Button) findViewById(R.id.udesk_commituserinfo);
-		mCommitInfoBtn.setOnClickListener(this);
-		mCommitSelfBtn = (Button) findViewById(R.id.udesk_commit_selffield);
-		mCommitSelfBtn.setOnClickListener(this);
-	}
-
-	/**
-	 * titlebar 的设置
-	 */
-	private void settingTitlebar() {
-		if (mTitlebar != null) {
-			mTitlebar.setTitleTextSequence(getString(R.string.udesk_uidemo));
-		}
+		mEmail = (EditText) findViewById(R.id.udesk_email);
+		findViewById(R.id.udesk_commituserinfo).setOnClickListener(this);
+		findViewById(R.id.udesk_commit_selffield).setOnClickListener(this);
 	}
 
 	@Override
@@ -85,7 +57,6 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 		} else if (v.getId() == R.id.udesk_commit_selffield) {
 			commitSelffield();
 		}
-
 	}
 
 	private void setUserInfo() {
@@ -94,11 +65,8 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 					Toast.LENGTH_SHORT).show();
 			return;
 		}
-		UdeskSDKManager.getInstance().clean();
-		UdeskDBManager.getInstance().release();
-		UdeskDBManager.getInstance().init(this, mSdktoken.getText().toString());
 		UdeskSDKManager.getInstance().setUserInfo(
-				this,mSdktoken.getText().toString(), getUserInfo());
+				this, mSdktoken.getText().toString(), getUserInfo());
 		toUseCaseActivity();
 
 	}
@@ -106,37 +74,19 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 	private Map<String, String> getUserInfo() {
 
 		Map<String, String> info = new HashMap<String, String>();
-		if (!TextUtils.isEmpty(mEmail.getText().toString())) {
-			info.put(UdeskCoreConst.UdeskUserInfo.EMAIL, mEmail.getText()
-					.toString());
-		}
-		if (!TextUtils.isEmpty(mNickname.getText().toString())) {
-			info.put(UdeskCoreConst.UdeskUserInfo.NICK_NAME, mNickname
-					.getText().toString());
-		}
-		if (!TextUtils.isEmpty(mCellphone.getText().toString())) {
-			info.put(UdeskCoreConst.UdeskUserInfo.CELLPHONE, mCellphone
-					.getText().toString());
-		}
-		if (!TextUtils.isEmpty(mWeixin.getText().toString())) {
-			info.put(UdeskCoreConst.UdeskUserInfo.WEIXIN_ID, mWeixin.getText()
-					.toString());
-		}
-		if (!TextUtils.isEmpty(mWeibo.getText().toString())) {
-			info.put(UdeskCoreConst.UdeskUserInfo.WEIBO_NAME, mWeibo.getText()
-					.toString());
-		}
-		if (!TextUtils.isEmpty(mDescriptionn.getText().toString())) {
-			info.put(UdeskCoreConst.UdeskUserInfo.DESCRIPTION, mDescriptionn
-					.getText().toString());
-		}
+		info.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, mSdktoken.getText().toString());
+		//以下注释的字段都是可选的字段， 有邮箱建议填写
+		info.put(UdeskConst.UdeskUserInfo.NICK_NAME, mNickname.getText().toString());
+		info.put(UdeskConst.UdeskUserInfo.EMAIL, mEmail.getText().toString());
+		info.put(UdeskConst.UdeskUserInfo.CELLPHONE, UUID.randomUUID().toString().substring(0,12));
+		info.put(UdeskConst.UdeskUserInfo.WEIXIN_ID, "这填写微信的ID号");
+		info.put(UdeskConst.UdeskUserInfo.WEIBO_NAME, "这是微博的账号");
+		info.put(UdeskConst.UdeskUserInfo.DESCRIPTION, "这填写的是描述信息");
 		return info;
 
 	}
 
 	private void commitSelffield() {
-		UdeskDBManager.getInstance().release();
-		UdeskDBManager.getInstance().init(this, mSdktoken.getText().toString());
 		final HashMap<String, String> extraInfoTextField = new HashMap<String, String>();
 		final HashMap<String, String> extraInfodRoplist = new HashMap<String, String>();
 		UdeskHttpFacade.getInstance().getUserFields(UDESK_DOMAIN,UDESK_SECRETKEY, new UdeskCallBack() {
@@ -174,9 +124,6 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 								Toast.LENGTH_SHORT).show();
 						return;
 					}
-					UdeskDBManager.getInstance().release();
-					UdeskDBManager.getInstance().init(UdeskInitActivity.this,
-							mSdktoken.getText().toString());
 					UdeskSDKManager.getInstance().setUserInfo(UdeskInitActivity.this,
 							mSdktoken.getText().toString(), getUserInfo(),
 							extraInfoTextField, extraInfodRoplist);
@@ -203,7 +150,7 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		UdeskDBManager.getInstance().release();
+
 	}
 
 }

@@ -1,5 +1,7 @@
 package cn.udesk.xmpp;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,32 +11,32 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 
-import udesk.core.UdeskCallBack;
-import udesk.core.UdeskCoreConst;
-import udesk.core.model.MessageInfo;
-import udesk.core.xmpp.OnMessageReceiveEvent;
-import udesk.core.xmpp.UdeskXmppManager;
-import android.util.Log;
-import cn.udesk.ChatMessageEvent;
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskUtil;
 import cn.udesk.db.UdeskDBManager;
+import udesk.core.UdeskCallBack;
+import udesk.core.UdeskCoreConst;
+import udesk.core.event.InvokeEventContainer;
+import udesk.core.event.ReflectInvokeMethod;
+import udesk.core.model.MessageInfo;
+import udesk.core.xmpp.UdeskXmppManager;
 
 
-public class UdeskMessageManager implements OnMessageReceiveEvent{
+public class UdeskMessageManager {
 	
 	private volatile static UdeskMessageManager instance;
 	private UdeskXmppManager mUdeskXmppManager;
-	private ChatMessageEvent msgReceive;
 	private ExecutorService messageExecutor;
+
+	public ReflectInvokeMethod  eventui_OnMessageReceived = new ReflectInvokeMethod(new Class<?>[]{String.class});
+	public ReflectInvokeMethod  eventui_OnNewMessage = new ReflectInvokeMethod(new Class<?>[]{MessageInfo.class});
+	public ReflectInvokeMethod  eventui_OnNewPresence = new ReflectInvokeMethod(new Class<?>[]{String.class ,Integer.class});
+	public ReflectInvokeMethod  eventui_OnReqsurveyMsg = new ReflectInvokeMethod(new Class<?>[]{Boolean.class });
 	
 	private UdeskMessageManager() {
-		mUdeskXmppManager = new UdeskXmppManager(this);
+		bindEvent();
+		mUdeskXmppManager = new UdeskXmppManager();
 		ensureMessageExecutor();
-	}
-	
-	public void setChatMessageEvent(ChatMessageEvent event){
-		this.msgReceive = event;
 	}
 
 	public static UdeskMessageManager getInstance() {
@@ -78,32 +80,32 @@ public class UdeskMessageManager implements OnMessageReceiveEvent{
 	
 	public void loginXmpp(){
 		mUdeskXmppManager.cancel(new UdeskCallBack() {
-			
+
 			@Override
 			public void onSuccess(String message) {
-				
+
 				mUdeskXmppManager.startLoginXmpp(new UdeskCallBack() {
-					
+
 					@Override
 					public void onSuccess(String message) {
-						
-						if(UdeskCoreConst.isDebug){
+
+						if (UdeskCoreConst.isDebug) {
 							Log.i("UdeskMessageManager ", message);
 						}
 					}
-					
+
 					@Override
 					public void onFail(String message) {
-						if(UdeskCoreConst.isDebug && message != null){
+						if (UdeskCoreConst.isDebug && message != null) {
 							Log.i("UdeskMessageManager ", message);
 						}
 					}
 				});
 			}
-			
+
 			@Override
 			public void onFail(String message) {
-				
+
 			}
 		});
 	
@@ -128,7 +130,21 @@ public class UdeskMessageManager implements OnMessageReceiveEvent{
 		mUdeskXmppManager.sendMessage(type, text, msgId, to, duration);
 	}
 
-	@Override
+	private void bindEvent(){
+		InvokeEventContainer.getInstance().event_OnNewMessage.bind(this,"onNewMessage");
+		InvokeEventContainer.getInstance().event_OnMessageReceived.bind(this,"onMessageReceived");
+		InvokeEventContainer.getInstance().event_OnNewPresence.bind(this,"onNewPresence");
+		InvokeEventContainer.getInstance().event_OnReqsurveyMsg.bind(this, "onReqsurveyMsg");
+	}
+
+
+	public  void clean(){
+		InvokeEventContainer.getInstance().event_OnNewMessage.unBind(this);
+		InvokeEventContainer.getInstance().event_OnMessageReceived.unBind(this);
+		InvokeEventContainer.getInstance().event_OnNewPresence.unBind(this);
+		InvokeEventContainer.getInstance().event_OnReqsurveyMsg.unBind(this);
+	}
+
 	public void onMessageReceived(final String msgId) {
 		
 		ensureMessageExecutor();
@@ -137,16 +153,14 @@ public class UdeskMessageManager implements OnMessageReceiveEvent{
 			public void run() {
 				UdeskDBManager.getInstance().updateMsgSendFlag(msgId,UdeskConst.SendFlag.RESULT_SUCCESS);
 				UdeskDBManager.getInstance().deleteSendingMsg(msgId);
-				if(msgReceive != null){
-					msgReceive.onMessageReceived(msgId);
-				}
+				eventui_OnMessageReceived.invoke(msgId);
 			}
 		});
 	}
 
-	@Override
+
 	public void onNewMessage(final String type, final String msgId, final String content,
-			final long duration) {
+			final Long duration) {
 		final MessageInfo msginfo = buildReceiveMessage(type, msgId, content, duration);
 		if(UdeskDBManager.getInstance().hasReceviedMsg(msgId)){
 			return;
@@ -155,17 +169,15 @@ public class UdeskMessageManager implements OnMessageReceiveEvent{
 		if(!type.equals(UdeskConst.ChatMsgTypeString.TYPE_AUDIO)){
 			if(!type.equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT)){
 				messageExecutor.submit(new Runnable() {
-					
+
 					@Override
 					public void run() {
-						
+
 						UdeskDBManager.getInstance().addMessageInfo(msginfo);
 					}
 				});
 			}
-			if(msgReceive != null){
-				msgReceive.onNewMessage(msginfo);
-			}
+			eventui_OnNewMessage.invoke(msginfo);
 		}else{
 			messageExecutor.submit(new DownAudioTask(content,
 					msginfo));
@@ -244,28 +256,19 @@ public class UdeskMessageManager implements OnMessageReceiveEvent{
 					e.printStackTrace();
 				}
 				UdeskDBManager.getInstance().addMessageInfo(info);
-				if(msgReceive != null){
-					msgReceive.onNewMessage(info);
-				}
+				eventui_OnNewMessage.invoke(info);
 			}
 		}
 	}
 
 
-	@Override
-	public void onNewPresence(String jid, int onlineflag) {
-		if(msgReceive != null){
-			msgReceive.onPrenseMessage(jid, onlineflag);
-		}
+	public void onNewPresence(String jid, Integer onlineflag) {
+		eventui_OnNewPresence.invoke(jid, onlineflag);
 		
 	}
 
-	@Override
-	public void onReqsurveyMsg(boolean isSurvey) {
-		if(msgReceive != null){
-			msgReceive.onReqsurveyMsg(isSurvey);
-		}
-		
+	public void onReqsurveyMsg(Boolean isSurvey) {
+		eventui_OnReqsurveyMsg.invoke(isSurvey);
 	}
 
 

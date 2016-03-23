@@ -91,7 +91,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
-            android:text="@string/udesk_label_search_fail" />
+            android:text="@string/udesk_label_search_fail"
+            android:textColor="@color/udesk_color_text_gray"
+            android:textSize="@dimen/udesk_sp14"
+            />
 
         <TextView
             android:id="@+id/udesk_navi_to_im"
@@ -102,7 +105,8 @@
             android:background="@drawable/udesk_helper_shape_bg"
             android:gravity="center_horizontal"
             android:text="@string/udesk_navi_open_im"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textColor="@color/udesk_color_text_gray"
+            android:textSize="@dimen/udesk_sp16" />
     </LinearLayout>
 
        <cn.udesk.widget.UdeskLoadingView

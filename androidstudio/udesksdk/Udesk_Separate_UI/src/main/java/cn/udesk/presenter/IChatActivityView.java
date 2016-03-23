@@ -1,12 +1,12 @@
 package cn.udesk.presenter;
 
-import java.util.List;
-
-import cn.udesk.adapter.UDEmojiAdapter;
-import udesk.core.model.AgentInfo;
-import udesk.core.model.MessageInfo;
 import android.content.Context;
 import android.os.Handler;
+
+import java.util.List;
+
+import udesk.core.model.AgentInfo;
+import udesk.core.model.MessageInfo;
 
 public interface IChatActivityView {
 	
@@ -37,5 +37,8 @@ public interface IChatActivityView {
 	void setRecordBackgroundNullTouchListener();
 	
 	void dealRedirectAgentInfo(AgentInfo  agentInfo);
+
+	String getGroupId();
+	String getAgentId();
 
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,7 +14,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -36,7 +38,8 @@ public class MessageAdatper extends BaseAdapter{
 			R.layout.udesk_chat_msg_item_audiot_r,
 			R.layout.udesk_chat_msg_item_imgt_l,
 			R.layout.udesk_chat_msg_item_imgt_r,
-			R.layout.udesk_chat_msg_item_redirect
+			R.layout.udesk_chat_msg_item_redirect,
+			R.layout.udesk_chat_rich_item_txt
 	};
 	
 	private static final int ILLEGAL = -1;
@@ -47,6 +50,7 @@ public class MessageAdatper extends BaseAdapter{
 	private static final int MSG_IMG_L = 4;
 	private static final int MSG_IMG_R = 5;
 	private static final int MSG_REDIRECT = 6;
+	private static final int RICH_TEXT = 7;
 	
 	private static final long SPACE_TIME = 3 * 60 * 1000;
 	
@@ -93,12 +97,13 @@ public class MessageAdatper extends BaseAdapter{
 				return MSG_IMG_R ; 
 			}
 		case UdeskConst.ChatMsgTypeInt.TYPE_TEXT:
-
 			if (message.getDirection() == UdeskConst.ChatMsgDirection.Recv) {
 				return MSG_TXT_L ;
 			}else{
 				return MSG_TXT_R ;
 			}
+		case UdeskConst.ChatMsgTypeInt.TYPE_RICH:
+				return RICH_TEXT ;
 		case UdeskConst.ChatMsgTypeInt.TYPE_AUDIO:
 			if (message.getDirection() == UdeskConst.ChatMsgDirection.Recv) {
 				return MSG_AUDIO_L ; 
@@ -192,13 +197,22 @@ public class MessageAdatper extends BaseAdapter{
 
 			switch (itemType) {
 			case MSG_TXT_L:
-			case MSG_TXT_R: {
-				TxtViewHolder holder = new TxtViewHolder();
-				initItemNormalView(convertView, holder, itemType, position);
-				holder.tvMsg = (TextView) convertView.findViewById(R.id.udesk_tv_msg);
-				convertView.setTag(holder);
-				break;
-			}
+			case MSG_TXT_R:
+				{
+					TxtViewHolder holder = new TxtViewHolder();
+					initItemNormalView(convertView, holder, itemType, position);
+					holder.tvMsg = (TextView) convertView.findViewById(R.id.udesk_tv_msg);
+					convertView.setTag(holder);
+					break;
+				}
+			case RICH_TEXT:
+				{
+					RichTextViewHolder holder = new RichTextViewHolder();
+					initItemNormalView(convertView, holder, itemType, position);
+					holder.rich_tvmsg = (TextView)convertView.findViewById(R.id.udesk_tv_rich_msg);
+					convertView.setTag(holder);
+					break;
+				}
 			case MSG_AUDIO_L:
 			case MSG_AUDIO_R: {
 				AudioViewHolder holder = new AudioViewHolder();
@@ -254,15 +268,14 @@ public class MessageAdatper extends BaseAdapter{
 			case MSG_TXT_R:
 			case MSG_AUDIO_R:
 			case MSG_IMG_R:
-				//UDESK系统默认的客户头像，用户可根据自己的需求自行设置。
-				ivHeader.setImageResource(R.drawable.udesk_im_default_user_avatar);
 				this.isLeft = false;
+				ivHeader.setImageResource(R.drawable.udesk_im_default_user_avatar);
 				break;
 			case MSG_TXT_L:
 			case MSG_AUDIO_L:
+			case RICH_TEXT:
 			case MSG_IMG_L:
 				this.isLeft = true;
-				//UDESK系统默认的客户头像，用户可根据自己的需求自行设置。
 				ivHeader.setImageResource(R.drawable.udesk_im_default_agent_avatar);
 				break;
 			default:
@@ -300,7 +313,19 @@ public class MessageAdatper extends BaseAdapter{
 		abstract void bind(Context context);
 		
 	}
-	
+
+	class RichTextViewHolder extends BaseViewHolder{
+
+		public TextView rich_tvmsg;
+		@Override
+		void bind(Context context) {
+			CharSequence charSequence = Html.fromHtml(message.getMsgContent().substring(3,message.getMsgContent().length()).replaceAll("<p>","<br>").replaceAll("</p>", "</br>"));
+			rich_tvmsg.setText(charSequence);
+			rich_tvmsg.setMovementMethod(LinkMovementMethod.getInstance());
+		}
+
+
+	}
 	class TxtViewHolder extends BaseViewHolder {
 		public TextView tvMsg;
 		@Override

@@ -14,7 +14,7 @@ import android.widget.TextView;
 import cn.udesk.R;
 
 
-public class ExpandableLayout extends LinearLayout {
+public class UdeskExpandableLayout extends LinearLayout {
 
 	private Context mContext;
 	private RelativeLayout mContentView;
@@ -26,13 +26,13 @@ public class ExpandableLayout extends LinearLayout {
 	private TextView txt;
 	
 	
-	public ExpandableLayout(Context context) {
+	public UdeskExpandableLayout(Context context) {
 		super(context);
 		this.mContext = context;
 		init(mContext);
 	}
 
-	public ExpandableLayout(Context context, AttributeSet attrs) {
+	public UdeskExpandableLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		this.mContext = context;
 		init(mContext);
@@ -40,7 +40,7 @@ public class ExpandableLayout extends LinearLayout {
 
 	private void init(Context mContext) {
 		mInflater = LayoutInflater.from(mContext);
-		mExpandView= mInflater.inflate(R.layout.expandlayout_xml, this);
+		mExpandView= mInflater.inflate(R.layout.udesk_expandlayout_xml, this);
 		this.mContentView = (RelativeLayout) mExpandView.findViewById(R.id.expand_value);
 		mContentView.setVisibility(View.GONE);
 		txt = (TextView) mExpandView.findViewById(R.id.text_context);

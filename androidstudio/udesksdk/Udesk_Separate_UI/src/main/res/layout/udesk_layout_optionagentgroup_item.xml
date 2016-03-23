@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/udesk_imgroup_bg_selector"
+    android:textColor="#ff606060"
+    android:textSize="16dp"
+    android:gravity="center_vertical"
+    android:paddingBottom="@dimen/udesk_5"
+    android:paddingRight="@dimen/udesk_5"
+    android:paddingTop="@dimen/udesk_5"
+    android:paddingLeft="@dimen/udesk_15"
+    android:drawablePadding="5dp"
+    android:singleLine="false"
+    android:drawableRight="@drawable/udesk_ic_arrow"
+    android:minHeight="50dp"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />

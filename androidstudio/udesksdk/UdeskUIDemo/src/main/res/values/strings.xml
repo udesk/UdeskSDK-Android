@@ -5,9 +5,9 @@
     <string name="udesk_uidemo">UdeskSDK DEMO</string>
     <string name="udesk_sdktoken">sdk用户唯一标识,必填</string>
     <string name="udesk_nickname">sdk用户昵称,选填</string>
-    <string name="udesk_cellphone">sdk用户手机号码,选题</string>
-    <string name="udesk_weixin_id">sdk用户唯微信账号,选题</string>
-    <string name="udesk_weibo_name">sdk用户唯微博账号,选题</string>
+    <string name="udesk_cellphone">sdk用户手机号码,选填</string>
+    <string name="udesk_weixin_id">sdk用户唯微信账号,选填</string>
+    <string name="udesk_weibo_name">sdk用户唯微博账号,选填</string>
     <string name="udesk_email">sdk用户邮箱,选题(最好填写)</string>
     <string name="udesk_descriptionn">sdk用户描述,选填</string>
     <string name="udesk_setuserinfo">设置用户信息</string>

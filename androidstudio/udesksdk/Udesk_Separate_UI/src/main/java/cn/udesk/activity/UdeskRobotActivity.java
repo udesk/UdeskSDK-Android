@@ -122,7 +122,7 @@ public class UdeskRobotActivity extends Activity {
 
 				@Override
 				public void onClick(View v) {
-					UdeskSDKManager.getInstance().toLanuchChatAcitvity(UdeskRobotActivity.this);
+					UdeskSDKManager.getInstance().showConversationByImGroup(UdeskRobotActivity.this);
 				}
 			});
 		} else {
