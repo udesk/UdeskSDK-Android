@@ -1,15 +1,15 @@
 package cn.udesk.db;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import udesk.core.db.UdeskDBHelper;
-import udesk.core.model.MessageInfo;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.udesk.UdeskConst;
+import udesk.core.model.MessageInfo;
 
 /**
  * UdeskDBManager 对UdeskDBHelper中的表做操作 UdeskDBHelper 目前创建2张表 UdeskMessage 消息表

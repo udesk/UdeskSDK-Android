@@ -4,10 +4,22 @@ package cn.udesk;
 
 public class UdeskConst {
 
+	public static class UdeskUserInfo {
+		public static final String USER_SDK_TOKEN = "sdk_token";
+		public static final String NICK_NAME = "nick_name";
+		public static final String CELLPHONE = "cellphone";
+		public static final String WEIXIN_ID = "weixin_id";
+		public static final String WEIBO_NAME = "weibo_name";
+		public static final String QQ = "qq";
+		public static final String EMAIL = "email";
+		public static final String DESCRIPTION = "description";
+
+	}
 	public static final String UDESKARTICLEID = "udesk_article_id";
 	public static final String UDESKTRANSFER = "transfer";
 	public static final String UDESKHTMLURL = "html_url";
-	
+	public static final String UDESKGROUPID = "udesk_groupid";
+	public static final String UDESKAGENTID = "udesk_agentid";
 	/**
 	 * 每次读取消息表的记录数
 	 */
@@ -45,6 +57,7 @@ public class UdeskConst {
 		public static final int TYPE_AUDIO = 1;
 		public static final int TYPE_TEXT = 2;
 		public static final int TYPE_REDIRECT = 3;
+		public static final int TYPE_RICH = 4;
 	}
 	
 	public static int parseTypeForMessage(String type) {
@@ -56,6 +69,8 @@ public class UdeskConst {
 			return ChatMsgTypeInt.TYPE_AUDIO;
 		} else if("redirect".equalsIgnoreCase(type)){
 			return ChatMsgTypeInt.TYPE_REDIRECT;
+		}else if("rich".equalsIgnoreCase(type)){
+			return ChatMsgTypeInt.TYPE_RICH;
 		}
 		return ChatMsgTypeInt.TYPE_TEXT;
 	}
@@ -78,6 +93,8 @@ public class UdeskConst {
 		public static final int HasAgent = 2000; //  2000指 返回合适的客服JID
     	public static final int WaitAgent = 2001; // 2001表示 当前终端用户需要排队
     	public static final int NoAgent = 2002; // // 2002指 当前没有客服在线
+		public static final int NonExistentAgent = 5050; //客服不存在
+		public static final int NonExistentGroupId = 5060; //客服组不存在
 	}
 	
 	public static class SharePreParams{

@@ -4,41 +4,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.nostra13.universalimageloader.utils.StorageUtils;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
+import cn.udesk.activity.OptionsAgentGroupActivity;
 import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.activity.UdeskHelperActivity;
 import cn.udesk.activity.UdeskRobotActivity;
+import cn.udesk.db.UdeskDBManager;
 import cn.udesk.widget.UdeskDialog;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskCoreConst;
 import udesk.core.UdeskHttpFacade;
+import udesk.core.UdeskLogUtil;
 import udesk.core.model.RobotInfo;
 import udesk.core.utils.UdeskUtils;
 
 
 public class UdeskSDKManager {
 	
-	private String domain = null;
-	private String secretKey = null;
-	private String userId = null;
-	private String transfer = null;
-	private String h5Url = null;
+
 	
 	/**
 	 * 用户唯一的标识
@@ -57,14 +42,15 @@ public class UdeskSDKManager {
 	 * 用户自定义字段的列表信息
 	 */
 	private Map<String, String> roplist = null;
+	private String domain = null;
+	private String secretKey = null;
+	private String userId = null;
+	private String transfer = null;
+	private String h5Url = null;
 	private UdeskDialog dialog;
-	
-	private volatile static UdeskSDKManager instance;
-//	private Context mContext = null;
+	private static UdeskSDKManager instance;
 	private UdeskSDKManager() {
-//		this.mContext = context;
 	}
-
 	public static UdeskSDKManager getInstance() {
 		if (instance == null) {
 			synchronized (UdeskSDKManager.class) {
@@ -75,17 +61,167 @@ public class UdeskSDKManager {
 		}
 		return instance;
 	}
-	
-	
-  public void clean(){
-	  this.userId = null;
-	  this.transfer = null;
-	  this.h5Url = null;
-	  this.sdkToken = null;
-	  this.userinfo = null;
-	  this.textField = null;
-	  this. roplist = null;
-  }
+
+	/**
+	 *
+	 * @param context
+	 * @param domain
+	 * @param secretKey
+	 */
+	public void initApiKey(Context context,String domain, String secretKey){
+		this.domain = domain;
+		this.secretKey = secretKey;
+		isShowLog(false);
+		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+				UdeskConst.SharePreParams.Udesk_Domain, domain);
+		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+				UdeskConst.SharePreParams.Udesk_SecretKey, secretKey);
+		UdeskUtil.initImageLoaderConfig(context);
+	}
+
+	public void setUserInfo(Context context,String sdkToken,Map<String, String> info){
+		this.setUserInfo(context, sdkToken, info, null);
+	}
+
+	public void setUserInfo(Context context,String sdkToken,Map<String, String> info,Map<String, String> textField){
+		this.setUserInfo(context, sdkToken, info, textField, null);
+	}
+
+	public void setUserInfo(final  Context context,String token,Map<String, String> info,Map<String, String> textField,Map<String, String> roplist){
+		clean();
+		this.sdkToken = token;
+		UdeskConst.SharePreParams.Udesk_Sharepre_Name = sdkToken;
+		initDB(context,sdkToken);
+		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+				UdeskConst.SharePreParams.Udesk_SdkToken, sdkToken);
+		if(info == null){
+			info = new HashMap<String,String>();
+		}
+		this.userinfo = info;
+		userinfo.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdkToken);
+		this.textField = textField;
+		this.roplist = roplist;
+	}
+
+
+	public void toLanuchChatAcitvity(Context context){
+		Intent intent = new Intent(context, UdeskChatActivity.class);
+		context.startActivity(intent);
+	}
+
+
+	public void toLanuchHelperAcitivty(Context context){
+		Intent intent = new Intent(context, UdeskHelperActivity.class);
+		context.startActivity(intent);
+	}
+
+	public void showRobot(final Context context) {
+		if(!TextUtils.isEmpty(getH5Url(context))){
+			toLanuchRobotAcitivty(context,getH5Url(context), getTransfer(context));
+			return;
+		}
+
+		showLoading(context);
+		UdeskHttpFacade.getInstance().getRobotJsonApi(getDomain(context), getSecretKey(context), new UdeskCallBack() {
+
+			@Override
+			public void onSuccess(String message) {
+				dismiss();
+				RobotInfo item = JsonUtils.parseRobotJsonResult(message);
+				if (item != null && !TextUtils.isEmpty(item.h5_url)) {
+					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+							UdeskConst.SharePreParams.Udesk_Transfer, item.transfer);
+					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+							UdeskConst.SharePreParams.Udesk_h5url, item.h5_url);
+					toLanuchRobotAcitivty(context, item.h5_url, item.transfer);
+				} else {
+					UdeskUtils.showToast(context, context.getString(R.string.udesk_has_not_open_robot));
+				}
+			}
+
+			@Override
+			public void onFail(String message) {
+				dismiss();
+				UdeskUtils.showToast(context, message);
+			}
+		});
+	}
+
+	public void showRobotOrConversation(final Context context) {
+		if(!TextUtils.isEmpty(getH5Url(context))){
+			toLanuchRobotAcitivty(context,getH5Url(context), getTransfer(context));
+			return;
+		}
+		showLoading(context);
+		UdeskHttpFacade.getInstance().getRobotJsonApi(getDomain(context), getSecretKey(context), new UdeskCallBack() {
+
+			@Override
+			public void onSuccess(String message) {
+				dismiss();
+				RobotInfo item = JsonUtils.parseRobotJsonResult(message);
+				if (item != null && !TextUtils.isEmpty(item.h5_url)) {
+					toLanuchRobotAcitivty(context, item.h5_url, item.transfer);
+					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+							UdeskConst.SharePreParams.Udesk_Transfer, item.transfer);
+					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+							UdeskConst.SharePreParams.Udesk_h5url, item.h5_url);
+				} else {
+					toLanuchChatAcitvity(context);
+				}
+			}
+
+			@Override
+			public void onFail(String message) {
+				dismiss();
+				toLanuchChatAcitvity(context);
+			}
+		});
+	}
+
+	/**
+	 * 指引客户选择客服组
+	 * @param context
+	 */
+	public void showConversationByImGroup( Context context) {
+		Intent intent = new Intent(context, OptionsAgentGroupActivity.class);
+		context.startActivity(intent);
+	}
+
+
+	/**
+	 * 指定客服 id 进行分配 进行会话
+	 * @param context
+	 * @param agentId  客服ID
+	 */
+	public void lanuchChatByAgentId(Context context,String agentId){
+		lanuchChatByConfirmId(context, "", agentId);
+	}
+
+	/**
+	 *
+	 * @param context
+	 * @param groupId 指定客服组 id 进行分配
+	 */
+	public void lanuchChatByGroupId(Context context, String groupId){
+		lanuchChatByConfirmId(context, groupId, "");
+	}
+
+	/**
+	 * 控制控制台日志的开关
+	 * @param isShow
+	 */
+	public void isShowLog(boolean isShow){
+		UdeskLogUtil.DEBUG = isShow;
+		UdeskCoreConst.xmppDebug =isShow;
+		UdeskCoreConst.isDebug = isShow;
+	}
+
+	/**
+	 * 删除聊天数据
+	 */
+	public void deleteMsg(){
+		UdeskDBManager.getInstance().deleteAllMsg();
+	}
 
 	public Map<String, String> getUserinfo() {
 		return userinfo;
@@ -112,7 +248,6 @@ public class UdeskSDKManager {
 		}
 		return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_Domain);
 	}
-	
 
 	public String getSecretKey(Context context) {
 		if(!TextUtils.isEmpty(secretKey)){
@@ -121,17 +256,13 @@ public class UdeskSDKManager {
 		return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_SecretKey);
 	}
 	
-	
-
 	public String getUserId(Context context) {
 		if(!TextUtils.isEmpty(userId)){
 			return userId;
 		}
-		return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_userid);
+		return "";
 	}
 	
-	
-
 	public String getTransfer(Context context) {
 		
 		if(!TextUtils.isEmpty(transfer)){
@@ -147,6 +278,18 @@ public class UdeskSDKManager {
 		return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_h5url);
 	}
 
+	public void setH5Url(String h5Url) {
+		this.h5Url = h5Url;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public void setTransfer(String transfer) {
+		this.transfer = transfer;
+	}
+
 	private void showLoading(Context context) {
 		try {
 			dialog = new UdeskDialog(context, R.style.udesk_dialog);
@@ -157,225 +300,53 @@ public class UdeskSDKManager {
 
 	}
 
+	private void toLanuchRobotAcitivty(Context context,String url,String tranfer){
+		Intent intent = new Intent(context, UdeskRobotActivity.class);
+		intent.putExtra(UdeskConst.UDESKTRANSFER, tranfer);
+		intent.putExtra(UdeskConst.UDESKHTMLURL, url);
+		context.startActivity(intent);
+	}
+
 	private void dismiss() {
 		if (dialog != null) {
 			dialog.dismiss();
 		}
 	}
 
-	public void initApiKey(Context context,String domain, String secretKey){
-		this.domain = domain;
-		this.secretKey = secretKey;
-		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-				UdeskConst.SharePreParams.Udesk_Domain, domain);
-		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-				UdeskConst.SharePreParams.Udesk_SecretKey, secretKey);
-	}
-	public void toLanuchChatAcitvity(Context context){
+	private void lanuchChatByConfirmId(Context context,String groupId,String agentId){
 		Intent intent = new Intent(context, UdeskChatActivity.class);
+		intent.putExtra(UdeskConst.UDESKGROUPID,groupId);
+		intent.putExtra(UdeskConst.UDESKAGENTID, agentId);
 		context.startActivity(intent);
 	}
-	public void toLanuchRobotAcitivty(Context context,String url,String tranfer){
-		Intent intent = new Intent(context, UdeskRobotActivity.class);
-		intent.putExtra(UdeskConst.UDESKTRANSFER, tranfer);
-		intent.putExtra(UdeskConst.UDESKHTMLURL, url);
-		context.startActivity(intent);
-	}
-	public void toLanuchHelperAcitivty(Context context){
-		Intent intent = new Intent(context, UdeskHelperActivity.class);
-		context.startActivity(intent);
-	}
-	
-	public void showRobot(final Context context) {
-		if(!TextUtils.isEmpty(getH5Url(context))){
-			toLanuchRobotAcitivty(context,getH5Url(context), getTransfer(context));
-			return;
-		}
-		
-		showLoading(context);
-		UdeskHttpFacade.getInstance().getRobotJsonApi(getDomain(context), getSecretKey(context), new UdeskCallBack() {
 
-			@Override
-			public void onSuccess(String message) {
-				dismiss();
-				RobotInfo item = JsonUtils.parseRobotJsonResult(message);
-				if (item != null && !TextUtils.isEmpty(item.h5_url)) {
-					toLanuchRobotAcitivty(context, item.h5_url, item.transfer);
-					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-							UdeskConst.SharePreParams.Udesk_Transfer, item.transfer);
-					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-							UdeskConst.SharePreParams.Udesk_h5url, item.h5_url);
-				} else {
-					UdeskUtils.showToast(context, context.getString(R.string.udesk_has_not_open_robot));
-				}
-			}
-
-			@Override
-			public void onFail(String message) {
-				dismiss();
-				UdeskUtils.showToast(context, message);
-			}
-		});
-	}
-	
-	public void showRobotOrConversation(final Context context) {
-		if(!TextUtils.isEmpty(getH5Url(context))){
-			toLanuchRobotAcitivty(context,getH5Url(context), getTransfer(context));
-			return;
-		}
-		showLoading(context);
-		UdeskHttpFacade.getInstance().getRobotJsonApi(getDomain(context),getSecretKey(context),new UdeskCallBack() {
-			
-			@Override
-			public void onSuccess(String message) {
-				dismiss();
-				RobotInfo item = JsonUtils.parseRobotJsonResult(message);
-				if (item != null && !TextUtils.isEmpty(item.h5_url)) {
-					toLanuchRobotAcitivty(context,item.h5_url, item.transfer);
-					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-							UdeskConst.SharePreParams.Udesk_Transfer, item.transfer);
-					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-							UdeskConst.SharePreParams.Udesk_h5url, item.h5_url);
-				} else {
-					toLanuchChatAcitvity(context);
-				}
-			}
-			
-			@Override
-			public void onFail(String message) {
-				dismiss();
-				toLanuchChatAcitvity(context);
-			}
-		});
+	/**
+	 * 初始话DB
+	 * @param context
+	 * @param sdkToken
+	 */
+	private void initDB(Context context , String sdkToken) {
+		releaseDB();
+		UdeskDBManager.getInstance().init(context, sdkToken);
 	}
 
-	public void initImageLoaderConfig(Context context){
-		File cacheDir = StorageUtils.getOwnCacheDirectory(
-				context, "udesksdk/img/cache");
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
-				context)
-				.threadPoolSize(3)
-				// 线程池内加载的数量
-				.threadPriority(Thread.NORM_PRIORITY - 2)
-				.denyCacheImageMultipleSizesInMemory()
-				.memoryCache(new WeakMemoryCache())
-				.memoryCacheSize(2 * 1024 * 1024)
-				.tasksProcessingOrder(QueueProcessingType.LIFO)
-				.discCacheFileCount(100) // 缓存的文件数量
-				.discCache(new UnlimitedDiskCache(cacheDir))// 自定义缓存路径
-				.defaultDisplayImageOptions(DisplayImageOptions.createSimple())
-				.imageDownloader(
-						new BaseImageDownloader(context,
-								5 * 1000, 30 * 1000)) 
-				.build();// 开始构建
-		ImageLoader.getInstance().init(config);
+	/**
+	 * 销毁DB
+	 */
+	public void releaseDB(){
+		UdeskDBManager.getInstance().release();
 	}
-	
-	public void setUserInfo(Context context,String sdkToken,Map<String, String> info){
-		this.setUserInfo(context, sdkToken, info, null);
-	}
-	
-	public void setUserInfo(Context context,String sdkToken,Map<String, String> info,Map<String, String> textField){
-		this.setUserInfo(context,sdkToken, info, textField, null);
-	}
-	
-	public void setUserInfo(final  Context context,String sdkToken,Map<String, String> info,Map<String, String> textField,Map<String, String> roplist){
-		this.sdkToken = sdkToken;
-		UdeskConst.SharePreParams.Udesk_Sharepre_Name = sdkToken;
-		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-				UdeskConst.SharePreParams.Udesk_SdkToken, sdkToken);
-		if(info == null){
-			info = new HashMap<String, String>();
-		}
-		this.userinfo = info;
-		userinfo.put(UdeskCoreConst.UdeskUserInfo.USER_SDK_TOKEN, sdkToken);
-		this.textField = textField;
-		this.roplist = roplist;
-		UdeskHttpFacade.getInstance().setUserInfo(getDomain(context), getSecretKey(context), sdkToken, info, textField, roplist, new UdeskCallBack() {
 
-			@Override
-			public void onSuccess(String string) {
-				parserCustomersJson(context, string);
-			}
 
-			@Override
-			public void onFail(String string) {
-				UdeskUtils.showToast(context, string);
-			}
-		});
-	}
-	
-	public void  parserCustomersJson(Context context,String jsonString){
-		try {
-			JSONObject resultJson = new JSONObject(jsonString);
-			if(resultJson.has("customer")){
-				JSONObject customerJson = resultJson.getJSONObject("customer");
-				if(customerJson.has("id")){
-					this.userId = customerJson.getString("id");
-					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-							UdeskConst.SharePreParams.Udesk_userid, userId);
-				}
-			}
-			if(resultJson.has("robot")){
-				String robotString = resultJson.getString("robot");
-				if(!TextUtils.isEmpty(robotString)){
-					JSONObject robotJson = new JSONObject(robotString);
-					if(robotJson.has("transfer")){
-						this.transfer = robotJson.getString("transfer");
-						PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-								UdeskConst.SharePreParams.Udesk_Transfer, transfer);
-					}
-					if(robotJson.has("h5_url")){
-						this.h5Url = robotJson.getString("h5_url");
-						PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-								UdeskConst.SharePreParams.Udesk_h5url, h5Url);
-					}
-				}
-			}
-		} catch (JSONException e) {
-		}
-	}
-//	Form
-	public String getFormUrlPara(Context context){
-		StringBuilder builder = new StringBuilder();
-		builder.append("?sdk_token=").append(getSdkToken(context))
-				.append("&sdk_version=").append(UdeskCoreConst.sdkversion);
-		if(userinfo != null && !userinfo.isEmpty()){
-			Set<String> keySet = userinfo.keySet();
-			for (String key : keySet) {
-				if(!TextUtils.isEmpty(userinfo.get(key))){
-					if(key.equals("sdk_token")){
-						continue;
-					}
-					if(key.equals(UdeskCoreConst.UdeskUserInfo.NICK_NAME)){
-						builder.append("&c_name=").append(userinfo.get(key));
-					}else if(key.equals(UdeskCoreConst.UdeskUserInfo.CELLPHONE)){
-						builder.append("&c_phone=").append(userinfo.get(key));
-					}else if(key.equals(UdeskCoreConst.UdeskUserInfo.EMAIL)){
-						builder.append("&c_email=").append(userinfo.get(key));
-					}else if(key.equals(UdeskCoreConst.UdeskUserInfo.DESCRIPTION)){
-						builder.append("&c_desc=").append(userinfo.get(key));
-					}else if(key.equals(UdeskCoreConst.UdeskUserInfo.QQ)){
-						builder.append("&c_qq =").append(userinfo.get(key));
-					}else if (key.equals(UdeskCoreConst.UdeskUserInfo.WEIXIN_ID)){
-						builder.append("&c_wx =").append(userinfo.get(key));
-					}else if (key.equals(UdeskCoreConst.UdeskUserInfo.WEIBO_NAME)){
-						builder.append("&c_wb =").append(userinfo.get(key));
-					}
 
-				}
-			}
-		}
-		if(textField != null && !textField.isEmpty()){
-			Set<String> textFieldSet = textField.keySet();
-			for (String key : textFieldSet) {
-				if(!TextUtils.isEmpty(textField.get(key))){
-					builder.append("&c_cf_").append(key).append("=").append(textField.get(key));
-				}
-			}
-		}
-		return builder.toString();
+	private void clean(){
+		this.userId = null;
+		this.transfer = null;
+		this.h5Url = null;
+		this.sdkToken = null;
+		this.userinfo = null;
+		this.textField = null;
+		this. roplist = null;
 	}
-	
 
 }

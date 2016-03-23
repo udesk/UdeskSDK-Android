@@ -1,6 +1,8 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="cn.udesk"
-    android:versionCode="1"
-    android:versionName="1.0">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="cn.udesk">
+      <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="22"
+        />
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,9 +12,6 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <uses-sdk
-        android:minSdkVersion="8"
-        />
     <application>
         <activity
             android:name="cn.udesk.activity.UdeskHelperActivity"
@@ -43,6 +42,11 @@
             android:name="cn.udesk.activity.SurvyDialogActivity"
             android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
             android:theme="@style/transcutestyle" />
+
+        <activity
+            android:name="cn.udesk.activity.OptionsAgentGroupActivity"
+            android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
+            android:theme="@style/Udesk_Theme" />
     </application>
 
 </manifest>

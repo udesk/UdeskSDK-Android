@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.udesk.ChatMessageEvent;
 import cn.udesk.JsonUtils;
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
@@ -42,7 +41,7 @@ import udesk.core.utils.UdeskIdBuild;
 import udesk.core.utils.UdeskUtils;
 import udesk.core.xmpp.XmppInfo;
 
-public class ChatActivityPresenter implements ChatMessageEvent {
+public class ChatActivityPresenter {
 
 	private IChatActivityView mChatView;
 	private VoiceRecord mVoiceRecord = null;
@@ -52,13 +51,27 @@ public class ChatActivityPresenter implements ChatMessageEvent {
 
 	public ChatActivityPresenter(IChatActivityView chatview) {
 		this.mChatView = chatview;
-		UdeskMessageManager.getInstance().setChatMessageEvent(this);
+		bindEevent();
+	}
+
+	private  void  bindEevent(){
+		Log.i("ttt",this.toString());
+		UdeskMessageManager.getInstance().eventui_OnNewPresence.bind(this,"onPrenseMessage");
+		UdeskMessageManager.getInstance().eventui_OnMessageReceived.bind(this,"onMessageReceived");
+		UdeskMessageManager.getInstance().eventui_OnNewMessage.bind(this,"onNewMessage");
+		UdeskMessageManager.getInstance().eventui_OnReqsurveyMsg.bind(this, "onReqsurveyMsg");
+	}
+
+	public void  unBind(){
+		UdeskMessageManager.getInstance().eventui_OnNewPresence.unBind(this);
+		UdeskMessageManager.getInstance().eventui_OnMessageReceived.unBind(this);
+		UdeskMessageManager.getInstance().eventui_OnNewMessage.unBind(this);
+		UdeskMessageManager.getInstance().eventui_OnReqsurveyMsg.unBind(this);
 	}
 
 	/**
 	 * 收到消息回执
 	 */
-	@Override
 	public void onMessageReceived(String msgId) {
 		if (mChatView.getHandler() != null) {
 			Message message = mChatView.getHandler().obtainMessage(
@@ -73,7 +86,6 @@ public class ChatActivityPresenter implements ChatMessageEvent {
 	/**
 	 * 收到新消息
 	 */
-	@Override
 	public void onNewMessage(MessageInfo msgInfo) {
 
 		if (mChatView.getHandler() != null) {
@@ -88,8 +100,7 @@ public class ChatActivityPresenter implements ChatMessageEvent {
 	/**
 	 * 收到客服在线下线的通知
 	 */
-	@Override
-	public void onPrenseMessage(String jid, int onlineFlag) {
+	public void onPrenseMessage(String jid, Integer onlineFlag) {
 		if (mChatView.getHandler() != null) {
 			Message messge = mChatView.getHandler().obtainMessage(
 					MessageWhat.status_notify);
@@ -100,8 +111,7 @@ public class ChatActivityPresenter implements ChatMessageEvent {
 		
 	}
 	
-	@Override
-	public void onReqsurveyMsg(boolean isSurvey) {
+	public void onReqsurveyMsg(Boolean isSurvey) {
 
 		if(isSurvey){
 			getIMSurveyOptions();
@@ -182,7 +192,7 @@ public class ChatActivityPresenter implements ChatMessageEvent {
 					
 					@Override
 					public void onSuccess(String string) {
-						UdeskSDKManager.getInstance().parserCustomersJson(mChatView.getContext(),string);
+						JsonUtils.parserCustomersJson(mChatView.getContext(),string);
 						getIMCustomerInfo();
 					}
 					
@@ -234,26 +244,26 @@ public class ChatActivityPresenter implements ChatMessageEvent {
 	}
 
 	public void getAgentInfo() {
-		UdeskHttpFacade.getInstance().getAgentJsonAPi(
+		UdeskHttpFacade.getInstance().getRedirectAgentInfo(
 				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
-				UdeskSDKManager.getInstance().getUserId(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
+				mChatView.getAgentId(), mChatView.getGroupId(),
 				new UdeskCallBack() {
 
-			@Override
-			public void onSuccess(String message) {
-				// 获取客户成功，显示在线客服的信息，连接xmpp，进行会话
-				AgentInfo agentInfo = JsonUtils.parseAgentResult(message);
-				mChatView.dealAgentInfo(agentInfo);
+					@Override
+					public void onSuccess(String message) {
+						// 获取客户成功，显示在线客服的信息，连接xmpp，进行会话
+						AgentInfo agentInfo = JsonUtils.parseAgentResult(message);
+						mChatView.dealAgentInfo(agentInfo);
+					}
 
-			}
-
-			@Override
-			public void onFail(String message) {
-				// 失败给出错误提示 结束流程
-				mChatView.showFailToast(message);
-			}
-		});
+					@Override
+					public void onFail(String message) {
+						// 失败给出错误提示 结束流程
+						mChatView.showFailToast(message);
+					}
+				});
 
 	}
 	

@@ -153,7 +153,7 @@ public class UdeskHelperFragment extends Fragment implements OnClickListener,OnI
 				startGetSerchHelper(search);
 			}
 		} else if (v.getId() == R.id.udesk_navi_to_im) {
-
+			UdeskSDKManager.getInstance().showConversationByImGroup(UdeskHelperFragment.this.getActivity());
 		}
 	}
 

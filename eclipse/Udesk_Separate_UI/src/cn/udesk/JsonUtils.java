@@ -1,19 +1,22 @@
 package cn.udesk;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.content.Context;
+import android.text.TextUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.udesk.model.AgentGroupNode;
 import cn.udesk.model.OptionsModel;
 import cn.udesk.model.SurveyOptionsModel;
 import udesk.core.model.AgentInfo;
 import udesk.core.model.RobotInfo;
 import udesk.core.model.UDHelperArticleContentItem;
 import udesk.core.model.UDHelperItem;
-import android.text.TextUtils;
 
 public class JsonUtils {
 
@@ -90,28 +93,35 @@ public class JsonUtils {
 		}
 		try {
 			JSONObject json = new JSONObject(response);
-			JSONObject result = json.getJSONObject("result");
-			if (result.has("code")) {
-				agentInfo.agentCode = result.getInt("code");
-			}
-			if (result.has("message")) {
-				agentInfo.message = result.getString("message");
-			}
-
-			if (result.has("agent")) {
-				JSONObject agentJson = result.getJSONObject("agent");
-
-				if (agentJson.has("nick")) {
-					agentInfo.agentNick = agentJson.getString("nick");
+			if(json.has("result")){
+				JSONObject result = json.getJSONObject("result");
+				if (result.has("code")) {
+					agentInfo.agentCode = result.getInt("code");
 				}
-				if (agentJson.has("jid")) {
-					agentInfo.agentJid = agentJson.getString("jid");
+				if (result.has("message")) {
+					agentInfo.message = result.getString("message");
 				}
-				if (agentJson.has("agent_id")) {
-					agentInfo.agent_id = agentJson.getString("agent_id");
+				if (result.has("agent")) {
+					JSONObject agentJson = result.getJSONObject("agent");
+
+					if (agentJson.has("nick")) {
+						agentInfo.agentNick = agentJson.getString("nick");
+					}
+					if (agentJson.has("jid")) {
+						agentInfo.agentJid = agentJson.getString("jid");
+					}
+					if (agentJson.has("agent_id")) {
+						agentInfo.agent_id = agentJson.getString("agent_id");
+					}
+				}
+			}else{
+				if (json.has("code")) {
+					agentInfo.agentCode = json.getInt("code");
+				}
+				if (json.has("message")) {
+					agentInfo.message = json.getString("message");
 				}
 			}
-
 		} catch (JSONException e) {
 			e.printStackTrace();
 			agentInfo.message = "当前没有客服在线";
@@ -158,5 +168,69 @@ public class JsonUtils {
 		
 	}
 
+
+	public static List<AgentGroupNode> parseIMGroup(String response){
+
+		List<AgentGroupNode> groupsModel = null;
+		if (TextUtils.isEmpty(response)) {
+			return groupsModel;
+		}
+
+		try {
+			JSONObject json = new JSONObject(response);
+			if (json.has("result")) {
+				groupsModel = new ArrayList<AgentGroupNode>();
+				JSONArray optionsArray = json.optJSONArray("result");
+				if (optionsArray != null && optionsArray.length() > 0) {
+					for (int i = 0; i < optionsArray.length(); i++) {
+						JSONObject data = optionsArray.optJSONObject(i);
+						AgentGroupNode model = new AgentGroupNode();
+						model.setId(data.optString("id"));
+						model.setGroup_id(data.optString("group_id"));
+						model.setHas_next(data.optString("has_next"));
+						model.setItem_name(data.optString("item_name"));
+						model.setLink(data.optString("link"));
+						model.setParentId(data.optString("parentId"));
+						groupsModel.add(model);
+					}
+				}
+
+			}
+		} catch (JSONException e) {
+			return null;
+		}
+		return groupsModel;
+
+	}
+
+
+	public static void  parserCustomersJson(Context context,String jsonString){
+		try {
+			JSONObject resultJson = new JSONObject(jsonString);
+			if(resultJson.has("customer")){
+				JSONObject customerJson = resultJson.getJSONObject("customer");
+				if(customerJson.has("id")){
+					UdeskSDKManager.getInstance().setUserId( customerJson.getString("id"));
+				}
+			}
+			if(resultJson.has("robot")){
+				String robotString = resultJson.getString("robot");
+				if(!TextUtils.isEmpty(robotString)){
+					JSONObject robotJson = new JSONObject(robotString);
+					if(robotJson.has("transfer")){
+						UdeskSDKManager.getInstance().setTransfer(robotJson.getString("transfer"));
+						PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+								UdeskConst.SharePreParams.Udesk_Transfer, robotJson.getString("transfer"));
+					}
+					if(robotJson.has("h5_url")){
+						UdeskSDKManager.getInstance().setH5Url(robotJson.getString("h5_url"));
+						PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+								UdeskConst.SharePreParams.Udesk_h5url, robotJson.getString("h5_url"));
+					}
+				}
+			}
+		} catch (JSONException e) {
+		}
+	}
 
 }
