@@ -406,6 +406,12 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 		btnPhoto.setOnClickListener(this);
 		expandableLayout = (UdeskExpandableLayout) findViewById(R.id.udesk_change_status_info);
 		setListView();
+
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
 		initDatabase();
 		mPresenter.getIMCustomerInfo();
 
@@ -547,6 +553,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
 			@Override
 			public void run() {
+				UdeskDBManager.getInstance().setContext(UdeskChatActivity.this);
 				historyCount = UdeskDBManager.getInstance().getMessageCount();
 				UdeskDBManager.getInstance().updateSendFlagToFail();
 				loadHistoryRecords(initViewMode);

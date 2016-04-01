@@ -90,7 +90,6 @@ public class UdeskSDKManager {
 	public void setUserInfo(final  Context context,String token,Map<String, String> info,Map<String, String> textField,Map<String, String> roplist){
 		clean();
 		this.sdkToken = token;
-		UdeskConst.SharePreParams.Udesk_Sharepre_Name = sdkToken;
 		initDB(context,sdkToken);
 		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
 				UdeskConst.SharePreParams.Udesk_SdkToken, sdkToken);

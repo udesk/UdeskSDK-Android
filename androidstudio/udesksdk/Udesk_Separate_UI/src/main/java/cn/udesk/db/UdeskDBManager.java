@@ -4,11 +4,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.udesk.UdeskConst;
+import cn.udesk.UdeskSDKManager;
 import udesk.core.model.MessageInfo;
 
 /**
@@ -48,11 +50,14 @@ public class UdeskDBManager {
 		if(context == null){
 			return;
 		}
-		if (helper == null) {
-			helper = new UdeskDBHelper(context, sdktoken);
-		}
 		mContext = context;
+		if(TextUtils.isEmpty(sdktoken)){
+			sdktoken = UdeskSDKManager.getInstance().getSdkToken(mContext);
+		}
 		mSdktoken = sdktoken;
+		if (helper == null) {
+			helper = new UdeskDBHelper(context, mSdktoken);
+		}
 		mDatabase = helper.getWritableDatabase();
 	}
 
@@ -461,4 +466,7 @@ public class UdeskDBManager {
 		}
 	}
 
+	public void setContext(Context mContext) {
+		this.mContext = mContext;
+	}
 }
