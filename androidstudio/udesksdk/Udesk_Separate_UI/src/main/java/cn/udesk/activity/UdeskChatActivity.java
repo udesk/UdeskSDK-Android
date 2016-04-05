@@ -549,8 +549,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 	}
 
 	private void initDatabase() {
-		new Thread(new Runnable() {
-
+		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				UdeskDBManager.getInstance().setContext(UdeskChatActivity.this);
@@ -558,8 +557,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 				UdeskDBManager.getInstance().updateSendFlagToFail();
 				loadHistoryRecords(initViewMode);
 			}
-		}).start();
-
+		});
 	}
 
 	/**
