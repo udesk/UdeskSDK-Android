@@ -359,6 +359,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.udesk_activity_im);
+		UdeskUtil.initCrashReport(this);
 		initIntent();
 		initView();
 		settingTitlebar();
@@ -406,20 +407,19 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 		btnPhoto.setOnClickListener(this);
 		expandableLayout = (UdeskExpandableLayout) findViewById(R.id.udesk_change_status_info);
 		setListView();
+		initDatabase();
+		mPresenter.getIMCustomerInfo();
+		if(UdeskUtils.isNetworkConnected(this)){
+			isNeedRelogin = false ;
+		}else{
+			isNeedRelogin = true;
+		}
 
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		initDatabase();
-		mPresenter.getIMCustomerInfo();
-
-		if(UdeskUtils.isNetworkConnected(this)){
-			isNeedRelogin = false ;
-		}else{
-			isNeedRelogin = true;
-		}
 		registerNetWorkReceiver();
 	}
 
@@ -1210,6 +1210,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 		UdeskHttpFacade.getInstance().cancel();
 		UdeskMessageManager.getInstance().cancelXmppConnect();
 		mPresenter.unBind();
+		UdeskUtil.closeCrashReport();
 		super.onDestroy();
 		
 	}

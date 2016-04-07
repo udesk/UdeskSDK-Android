@@ -16,6 +16,7 @@ import java.util.List;
 import cn.udesk.JsonUtils;
 import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
+import cn.udesk.UdeskUtil;
 import cn.udesk.adapter.OptionsAgentGroupAdapter;
 import cn.udesk.model.AgentGroupNode;
 import cn.udesk.widget.UdeskDialog;
@@ -42,6 +43,7 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.udesk_options_agentgroup_view);
+        UdeskUtil.initCrashReport(this);
         initView();
         getImGroupInfo();
     }
@@ -208,5 +210,9 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
         return temp.substring(0,temp.length()-2);
     }
 
-  
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        UdeskUtil.closeCrashReport();
+    }
 }

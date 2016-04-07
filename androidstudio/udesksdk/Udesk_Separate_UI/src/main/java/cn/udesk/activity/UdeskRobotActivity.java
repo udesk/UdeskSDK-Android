@@ -16,6 +16,7 @@ import android.webkit.WebViewClient;
 import cn.udesk.R;
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
+import cn.udesk.UdeskUtil;
 import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskHttpFacade;
 
@@ -29,6 +30,7 @@ public class UdeskRobotActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.udesk_robot_view);
+		UdeskUtil.initCrashReport(this);
 		initData();
 		initView();
 	}
@@ -130,4 +132,9 @@ public class UdeskRobotActivity extends Activity {
 		}
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		UdeskUtil.closeCrashReport();
+	}
 }

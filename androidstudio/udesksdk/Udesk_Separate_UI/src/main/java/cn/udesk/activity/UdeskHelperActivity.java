@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import cn.udesk.R;
+import cn.udesk.UdeskUtil;
 import cn.udesk.fragment.UdeskHelperFragment;
 import cn.udesk.widget.UdeskTitleBar;
 
@@ -18,6 +19,7 @@ public class UdeskHelperActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.udesk_activity_base);
+		UdeskUtil.initCrashReport(this);
 		Fragment helpFragment = Fragment.instantiate(this,
 				UdeskHelperFragment.class.getName());
 		getSupportFragmentManager().beginTransaction()
@@ -45,4 +47,9 @@ public class UdeskHelperActivity extends FragmentActivity {
 		}
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		UdeskUtil.closeCrashReport();
+	}
 }

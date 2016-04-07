@@ -13,6 +13,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.File;
 import java.io.IOException;
@@ -236,6 +237,17 @@ public class UdeskUtil {
 								5 * 1000, 30 * 1000))
 				.build();// 开始构建
 		ImageLoader.getInstance().init(config);
+	}
+
+
+	public static  void initCrashReport(Context context){
+		CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
+		strategy.setAppVersion(UdeskCoreConst.sdkversion);
+		CrashReport.initCrashReport(context, UdeskCoreConst.buglyAppid, false, strategy);
+	}
+
+	public static void closeCrashReport(){
+		CrashReport.closeCrashReport();
 	}
 
 }
