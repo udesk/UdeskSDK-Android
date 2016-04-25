@@ -71,7 +71,7 @@ public class UdeskSDKManager {
 	public void initApiKey(Context context,String domain, String secretKey){
 		this.domain = domain;
 		this.secretKey = secretKey;
-		isShowLog(false);
+		isShowLog(true);
 		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
 				UdeskConst.SharePreParams.Udesk_Domain, domain);
 		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,

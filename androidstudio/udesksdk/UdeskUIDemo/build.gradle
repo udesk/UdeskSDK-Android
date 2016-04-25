@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "udesk.udesksdk"
-        minSdkVersion 8
+        minSdkVersion 14
         targetSdkVersion 23
         multiDexEnabled true
         versionCode 1
@@ -39,5 +39,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile(name: 'Udesk_Separate_UI-release', ext: 'aar')
+    //    compile(name: 'Udesk_Separate_UI-release', ext: 'aar')
+    compile project(':Udesk_Separate_UI')
 }
