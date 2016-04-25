@@ -32,8 +32,8 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 	private EditText mSdktoken,  mNickname , mEmail;
 //	private String UDESK_DOMAIN = "reocar.udeskmonkey.com";//
 //	private String UDESK_SECRETKEY = "3a4dc5e0cd39995448018c553048fdd4";//
-	private String UDESK_DOMAIN = "rd-dota.udesk.cn";
-	private String UDESK_SECRETKEY = "cc36f043f1e3bf71a0f73a51f4ac3fb5";
+	private String UDESK_DOMAIN = "udesksdk.udesk.cn";
+	private String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

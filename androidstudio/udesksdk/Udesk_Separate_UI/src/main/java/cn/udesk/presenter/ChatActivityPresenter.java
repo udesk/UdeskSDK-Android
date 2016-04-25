@@ -244,11 +244,11 @@ public class ChatActivityPresenter {
 	}
 
 	public void getAgentInfo() {
-		UdeskHttpFacade.getInstance().getRedirectAgentInfo(
+		UdeskHttpFacade.getInstance().getAgentInfo(
 				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
-				mChatView.getAgentId(), mChatView.getGroupId(),
+				mChatView.getAgentId(), mChatView.getGroupId(),false,
 				new UdeskCallBack() {
 
 					@Override
@@ -268,11 +268,11 @@ public class ChatActivityPresenter {
 	}
 	
 	public void getRedirectAgentInfo(String agent_id,String group_id){
-		UdeskHttpFacade.getInstance().getRedirectAgentInfo(
+		UdeskHttpFacade.getInstance().getAgentInfo(
 				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
-				agent_id, group_id, 
+				agent_id, group_id,true,
 				new UdeskCallBack() {
 					
 					@Override

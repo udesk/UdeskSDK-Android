@@ -19,7 +19,6 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -71,7 +70,6 @@ import cn.udesk.widget.UdeskTitleBar;
 import cn.udesk.xmpp.UdeskMessageManager;
 import udesk.core.UdeskCoreConst;
 import udesk.core.UdeskHttpFacade;
-import udesk.core.UdeskLogUtil;
 import udesk.core.model.AgentInfo;
 import udesk.core.model.MessageInfo;
 import udesk.core.utils.UdeskUtils;
@@ -370,9 +368,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 		if(intent != null){
 			groupId = intent.getStringExtra(UdeskConst.UDESKGROUPID);
 			agentId = intent.getStringExtra(UdeskConst.UDESKAGENTID);
-			if(UdeskLogUtil.DEBUG){
-				Log.i("xxx","groupid = " + groupId + ";agentId = " + agentId);
-			}
+
 		}
 	}
 
