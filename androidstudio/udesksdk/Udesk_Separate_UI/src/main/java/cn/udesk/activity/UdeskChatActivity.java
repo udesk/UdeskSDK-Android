@@ -192,15 +192,17 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 			}
 			switch (msg.what) {
 			case MessageWhat.loadHistoryDBMsg:
-				List<MessageInfo> msgs = (ArrayList<MessageInfo>) msg.obj;
-				mChatAdapter.listAddItems(msgs);
-				mListView.onRefreshComplete();
-				if (msg.arg1 == initViewMode) {
-					mListView.setSelection(msgs.size());
-				} else {
-					mListView.setSelection(0);
-				}
+				if(mChatAdapter != null && mListView != null){
 
+					List<MessageInfo> msgs = (ArrayList<MessageInfo>) msg.obj;
+					mChatAdapter.listAddItems(msgs);
+					mListView.onRefreshComplete();
+					if (msg.arg1 == initViewMode) {
+						mListView.setSelection(msgs.size());
+					} else {
+						mListView.setSelection(0);
+					}
+				}
 				break;
 			case MessageWhat.NoAgent:
 				mAgentInfo = (AgentInfo) msg.obj;
