@@ -1255,6 +1255,9 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 	}
 
 	public void previewPhoto(MessageInfo message) {
+		if(message == null){
+			return;
+		}
 		String sourceImagePath = "";
 		if (!TextUtils.isEmpty(message.getLocalPath())) {
 			sourceImagePath = message.getLocalPath();
