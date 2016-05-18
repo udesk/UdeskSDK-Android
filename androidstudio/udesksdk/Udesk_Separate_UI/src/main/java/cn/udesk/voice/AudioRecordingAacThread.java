@@ -1,9 +1,10 @@
 package cn.udesk.voice;
 
-import java.io.File;
-
 import android.media.MediaRecorder;
 import android.text.TextUtils;
+
+import java.io.File;
+
 import cn.udesk.UdeskConst;
 
 
@@ -19,12 +20,17 @@ public class AudioRecordingAacThread extends Thread implements VoiceRecord {
 	MediaRecorder recorder;
 
 	public AudioRecordingAacThread() {
-		recorder = new MediaRecorder();
-		recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-		recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-		// 设置MediaRecorder录制的音频格式(不要修改其它格式了，后端对格式做了限定)
-		recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-		recorder.setAudioSamplingRate(8000);
+		try{
+			recorder = new MediaRecorder();
+			recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+			recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+			// 设置MediaRecorder录制的音频格式(不要修改其它格式了，后端对格式做了限定)
+			recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+			recorder.setAudioSamplingRate(8000);
+		}catch(Exception e){
+
+		}
+
 	}
 
 	@Override
