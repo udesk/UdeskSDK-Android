@@ -72,6 +72,17 @@ getCustomeUserfields();
 ####当开发者需要对选择型自定义字段赋值时，同样取"field_name"作为key值，取"options"中的key值作为value赋值。示例如下：
 extraInfodRoplist.put(
     child.getString("field_name"),"0");
+##3、进入人工客服
+####直接进入人工客服界面。系统根据客服分配规则安排客服接待；如果没有在线客服，则提示用户留言。
+toLanuchChatAcitvity(Context context)
+##4、进入机器人智能客服
+####智能选择客服，如果后台开通了机器人客服，则进入机器人会话界面，如果没开通则进入人工客服界面。
+showRobotOrConversation( Context context);
+##5、进入机器人客服
+####进入机器人客服聊天界面。
+showRobot(final Context context);
+
+**机器人客服需确保后台已开启机器人客服功能及开通“移动SDK”渠道。**
 
 
 
