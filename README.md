@@ -7,7 +7,8 @@ UdeskSDK-Android
 
 ![alt text](indeximg/android-new-2.png)
 > 集合和就你那。
-> **strong** 黑胡椒京津冀黑胡椒京津冀
+
+> **黑胡椒京津冀**
 
 
 
