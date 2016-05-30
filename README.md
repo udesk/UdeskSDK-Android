@@ -37,7 +37,16 @@ private Map<String, String> getUserInfo() {
 ![alt text](indeximg/用户自定义.png)
 ####调用接口获取用户自定义字段并赋值。
 getCustomeUserfields();
-
+####用户自定义字段共有两类：文本型字段和选择型字段。 文本型字段示例：
+{
+      "field_name": "TextField_684",
+      "field_label": "地址",
+      "content_type": "text",
+      "comment": "字段描述",
+      "options": null,
+      "permission": 0,
+      "requirment": false
+    }
 
 
 
