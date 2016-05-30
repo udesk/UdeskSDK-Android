@@ -17,6 +17,7 @@ initApiKey(Context context,String domain, String secretKey);
 ###2、创建用户，上传用户的信息 （必须调用）
 > setUserInfo(final Context context,String sdk_Token,Map<String, String> info,Map<String, String> textField,Map<String, String> roplist);
 ![alt text](indeximg/introduction2.png)
+###Info存放用户基本信息示例：
 private Map<String, String> getUserInfo() {
 
         Map<String, String> info = new HashMap<String, String>();
