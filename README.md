@@ -11,7 +11,11 @@ UdeskSDK-Android
 ##1、初始化SDK (必须调用)
 ####初始化SDK，传入Udesk专属域名和共享的密钥。
 initApiKey(Context context,String domain, String secretKey);
+
 > 参数说明
+![alt text](indeximg/introduction.png)
+###2、创建用户，上传用户的信息 （必须调用）
+> setUserInfo(final Context context,String sdk_Token,Map<String, String> info,Map<String, String> textField,Map<String, String> roplist);
 
 private Map<String, String> getUserInfo() {
 
