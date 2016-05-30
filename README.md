@@ -87,11 +87,22 @@ showRobot(final Context context);
 ####管理员在[管理中心-渠道管理-即时通讯-自定义链接-使用导航菜单]中添加自定义菜单，引导客户选择客服组。如果客户选择的客服组没有客服在线时，系统会提示用户留言。
 ![alt text](indeximg/指引客户选择客服组.png)
 showConversationByImGroup( Context context);
-##7) 指定客服
+##7、指定客服
 ####开发者可以调用接口指定客服接待用户。如果指定客服不在线，系统会提示用户留言。
 lanuchChatByAgentId(Context context,String agentId);//agentId 客服Id
 ####客服id获取方式：管理员在[管理中心-渠道管理-即时通讯-自定义链接-指定客服和客服组]中选择指定的客服，这样在上方链接中就会加载指定客服的id。如下图所示，客服“测试2”的agentId是“4418”。
 ![alt text ](indeximg/指定客服.png)
+##8、指定客服组
+####开发者可以调用接口指定客服组接待用户，如果指定客服组没有在线客服，系统会提示用户留言。
+lanuchChatByGroupId(Context context, String groupId);//groupId 客服组Id
+####客服组id获取方式：管理员在[管理中心-渠道管理-即时通讯-自定义链接-指定客服和客服组]中选择指定的客服组，这样在上方链接中就会加载指定客服组的id。如下图所示，客服组“客服部”的groupId是“9831”。
+![alt text ](indeximg/指定客服组.png)
+##9、 进入帮助中心
+####进入帮助中心界面
+toLanuchHelperAcitivty(Context context);
+##10、控制台日志开关
+####控制台日志开关，设置true，可看日志，false关闭
+isShowLog(boolean isShow);
 
 
 
