@@ -11,8 +11,22 @@ UdeskSDK-Android
 
 > **特别注意：第一步必需是调用initApiKey,第二步是必需调用setUserInfo 。 其它的api的使用都必需在第一步和第二步之后,根据集成时的需求调用，否则会出错误。 如果需要在同一个域名和共享密钥下切换用户，则可跳过第一步，直接调用第二步setUserInfo()。**
 
-## 1)初始化SDK (必须调用)
-###初始化SDK，传入Udesk专属域名和共享的密钥。
+###1)初始化SDK (必须调用)
+####初始化SDK，传入Udesk专属域名和共享的密钥。
+`private Map<String, String> getUserInfo() {
+
+        Map<String, String> info = new HashMap<String, String>();
+        info.put(UdeskConst.UdeskUserInfo.NICK_NAME,”这是个昵称”);
+        info.put(UdeskConst.UdeskUserInfo.EMAIL, "test@163.com");
+        info.put(UdeskConst.UdeskUserInfo.CELLPHONE, "13800000000");
+        info.put(UdeskConst.UdeskUserInfo.WEIXIN_ID, "这填写微信的ID号");
+        info.put(UdeskConst.UdeskUserInfo.WEIBO_NAME, "这是微博的账号");
+        info.put(UdeskConst.UdeskUserInfo.QQ, "321321321");
+        info.put(UdeskConst.UdeskUserInfo.DESCRIPTION, "这填写的是描述信息");
+
+        return info;
+
+    }`
 
 
 
