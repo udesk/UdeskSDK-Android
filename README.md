@@ -38,7 +38,6 @@ private Map<String, String> getUserInfo() {
 ####调用接口获取用户自定义字段并赋值。
 getCustomeUserfields();
 ####用户自定义字段共有两类：文本型字段和选择型字段。 文本型字段示例：
-
 {
       "field_name": "TextField_684",
       "field_label": "地址",
@@ -48,6 +47,31 @@ getCustomeUserfields();
       "permission": 0,
       "requirment": false
     }
+####当需要给某一个自定义字段赋值时，取该字段的“field_name”作为key进行赋值。 示例如下：
+
+    extraInfoTextField.put(
+            child.getString("field_name"),
+            "北京西城区");
+####选择型字段示例：
+{
+    "field_name": "SelectField_457", 
+    "permission": 0, 
+    "comment": "这是描述", 
+    "requirment": true, 
+    "content_type": "droplist", 
+    "field_label": "性别", 
+    "options": [
+        {
+            "0": "男"
+        }, 
+        {
+            "1": "女"
+        }
+    ]
+}   
+####当开发者需要对选择型自定义字段赋值时，同样取"field_name"作为key值，取"options"中的key值作为value赋值。示例如下：
+extraInfodRoplist.put(
+    child.getString("field_name"),"0");
 
 
 
