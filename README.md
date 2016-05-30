@@ -83,6 +83,15 @@ showRobotOrConversation( Context context);
 showRobot(final Context context);
 
 **机器人客服需确保后台已开启机器人客服功能及开通“移动SDK”渠道。**
+##6、指引客户选择客服组
+####管理员在[管理中心-渠道管理-即时通讯-自定义链接-使用导航菜单]中添加自定义菜单，引导客户选择客服组。如果客户选择的客服组没有客服在线时，系统会提示用户留言。
+![alt text](indeximg/指引客户选择客服组.png)
+showConversationByImGroup( Context context);
+##7) 指定客服
+####开发者可以调用接口指定客服接待用户。如果指定客服不在线，系统会提示用户留言。
+lanuchChatByAgentId(Context context,String agentId);//agentId 客服Id
+####客服id获取方式：管理员在[管理中心-渠道管理-即时通讯-自定义链接-指定客服和客服组]中选择指定的客服，这样在上方链接中就会加载指定客服的id。如下图所示，客服“测试2”的agentId是“4418”。
+![alt text ](indeximg/指定客服.png)
 
 
 
