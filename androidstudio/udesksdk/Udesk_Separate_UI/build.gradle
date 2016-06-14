@@ -29,7 +29,7 @@ dependencies {
     compile files('libs/android-async-http-1.4.6.jar')
     compile files('libs/qiniu-android-sdk-7.0.1.jar')
     compile files('libs/universal-image-loader-1.9.4.jar')
-    compile files('libs/asmack-android-8-4.0.6.jar')
     compile files('libs/bugly_crash_release__2.1.jar')
     compile files('libs/udesk_sdk_3.1.2.jar')
+    compile files('libs/udesk-asmack-8-4.0.6.jar')
 }

@@ -7,9 +7,16 @@ repositories {
 }
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'udesk'
+            keyPassword 'udesk123'
+            storeFile file('C:/Users/sks/Desktop/appkey/keystore')
+            storePassword 'udesk123'
+        }
+    }
     compileSdkVersion 'Google Inc.:Google APIs:19'
     buildToolsVersion "23.0.2"
-
     defaultConfig {
         applicationId "udesk.udesksdk"
         minSdkVersion 14
@@ -18,18 +25,27 @@ android {
         versionCode 1
         versionName "1.0"
     }
-
     dexOptions {
         javaMaxHeapSize "4g" // 2g should be also OK
         preDexLibraries = false
 
     }
-
     buildTypes {
         release {
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+
+        }
+        debug {
+            shrinkResources false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+
         }
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
@@ -39,6 +55,5 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    //    compile(name: 'Udesk_Separate_UI-release', ext: 'aar')
     compile project(':Udesk_Separate_UI')
 }
