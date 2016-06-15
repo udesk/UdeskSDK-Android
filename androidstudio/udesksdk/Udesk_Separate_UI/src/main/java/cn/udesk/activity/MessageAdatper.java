@@ -4,7 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,8 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
+
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -438,6 +438,9 @@ public class MessageAdatper extends BaseAdapter{
 
 		@Override
 		void bind(Context context) {
+			if(options == null){
+				initDisplayOptions();
+			}
 			ImageLoader.getInstance().displayImage(UdeskUtil.buildImageLoaderImgUrl(message), imgView,options);	
 			imgView.setOnClickListener(new OnClickListener() {
 				
