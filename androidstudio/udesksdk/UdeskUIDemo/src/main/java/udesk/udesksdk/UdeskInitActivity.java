@@ -15,7 +15,6 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
@@ -29,11 +28,12 @@ import udesk.core.UdeskHttpFacade;
  * 返回创建分配终端用户账号ID的值,每个唯一的sdktoken值对应一个终端用户账号 ,
  */
 public class UdeskInitActivity extends Activity implements OnClickListener {
-	private EditText mSdktoken,  mNickname , mEmail;
-//	private String UDESK_DOMAIN = "reocar.udeskmonkey.com";//
-//	private String UDESK_SECRETKEY = "3a4dc5e0cd39995448018c553048fdd4";//
-	private String UDESK_DOMAIN = "udesksdk.udesk.cn";
-	private String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
+
+	private EditText mSdktoken,  mNickname , mEmail,mPhone,mWeiBoId,mWeiXinId,mDescribe;
+
+	private   String UDESK_DOMAIN = "udesksdk.udesk.cn";
+	private   String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,12 +46,18 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 		mSdktoken = (EditText) findViewById(R.id.udesk_sdktoken);
 		mNickname = (EditText) findViewById(R.id.udesk_nickname);
 		mEmail = (EditText) findViewById(R.id.udesk_email);
+		mPhone = (EditText) findViewById(R.id.udesk_phone);
+		mWeiBoId = (EditText)findViewById(R.id.udesk_weiboName);
+		mWeiXinId = (EditText)findViewById(R.id.udesk_weixinId);
+		mDescribe = (EditText)findViewById(R.id.udesk_describe);
+
 		findViewById(R.id.udesk_commituserinfo).setOnClickListener(this);
 		findViewById(R.id.udesk_commit_selffield).setOnClickListener(this);
 	}
 
 	@Override
 	public void onClick(View v) {
+
 		if (v.getId() == R.id.udesk_commituserinfo) {
 			setUserInfo();
 		} else if (v.getId() == R.id.udesk_commit_selffield) {
@@ -78,10 +84,10 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 		//以下注释的字段都是可选的字段， 有邮箱建议填写
 		info.put(UdeskConst.UdeskUserInfo.NICK_NAME, mNickname.getText().toString());
 		info.put(UdeskConst.UdeskUserInfo.EMAIL, mEmail.getText().toString());
-		info.put(UdeskConst.UdeskUserInfo.CELLPHONE, UUID.randomUUID().toString().substring(0,12));
-		info.put(UdeskConst.UdeskUserInfo.WEIXIN_ID, "这填写微信的ID号");
-		info.put(UdeskConst.UdeskUserInfo.WEIBO_NAME, "这是微博的账号");
-		info.put(UdeskConst.UdeskUserInfo.DESCRIPTION, "这填写的是描述信息");
+		info.put(UdeskConst.UdeskUserInfo.CELLPHONE, mPhone.getText().toString());
+		info.put(UdeskConst.UdeskUserInfo.WEIXIN_ID,mWeiXinId.getText().toString());
+		info.put(UdeskConst.UdeskUserInfo.WEIBO_NAME, mWeiBoId.getText().toString());
+		info.put(UdeskConst.UdeskUserInfo.DESCRIPTION, mDescribe.getText().toString());
 		return info;
 
 	}
@@ -89,7 +95,7 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 	private void commitSelffield() {
 		final HashMap<String, String> extraInfoTextField = new HashMap<String, String>();
 		final HashMap<String, String> extraInfodRoplist = new HashMap<String, String>();
-		UdeskHttpFacade.getInstance().getUserFields(UDESK_DOMAIN,UDESK_SECRETKEY, new UdeskCallBack() {
+		UdeskHttpFacade.getInstance().getUserFields(UDESK_DOMAIN, UDESK_SECRETKEY, new UdeskCallBack() {
 
 			@Override
 			public void onSuccess(String result) {
