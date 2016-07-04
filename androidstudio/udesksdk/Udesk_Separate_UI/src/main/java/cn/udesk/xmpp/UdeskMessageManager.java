@@ -1,5 +1,6 @@
 package cn.udesk.xmpp;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.File;
@@ -12,8 +13,10 @@ import java.net.URL;
 import java.util.concurrent.ExecutorService;
 
 import cn.udesk.UdeskConst;
+import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.db.UdeskDBManager;
+import cn.udesk.model.MsgNotice;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskCoreConst;
 import udesk.core.event.InvokeEventContainer;
@@ -32,7 +35,7 @@ public class UdeskMessageManager {
 	public ReflectInvokeMethod  eventui_OnNewMessage = new ReflectInvokeMethod(new Class<?>[]{MessageInfo.class});
 	public ReflectInvokeMethod  eventui_OnNewPresence = new ReflectInvokeMethod(new Class<?>[]{String.class ,Integer.class});
 	public ReflectInvokeMethod  eventui_OnReqsurveyMsg = new ReflectInvokeMethod(new Class<?>[]{Boolean.class });
-	
+	public ReflectInvokeMethod  event_OnNewMsgNotice = new ReflectInvokeMethod(new Class<?>[]{MsgNotice.class});
 	private UdeskMessageManager() {
 		bindEvent();
 		mUdeskXmppManager = new UdeskXmppManager();
@@ -59,18 +62,18 @@ public class UdeskMessageManager {
 	
 	public void loginXmppWithNoCancel(){
 		mUdeskXmppManager.startLoginXmpp(new UdeskCallBack() {
-			
+
 			@Override
 			public void onSuccess(String message) {
-				
-				if(UdeskCoreConst.isDebug){
+
+				if (UdeskCoreConst.isDebug) {
 					Log.i("UdeskMessageManager ", message);
 				}
 			}
-			
+
 			@Override
 			public void onFail(String message) {
-				if(UdeskCoreConst.isDebug && message != null){
+				if (UdeskCoreConst.isDebug && message != null) {
 					Log.i("UdeskMessageManager ", message);
 				}
 			}
@@ -113,15 +116,15 @@ public class UdeskMessageManager {
 	
 	public void cancelXmppConnect(){
 		mUdeskXmppManager.cancel(new UdeskCallBack() {
-			
+
 			@Override
 			public void onSuccess(String message) {
-				
+
 			}
-			
+
 			@Override
 			public void onFail(String message) {
-				
+
 			}
 		});
 	}
@@ -130,11 +133,20 @@ public class UdeskMessageManager {
 		mUdeskXmppManager.sendMessage(type, text, msgId, to, duration);
 	}
 
+	public void sendComodityMessage(String text,String to){
+		mUdeskXmppManager.sendComodityMessage(text, to);
+	}
+
+	public void sendPreMsg(String type, String text, String to){
+		mUdeskXmppManager.sendPreMessage(type, text, to);
+	}
+
 	private void bindEvent(){
-		InvokeEventContainer.getInstance().event_OnNewMessage.bind(this,"onNewMessage");
-		InvokeEventContainer.getInstance().event_OnMessageReceived.bind(this,"onMessageReceived");
-		InvokeEventContainer.getInstance().event_OnNewPresence.bind(this,"onNewPresence");
+		InvokeEventContainer.getInstance().event_OnNewMessage.bind(this, "onNewMessage");
+		InvokeEventContainer.getInstance().event_OnMessageReceived.bind(this, "onMessageReceived");
+		InvokeEventContainer.getInstance().event_OnNewPresence.bind(this, "onNewPresence");
 		InvokeEventContainer.getInstance().event_OnReqsurveyMsg.bind(this, "onReqsurveyMsg");
+		InvokeEventContainer.getInstance().event_OnActionMsg.bind(this, "onActionMsg");
 	}
 
 
@@ -143,6 +155,7 @@ public class UdeskMessageManager {
 		InvokeEventContainer.getInstance().event_OnMessageReceived.unBind(this);
 		InvokeEventContainer.getInstance().event_OnNewPresence.unBind(this);
 		InvokeEventContainer.getInstance().event_OnReqsurveyMsg.unBind(this);
+		InvokeEventContainer.getInstance().event_OnActionMsg.unBind(this);
 	}
 
 	public void onMessageReceived(final String msgId) {
@@ -182,6 +195,14 @@ public class UdeskMessageManager {
 			messageExecutor.submit(new DownAudioTask(content,
 					msginfo));
 		}
+
+		if (type.equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT)){
+			return;
+		}
+		if (UdeskSDKManager.getInstance().isNeedMsgNotice()){
+			MsgNotice msgNotice = new MsgNotice(msgId,type,content);
+			event_OnNewMsgNotice.invoke(msgNotice);
+		}
 		
 	}
 	
@@ -195,7 +216,7 @@ public class UdeskMessageManager {
 		msg.setMsgId(msgId);
 		msg.setDirection(UdeskConst.ChatMsgDirection.Recv);
 		msg.setSendFlag(UdeskConst.SendFlag.RESULT_SUCCESS);
-		msg.setReadFlag(UdeskConst.ChatMsgReadFlag.read);
+		msg.setReadFlag(UdeskConst.ChatMsgReadFlag.unread);
 		msg.setMsgContent(content);
 		msg.setPlayflag(UdeskConst.PlayFlag.NOPLAY);
 		msg.setLocalPath("");
@@ -268,10 +289,28 @@ public class UdeskMessageManager {
 	}
 
 	public void onReqsurveyMsg(Boolean isSurvey) {
-		eventui_OnReqsurveyMsg.invoke(isSurvey);
+		if (!UdeskSDKManager.getInstance().isNeedMsgNotice()){
+			eventui_OnReqsurveyMsg.invoke(isSurvey);
+		}
+
 	}
 
+	public void onActionMsg(String actionText, String  agentJId){
+		if (TextUtils.isEmpty(actionText)){
+			return;
+		}
+		if (UdeskSDKManager.getInstance().isNeedMsgNotice()){
+			cancelXmppConnect();
+		}else{
+			if (actionText.equals("overtest")){
+				mUdeskXmppManager.sendActionMessage(agentJId);
+			}
 
-	
+		}
+	}
+
+	public boolean isConnected(){
+		return  mUdeskXmppManager.isConnect();
+	}
 
 }

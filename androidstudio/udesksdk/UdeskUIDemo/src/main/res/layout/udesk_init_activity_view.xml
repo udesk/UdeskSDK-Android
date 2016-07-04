@@ -1,76 +1,136 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" 
-    android:background="#ebebeb"
-    >
-
-    <EditText
-        android:layout_margin="10dip"
-    android:id="@+id/udesk_sdktoken"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="45dip"
-    android:gravity="center_vertical"
-    android:background="@drawable/udesk_im_input_bg"
-    android:singleLine="true"
-    android:textColor="#ff606060"
-    android:hint="@string/udesk_sdktoken"
-    android:paddingLeft="10dp"
-    android:textSize="14sp" />
+    android:layout_height="fill_parent"
+    android:layout_marginBottom="25dip"
+    android:scrollbars="none">
 
-    <EditText
-        android:layout_margin="10dip"
-        android:layout_below="@+id/udesk_sdktoken"
-        android:id="@+id/udesk_email"
-        android:layout_width="fill_parent"
-        android:layout_height="45dip"
-        android:gravity="center_vertical"
-        android:background="@drawable/udesk_im_input_bg"
-        android:singleLine="true"
-        android:textColor="#ff606060"
-        android:hint="@string/udesk_email"
-        android:paddingLeft="10dp"
-        android:textSize="14sp" />
-
-    <EditText
-        android:layout_margin="10dip"
-        android:layout_below="@+id/udesk_email"
-        android:id="@+id/udesk_nickname"
-        android:layout_width="fill_parent"
-        android:layout_height="45dip"
-        android:gravity="center_vertical"
-        android:background="@drawable/udesk_im_input_bg"
-        android:singleLine="true"
-        android:textColor="#ff606060"
-        android:hint="@string/udesk_nickname"
-        android:paddingLeft="10dp"
-        android:textSize="14sp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ebebeb">
 
 
-    <Button
-        android:layout_margin="@dimen/udesk_defult_margin15"
-        android:layout_below="@+id/udesk_nickname"
-        android:id="@+id/udesk_commituserinfo"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/udesk_btn_bg_selector"
-        android:text="@string/udesk_setuserinfo"
-        android:textColor="#BBBBBB"
-        android:padding="10dip"
-        android:textSize="18sp"
-        />
-    
-    <Button
-        android:layout_margin="@dimen/udesk_defult_margin15"
-        android:layout_below="@+id/udesk_commituserinfo"
-        android:id="@+id/udesk_commit_selffield"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/udesk_btn_bg_selector"
-        android:text="@string/udesk_commit_selffield"
-        android:textColor="#BBBBBB"
-        android:padding="10dip"
-        android:textSize="18sp"
-       />
+        <EditText
+            android:id="@+id/udesk_sdktoken"
+            android:layout_width="fill_parent"
+            android:layout_height="45dip"
+            android:layout_margin="6dip"
+            android:background="@drawable/udesk_im_input_bg"
+            android:gravity="center_vertical"
+            android:hint="@string/udesk_sdktoken"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="#ff606060"
+            android:textSize="14sp" />
 
-</RelativeLayout>
+        <EditText
+            android:id="@+id/udesk_email"
+            android:layout_width="fill_parent"
+            android:layout_height="45dip"
+            android:layout_below="@+id/udesk_sdktoken"
+            android:layout_margin="6dip"
+            android:background="@drawable/udesk_im_input_bg"
+            android:gravity="center_vertical"
+            android:hint="@string/udesk_email"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="#ff606060"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/udesk_nickname"
+            android:layout_width="fill_parent"
+            android:layout_height="45dip"
+            android:layout_below="@+id/udesk_email"
+            android:layout_margin="6dip"
+            android:background="@drawable/udesk_im_input_bg"
+            android:gravity="center_vertical"
+            android:hint="@string/udesk_nickname"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="#ff606060"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/udesk_phone"
+            android:layout_width="fill_parent"
+            android:layout_height="45dip"
+            android:layout_below="@+id/udesk_nickname"
+            android:layout_margin="6dip"
+            android:background="@drawable/udesk_im_input_bg"
+            android:gravity="center_vertical"
+            android:hint="@string/udesk_cellphone"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="#ff606060"
+            android:textSize="14sp" />
+
+
+        <EditText
+            android:id="@+id/udesk_weixinId"
+            android:layout_width="fill_parent"
+            android:layout_height="45dip"
+            android:layout_below="@+id/udesk_phone"
+            android:layout_margin="6dip"
+            android:background="@drawable/udesk_im_input_bg"
+            android:gravity="center_vertical"
+            android:hint="@string/udesk_weixin_id"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="#ff606060"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/udesk_weiboName"
+            android:layout_width="fill_parent"
+            android:layout_height="45dip"
+            android:layout_below="@+id/udesk_weixinId"
+            android:layout_margin="6dip"
+            android:background="@drawable/udesk_im_input_bg"
+            android:gravity="center_vertical"
+            android:hint="@string/udesk_weibo_name"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="#ff606060"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/udesk_describe"
+            android:layout_width="fill_parent"
+            android:layout_height="45dip"
+            android:layout_below="@+id/udesk_weiboName"
+            android:layout_margin="6dip"
+            android:background="@drawable/udesk_im_input_bg"
+            android:gravity="center_vertical"
+            android:hint="@string/udesk_descriptionn"
+            android:paddingLeft="10dp"
+            android:singleLine="true"
+            android:textColor="#ff606060"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/udesk_commituserinfo"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/udesk_describe"
+            android:layout_margin="@dimen/udesk_defult_margin15"
+            android:background="@drawable/udesk_btn_bg_selector"
+            android:padding="10dip"
+            android:text="@string/udesk_setuserinfo"
+            android:textColor="#BBBBBB"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/udesk_commit_selffield"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/udesk_commituserinfo"
+            android:layout_margin="@dimen/udesk_defult_margin15"
+            android:background="@drawable/udesk_btn_bg_selector"
+            android:padding="10dip"
+            android:text="@string/udesk_commit_selffield"
+            android:textColor="#BBBBBB"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+</ScrollView>

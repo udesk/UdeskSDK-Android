@@ -69,15 +69,18 @@ public class UdeskHelperArticleActivity extends Activity {
 				@Override
 				public void onSuccess(String message) {
 					udeskLoading.setVisibility(View.GONE);
-					UDHelperArticleContentItem item = JsonUtils.parseArticleContentItem(message);
-					udeskSubject.setText(item.subject);
-					String htmlData = item.content;
-					htmlData = htmlData.replaceAll("&amp;", "");
-			        htmlData = htmlData.replaceAll("quot;", "\"");
-			        htmlData = htmlData.replaceAll("lt;", "<");
-			        htmlData = htmlData.replaceAll("gt;", ">");
-			        udeskWebView.loadDataWithBaseURL(null, htmlData, "text/html", "utf-8", null);   
-					
+					try{
+						UDHelperArticleContentItem item = JsonUtils.parseArticleContentItem(message);
+						udeskSubject.setText(item.subject);
+						String htmlData = item.content;
+						htmlData = htmlData.replaceAll("&amp;", "");
+						htmlData = htmlData.replaceAll("quot;", "\"");
+						htmlData = htmlData.replaceAll("lt;", "<");
+						htmlData = htmlData.replaceAll("gt;", ">");
+						udeskWebView.loadDataWithBaseURL(null, htmlData, "text/html", "utf-8", null);
+					}catch (Exception e){
+						e.printStackTrace();
+					}
 				}
 				
 				@Override
@@ -88,4 +91,9 @@ public class UdeskHelperArticleActivity extends Activity {
 			});
 
 		}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
 }

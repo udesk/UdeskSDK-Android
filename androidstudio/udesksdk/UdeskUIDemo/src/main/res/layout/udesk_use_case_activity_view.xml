@@ -104,6 +104,45 @@
                 android:textSize="18sp"
                 />
 
+            <Button
+                android:layout_margin="@dimen/udesk_defult_margin10"
+                android:id="@+id/im_create_commity"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/udesk_btn_bg_selector"
+                android:text="创建广告"
+                android:textColor="#BBBBBB"
+                android:padding="8dip"
+                android:textSize="18sp"
+                />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:layout_margin="@dimen/udesk_defult_margin10"
+                    android:id="@+id/unread_msg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/udesk_btn_bg_selector"
+                    android:text="获取未读消息数"
+                    android:textColor="#BBBBBB"
+                    android:padding="8dip"
+                    android:textSize="18sp"
+                    />
+                <udesk.udesksdk.BadgeView
+                    android:id="@+id/id_unread_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginTop="3dip"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    />
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

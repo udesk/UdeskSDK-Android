@@ -51,7 +51,7 @@
     <string name="udesk_msg_offline_to_form">当前客服不在线，您可以选择提交表单来通知客服</string>
     <string name="udesk_msg_busyline_to_form">当前客服正繁忙，如需留言请点击按钮进入表单留言</string>
     <string name="udesk_agent_offline_no_send">当前没有可用客服，不能发送消息</string>
-    <string name="udesk_label_search_fail">无法找到你搜索的内容</string>
+    <string name="udesk_label_search_fail">无法找到你搜索的内容么?</string>
     <string name="udesk_label_no_sd">SD卡不可用，请检查</string>
 
     <!-- 录音相关展示文字 -->
@@ -92,7 +92,10 @@
     <string name="udesk_has_wrong_net">网络出错了,请检查网络设置!</string>
     <string name="udesk_recordllegal">录音出错，请检查是否开启了应用的录音权限</string>
      <string name="udesk_cancle_im_long_voice">松开 结束</string>
-     <string name="udesk_commit_form">提交请求</string>
+     <string name="udesk_commit_form">留言</string>
     <string name="udesk_options_agentgroup">请选择客服组</string>
+
+    <string name="aduido_denied">拒绝了录音权限，无法录音</string>
+    <string name="camera_denied">拒绝了拍照权限，无法拍照</string>
 
 </resources>

@@ -28,6 +28,7 @@ import cn.udesk.activity.UdeskChatActivity.MessageWhat;
 import cn.udesk.adapter.UDEmojiAdapter;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.model.SurveyOptionsModel;
+import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.voice.AudioRecordState;
 import cn.udesk.voice.AudioRecordingAacThread;
 import cn.udesk.voice.VoiceRecord;
@@ -55,10 +56,9 @@ public class ChatActivityPresenter {
 	}
 
 	private  void  bindEevent(){
-		Log.i("ttt",this.toString());
-		UdeskMessageManager.getInstance().eventui_OnNewPresence.bind(this,"onPrenseMessage");
-		UdeskMessageManager.getInstance().eventui_OnMessageReceived.bind(this,"onMessageReceived");
-		UdeskMessageManager.getInstance().eventui_OnNewMessage.bind(this,"onNewMessage");
+		UdeskMessageManager.getInstance().eventui_OnNewPresence.bind(this, "onPrenseMessage");
+		UdeskMessageManager.getInstance().eventui_OnMessageReceived.bind(this, "onMessageReceived");
+		UdeskMessageManager.getInstance().eventui_OnNewMessage.bind(this, "onNewMessage");
 		UdeskMessageManager.getInstance().eventui_OnReqsurveyMsg.bind(this, "onReqsurveyMsg");
 	}
 
@@ -124,24 +124,24 @@ public class ChatActivityPresenter {
 		UdeskHttpFacade.getInstance().getIMSurveyOptions(
 				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
-				UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),  new UdeskCallBack() {
-					
+				UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()), new UdeskCallBack() {
+
 					@Override
 					public void onSuccess(String message) {
 						String SurveyMsg = message;
 						SurveyOptionsModel model = JsonUtils.parseSurveyOptions(SurveyMsg);
 						if (mChatView.getHandler() != null) {
-								Message messge = mChatView.getHandler().obtainMessage(
-								MessageWhat.surveyNotify);
-								messge.obj = model;
-								mChatView.getHandler().sendMessage(messge);
+							Message messge = mChatView.getHandler().obtainMessage(
+									MessageWhat.surveyNotify);
+							messge.obj = model;
+							mChatView.getHandler().sendMessage(messge);
 						}
 					}
-					
+
 					@Override
 					public void onFail(String message) {
 						// TODO Auto-generated method stub
-						
+
 					}
 				});
 	}
@@ -152,20 +152,20 @@ public class ChatActivityPresenter {
 				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
-				mChatView.getAgentInfo().agent_id, 
+				mChatView.getAgentInfo().agent_id,
 				UdeskSDKManager.getInstance().getUserId(mChatView.getContext()),
 				optionId, new UdeskCallBack() {
-					
+
 					@Override
 					public void onSuccess(String message) {
 						String SurveyMsg = message;
-						
+
 					}
-					
+
 					@Override
 					public void onFail(String message) {
 						// TODO Auto-generated method stub
-						
+
 					}
 				});
 	}
@@ -186,16 +186,16 @@ public class ChatActivityPresenter {
 	
 	public void getCustomerId(){
 		UdeskHttpFacade.getInstance().setUserInfo(UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
-				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
+				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()), UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getUserinfo(), UdeskSDKManager.getInstance().getTextField(),
 				UdeskSDKManager.getInstance().getRoplist(), new UdeskCallBack() {
-					
+
 					@Override
 					public void onSuccess(String string) {
-						JsonUtils.parserCustomersJson(mChatView.getContext(),string);
+						JsonUtils.parserCustomersJson(mChatView.getContext(), string);
 						getIMCustomerInfo();
 					}
-					
+
 					@Override
 					public void onFail(String string) {
 						mChatView.showFailToast(string);
@@ -205,7 +205,7 @@ public class ChatActivityPresenter {
 	
 	public void getIMJson(String userId){
 		UdeskHttpFacade.getInstance().getIMJsonAPi(UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
-				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),userId,
+				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()), userId,
 				new UdeskCallBack() {
 
 					@Override
@@ -237,8 +237,9 @@ public class ChatActivityPresenter {
 
 					@Override
 					public void onFail(String message) {
-						// 失败给出错误提示 结束流程
-						mChatView.showFailToast(message);
+//						// 失败给出错误提示 结束流程
+//						mChatView.showFailToast(message);
+						getAgentInfo();
 					}
 				});
 	}
@@ -248,7 +249,7 @@ public class ChatActivityPresenter {
 				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
-				mChatView.getAgentId(), mChatView.getGroupId(),false,
+				mChatView.getAgentId(), mChatView.getGroupId(), false,
 				new UdeskCallBack() {
 
 					@Override
@@ -272,16 +273,16 @@ public class ChatActivityPresenter {
 				UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
 				UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
-				agent_id, group_id,true,
+				agent_id, group_id, true,
 				new UdeskCallBack() {
-					
+
 					@Override
 					public void onSuccess(String message) {
 						// 获取客户成功，显示在线客服的信息，连接xmpp，进行会话
 						AgentInfo agentInfo = JsonUtils.parseAgentResult(message);
 						mChatView.dealRedirectAgentInfo(agentInfo);
 					}
-					
+
 					@Override
 					public void onFail(String message) {
 						// 失败给出错误提示 结束流程
@@ -290,11 +291,41 @@ public class ChatActivityPresenter {
 				});
 	}
 
+	public void sendCommodityMessage(UdeskCommodityItem commodityItem){
+		UdeskMessageManager.getInstance().sendComodityMessage(buildCommodityMessage(commodityItem),
+				mChatView.getAgentInfo().agentJid);
+	}
+
+	public String buildCommodityMessage(UdeskCommodityItem item){
+		JSONObject root = new JSONObject();
+		JSONObject dataJson = new JSONObject();
+		JSONObject paramsJson = new JSONObject();
+		try {
+			paramsJson.put("detail", item.getSubTitle());
+			dataJson.put("url", item.getCommodityUrl());
+			dataJson.put("image", item.getThumbHttpUrl());
+			dataJson.put("title", item.getTitle());
+			dataJson.put("product_params", paramsJson);
+			root.put("type", "product");
+			root.put("platform", "android");
+			root.put("data", dataJson);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return root.toString();
+	}
+
+
 	public void sendTxtMessage() {
+	    if (!TextUtils.isEmpty(mChatView.getInputContent().toString().trim())){
+			sendTxtMessage(mChatView.getInputContent().toString());
+		}
+	}
+
+	public void sendTxtMessage(String msgString){
 		MessageInfo msg = buildSendMessage(
 				UdeskConst.ChatMsgTypeString.TYPE_TEXT,
-				System.currentTimeMillis(), mChatView.getInputContent()
-						.toString(), "");
+				System.currentTimeMillis(), msgString, "");
 		saveMessage(msg);
 		mChatView.clearInputContent();
 		mChatView.addMessage(msg);
@@ -303,6 +334,17 @@ public class ChatActivityPresenter {
 				mChatView.getAgentInfo().agentJid, msg.getDuration());
 		UdeskDBManager.getInstance().addSendingMsg(msg.getMsgId(),
 				UdeskConst.SendFlag.RESULT_SEND, System.currentTimeMillis());
+	}
+
+	public void sendPreMessage(){
+//		mChatView.getHandler().postDelayed(new Runnable() {
+//			@Override
+//			public void run() {
+				UdeskMessageManager.getInstance().sendPreMsg(UdeskConst.ChatMsgTypeString.TYPE_TEXT,
+						mChatView.getInputContent().toString(), mChatView.getAgentInfo().agentJid);
+//			}
+//		}, 500);
+
 	}
 
 	public void sendBitmapMessage(Bitmap bitmap) {
@@ -734,25 +776,32 @@ public class ChatActivityPresenter {
 		}
 	};
 
+	public void removeCallBack(){
+		mChatView.getHandler().removeCallbacks(runnable);
+	}
+
 	private void retrySendMsg() {
-		if (!UdeskUtils.isNetworkConnected(mChatView.getContext())) {
-
-			return;
-		}
-
-		List<String> retryMsgIds = UdeskDBManager.getInstance()
-				.getNeedRetryMsg(System.currentTimeMillis());
-		if (retryMsgIds == null || retryMsgIds.isEmpty()) {
-			return;
-		}
-		if (retryMsgIds != null) {
-			for (String msgID : retryMsgIds) {
-				MessageInfo msg = UdeskDBManager.getInstance().getMessage(msgID);
-				UdeskMessageManager.getInstance().sendMessage(msg.getMsgtype(), msg.getMsgContent(),
-						msg.getMsgId(), mChatView.getAgentInfo().agentJid, msg.getDuration());
-
+		try {
+			if (!UdeskUtils.isNetworkConnected(mChatView.getContext())) {
+				return;
 			}
+			List<String> retryMsgIds = UdeskDBManager.getInstance()
+					.getNeedRetryMsg(System.currentTimeMillis());
+			if (retryMsgIds == null || retryMsgIds.isEmpty()) {
+				return;
+			}
+			if (retryMsgIds != null) {
+				for (String msgID : retryMsgIds) {
+					MessageInfo msg = UdeskDBManager.getInstance().getMessage(msgID);
+					UdeskMessageManager.getInstance().sendMessage(msg.getMsgtype(), msg.getMsgContent(),
+							msg.getMsgId(), mChatView.getAgentInfo().agentJid, msg.getDuration());
+
+				}
+			}
+		}catch (Exception e){
+			e.printStackTrace();
 		}
+
 	}
 	
 	private void updateSendFailedFlag() {
@@ -779,7 +828,6 @@ public class ChatActivityPresenter {
 		}
 
 	}
-
 
 
 }
