@@ -69,10 +69,8 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/debug" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dependency-cache" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/multidex/1.0.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifests" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/multi-dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/res" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/rs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
@@ -82,7 +80,18 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="multidex-1.0.1" level="project" />
+    <orderEntry type="library" exported="" name="smack-android-extensions-4.1.0" level="project" />
+    <orderEntry type="library" exported="" name="smack-extensions-4.1.0" level="project" />
+    <orderEntry type="library" exported="" name="jxmpp-util-cache-0.4.2-beta1" level="project" />
+    <orderEntry type="library" exported="" name="jxmpp-core-0.4.2-beta1" level="project" />
+    <orderEntry type="library" exported="" name="minidns-0.1.7" level="project" />
+    <orderEntry type="library" exported="" name="rxjava-1.1.4" level="project" />
+    <orderEntry type="library" exported="" name="smack-resolver-minidns-4.1.0" level="project" />
+    <orderEntry type="library" exported="" name="smack-android-4.1.0" level="project" />
+    <orderEntry type="library" exported="" name="smack-im-4.1.0" level="project" />
+    <orderEntry type="library" exported="" name="smack-tcp-4.1.0" level="project" />
+    <orderEntry type="library" exported="" name="smack-sasl-provided-4.1.0" level="project" />
+    <orderEntry type="library" exported="" name="smack-core-4.1.0" level="project" />
     <orderEntry type="module" module-name="Udesk_Separate_UI" exported="" />
     <orderEntry type="library" exported="" name="usb-android-19" level="project" />
     <orderEntry type="library" exported="" name="effects-android-19" level="project" />

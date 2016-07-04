@@ -28,7 +28,7 @@ import udesk.core.UdeskHttpFacade;
 import udesk.core.model.UDHelperItem;
 
 public class UdeskHelperActivity extends Activity implements OnClickListener,AdapterView.OnItemClickListener {
-	
+
 	private UdeskTitleBar  mTitlebar;
 	private View naviToIm;
 	private View mNoDataView;
@@ -85,8 +85,8 @@ public class UdeskHelperActivity extends Activity implements OnClickListener,Ada
 
 		startGetHelperList();
 	}
-	
-	
+
+
 	/**
 	 * titlebar 的设置
 	 */
@@ -96,7 +96,7 @@ public class UdeskHelperActivity extends Activity implements OnClickListener,Ada
 			mTitlebar.setTitleTextSequence(getString(R.string.udesk_navi_helper_title_main));
 			mTitlebar.setLeftTextVis(View.VISIBLE);
 			mTitlebar.setLeftViewClick(new OnClickListener() {
-				
+
 				@Override
 				public void onClick(View v) {
 					finish();

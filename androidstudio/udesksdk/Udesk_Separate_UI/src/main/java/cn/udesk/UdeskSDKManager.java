@@ -12,7 +12,9 @@ import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.activity.UdeskHelperActivity;
 import cn.udesk.activity.UdeskRobotActivity;
 import cn.udesk.db.UdeskDBManager;
+import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.widget.UdeskDialog;
+import cn.udesk.xmpp.UdeskMessageManager;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskCoreConst;
 import udesk.core.UdeskHttpFacade;
@@ -22,9 +24,9 @@ import udesk.core.utils.UdeskUtils;
 
 
 public class UdeskSDKManager {
-	
 
-	
+
+
 	/**
 	 * 用户唯一的标识
 	 */
@@ -47,8 +49,11 @@ public class UdeskSDKManager {
 	private String userId = null;
 	private String transfer = null;
 	private String h5Url = null;
+	private UdeskCommodityItem commodity = null;
 	private UdeskDialog dialog;
 	private static UdeskSDKManager instance;
+
+	private boolean isNeedMsgNotice = true;
 	private UdeskSDKManager() {
 	}
 	public static UdeskSDKManager getInstance() {
@@ -62,6 +67,8 @@ public class UdeskSDKManager {
 		return instance;
 	}
 
+
+
 	/**
 	 *
 	 * @param context
@@ -71,7 +78,6 @@ public class UdeskSDKManager {
 	public void initApiKey(Context context,String domain, String secretKey){
 		this.domain = domain;
 		this.secretKey = secretKey;
-		isShowLog(true);
 		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
 				UdeskConst.SharePreParams.Udesk_Domain, domain);
 		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
@@ -88,7 +94,12 @@ public class UdeskSDKManager {
 	}
 
 	public void setUserInfo(final  Context context,String token,Map<String, String> info,Map<String, String> textField,Map<String, String> roplist){
-		clean();
+
+		String cacheToken = getSdkToken(context);
+		if ((cacheToken == null)|| (cacheToken != null && ! cacheToken.equals(token))){
+			clean(context);
+			disConnectXmpp();
+		}
 		this.sdkToken = token;
 		initDB(context,sdkToken);
 		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
@@ -115,10 +126,10 @@ public class UdeskSDKManager {
 	}
 
 	public void showRobot(final Context context) {
-		if(!TextUtils.isEmpty(getH5Url(context))){
-			toLanuchRobotAcitivty(context,getH5Url(context), getTransfer(context));
-			return;
-		}
+//		if(!TextUtils.isEmpty(getH5Url(context))){
+//			toLanuchRobotAcitivty(context,getH5Url(context), getTransfer(context));
+//			return;
+//		}
 
 		showLoading(context);
 		UdeskHttpFacade.getInstance().getRobotJsonApi(getDomain(context), getSecretKey(context), new UdeskCallBack() {
@@ -147,10 +158,10 @@ public class UdeskSDKManager {
 	}
 
 	public void showRobotOrConversation(final Context context) {
-		if(!TextUtils.isEmpty(getH5Url(context))){
-			toLanuchRobotAcitivty(context,getH5Url(context), getTransfer(context));
-			return;
-		}
+//		if(!TextUtils.isEmpty(getH5Url(context))){
+//			toLanuchRobotAcitivty(context,getH5Url(context), getTransfer(context));
+//			return;
+//		}
 		showLoading(context);
 		UdeskHttpFacade.getInstance().getRobotJsonApi(getDomain(context), getSecretKey(context), new UdeskCallBack() {
 
@@ -215,6 +226,19 @@ public class UdeskSDKManager {
 		UdeskCoreConst.isDebug = isShow;
 	}
 
+	/**
+	 * 断开xmpp连接
+	 */
+	public void disConnectXmpp(){
+		UdeskMessageManager.getInstance().cancelXmppConnect();
+	}
+
+	/**
+	 * 获取当前会话未读消息的记录  setUserInfo调用后才有效
+	 */
+	public int  getCurrentConnectUnReadMsgCount(){
+		return	UdeskDBManager.getInstance().getUnReadMessageCount();
+	}
 	/**
 	 * 删除聊天数据
 	 */
@@ -289,6 +313,14 @@ public class UdeskSDKManager {
 		this.transfer = transfer;
 	}
 
+	public UdeskCommodityItem getCommodity() {
+		return commodity;
+	}
+
+	public void setCommodity(UdeskCommodityItem commodity) {
+		this.commodity = commodity;
+	}
+
 	private void showLoading(Context context) {
 		try {
 			dialog = new UdeskDialog(context, R.style.udesk_dialog);
@@ -338,7 +370,7 @@ public class UdeskSDKManager {
 
 
 
-	private void clean(){
+	private void clean(Context context){
 		this.userId = null;
 		this.transfer = null;
 		this.h5Url = null;
@@ -348,4 +380,11 @@ public class UdeskSDKManager {
 		this. roplist = null;
 	}
 
+	public boolean isNeedMsgNotice() {
+		return isNeedMsgNotice;
+	}
+
+	public void setIsNeedMsgNotice(boolean isNeedMsgNotice) {
+		this.isNeedMsgNotice = isNeedMsgNotice;
+	}
 }

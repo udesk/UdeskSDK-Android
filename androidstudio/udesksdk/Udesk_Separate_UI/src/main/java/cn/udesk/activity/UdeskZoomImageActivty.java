@@ -37,14 +37,15 @@ public class UdeskZoomImageActivty extends Activity implements
 		zoomImageView = (UdeskZoomImageView) findViewById(R.id.udesk_zoom_imageview);
 		Bundle bundle = getIntent().getExtras();
 		uri = (android.net.Uri) bundle.getParcelable("image_path");
-//		zoomImageView.setImageURI(uri);
 		DisplayImageOptions options = new DisplayImageOptions.Builder()
 				.cacheInMemory(true)
 				.cacheOnDisk(true)
 				.bitmapConfig(Bitmap.Config.RGB_565)
 				.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
 				.build();
-		ImageLoader.getInstance().displayImage( "file:///"+ uri.getPath(), zoomImageView, options);
+		if (uri != null){
+			ImageLoader.getInstance().displayImage( "file:///"+ uri.getPath(), zoomImageView, options);
+		}
 		saveIdBtn = findViewById(R.id.udesk_zoom_save);
 		saveIdBtn.setOnClickListener(this);
 	}
@@ -157,4 +158,8 @@ public class UdeskZoomImageActivty extends Activity implements
 		}
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
 }

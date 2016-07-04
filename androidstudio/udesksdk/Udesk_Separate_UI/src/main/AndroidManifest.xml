@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application>
         <activity
@@ -37,12 +38,16 @@
         <activity
             android:name="cn.udesk.activity.SurvyDialogActivity"
             android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
+            android:launchMode="singleInstance"
             android:theme="@style/transcutestyle" />
 
         <activity
             android:name="cn.udesk.activity.OptionsAgentGroupActivity"
             android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
             android:theme="@style/Udesk_Theme" />
+        <activity android:name=".activity.UdeskWebViewUrlAcivity"
+            android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
+            android:theme="@style/Udesk_Theme"/>
     </application>
 
 </manifest>

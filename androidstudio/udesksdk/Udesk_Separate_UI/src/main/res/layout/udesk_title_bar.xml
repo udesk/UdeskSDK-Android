@@ -24,10 +24,11 @@
 
         <TextView
             android:id="@+id/udesk_titlebar_title"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/udesk_160"
             android:layout_height="wrap_content"
             android:gravity="center_vertical|center_horizontal"
             android:textColor="@color/udesk_color_titlebar_text_center"
+            android:singleLine="true"
             android:textSize="@dimen/udesk_titlebar_title_size"
              />
 

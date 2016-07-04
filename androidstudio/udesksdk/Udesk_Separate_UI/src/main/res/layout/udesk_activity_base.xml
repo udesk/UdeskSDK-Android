@@ -6,7 +6,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical" >
 
-   <cn.udesk.widget.UdeskTitleBar
+    <cn.udesk.widget.UdeskTitleBar
         android:id="@+id/udesktitlebar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

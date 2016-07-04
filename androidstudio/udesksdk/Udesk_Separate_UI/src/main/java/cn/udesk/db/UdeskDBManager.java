@@ -303,7 +303,6 @@ public class UdeskDBManager {
 		return count;
 	}
 
-	// 主键 MsgID 其它字段有SendFlag Time
 	/**
 	 * 增加一条在发送的消息
 	 * @param msgId
@@ -469,4 +468,59 @@ public class UdeskDBManager {
 	public void setContext(Context mContext) {
 		this.mContext = mContext;
 	}
+
+	public void updateMsgHasRead(String msgId){
+
+		String sql =  "update " +  UdeskDBHelper.UdeskMessage + " set " + "ReadFlag= ?"
+				+ " where MsgID = ? ";
+		try
+		{
+			getSQLiteDatabase().execSQL(sql, new Object[] { UdeskConst.ChatMsgReadFlag.read,msgId});
+		} catch (Exception e) {
+
+		}
+
+	}
+
+	public void updateAllMsgRead(){
+
+		String sql =  "update " +  UdeskDBHelper.UdeskMessage + " set " + "ReadFlag= ?";
+		try
+		{
+			getSQLiteDatabase().execSQL(sql, new Object[] { UdeskConst.ChatMsgReadFlag.read});
+		} catch (Exception e) {
+
+		}
+
+	}
+
+	public int getUnReadMessageCount() {
+		try {
+			String sql = "select count(*) from " + UdeskDBHelper.UdeskMessage
+					+ " where  ReadFlag = ?";
+			Cursor cursor = null;
+			int count = 0;
+			try {
+				cursor = getSQLiteDatabase().rawQuery(sql, new String[]{UdeskConst.ChatMsgReadFlag.unread+""});
+				if (cursor.getCount() < 1)
+					return 0;
+				cursor.moveToFirst();
+				count = cursor.getInt(0);
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				if (cursor != null
+						&& !cursor.isClosed()) {
+					cursor.close();
+				}
+			}
+
+			return count;
+		} catch (Exception e) {
+
+		}
+
+		return 0;
+	}
+
 }
