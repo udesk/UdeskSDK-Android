@@ -1,11 +1,16 @@
 package cn.udesk.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,6 +32,7 @@ import cn.udesk.R;
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskUtil;
 import cn.udesk.adapter.UDEmojiAdapter;
+import cn.udesk.model.UdeskCommodityItem;
 import udesk.core.model.MessageInfo;
 import udesk.core.utils.UdeskUtils;
 
@@ -39,19 +45,19 @@ public class MessageAdatper extends BaseAdapter{
 			R.layout.udesk_chat_msg_item_imgt_l,
 			R.layout.udesk_chat_msg_item_imgt_r,
 			R.layout.udesk_chat_msg_item_redirect,
-			R.layout.udesk_chat_rich_item_txt
+			R.layout.udesk_chat_rich_item_txt,
+			R.layout.udesk_im_commodity_item
 	};
 	
 	private static final int ILLEGAL = -1;
 	private static final int MSG_TXT_L = 0;
-	private static final int MSG_TXT_R = 1;
-	private static final int MSG_AUDIO_L = 2;
+	private static final int MSG_TXT_R = 1;	private static final int MSG_AUDIO_L = 2;
 	private static final int MSG_AUDIO_R = 3;
 	private static final int MSG_IMG_L = 4;
 	private static final int MSG_IMG_R = 5;
 	private static final int MSG_REDIRECT = 6;
 	private static final int RICH_TEXT = 7;
-	
+	private static final int COMMODITY = 8;
 	private static final long SPACE_TIME = 3 * 60 * 1000;
 	
 	private Context mContext;
@@ -64,14 +70,19 @@ public class MessageAdatper extends BaseAdapter{
 	}
 	
 	private void initDisplayOptions(){
-		options = new DisplayImageOptions.Builder()  
-         .showImageOnFail(R.drawable.udesk_defualt_failure)  
-		 .showImageOnLoading(R.drawable.udesk_defalut_image_loading)
-         .cacheInMemory(true)  
-         .cacheOnDisk(true)  
-         .bitmapConfig(Bitmap.Config.RGB_565)  
-         .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-         .build();  
+		try{
+			options = new DisplayImageOptions.Builder()
+					.showImageOnFail(R.drawable.udesk_defualt_failure)
+					.showImageOnLoading(R.drawable.udesk_defalut_image_loading)
+					.cacheInMemory(true)
+					.cacheOnDisk(true)
+					.bitmapConfig(Bitmap.Config.RGB_565)
+					.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+					.build();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
 	}
 	
 	@Override
@@ -88,6 +99,9 @@ public class MessageAdatper extends BaseAdapter{
 		MessageInfo message = getItem(position);
 		if(message == null){
 			return ILLEGAL;
+		}
+		if (message instanceof UdeskCommodityItem){
+			return COMMODITY;
 		}
 		switch (UdeskConst.parseTypeForMessage(message.getMsgtype())) {
 		case UdeskConst.ChatMsgTypeInt.TYPE_IMAGE:
@@ -112,7 +126,6 @@ public class MessageAdatper extends BaseAdapter{
 			}
 		case UdeskConst.ChatMsgTypeInt.TYPE_REDIRECT:
 			return MSG_REDIRECT;
-
 		default:
 			return ILLEGAL;
 		}
@@ -232,13 +245,27 @@ public class MessageAdatper extends BaseAdapter{
 				convertView.setTag(holder);
 				break;
 			}
-			case MSG_REDIRECT:
+			case MSG_REDIRECT: {
 				RedirectViewHolder holder = new RedirectViewHolder();
 				initItemNormalView(convertView, holder, itemType, position);
 				holder.redirectMsg = (TextView) convertView.findViewById(R.id.udesk_redirect_msg);
 				convertView.setTag(holder);
 				break;
-
+			}
+			case COMMODITY: {
+				CommodityViewHolder holder = new CommodityViewHolder();
+				holder.tvTime = (TextView) convertView.findViewById(R.id.udesk_tv_time);
+				holder.thumbnail = (ImageView) convertView
+						.findViewById(R.id.udesk_im_commondity_thumbnail);
+				holder.title = (TextView) convertView
+						.findViewById(R.id.udesk_im_commondity_title);
+				holder.subTitle = (TextView) convertView
+						.findViewById(R.id.udesk_im_commondity_subtitle);
+				holder.link = (TextView) convertView
+						.findViewById(R.id.udesk_im_commondity_link);
+				convertView.setTag(holder);
+				break;
+			}
 			}
 		}
 		return convertView;
@@ -285,11 +312,14 @@ public class MessageAdatper extends BaseAdapter{
 		}
 		
 		public void  showStatusOrProgressBar(){
+			if(itemType == COMMODITY){
+				return;
+			}
 			if(itemType == MSG_TXT_L 
 					|| itemType == MSG_AUDIO_L
 					|| itemType == MSG_IMG_L
-					|| itemType == MSG_REDIRECT){
-				
+					|| itemType == MSG_REDIRECT
+					){
 				ivStatus.setVisibility(View.GONE);
 			}else{
 				 changeUiState(message.getSendFlag());
@@ -319,13 +349,52 @@ public class MessageAdatper extends BaseAdapter{
 		public TextView rich_tvmsg;
 		@Override
 		void bind(Context context) {
-			CharSequence charSequence = Html.fromHtml(message.getMsgContent().substring(3,message.getMsgContent().length()).replaceAll("<p>","<br>").replaceAll("</p>", "</br>"));
+//			CharSequence charSequence = Html.fromHtml(message.getMsgContent().substring(3,message.getMsgContent().length()).replaceAll("<p>","<br>").replaceAll("</p>", "</br>"));
+			CharSequence charSequence = Html.fromHtml(message.getMsgContent().replaceAll("(<p>||</p>)",""));
 			rich_tvmsg.setText(charSequence);
 			rich_tvmsg.setMovementMethod(LinkMovementMethod.getInstance());
+			 CharSequence text = rich_tvmsg.getText();
+			if (text instanceof Spannable) {
+				int end = text.length();
+				Spannable sp = (Spannable) rich_tvmsg.getText();
+				URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
+				SpannableStringBuilder style = new SpannableStringBuilder(text);
+				SpannableStringBuilder builder = new SpannableStringBuilder(charSequence);
+				style.clearSpans();// should clear old spans
+				for (URLSpan url : urls) {
+					int start = builder.getSpanStart(url);
+					int ends = builder.getSpanEnd(url);
+					String texttitle = builder.toString().substring(start,ends);
+					MyURLSpan myURLSpan = new MyURLSpan(url.getURL(),texttitle);
+					style.setSpan(myURLSpan, sp.getSpanStart(url),
+							sp.getSpanEnd(url),
+							Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+				}
+				rich_tvmsg.setText(style);
+			}
 		}
 
-
 	}
+
+	private class MyURLSpan extends ClickableSpan {
+
+		private String mUrl;
+		private  String textTitle;
+
+		MyURLSpan(String url,String mtextTilte) {
+			mUrl = url;
+			textTitle = mtextTilte;
+		}
+
+		@Override
+		public void onClick(View widget) {
+			Intent intent = new Intent(mContext,UdeskWebViewUrlAcivity.class);
+			intent.putExtra(UdeskConst.WELCOME_URL,mUrl);
+			intent.putExtra(UdeskConst.WELCOME_URL_TITLE,textTitle);
+			mContext.startActivity(intent);
+		}
+	}
+
 	class TxtViewHolder extends BaseViewHolder {
 		public TextView tvMsg;
 		@Override
@@ -468,7 +537,28 @@ public class MessageAdatper extends BaseAdapter{
 		}
 		
 	}
-	
+
+	public class CommodityViewHolder extends  BaseViewHolder{
+		public ImageView thumbnail;
+		public TextView title;
+		public TextView subTitle;
+		public TextView link;
+		@Override
+		void bind(Context context) {
+			final UdeskCommodityItem item = (UdeskCommodityItem) message;
+			title.setText(item.getTitle());
+			subTitle.setText(item.getSubTitle());
+			ImageLoader.getInstance().displayImage(item.getThumbHttpUrl(), thumbnail, options);
+			link.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					((UdeskChatActivity)mContext).sentLink(item.getCommodityUrl());
+				}
+			});
+		}
+	}
+
+
 	private void initItemNormalView(View convertView, BaseViewHolder holder,
 			int itemType, final int position) {
 		holder.ivHeader = (ImageView) convertView.findViewById(R.id.udesk_iv_head);
@@ -480,7 +570,10 @@ public class MessageAdatper extends BaseAdapter{
 	
 	private void tryShowTime(int position, BaseViewHolder holder,
 			MessageInfo info) {
-		if (needShowTime(position)) {
+		if(info instanceof  UdeskCommodityItem){
+			holder.tvTime.setVisibility(View.GONE);
+
+		} else if (needShowTime(position)) {
 			holder.tvTime.setVisibility(View.VISIBLE);
 			holder.tvTime.setText(UdeskUtils.formatLongTypeTimeToString(info.getTime()));
 		} else {

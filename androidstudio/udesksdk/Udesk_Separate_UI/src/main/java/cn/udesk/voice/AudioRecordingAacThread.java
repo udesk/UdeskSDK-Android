@@ -27,7 +27,7 @@ public class AudioRecordingAacThread extends Thread implements VoiceRecord {
 			// 设置MediaRecorder录制的音频格式(不要修改其它格式了，后端对格式做了限定)
 			recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 			recorder.setAudioSamplingRate(8000);
-		}catch(Exception e){
+		}catch (Exception e){
 
 		}
 

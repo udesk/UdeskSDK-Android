@@ -20,6 +20,10 @@ public class UdeskConst {
 	public static final String UDESKHTMLURL = "html_url";
 	public static final String UDESKGROUPID = "udesk_groupid";
 	public static final String UDESKAGENTID = "udesk_agentid";
+
+	public static  final  String  WELCOME_URL = "welcome_url";
+	public static  final  String  WELCOME_URL_TITLE = "welcome_url_title";
+
 	/**
 	 * 每次读取消息表的记录数
 	 */
@@ -112,4 +116,5 @@ public class UdeskConst {
 		public static final int WaitAgent = 2;
 		public static final int HasAgent = 3;
 	}
+
 }

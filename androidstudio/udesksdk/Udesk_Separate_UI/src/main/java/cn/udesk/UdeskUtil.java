@@ -239,7 +239,6 @@ public class UdeskUtil {
 		ImageLoader.getInstance().init(config);
 	}
 
-
 	public static  void initCrashReport(Context context){
 		CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
 		strategy.setAppVersion(UdeskCoreConst.sdkversion);
@@ -247,7 +246,12 @@ public class UdeskUtil {
 	}
 
 	public static void closeCrashReport(){
-		CrashReport.closeCrashReport();
+		try{
+			CrashReport.closeCrashReport();
+		}catch (Exception e){
+
+		}
+
 	}
 
 }

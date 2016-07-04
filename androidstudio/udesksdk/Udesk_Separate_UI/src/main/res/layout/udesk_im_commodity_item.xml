@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/udesk_im_commodity_bg"
+    android:paddingBottom="21dp"
+    android:paddingLeft="31dp"
+    android:paddingRight="31dp"
+    android:paddingTop="21dp" >
+
+    <TextView
+        android:id="@+id/udesk_tv_time"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/udesk_5"
+        android:layout_marginTop="@dimen/udesk_5"
+        android:gravity="center"
+        android:textColor="@color/udesk_color_im_time_text"
+        android:textSize="@dimen/udesk_sp12" />
+
+    <ImageView
+        android:id="@+id/udesk_im_commondity_thumbnail"
+        android:layout_width="@dimen/udesk_im_commondity_width_height"
+        android:layout_height="@dimen/udesk_im_commondity_width_height"
+        android:layout_centerVertical="true"
+        android:layout_below="@id/udesk_tv_time"
+        android:layout_marginRight="11dp" />
+
+    <TextView
+        android:id="@+id/udesk_im_commondity_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/udesk_im_commondity_thumbnail"
+        android:layout_marginBottom="5dp"
+        android:layout_toRightOf="@id/udesk_im_commondity_thumbnail"
+        android:textColor="@color/udesk_color_im_commondity_title"
+        android:textSize="15sp" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/udesk_im_commondity_title"
+        android:layout_toRightOf="@id/udesk_im_commondity_thumbnail" >
+
+        <TextView
+            android:id="@+id/udesk_im_commondity_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:maxLines="1"
+            android:textColor="@color/udesk_color_im_commondity_subtitle"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/udesk_im_commondity_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/udesk_bg_commodity_link"
+            android:maxLines="1"
+            android:text="@string/udesk_label_send_commondity_link"
+            android:textColor="@color/udesk_color_im_commondity_link"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+</RelativeLayout>
