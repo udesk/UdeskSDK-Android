@@ -97,5 +97,5 @@
 
     <string name="aduido_denied">拒绝了录音权限，无法录音</string>
     <string name="camera_denied">拒绝了拍照权限，无法拍照</string>
-
+    <string name="photo_denied">拒绝了获取相册权限，无法获取图片</string>
 </resources>

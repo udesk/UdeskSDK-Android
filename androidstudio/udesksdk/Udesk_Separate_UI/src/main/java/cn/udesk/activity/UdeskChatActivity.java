@@ -814,11 +814,24 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 			}
 			UdeskUtils.hideSoftKeyboard(this, mInputEditView);
 		} else if (R.id.udesk_bottom_option_photo == v.getId()) {
-			selectPhoto();
-			bottomoPannelBegginStatus();
+			RxPermissions.getInstance(this)
+					.request(Manifest.permission_group.STORAGE)
+					.subscribe(new Action1<Boolean>() {
+						@Override
+						public void call(Boolean aBoolean) {
+							if (aBoolean) {
+								selectPhoto();
+								bottomoPannelBegginStatus();
+							} else {
+								Toast.makeText(UdeskChatActivity.this,
+										getResources().getString(R.string.photo_denied),
+										Toast.LENGTH_SHORT).show();
+							}
+						}
+					});
 		} else if (R.id.udesk_bottom_option_camera == v.getId()) {
 			RxPermissions.getInstance(this)
-					.request(Manifest.permission.CAMERA)
+					.request(Manifest.permission.CAMERA, Manifest.permission_group.STORAGE)
 					.subscribe(new Action1<Boolean>() {
 						@Override
 						public void call(Boolean aBoolean) {
@@ -834,7 +847,8 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 					});
 		} else if (R.id.udesk_bottom_record == v.getId()) {
 			RxPermissions.getInstance(this)
-					.request(Manifest.permission.RECORD_AUDIO)
+					.request(Manifest.permission.RECORD_AUDIO,
+							Manifest.permission_group.STORAGE)
 					.subscribe(new Action1<Boolean>() {
 						@Override
 						public void call(Boolean aBoolean) {
@@ -911,7 +925,8 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 			}
 
 			RxPermissions.getInstance(this)
-					.request(Manifest.permission.RECORD_AUDIO)
+					.request(Manifest.permission.RECORD_AUDIO,
+							Manifest.permission_group.STORAGE)
 					.subscribe(new Action1<Boolean>() {
 						@Override
 						public void call(Boolean aBoolean) {
