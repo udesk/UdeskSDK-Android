@@ -351,55 +351,60 @@ public class ChatActivityPresenter {
 		if (bitmap == null) {
 			return;
 		}
-		int width = bitmap.getWidth();
-		int height = bitmap.getHeight();
-		int max = Math.max(width, height);
+		try {
+			int width = bitmap.getWidth();
+			int height = bitmap.getHeight();
+			int max = Math.max(width, height);
 
-		BitmapFactory.Options factoryOptions = new BitmapFactory.Options();
-		factoryOptions.inJustDecodeBounds = false;
-		factoryOptions.inPurgeable = true;
-		// 获取原图数据
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-		byte[] data = stream.toByteArray();
+			BitmapFactory.Options factoryOptions = new BitmapFactory.Options();
+			factoryOptions.inJustDecodeBounds = false;
+			factoryOptions.inPurgeable = true;
+			// 获取原图数据
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+			byte[] data = stream.toByteArray();
 
-		String imageName = UdeskUtils.MD5(data);
-		File scaleImageFile = UdeskUtil.getOutputMediaFile(imageName
-				+ UdeskConst.ORIGINAL_SUFFIX);
-		if (!scaleImageFile.exists()) {
-			if (max > 1024) {
-				factoryOptions.inSampleSize = max / 1024;
-			} else {
-				factoryOptions.inSampleSize = 1;
+			String imageName = UdeskUtils.MD5(data);
+			File scaleImageFile = UdeskUtil.getOutputMediaFile(imageName
+					+ UdeskConst.ORIGINAL_SUFFIX);
+			if (!scaleImageFile.exists()) {
+				if (max > 1024) {
+					factoryOptions.inSampleSize = max / 1024;
+				} else {
+					factoryOptions.inSampleSize = 1;
+				}
+				FileOutputStream fos;
+				try {
+					fos = new FileOutputStream(scaleImageFile);
+					bitmap = BitmapFactory.decodeByteArray(data, 0, data.length,
+							factoryOptions);
+					bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
+					fos.close();
+					fos = null;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
 			}
-			FileOutputStream fos;
-			try {
-				fos = new FileOutputStream(scaleImageFile);
-				bitmap = BitmapFactory.decodeByteArray(data, 0, data.length,
-						factoryOptions);
-				bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
-				fos.close();
-				fos = null;
-			} catch (Exception e) {
-				e.printStackTrace();
+			if (bitmap != null) {
+				bitmap.recycle();
+				bitmap = null;
 			}
+			data = null;
+			if (TextUtils.isEmpty(scaleImageFile.getPath())) {
+				UdeskUtils.showToast(mChatView.getContext(), "上传图片失败，请重试");
+				return;
+			}
+			MessageInfo msg = buildSendMessage(
+					UdeskConst.ChatMsgTypeString.TYPE_IMAGE,
+					System.currentTimeMillis(), "", scaleImageFile.getPath());
+			saveMessage(msg);
+			mChatView.addMessage(msg);
+			upLoadImageFile(msg.getLocalPath(), msg);
+		}catch (Exception e){
 
 		}
-		if (bitmap != null) {
-			bitmap.recycle();
-			bitmap = null;
-		}
-		data = null;
-		if (TextUtils.isEmpty(scaleImageFile.getPath())) {
-			UdeskUtils.showToast(mChatView.getContext(), "上传图片失败，请重试");
-			return;
-		}
-		MessageInfo msg = buildSendMessage(
-				UdeskConst.ChatMsgTypeString.TYPE_IMAGE,
-				System.currentTimeMillis(), "", scaleImageFile.getPath());
-		saveMessage(msg);
-		mChatView.addMessage(msg);
-		upLoadImageFile(msg.getLocalPath(), msg);
+
 	}
 
 	public void sendBitmapMessage(String photoPath) {
@@ -408,13 +413,18 @@ public class ChatActivityPresenter {
 			return;
 		}
 		// showTime(System.currentTimeMillis());
-		MessageInfo msg = buildSendMessage(
-				UdeskConst.ChatMsgTypeString.TYPE_IMAGE,
-				System.currentTimeMillis(), "", photoPath);
+		try{
+			MessageInfo msg = buildSendMessage(
+					UdeskConst.ChatMsgTypeString.TYPE_IMAGE,
+					System.currentTimeMillis(), "", photoPath);
 
-		saveMessage(msg);
-		mChatView.addMessage(msg);
-		upLoadImageFile(photoPath, msg);
+			saveMessage(msg);
+			mChatView.addMessage(msg);
+			upLoadImageFile(photoPath, msg);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
 	}
 
 	private void upLoadImageFile(String filePath, MessageInfo message) {
