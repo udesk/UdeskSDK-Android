@@ -86,8 +86,8 @@
     <orderEntry type="library" exported="" name="rxpermissions-0.7.0" level="project" />
     <orderEntry type="library" exported="" name="jxmpp-util-cache-0.4.2-beta1" level="project" />
     <orderEntry type="library" exported="" name="rxjava-1.1.4" level="project" />
-    <orderEntry type="library" exported="" name="smack-android-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="smack-tcp-4.1.0" level="project" />
+    <orderEntry type="library" exported="" name="smack-android-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="smack-im-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="udesk_sdk_3.2.0" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.4" level="project" />
