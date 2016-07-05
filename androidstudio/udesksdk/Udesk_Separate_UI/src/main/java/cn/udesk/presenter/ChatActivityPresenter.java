@@ -412,7 +412,6 @@ public class ChatActivityPresenter {
 			UdeskUtils.showToast(mChatView.getContext(), "上传图片失败，请重试");
 			return;
 		}
-		// showTime(System.currentTimeMillis());
 		try{
 			MessageInfo msg = buildSendMessage(
 					UdeskConst.ChatMsgTypeString.TYPE_IMAGE,

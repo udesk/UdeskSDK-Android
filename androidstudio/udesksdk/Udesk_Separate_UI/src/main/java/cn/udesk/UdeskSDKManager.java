@@ -126,12 +126,32 @@ public class UdeskSDKManager {
 	}
 
 	public void showRobot(final Context context) {
-//		if(!TextUtils.isEmpty(getH5Url(context))){
-//			toLanuchRobotAcitivty(context,getH5Url(context), getTransfer(context));
-//			return;
-//		}
 
 		showLoading(context);
+		UdeskHttpFacade.getInstance().setUserInfo(getDomain(context),
+				getSecretKey(context), getSdkToken(context),
+				getUserinfo(), getTextField(),
+				UdeskSDKManager.getInstance().getRoplist(), new UdeskCallBack() {
+
+					@Override
+					public void onSuccess(String string) {
+						JsonUtils.parserCustomersJson(context, string);
+						dismiss();
+						if (!TextUtils.isEmpty(getH5Url(context))) {
+							toLanuchRobotAcitivty(context, getH5Url(context), getTransfer(context));
+						} else {
+							UdeskUtils.showToast(context, context.getString(R.string.udesk_has_not_open_robot));
+						}
+					}
+					@Override
+					public void onFail(String string) {
+						getRobotJsonApi(context);
+					}
+				});
+	}
+
+
+	private void getRobotJsonApi(final Context context){
 		UdeskHttpFacade.getInstance().getRobotJsonApi(getDomain(context), getSecretKey(context), new UdeskCallBack() {
 
 			@Override
@@ -158,34 +178,29 @@ public class UdeskSDKManager {
 	}
 
 	public void showRobotOrConversation(final Context context) {
-//		if(!TextUtils.isEmpty(getH5Url(context))){
-//			toLanuchRobotAcitivty(context,getH5Url(context), getTransfer(context));
-//			return;
-//		}
 		showLoading(context);
-		UdeskHttpFacade.getInstance().getRobotJsonApi(getDomain(context), getSecretKey(context), new UdeskCallBack() {
+		UdeskHttpFacade.getInstance().setUserInfo(getDomain(context),
+				getSecretKey(context), getSdkToken(context),
+				getUserinfo(), getTextField(),
+				UdeskSDKManager.getInstance().getRoplist(), new UdeskCallBack() {
 
-			@Override
-			public void onSuccess(String message) {
-				dismiss();
-				RobotInfo item = JsonUtils.parseRobotJsonResult(message);
-				if (item != null && !TextUtils.isEmpty(item.h5_url)) {
-					toLanuchRobotAcitivty(context, item.h5_url, item.transfer);
-					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-							UdeskConst.SharePreParams.Udesk_Transfer, item.transfer);
-					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-							UdeskConst.SharePreParams.Udesk_h5url, item.h5_url);
-				} else {
-					toLanuchChatAcitvity(context);
-				}
-			}
+					@Override
+					public void onSuccess(String string) {
+						JsonUtils.parserCustomersJson(context, string);
+						dismiss();
+						if (!TextUtils.isEmpty(getH5Url(context))) {
+							toLanuchRobotAcitivty(context, getH5Url(context), getTransfer(context));
+						} else {
+							toLanuchChatAcitvity(context);
+						}
+					}
 
-			@Override
-			public void onFail(String message) {
-				dismiss();
-				toLanuchChatAcitvity(context);
-			}
-		});
+					@Override
+					public void onFail(String string) {
+						dismiss();
+						toLanuchChatAcitvity(context);
+					}
+				});
 	}
 
 	/**
