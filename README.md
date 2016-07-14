@@ -104,5 +104,19 @@ toLanuchHelperAcitivty(Context context);
 ####控制台日志开关，设置true，可看日志，false关闭
 isShowLog(boolean isShow);
 
+##11、混淆设置
+-keep class udesk.core.** {*;}
+-keep class cn.udesk.**{*; }
+-keep class com.loopj.android.http.** {*; }
+-keep class com.tencent.bugly.** {*; }
+-keep class com.qiniu.android.** {*;}
+-keep class com.nostra13.universalimageloader.** {*;}
+-keep class org.jxmpp.** {*;}
+-keep class de.measite.** {*;}
+-keep class rx.** {*;}
+-keep class org.jivesoftware.** {*;}
+-keep class org.xmlpull.** {*;}
+-keep classcom.tbruyelle.rxpermissions.** {*;}
+
 
 
