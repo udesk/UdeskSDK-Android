@@ -327,7 +327,6 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 					}
 					if (formWindow != null) {
 						formWindow.cancle();
-						formWindow = null;
 					}
 					if(!hasSendCommodity){
 						hasSendCommodity = true;
@@ -343,6 +342,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 						currentStatusIsOnline = false;
 						isNeedStartExpandabLyout = true;
 					}
+					confirmToForm();
 				}
 				break;
 			case MessageWhat.redirectSuccess:
@@ -1417,7 +1417,10 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 	class EditChangedListener implements  TextWatcher{
 		@Override
 		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+			if (!isShowNotSendMsg()) {
+				UdeskUtils.hideSoftKeyboard(UdeskChatActivity.this, mInputEditView);
+				return;
+			}
 		}
 
 		@Override
