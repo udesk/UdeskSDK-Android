@@ -82,35 +82,40 @@ public class UdeskMessageManager {
 
 	
 	public void loginXmpp(){
-		mUdeskXmppManager.cancel(new UdeskCallBack() {
+		try{
+			mUdeskXmppManager.cancel(new UdeskCallBack() {
 
-			@Override
-			public void onSuccess(String message) {
+				@Override
+				public void onSuccess(String message) {
 
-				mUdeskXmppManager.startLoginXmpp(new UdeskCallBack() {
+					mUdeskXmppManager.startLoginXmpp(new UdeskCallBack() {
 
-					@Override
-					public void onSuccess(String message) {
+						@Override
+						public void onSuccess(String message) {
 
-						if (UdeskCoreConst.isDebug) {
-							Log.i("UdeskMessageManager ", message);
+							if (UdeskCoreConst.isDebug) {
+								Log.i("UdeskMessageManager ", message);
+							}
 						}
-					}
 
-					@Override
-					public void onFail(String message) {
-						if (UdeskCoreConst.isDebug && message != null) {
-							Log.i("UdeskMessageManager ", message);
+						@Override
+						public void onFail(String message) {
+							if (UdeskCoreConst.isDebug && message != null) {
+								Log.i("UdeskMessageManager ", message);
+							}
 						}
-					}
-				});
-			}
+					});
+				}
 
-			@Override
-			public void onFail(String message) {
+				@Override
+				public void onFail(String message) {
 
-			}
-		});
+				}
+			});
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+
 	
 	}
 	
