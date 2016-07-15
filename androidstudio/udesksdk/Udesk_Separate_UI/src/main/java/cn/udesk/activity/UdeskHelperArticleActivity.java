@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,10 +74,14 @@ public class UdeskHelperArticleActivity extends Activity {
 						UDHelperArticleContentItem item = JsonUtils.parseArticleContentItem(message);
 						udeskSubject.setText(item.subject);
 						String htmlData = item.content;
-						htmlData = htmlData.replaceAll("&amp;", "");
+						htmlData = htmlData.replaceAll("&amp;", "&");
 						htmlData = htmlData.replaceAll("quot;", "\"");
 						htmlData = htmlData.replaceAll("lt;", "<");
 						htmlData = htmlData.replaceAll("gt;", ">");
+						WebSettings webSettings= udeskWebView.getSettings();
+						webSettings.setJavaScriptEnabled(true);
+						webSettings.setBlockNetworkImage(false);
+						webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 						udeskWebView.loadDataWithBaseURL(null, htmlData, "text/html", "utf-8", null);
 					}catch (Exception e){
 						e.printStackTrace();

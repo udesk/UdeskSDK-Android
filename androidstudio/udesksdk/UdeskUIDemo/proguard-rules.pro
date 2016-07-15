@@ -25,14 +25,18 @@
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 -ignorewarning
 
--libraryjars 'C:\Projects\UdeskSDK-Android\androidstudio\udesksdk\Udesk_Separate_UI\libs'
-
--keep class udesk.**{*; }
+-keep class udesk.core.** {*;}
 -keep class cn.udesk.**{*; }
--keep class com.qiniu.android.**{*; }
--keep class com.tencent.bugly.**{*; }
--keep class com.nostra13.universalimageloader.**{*; }
--keep class com.loopj.android.http.**{*; }
+-keep class com.loopj.android.http.** {*; }
+-keep class com.tencent.bugly.** {*; }
+-keep class com.qiniu.android.** {*;}
+-keep class com.nostra13.universalimageloader.** {*;}
+-keep class org.jxmpp.** {*;}
+-keep class de.measite.** {*;}
+-keep class rx.** {*;}
+-keep class org.jivesoftware.** {*;}
+-keep class org.xmlpull.** {*;}
+-keep classcom.tbruyelle.rxpermissions.** {*;}
 
 -keepattributes InnerClasses,*Annotation*
 -keep public class * extends android.app.Fragment
