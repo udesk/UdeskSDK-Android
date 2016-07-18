@@ -24,14 +24,29 @@ import udesk.core.UdeskHttpFacade;
 /**
  * 
  * 在新创建个用户的时候，需要先设置相关的信息 1 调用 UdeskHttpFacade.getInstance().initApiKey
- * 保存信息，不涉及网络操作 2 UdeskHttpFacade.getInstance().setUserInfo 提交用户信息，
- * 返回创建分配终端用户账号ID的值,每个唯一的sdktoken值对应一个终端用户账号 ,
+ * 保存domian和key信息，不涉及网络操作 2 UdeskHttpFacade.getInstance().setUserInfo 提交用户信息，
  */
 public class UdeskInitActivity extends Activity implements OnClickListener {
 
-	private EditText mSdktoken,  mNickname , mEmail,mPhone,mWeiBoId,mWeiXinId,mDescribe;
 
+	//输入唯一标识的sdktoken的EditText
+	private EditText mSdktoken;
+	//输入昵称的EditText
+	private EditText  mNickname ;
+	//输入邮箱的EditText
+	private EditText  mEmail;
+	//输入电话的EditText
+	private EditText  mPhone;
+	//输入微博账号的EditText
+	private EditText  mWeiBoId;
+	//输入微信账号的EditText
+	private EditText  mWeiXinId;
+	//输入描述账号的EditText
+	private EditText  mDescribe;
+
+	//替换成你们注册的域名
 	private   String UDESK_DOMAIN = "udesksdk.udesk.cn";
+	//替换成你们在后台生成的密钥
 	private   String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
 
 	@Override
@@ -39,9 +54,13 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.udesk_init_activity_view);
 		initView();
+		//传入注册的域名和密钥
 		UdeskSDKManager.getInstance().initApiKey(this, UDESK_DOMAIN, UDESK_SECRETKEY);
 	}
 
+	/**
+	 * 初始化控件
+	 */
 	private void initView() {
 		mSdktoken = (EditText) findViewById(R.id.udesk_sdktoken);
 		mNickname = (EditText) findViewById(R.id.udesk_nickname);
@@ -55,16 +74,21 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 		findViewById(R.id.udesk_commit_selffield).setOnClickListener(this);
 	}
 
+	//提供：仅仅传入用户的基本信息   和  传入用户基本信息和自定义信息的2种使用情况
 	@Override
 	public void onClick(View v) {
 
-		if (v.getId() == R.id.udesk_commituserinfo) {
+
+		if (v.getId() == R.id.udesk_commituserinfo) {  	//仅仅传入用户的基本信息
 			setUserInfo();
-		} else if (v.getId() == R.id.udesk_commit_selffield) {
+		} else if (v.getId() == R.id.udesk_commit_selffield) {    // 传入用户基本信息和自定义信息的2中使用情况
 			commitSelffield();
 		}
 	}
 
+	/**
+	 * 设置用户基本信息
+	 */
 	private void setUserInfo() {
 		if (TextUtils.isEmpty(mSdktoken.getText().toString())) {
 			Toast.makeText(this, getString(R.string.udesk_sdktoken_toast),
@@ -77,6 +101,10 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 
 	}
 
+	/**
+	 * 获取各个EditText编辑框中输入的内如  存入到Map容器中
+	 * @return
+     */
 	private Map<String, String> getUserInfo() {
 
 		Map<String, String> info = new HashMap<String, String>();
@@ -92,6 +120,9 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 
 	}
 
+	/**
+	 * 提交用户基本信息和自定义信息
+	 */
 	private void commitSelffield() {
 		final HashMap<String, String> extraInfoTextField = new HashMap<String, String>();
 		final HashMap<String, String> extraInfodRoplist = new HashMap<String, String>();
@@ -109,13 +140,15 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 							if (child.has("content_type")) {
 								String type = child.getString("content_type");
 								if (type.equals("droplist")) {
+									//传入显示下拉列表的值
 									if (child.has("options")) {
-										// 想设置下拉列表的第几个值，则传入第几个key值字符串， 如下所示
+										// 设置下拉列表的第几个值，则传入第几个key值字符串， 如下所示
 										extraInfodRoplist.put(
 												child.getString("field_name"),
 												"0");
 									}
 								} else if (type.equals("text")) {
+									//传入自定义的文本信息
 									extraInfoTextField.put(
 											child.getString("field_name"),
 											child.getString("comment"));

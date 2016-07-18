@@ -9,6 +9,9 @@ import android.content.Intent;
 import cn.udesk.activity.UdeskChatActivity;
 
 
+/**
+ * 状态栏通知显示的样例
+ */
 public class NotificationUtils {
 	private NotificationUtils(){
 	}
@@ -23,6 +26,11 @@ public class NotificationUtils {
 		return instance;
 	}
 
+	/**
+	 *
+	 * @param context
+	 * @param message  状态栏显示的内容
+     */
 	public void notifyMsg(Context context,String message){
 
 			String notify_serivice = Context.NOTIFICATION_SERVICE;
