@@ -340,7 +340,7 @@ isShowLog(boolean isShow);
 		}
 	
 	}
-#五、工程项目的依赖
+#六、工程项目的依赖
 	compile files('libs/qiniu-android-sdk-7.0.1.jar')
     compile files('libs/universal-image-loader-1.9.4.jar')
     compile files('libs/bugly_crash_release__2.1.jar')
@@ -352,7 +352,7 @@ isShowLog(boolean isShow);
     compile files('libs/udesk_sdk_3.2.0.jar')
 
 
-#六、混淆忽略设置
+#七、混淆忽略设置
 -keep class udesk.core.** {*;} 
 
 
