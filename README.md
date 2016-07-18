@@ -352,7 +352,7 @@ isShowLog(boolean isShow);
     compile files('libs/udesk_sdk_3.2.0.jar')
 
 
-#五、混淆忽略设置
+#六、混淆忽略设置
 -keep class udesk.core.** {*;} 
 
 
