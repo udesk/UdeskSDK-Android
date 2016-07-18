@@ -8,21 +8,36 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-/**
- * Created by sks on 2016/3/17.
- */
-public class CustomDialog extends Dialog{
 
+public class CustomDialog extends Dialog {
+
+    /**
+     * Dialog的内容输入编辑器
+     */
     private EditText editText;
-    private Button positiveButton, negativeButton;
+    /**
+     * 确定按钮
+     */
+    private Button positiveButton;
+    /**
+     * 取消按钮
+     */
+    private Button  negativeButton;
+
+    /**
+     * 对话框的标题
+     */
     private TextView title;
 
     public CustomDialog(Context context) {
-        super(context,R.style.add_dialog);
-        setCustomDialog();
+        super(context, R.style.add_dialog);
+        initView();
     }
 
-    private void setCustomDialog() {
+    /**
+     * 控件初始化
+     */
+    private void initView() {
         View mView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_normal_layout, null);
         title = (TextView) mView.findViewById(R.id.title);
         editText = (EditText) mView.findViewById(R.id.udesk_id);
@@ -31,31 +46,40 @@ public class CustomDialog extends Dialog{
         super.setContentView(mView);
     }
 
-    public View getEditText(){
+    /**
+     * 返回编辑的EditText
+     * @return
+     */
+    public View getEditText() {
         return editText;
     }
 
-    public void setDialogTitle(String name){
-        if(title != null){
+    /**
+     * s设置对话框的标题
+     * @param name
+     */
+    public void setDialogTitle(String name) {
+        if (title != null) {
             title.setText(name);
         }
     }
 
 
-
-
     /**
      * 确定键监听器
+     *
      * @param listener
      */
-    public void setOnPositiveListener(View.OnClickListener listener){
+    public void setOnPositiveListener(View.OnClickListener listener) {
         positiveButton.setOnClickListener(listener);
     }
+
     /**
      * 取消键监听器
+     *
      * @param listener
      */
-    public void setOnNegativeListener(View.OnClickListener listener){
+    public void setOnNegativeListener(View.OnClickListener listener) {
         negativeButton.setOnClickListener(listener);
     }
 
