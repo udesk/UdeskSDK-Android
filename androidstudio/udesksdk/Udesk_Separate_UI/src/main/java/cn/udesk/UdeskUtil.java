@@ -217,7 +217,7 @@ public class UdeskUtil {
 	}
 
 
-	public static void initImageLoaderConfig(Context context){
+	public static ImageLoaderConfiguration initImageLoaderConfig(Context context){
 		File cacheDir = StorageUtils.getOwnCacheDirectory(
 				context, "udesksdk/img/cache");
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
@@ -237,6 +237,7 @@ public class UdeskUtil {
 								5 * 1000, 30 * 1000))
 				.build();// 开始构建
 		ImageLoader.getInstance().init(config);
+		return config;
 	}
 
 	public static  void initCrashReport(Context context){

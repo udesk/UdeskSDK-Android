@@ -125,7 +125,9 @@ public class MessageAdatper extends BaseAdapter {
     private ImageLoader getImageLoader(Context context) {
         if (mImageLoader == null) {
             mImageLoader = ImageLoader.getInstance();
-            mImageLoader.init(ImageLoaderConfiguration.createDefault(context));
+        }
+        if(!mImageLoader.isInited()){
+            mImageLoader.init(UdeskUtil.initImageLoaderConfig(context));
         }
         return mImageLoader;
     }
