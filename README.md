@@ -36,7 +36,7 @@ private Map<String, String> getUserInfo() {
 ####添加用户自定义字段 用管理员账号登录后台，在[管理中心-用户字段]中添加自定义字段。
 ![alt text](indeximg/用户自定义.png)
 ####调用接口获取用户自定义字段并赋值。
-getCustomeUserfields();
+public void getUserFields(String mDomain,String mSecretKey,final UdeskCallBack callback) 
 ####用户自定义字段共有两类：文本型字段和选择型字段。 文本型字段示例：
 {
       "field_name": "TextField_684",
