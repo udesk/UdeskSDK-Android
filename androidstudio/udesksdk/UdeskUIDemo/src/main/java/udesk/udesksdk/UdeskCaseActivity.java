@@ -3,6 +3,7 @@ package udesk.udesksdk;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -109,11 +110,19 @@ public class UdeskCaseActivity extends Activity {
             }
         });
 
+
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
         /**
          * 注册接收消息提醒事件
          */
         UdeskMessageManager.getInstance().event_OnNewMsgNotice.bind(this, "OnNewMsgNotice");
-
+        Log.i("xxx","UdeskCaseActivity 中bind OnNewMsgNotice");
     }
 
     /**
@@ -124,6 +133,7 @@ public class UdeskCaseActivity extends Activity {
      */
     public void OnNewMsgNotice(MsgNotice msgNotice) {
         if (msgNotice != null) {
+            Log.i("xxx","UdeskCaseActivity 中收到msgNotice");
             NotificationUtils.getInstance().notifyMsg(UdeskCaseActivity.this, msgNotice.getContent());
         }
 
@@ -133,6 +143,8 @@ public class UdeskCaseActivity extends Activity {
     protected void onPause() {
         super.onPause();
         mUnReadTips.setVisibility(View.GONE);
+        UdeskMessageManager.getInstance().event_OnNewMsgNotice.unBind(this);
+        Log.i("xxx","UdeskCaseActivity 中unbind OnNewMsgNotice");
     }
 
     /**

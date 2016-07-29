@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -18,6 +19,8 @@ import java.util.Map;
 
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
+import cn.udesk.model.MsgNotice;
+import cn.udesk.xmpp.UdeskMessageManager;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskHttpFacade;
 
@@ -185,11 +188,47 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 		Intent intent = new Intent(this, UdeskCaseActivity.class);
 		startActivity(intent);
 	}
+
+	@Override
+	protected void onResume() {
+
+		super.onResume();
+
+		/**
+		 * 注册接收消息提醒事件
+		 */
+		UdeskMessageManager.getInstance().event_OnNewMsgNotice.bind(this, "OnNewMsgNotice");
+
+		Log.i("xxx","UdeskInitActivity 中bind OnNewMsgNotice");
+	}
+
+	@Override
+	protected void onPause() {
+		super.onStop();
+		UdeskMessageManager.getInstance().event_OnNewMsgNotice.unBind(this);
+		Log.i("xxx","UdeskInitActivity 中unbind OnNewMsgNotice");
+	}
+
+	/**
+	 * 处理不在会话界面 收到消息的通知事例  方法名OnNewMsgNotice  对应于绑定事件
+	 * UdeskMessageManager.getInstance().event_OnNewMsgNotice.bind(this,"OnNewMsgNotice")中参数的字符串
+	 *
+	 * @param msgNotice
+	 */
+	public void OnNewMsgNotice(MsgNotice msgNotice) {
+		if (msgNotice != null) {
+			Log.i("xxx","UdeskInitActivity 中收到msgNotice");
+			NotificationUtils.getInstance().notifyMsg(UdeskInitActivity.this, msgNotice.getContent());
+		}
+
+	}
 	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 
 	}
+
+
 
 }
