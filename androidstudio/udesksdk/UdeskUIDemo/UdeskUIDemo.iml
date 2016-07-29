@@ -111,11 +111,11 @@
     <orderEntry type="library" exported="" name="jxmpp-util-cache-0.4.2-beta1" level="project" />
     <orderEntry type="library" exported="" name="jxmpp-core-0.4.2-beta1" level="project" />
     <orderEntry type="library" exported="" name="minidns-0.1.7" level="project" />
-    <orderEntry type="library" exported="" name="smack-resolver-minidns-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="rxjava-1.1.4" level="project" />
+    <orderEntry type="library" exported="" name="smack-resolver-minidns-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="smack-im-4.1.0" level="project" />
-    <orderEntry type="library" exported="" name="smack-tcp-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="smack-android-4.1.0" level="project" />
+    <orderEntry type="library" exported="" name="smack-tcp-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="smack-sasl-provided-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="smack-core-4.1.0" level="project" />
     <orderEntry type="module" module-name="Udesk_Separate_UI" exported="" />
