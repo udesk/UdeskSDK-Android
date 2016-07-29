@@ -204,7 +204,7 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 
 	@Override
 	protected void onPause() {
-		super.onStop();
+		super.onPause();
 		UdeskMessageManager.getInstance().event_OnNewMsgNotice.unBind(this);
 		Log.i("xxx","UdeskInitActivity 中unbind OnNewMsgNotice");
 	}
