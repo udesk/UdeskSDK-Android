@@ -600,6 +600,8 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
 	/**
 	 * 读取数据库中的历史数据
+	 * mode 1 表示第一次获取
+	 *      2 表示下拉刷新获取
 	 */
 	private void loadHistoryRecords(int mode) {
 		mListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
@@ -1084,7 +1086,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 						}
 					}
 				} else {
-					if (mPresenter != null) {
+					if (mPresenter != null && photoUri != null) {
 						mPresenter.sendBitmapMessage(photoUri.getPath());
 					}
 				}
@@ -1445,4 +1447,6 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
 		}
 	}
+
+
 }
