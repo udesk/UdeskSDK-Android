@@ -45,6 +45,7 @@
     <string name="udesk_success_save_image">成功保存</string>
     <string name="udesk_error_network">没有可用网络</string>
     <string name="udesk_cancel">取消</string>
+    <string name="udesk_sure">确定</string>
     <string name="udesk_ok">留言</string>
     <string name="udesk_retry">重发</string>
     <string name="udesk_msg_retry">重发该消息</string>
@@ -98,4 +99,6 @@
     <string name="aduido_denied">拒绝了录音权限，无法录音</string>
     <string name="camera_denied">拒绝了拍照权限，无法拍照</string>
     <string name="photo_denied">拒绝了获取相册权限，无法获取图片</string>
+    <string name="add_bolcked_tips">抱歉，你已经被加入了黑名单</string>
+
 </resources>

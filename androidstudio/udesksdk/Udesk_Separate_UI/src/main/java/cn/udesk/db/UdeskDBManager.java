@@ -11,17 +11,10 @@ import java.util.List;
 
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
+import udesk.core.model.AgentInfo;
 import udesk.core.model.MessageInfo;
 
-/**
- * UdeskDBManager 对UdeskDBHelper中的表做操作 UdeskDBHelper 目前创建2张表 UdeskMessage 消息表
- * UdeskSendIngMsgs 发送中消息表 UdeskMessage 表主键是MsgID ， 其它字段有Time,MsgContent,
- * MsgType,ReadFlag,SendFlag,PlayedFlag Direction,LocalPath,Duration
- * 
- * 
- * UdeskSendIngMsgs 主键 MsgID 其它字段有SendFlag Time
- * 
- */
+
 public class UdeskDBManager {
 
 	private static UdeskDBHelper helper;
@@ -116,8 +109,8 @@ public class UdeskDBManager {
 			String sql = "replace into "
 					+ UdeskDBHelper.UdeskMessage
 					+ "(MsgID ,Time ,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,"
-					+ "Direction,LocalPath,Duration)"
-					+ " values (?,?,?,?,?,?,?,?,?,?)";
+					+ "Direction,LocalPath,Duration,AgentJid)"
+					+ " values (?,?,?,?,?,?,?,?,?,?,?)";
 
 			getSQLiteDatabase().execSQL(
 					sql,
@@ -125,14 +118,15 @@ public class UdeskDBManager {
 							msg.getMsgContent(), msg.getMsgtype(),
 							msg.getReadFlag(), msg.getSendFlag(),
 							msg.getPlayflag(), msg.getDirection(),
-							msg.getLocalPath(), msg.getDuration() });
+							msg.getLocalPath(), msg.getDuration() ,msg.getmAgentJid()});
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
-	
+
+	//更新消息的内容
 	public boolean updateMsgContent(String msgid,String text){
 		
 		String sql =  "update " +  UdeskDBHelper.UdeskMessage + " set " + "MsgContent= ?"
@@ -151,6 +145,7 @@ public class UdeskDBManager {
 		
 	}
 
+	//更新消息发送的状态
 	public boolean updateMsgSendFlag(String msgId, int sendflag) {
 
 		String sql = "update " + UdeskDBHelper.UdeskMessage + " set "
@@ -168,6 +163,7 @@ public class UdeskDBManager {
 
 	}
 
+	//更新消息发送中的为发送失败
 	public boolean updateSendFlagToFail() {
 		String sql = "update " + UdeskDBHelper.UdeskMessage
 				+ " set  SendFlag = " + UdeskConst.SendFlag.RESULT_FAIL
@@ -184,6 +180,7 @@ public class UdeskDBManager {
 		}
 	}
 
+	//根据消息的ID查询这条消息
 	public MessageInfo getMessage(String msgid) {
 		String sql = "select * from " + UdeskDBHelper.UdeskMessage
 				+ " where MsgID = ?";
@@ -203,9 +200,15 @@ public class UdeskDBManager {
 				int direction = cursor.getInt(7);
 				String localPath = cursor.getString(8);
 				long duration = cursor.getLong(9);
+				String agentJid = cursor.getString(10);
 				msg = new MessageInfo(time, msgId, msgtype, msgContent,
 						readFlag, sendFlag, playFlag, direction, localPath,
-						duration);
+						duration,agentJid);
+				if (!TextUtils.isEmpty(agentJid.trim())){
+					String[] urlAndNick = getAgentUrlAndNick(agentJid);
+					msg.setAgentUrl(urlAndNick[0]);
+					msg.setNickName(urlAndNick[1]);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -256,9 +259,15 @@ public class UdeskDBManager {
 				int direction = cursor.getInt(7);
 				String localPath = cursor.getString(8);
 				long duration = cursor.getLong(9);
+				String agentJid = cursor.getString(10);
 				MessageInfo message = new MessageInfo(time, msgId, msgtype,
 						msgContent, readFlag, sendFlag, playFlag, direction,
-						localPath, duration);
+						localPath, duration,agentJid);
+				if (!TextUtils.isEmpty(agentJid.trim())){
+					String[] urlAndNick = getAgentUrlAndNick(agentJid);
+					message.setAgentUrl(urlAndNick[0]);
+					message.setNickName(urlAndNick[1]);
+				}
 				list.add(message);
 			}
 		} catch (Exception e) {
@@ -447,6 +456,11 @@ public class UdeskDBManager {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			if (cursor !=null){
+				cursor.close();
+				cursor = null;
+			}
 		}
 		return false;
 	}
@@ -494,6 +508,7 @@ public class UdeskDBManager {
 
 	}
 
+	//获取未读消息数
 	public int getUnReadMessageCount() {
 		try {
 			String sql = "select count(*) from " + UdeskDBHelper.UdeskMessage
@@ -522,5 +537,53 @@ public class UdeskDBManager {
 
 		return 0;
 	}
+
+
+	public String[] getAgentUrlAndNick(String agentJId) {
+		String sql = "select * from " + UdeskDBHelper.UdeskAgentMsg
+				+ " where AgentJid = ?";
+
+		String[] urlAndNick = new String[2];
+		Cursor cursor = null;
+		try {
+			cursor = getSQLiteDatabase().rawQuery(sql, new String[] { agentJId });
+			if (cursor.moveToFirst()) {
+				urlAndNick[0]  = cursor.getString(1);
+				urlAndNick[1] =  cursor.getString(2);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+				cursor = null;
+			}
+		}
+		return urlAndNick;
+	}
+
+
+	public boolean addAgentInfo(AgentInfo agentInfo) {
+		try {
+
+			if (getSQLiteDatabase() == null) {
+				return false;
+			}
+
+			String sql = "replace into "
+					+ UdeskDBHelper.UdeskAgentMsg
+					+ "(AgentJid ,HeadUrl ,AgentNick )"
+					+ " values (?,?,?)";
+
+			getSQLiteDatabase().execSQL(
+					sql,
+					new Object[] { agentInfo.getAgentJid(),agentInfo.getHeadUrl(),agentInfo.getAgentNick()});
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 
 }

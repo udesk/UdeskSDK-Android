@@ -2,7 +2,7 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/udesk_imgroup_bg_selector"
     android:textColor="#ff606060"
-    android:textSize="16dp"
+    android:textSize="16sp"
     android:gravity="center_vertical"
     android:paddingBottom="@dimen/udesk_5"
     android:paddingRight="@dimen/udesk_5"

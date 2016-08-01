@@ -9,10 +9,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.model.MsgNotice;
 import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.xmpp.UdeskMessageManager;
+import udesk.core.UdeskCallBack;
+import udesk.core.UdeskHttpFacade;
 
 
 public class UdeskCaseActivity extends Activity {
@@ -95,6 +106,14 @@ public class UdeskCaseActivity extends Activity {
             }
         });
 
+        findViewById(R.id.update_info).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UdeskSDKManager.getInstance().setUpdateUserinfo(updateUserBaseInfo());
+                updateUserextraInfo();
+            }
+        });
+
         //初始化数字提醒控件
         mUnReadTips = (BadgeView) findViewById(R.id.id_unread_tips);
         mUnReadTips.setVisibility(View.GONE);
@@ -109,20 +128,12 @@ public class UdeskCaseActivity extends Activity {
                 mUnReadTips.setText(unreadMsg + "");
             }
         });
-
-
-    }
-
-    @Override
-    protected void onResume() {
-
-        super.onResume();
-
         /**
          * 注册接收消息提醒事件
          */
         UdeskMessageManager.getInstance().event_OnNewMsgNotice.bind(this, "OnNewMsgNotice");
         Log.i("xxx","UdeskCaseActivity 中bind OnNewMsgNotice");
+
     }
 
     /**
@@ -143,8 +154,7 @@ public class UdeskCaseActivity extends Activity {
     protected void onPause() {
         super.onPause();
         mUnReadTips.setVisibility(View.GONE);
-        UdeskMessageManager.getInstance().event_OnNewMsgNotice.unBind(this);
-        Log.i("xxx","UdeskCaseActivity 中unbind OnNewMsgNotice");
+
     }
 
     /**
@@ -202,7 +212,96 @@ public class UdeskCaseActivity extends Activity {
         item.setThumbHttpUrl("https://img.alicdn.com/imgextra/i1/1728293990/TB2ngm0qFXXXXcOXXXXXXXXXXXX_!!1728293990.jpg_430x430q90.jpg");// 左侧图片
         item.setCommodityUrl("https://detail.tmall.com/item.htm?spm=a1z10.3746-b.w4946-14396547293.1.4PUcgZ&id=529634221064&sku_properties=-1:-1");// 商品网络链接
         UdeskSDKManager.getInstance().setCommodity(item);
+        UdeskSDKManager.getInstance().toLanuchChatAcitvity(UdeskCaseActivity.this);
     }
 
 
+    //更新默认字段信息样例
+    private Map<String, String> updateUserBaseInfo() {
+
+        Map<String, String> info = new HashMap<String, String>();
+        info.put(UdeskConst.UdeskUserInfo.NICK_NAME, "修改姓名");
+        info.put(UdeskConst.UdeskUserInfo.EMAIL, getRandomNumberString(8) + "@163.com");
+        info.put(UdeskConst.UdeskUserInfo.CELLPHONE, 1 + getRandomNumber(10));
+        info.put(UdeskConst.UdeskUserInfo.WEIXIN_ID, getRandomNumberString(6));
+        info.put(UdeskConst.UdeskUserInfo.WEIBO_NAME, getRandomNumberString(5));
+        info.put(UdeskConst.UdeskUserInfo.DESCRIPTION, getRandomNumberString(15));
+        return info;
+    }
+
+    private String getRandomNumberString(int cnt) {
+        return getRandomNumber(cnt);
+    }
+
+    private String getRandomNumber(int length) {
+        Random random = new Random();
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < length; i++) {
+            buffer.append(random.nextInt(10));
+        }
+        return buffer.toString();
+    }
+
+    //更新自定义字段用户举例
+    private void updateUserextraInfo() {
+        final HashMap<String, String> extraInfoTextField = new HashMap<String, String>();
+        final HashMap<String, String> extraInfodRoplist = new HashMap<String, String>();
+        UdeskHttpFacade.getInstance().getUserFields(UdeskSDKManager.getInstance().getDomain(this), UdeskSDKManager.getInstance().getSecretKey(this),
+                new UdeskCallBack() {
+
+                    @Override
+                    public void onSuccess(String result) {
+                        try {
+                            JSONObject jo = new JSONObject(result);
+                            int status = jo.optInt("status");
+                            if (status == 0) {
+                                JSONArray jsonArray = jo.getJSONArray("user_fields");
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject child = (JSONObject) jsonArray.get(i);
+                                    if (child.has("content_type")) {
+                                        String type = child.getString("content_type");
+                                        if (type.equals("droplist")) {
+                                            if (child.has("options")) {
+                                                // 想设置下拉列表的第几个值，则传入第几个key值字符串， 如下所示
+                                                extraInfodRoplist.put(
+                                                        child.getString("field_name"),
+                                                        "1");
+                                            }
+                                        } else if (type.equals("text")) {
+                                            extraInfoTextField.put(
+                                                    child.getString("field_name"),
+                                                    "更改文本");
+                                        }
+                                    }
+                                }
+                            }
+                            //传入更新的自定义文本字段
+                            UdeskSDKManager.getInstance().setUpdateTextField(extraInfoTextField);
+                            //传入需要更新的自定义下拉列表字段值
+                            UdeskSDKManager.getInstance().setUpdateRoplist(extraInfodRoplist);
+                            UdeskSDKManager.getInstance().toLanuchChatAcitvity(UdeskCaseActivity.this);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFail(String arg0) {
+
+                    }
+                });
+
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        /**
+         * 注册接收消息提醒事件
+         */
+        UdeskMessageManager.getInstance().event_OnNewMsgNotice.unBind(this);
+        Log.i("xxx","UdeskCaseActivity 中unbind OnNewMsgNotice");
+    }
 }

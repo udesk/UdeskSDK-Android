@@ -39,6 +39,10 @@
             android:layout_marginTop="@dimen/udesk_titlebar_padding"
             android:gravity="center_vertical|center_horizontal"
             android:textColor="@color/udesk_color_titlebar_text_center"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:layout_marginLeft="@dimen/udesk_50"
+            android:layout_marginRight="@dimen/udesk_50"
             android:textSize="@dimen/udesk_titlebar_agent_state_size"
             android:visibility="gone" />
     </LinearLayout>

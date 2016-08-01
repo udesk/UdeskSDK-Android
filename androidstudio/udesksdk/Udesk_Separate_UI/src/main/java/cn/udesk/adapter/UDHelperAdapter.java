@@ -52,7 +52,7 @@ public class UDHelperAdapter extends BaseAdapter {
         if(convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_layout_helper_item, null);
         }
-        ((TextView)convertView).setText(list.get(position).subject);;
+        ((TextView)convertView).setText(list.get(position).subject);
         return convertView;
     }
 

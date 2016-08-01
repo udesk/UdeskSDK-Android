@@ -1,1 +1,1 @@
-package cn.udesk.voice;public interface VoiceRecord {    public void initResource(String filePath, AudioRecordState state);    public void startRecord();    public void stopRecord();    public void cancelRecord();    public void receycleResource();    public long getMaxAmplitude();}
+package cn.udesk.voice;public interface VoiceRecord {     void initResource(String filePath, AudioRecordState state);     void startRecord();    void stopRecord();     void cancelRecord();     void receycleResource();     long getMaxAmplitude();}

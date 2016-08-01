@@ -18,7 +18,6 @@ import cn.udesk.xmpp.UdeskMessageManager;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskCoreConst;
 import udesk.core.UdeskHttpFacade;
-import udesk.core.UdeskLogUtil;
 import udesk.core.model.RobotInfo;
 import udesk.core.utils.UdeskUtils;
 
@@ -44,9 +43,26 @@ public class UdeskSDKManager {
 	 * 用户自定义字段的列表信息
 	 */
 	private Map<String, String> roplist = null;
+
+
+	/**
+	 * 用户需要更新的基本信息
+	 */
+	private Map<String, String> updateUserinfo = null;
+	/**
+	 * 用户需要更新自定义字段文本信息
+	 */
+	private Map<String, String> updateTextField = null;
+
+	/**
+	 * 用户需要更新自定义字段的列表信息
+	 */
+	private Map<String, String> updateRoplist = null;
+
 	private String domain = null;
 	private String secretKey = null;
 	private String userId = null;
+	private String isBolcked =null;
 	private String transfer = null;
 	private String h5Url = null;
 	private UdeskCommodityItem commodity = null;
@@ -128,7 +144,7 @@ public class UdeskSDKManager {
 	public void showRobot(final Context context) {
 
 		showLoading(context);
-		UdeskHttpFacade.getInstance().setUserInfo(getDomain(context),
+		UdeskHttpFacade.getInstance().setUserInfo(context,getDomain(context),
 				getSecretKey(context), getSdkToken(context),
 				getUserinfo(), getTextField(),
 				UdeskSDKManager.getInstance().getRoplist(), new UdeskCallBack() {
@@ -179,7 +195,7 @@ public class UdeskSDKManager {
 
 	public void showRobotOrConversation(final Context context) {
 		showLoading(context);
-		UdeskHttpFacade.getInstance().setUserInfo(getDomain(context),
+		UdeskHttpFacade.getInstance().setUserInfo(context,getDomain(context),
 				getSecretKey(context), getSdkToken(context),
 				getUserinfo(), getTextField(),
 				UdeskSDKManager.getInstance().getRoplist(), new UdeskCallBack() {
@@ -236,7 +252,6 @@ public class UdeskSDKManager {
 	 * @param isShow
 	 */
 	public void isShowLog(boolean isShow){
-		UdeskLogUtil.DEBUG = isShow;
 		UdeskCoreConst.xmppDebug =isShow;
 		UdeskCoreConst.isDebug = isShow;
 	}
@@ -300,7 +315,11 @@ public class UdeskSDKManager {
 		}
 		return "";
 	}
-	
+
+	public String getIsBolcked() {
+		return isBolcked;
+	}
+
 	public String getTransfer(Context context) {
 		
 		if(!TextUtils.isEmpty(transfer)){
@@ -326,6 +345,10 @@ public class UdeskSDKManager {
 
 	public void setTransfer(String transfer) {
 		this.transfer = transfer;
+	}
+
+	public void setIsBolcked(String isBolcked) {
+		this.isBolcked = isBolcked;
 	}
 
 	public UdeskCommodityItem getCommodity() {
@@ -401,5 +424,29 @@ public class UdeskSDKManager {
 
 	public void setIsNeedMsgNotice(boolean isNeedMsgNotice) {
 		this.isNeedMsgNotice = isNeedMsgNotice;
+	}
+
+	public Map<String, String> getUpdateUserinfo() {
+		return updateUserinfo;
+	}
+
+	public void setUpdateUserinfo(Map<String, String> updateUserinfo) {
+		this.updateUserinfo = updateUserinfo;
+	}
+
+	public Map<String, String> getUpdateTextField() {
+		return updateTextField;
+	}
+
+	public void setUpdateTextField(Map<String, String> updateTextField) {
+		this.updateTextField = updateTextField;
+	}
+
+	public Map<String, String> getUpdateRoplist() {
+		return updateRoplist;
+	}
+
+	public void setUpdateRoplist(Map<String, String> updateRoplist) {
+		this.updateRoplist = updateRoplist;
 	}
 }

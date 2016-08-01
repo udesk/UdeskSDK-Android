@@ -35,17 +35,24 @@ public class UdeskZoomImageActivty extends Activity implements
 		super.onCreate(arg0);
 		setContentView(R.layout.udesk_zoom_imageview);
 		zoomImageView = (UdeskZoomImageView) findViewById(R.id.udesk_zoom_imageview);
-		Bundle bundle = getIntent().getExtras();
-		uri = (android.net.Uri) bundle.getParcelable("image_path");
-		DisplayImageOptions options = new DisplayImageOptions.Builder()
-				.cacheInMemory(true)
-				.cacheOnDisk(true)
-				.bitmapConfig(Bitmap.Config.RGB_565)
-				.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-				.build();
-		if (uri != null){
-			ImageLoader.getInstance().displayImage( "file:///"+ uri.getPath(), zoomImageView, options);
+		try{
+			Bundle bundle = getIntent().getExtras();
+			uri = (android.net.Uri) bundle.getParcelable("image_path");
+			DisplayImageOptions options = new DisplayImageOptions.Builder()
+					.cacheInMemory(true)
+					.cacheOnDisk(true)
+					.bitmapConfig(Bitmap.Config.RGB_565)
+					.imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+					.build();
+			if (uri != null){
+				ImageLoader.getInstance().displayImage( "file:///"+ uri.getPath(), zoomImageView, options);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}catch (OutOfMemoryError error){
+
 		}
+
 		saveIdBtn = findViewById(R.id.udesk_zoom_save);
 		saveIdBtn.setOnClickListener(this);
 	}

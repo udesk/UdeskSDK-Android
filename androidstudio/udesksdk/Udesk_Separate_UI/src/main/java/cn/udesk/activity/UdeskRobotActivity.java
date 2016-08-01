@@ -115,6 +115,7 @@ public class UdeskRobotActivity extends Activity {
 		}
 	}
 
+	//根据传入的tranfer 控制右侧是否显示转人工
 	private void settingTitleBarRight(String tranfer) {
 		if (tranfer != null && tranfer.trim().equals("true")) {
 			mTitlebar.setRightTextVis(View.VISIBLE);

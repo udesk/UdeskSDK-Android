@@ -2,17 +2,17 @@
 package cn.udesk.voice;
 
 public interface AudioRecordState {
-    public void onRecordSuccess(final String resultFilePath , long time);
+     void onRecordSuccess(final String resultFilePath , long time);
 
-    public void onRecordingError();
+     void onRecordingError();
 
-    public void onRecordSaveError();
+     void onRecordSaveError();
 
-    public void onRecordTooShort();
+     void onRecordTooShort();
     
-    public void onRecordCancel();
+     void onRecordCancel();
     
-    public void updateRecordState(int micAmplitude);
+     void updateRecordState(int micAmplitude);
     
-    public void onRecordllegal();
+     void onRecordllegal();
 }

@@ -114,7 +114,7 @@ public class UDEmojiAdapter extends BaseAdapter {
 				if (EMOJI_ARRAY[j].equals(emojiNumber)) {
 					Drawable drawable = mContext.getResources().getDrawable(
 							EMOJI_RESOURCE_ID_ARRAY[j]);
-					if(emojiNumber.equals("028")){
+					if(emojiNumber.equals("028")){  //sdk 端最后一个表情替换成了删除，收到最后一个表情，做特殊处理
 						drawable = mContext.getResources().getDrawable(R.drawable.udesk_029);
 					}
 					if (drawable != null) {
