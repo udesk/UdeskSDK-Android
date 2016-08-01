@@ -59,7 +59,8 @@ public class UdeskHelperArticleActivity extends Activity {
 			}
 		}
 		
-		
+
+	// 通过文章的ID，获取文章的具体内容
 		private void getArticlesContentJsonApiById(int id) {
 			udeskLoading.setVisibility(View.VISIBLE);
 			UdeskHttpFacade.getInstance().getArticlesContentJsonApiById(

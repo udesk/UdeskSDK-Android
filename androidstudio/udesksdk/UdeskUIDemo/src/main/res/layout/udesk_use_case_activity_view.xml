@@ -116,9 +116,22 @@
                 android:textSize="18sp"
                 />
 
+            <Button
+                android:layout_margin="@dimen/udesk_defult_margin10"
+                android:id="@+id/update_info"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/udesk_btn_bg_selector"
+                android:text="更用户新信息"
+                android:textColor="#BBBBBB"
+                android:padding="8dip"
+                android:textSize="18sp"
+                />
+
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/udesk_25"
                 android:layout_height="wrap_content">
 
                 <Button

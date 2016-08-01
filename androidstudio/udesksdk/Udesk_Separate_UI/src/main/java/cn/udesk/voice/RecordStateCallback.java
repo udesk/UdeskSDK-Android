@@ -2,12 +2,12 @@ package cn.udesk.voice;
 
 public interface RecordStateCallback {
 	
-	public void readyToCancelRecord();
+	 void readyToCancelRecord();
 
-	public void doCancelRecord();
+	 void doCancelRecord();
 
-	public void readyToContinue();
+	 void readyToContinue();
 
-	public void endRecord();
+	 void endRecord();
 
 }

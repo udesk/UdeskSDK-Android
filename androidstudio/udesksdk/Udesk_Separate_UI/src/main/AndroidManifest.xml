@@ -45,9 +45,7 @@
             android:name="cn.udesk.activity.OptionsAgentGroupActivity"
             android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
             android:theme="@style/Udesk_Theme" />
-        <activity android:name=".activity.UdeskWebViewUrlAcivity"
-            android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
-            android:theme="@style/Udesk_Theme"/>
+
     </application>
 
 </manifest>

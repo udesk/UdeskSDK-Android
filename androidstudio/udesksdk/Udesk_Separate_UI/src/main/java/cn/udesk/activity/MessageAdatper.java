@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
@@ -34,6 +35,7 @@ import cn.udesk.UdeskConst;
 import cn.udesk.UdeskUtil;
 import cn.udesk.adapter.UDEmojiAdapter;
 import cn.udesk.model.UdeskCommodityItem;
+import de.hdodenhof.circleimageview.CircleImageView;
 import udesk.core.model.MessageInfo;
 import udesk.core.utils.UdeskUtils;
 
@@ -96,10 +98,13 @@ public class MessageAdatper extends BaseAdapter {
     private Context mContext;
     private List<MessageInfo> list = new ArrayList<MessageInfo>();
     private DisplayImageOptions options;
+    private DisplayImageOptions agentHeadOptions;
     private ImageLoader mImageLoader;
+
     public MessageAdatper(Context context) {
         mContext = context;
         initDisplayOptions();
+        getImageLoader(context);
     }
 
     /**
@@ -116,6 +121,15 @@ public class MessageAdatper extends BaseAdapter {
                     .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
                     .build();
 
+            agentHeadOptions = new DisplayImageOptions.Builder()
+                    .showImageOnFail(R.drawable.udesk_im_default_agent_avatar)
+                    .showImageOnLoading(R.drawable.udesk_im_default_agent_avatar)
+                    .showImageForEmptyUri(R.drawable.udesk_im_default_agent_avatar)
+                    .cacheInMemory(true)
+                    .cacheOnDisk(true)
+                    .bitmapConfig(Bitmap.Config.RGB_565)
+                    .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+                    .build();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -142,9 +156,8 @@ public class MessageAdatper extends BaseAdapter {
     }
 
     /**
-     *
      * @param position
-     * @return  返回当前位置消息的类型和方向标识
+     * @return 返回当前位置消息的类型和方向标识
      */
     @Override
     public int getItemViewType(int position) {
@@ -185,8 +198,7 @@ public class MessageAdatper extends BaseAdapter {
     }
 
     /**
-     *
-     * @return  返回有多少种UI布局样式
+     * @return 返回有多少种UI布局样式
      */
     @Override
     public int getViewTypeCount() {
@@ -331,9 +343,11 @@ public class MessageAdatper extends BaseAdapter {
 
 
     abstract class BaseViewHolder {
-        public ImageView ivHeader, ivStatus;
+        public CircleImageView ivHeader;
+        public ImageView ivStatus;
         public TextView tvTime;
         public ProgressBar pbWait;
+        public TextView agentnickName;
         public MessageInfo message;
         public int itemType;
         public boolean isLeft = false;
@@ -352,6 +366,7 @@ public class MessageAdatper extends BaseAdapter {
 
         /**
          * 根据收发消息的标识，设置客服客户的头像
+         *
          * @param itemType
          */
         void initHead(int itemType) {
@@ -368,7 +383,13 @@ public class MessageAdatper extends BaseAdapter {
                 case RICH_TEXT:
                 case MSG_IMG_L:
                     this.isLeft = true;
-                    ivHeader.setImageResource(R.drawable.udesk_im_default_agent_avatar);
+                    if (message.getAgentUrl() == null || TextUtils.isEmpty(message.getAgentUrl().trim())){
+                        ivHeader.setImageResource(R.drawable.udesk_im_default_agent_avatar);
+                    }else{
+                        getImageLoader(mContext).displayImage(message.getAgentUrl(), ivHeader, agentHeadOptions);
+                    }
+                    agentnickName.setText(message.getNickName());
+//                    ivHeader.setImageResource(R.drawable.udesk_im_default_agent_avatar);
                     break;
                 default:
                     break;
@@ -661,15 +682,15 @@ public class MessageAdatper extends BaseAdapter {
 
     private void initItemNormalView(View convertView, BaseViewHolder holder,
                                     int itemType, final int position) {
-        holder.ivHeader = (ImageView) convertView.findViewById(R.id.udesk_iv_head);
+        holder.ivHeader = (CircleImageView) convertView.findViewById(R.id.udesk_iv_head);
         holder.tvTime = (TextView) convertView.findViewById(R.id.udesk_tv_time);
         holder.ivStatus = (ImageView) convertView.findViewById(R.id.udesk_iv_status);
         holder.pbWait = (ProgressBar) convertView.findViewById(R.id.udesk_im_wait);
-
+        holder.agentnickName = (TextView) convertView.findViewById(R.id.udesk_nick_name);
     }
 
     /**
-     *   计算是否要显示当前位置消息的发送或接受时间
+     * 计算是否要显示当前位置消息的发送或接受时间
      */
     private void tryShowTime(int position, BaseViewHolder holder,
                              MessageInfo info) {
@@ -706,7 +727,7 @@ public class MessageAdatper extends BaseAdapter {
     }
 
     /**
-     *  根据消息ID  修改对应消息的状态
+     * 根据消息ID  修改对应消息的状态
      */
     public boolean changeImState(View convertView, String msgId, int state) {
         Object tag = convertView.getTag();
