@@ -36,5 +36,6 @@ dependencies {
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
     compile 'io.reactivex:rxjava:1.1.4'
     compile files('libs/android-async-http-1.4.6.jar')
-    compile files('libs/udesk_sdk_3.2.0.jar')
+    compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile files('libs/udesk_sdk_3.2.1.jar')
 }

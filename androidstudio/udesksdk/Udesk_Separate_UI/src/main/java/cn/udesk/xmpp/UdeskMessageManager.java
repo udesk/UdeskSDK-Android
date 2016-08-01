@@ -1,7 +1,6 @@
 package cn.udesk.xmpp;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,6 +35,7 @@ public class UdeskMessageManager {
 	public ReflectInvokeMethod  eventui_OnNewPresence = new ReflectInvokeMethod(new Class<?>[]{String.class ,Integer.class});
 	public ReflectInvokeMethod  eventui_OnReqsurveyMsg = new ReflectInvokeMethod(new Class<?>[]{Boolean.class });
 	public ReflectInvokeMethod  event_OnNewMsgNotice = new ReflectInvokeMethod(new Class<?>[]{MsgNotice.class});
+
 	private UdeskMessageManager() {
 		bindEvent();
 		mUdeskXmppManager = new UdeskXmppManager();
@@ -66,16 +66,12 @@ public class UdeskMessageManager {
 			@Override
 			public void onSuccess(String message) {
 
-				if (UdeskCoreConst.isDebug) {
-					Log.i("UdeskMessageManager ", message);
-				}
+
 			}
 
 			@Override
 			public void onFail(String message) {
-				if (UdeskCoreConst.isDebug && message != null) {
-					Log.i("UdeskMessageManager ", message);
-				}
+
 			}
 		});
 	}
@@ -93,16 +89,12 @@ public class UdeskMessageManager {
 						@Override
 						public void onSuccess(String message) {
 
-							if (UdeskCoreConst.isDebug) {
-								Log.i("UdeskMessageManager ", message);
-							}
+
 						}
 
 						@Override
 						public void onFail(String message) {
-							if (UdeskCoreConst.isDebug && message != null) {
-								Log.i("UdeskMessageManager ", message);
-							}
+
 						}
 					});
 				}
@@ -115,8 +107,6 @@ public class UdeskMessageManager {
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-
-	
 	}
 	
 	public void cancelXmppConnect(){
@@ -177,9 +167,10 @@ public class UdeskMessageManager {
 	}
 
 
-	public void onNewMessage(final String type, final String msgId, final String content,
+	public void onNewMessage(String agentJid,final String type, final String msgId, final String content,
 			final Long duration) {
-		final MessageInfo msginfo = buildReceiveMessage(type, msgId, content, duration);
+		String jid[] = agentJid.split("/");
+		final MessageInfo msginfo = buildReceiveMessage(jid[0],type, msgId, content, duration);
 		if(UdeskDBManager.getInstance().hasReceviedMsg(msgId)){
 			return;
 		}
@@ -213,7 +204,7 @@ public class UdeskMessageManager {
 	
 	
 	
-	public MessageInfo buildReceiveMessage(String msgType, String msgId,
+	public MessageInfo buildReceiveMessage(String agentJid,String msgType, String msgId,
 			String content, long duration) {
 		MessageInfo msg = new MessageInfo();
 		msg.setMsgtype(msgType);
@@ -226,6 +217,7 @@ public class UdeskMessageManager {
 		msg.setPlayflag(UdeskConst.PlayFlag.NOPLAY);
 		msg.setLocalPath("");
 		msg.setDuration(duration);
+		msg.setmAgentJid(agentJid);
 		return msg;
 	}
 	

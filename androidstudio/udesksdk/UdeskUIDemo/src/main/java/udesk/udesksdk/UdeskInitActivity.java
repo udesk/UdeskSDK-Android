@@ -75,6 +75,12 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 
 		findViewById(R.id.udesk_commituserinfo).setOnClickListener(this);
 		findViewById(R.id.udesk_commit_selffield).setOnClickListener(this);
+		/**
+		 * 注册接收消息提醒事件
+		 */
+		UdeskMessageManager.getInstance().event_OnNewMsgNotice.bind(this, "OnNewMsgNotice");
+
+		Log.i("xxx","UdeskInitActivity 中bind OnNewMsgNotice");
 	}
 
 	//提供：仅仅传入用户的基本信息   和  传入用户基本信息和自定义信息的2种使用情况
@@ -189,25 +195,7 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 		startActivity(intent);
 	}
 
-	@Override
-	protected void onResume() {
 
-		super.onResume();
-
-		/**
-		 * 注册接收消息提醒事件
-		 */
-		UdeskMessageManager.getInstance().event_OnNewMsgNotice.bind(this, "OnNewMsgNotice");
-
-		Log.i("xxx","UdeskInitActivity 中bind OnNewMsgNotice");
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		UdeskMessageManager.getInstance().event_OnNewMsgNotice.unBind(this);
-		Log.i("xxx","UdeskInitActivity 中unbind OnNewMsgNotice");
-	}
 
 	/**
 	 * 处理不在会话界面 收到消息的通知事例  方法名OnNewMsgNotice  对应于绑定事件

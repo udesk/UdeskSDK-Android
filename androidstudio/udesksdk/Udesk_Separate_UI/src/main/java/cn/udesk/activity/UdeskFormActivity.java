@@ -31,6 +31,7 @@ public class UdeskFormActivity extends Activity {
 		mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
 		settingTitlebar();
 		mwebView = (WebView) findViewById(R.id.udesk_form_webview);
+		//提交表单的url地址
 		String url = "http://" + UdeskSDKManager.getInstance().getDomain(this)
 				+ "/im_client/feedback.html"
 				+ UdeskUtil.getFormUrlPara(this);

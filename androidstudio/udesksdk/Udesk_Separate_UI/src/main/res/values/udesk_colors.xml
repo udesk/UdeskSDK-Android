@@ -69,5 +69,5 @@
     <!-- 默认白色背景 --><color name="udesk_color_bg_white">#FFFFFFFF</color>
 
     <color name="udesk_view_line">#d0D8D8D8</color>
-       
+
 </resources>

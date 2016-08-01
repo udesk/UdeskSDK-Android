@@ -24,8 +24,9 @@ import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskHttpFacade;
 
+
 /**
- * Created by sks on 2016/3/15.
+ * 选择客服组
  */
 public class OptionsAgentGroupActivity extends Activity implements AdapterView.OnItemClickListener {
 
@@ -34,7 +35,7 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
     private ListView listView;
     private UdeskDialog dialog;
     private List<AgentGroupNode> groups;
-    private List<AgentGroupNode> adapterData =  new ArrayList<AgentGroupNode>();
+    private List<AgentGroupNode> adapterData = new ArrayList<AgentGroupNode>();
     private OptionsAgentGroupAdapter adapter;
     private String rootId = "item_0";
     private AgentGroupNode backMode = null;
@@ -48,9 +49,9 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
         getImGroupInfo();
     }
 
-    private void initView(){
-        title = (TextView)findViewById(R.id.udesk_title);
-        listView = (ListView)findViewById(R.id.udesk_options_listview);
+    private void initView() {
+        title = (TextView) findViewById(R.id.udesk_title);
+        listView = (ListView) findViewById(R.id.udesk_options_listview);
         mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
         adapter = new OptionsAgentGroupAdapter(this);
         listView.setAdapter(adapter);
@@ -63,7 +64,10 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
         });
     }
 
-    private void getImGroupInfo(){
+    /**
+     * 请求客服组信息，没有客服组则直接进入会话界面
+     */
+    private void getImGroupInfo() {
         showLoading();
         UdeskHttpFacade.getInstance().getImGroupApi(UdeskSDKManager.getInstance().getDomain(this),
                 UdeskSDKManager.getInstance().getSecretKey(this),
@@ -83,7 +87,7 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
                                 }
                                 settingTitlebar();
                                 drawView(rootId);
-                            }else{
+                            } else {
                                 luanchChat();
                             }
                         } catch (Exception e) {
@@ -100,11 +104,15 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
                 });
     }
 
-    private void luanchChat(){
+    //进入会话界面
+    private void luanchChat() {
         UdeskSDKManager.getInstance().toLanuchChatAcitvity(OptionsAgentGroupActivity.this);
         finish();
     }
 
+    /**
+     * 设置标题栏的title和返回事件
+     */
     private void settingTitlebar() {
 
         if (mTitlebar != null) {
@@ -115,31 +123,37 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
 
                 @Override
                 public void onClick(View v) {
-//                    backParentView();
                     finish();
                 }
             });
         }
     }
 
-    private void backParentView(){
-        if(backMode == null){
+
+    /**
+     * 返回到上一级
+     */
+    private void backParentView() {
+        if (backMode == null) {
             finish();
-        }else{
+        } else {
             drawView(backMode.getParentId());
             backMode = filterModel(backMode.getParentId());
         }
     }
 
+    /**
+     * 客服组下还有客服组则进入下一级客服组，是客服，值获取到客服的ID，进行会话连接
+     */
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-        AgentGroupNode groupNode =  adapter.getItem(i);
+        AgentGroupNode groupNode = adapter.getItem(i);
         backMode = groupNode;
-        if(groupNode != null){
-            if(TextUtils.isEmpty(groupNode.getGroup_id())){
+        if (groupNode != null) {
+            if (TextUtils.isEmpty(groupNode.getGroup_id())) {
                 drawView(groupNode.getId());
-            }else{
+            } else {
                 UdeskSDKManager.getInstance().lanuchChatByGroupId(OptionsAgentGroupActivity.this, groupNode.getGroup_id());
                 finish();
             }
@@ -152,7 +166,7 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
         try {
             dialog = new UdeskDialog(OptionsAgentGroupActivity.this, R.style.udesk_dialog);
             dialog.show();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -164,19 +178,20 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
         }
     }
 
-    private void drawView(String currentId){
+    //根据id 画出相应的UI显示
+    private void drawView(String currentId) {
         adapterData.clear();
-        if(currentId.equals("item_0")){
+        if (currentId.equals("item_0")) {
             title.setVisibility(View.GONE);
-        }else{
+        } else {
             String currentTempId = currentId;
             List<AgentGroupNode> temps = new ArrayList<AgentGroupNode>();
             boolean isHasParent = true;
-            while(isHasParent){
-                AgentGroupNode model  =  filterModel(currentTempId);
-                if(model == null){
+            while (isHasParent) {
+                AgentGroupNode model = filterModel(currentTempId);
+                if (model == null) {
                     isHasParent = false;
-                }else{
+                } else {
                     currentTempId = model.getParentId();
                     temps.add(model);
                 }
@@ -184,30 +199,36 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
             title.setVisibility(View.VISIBLE);
             title.setText(buildTitleName(temps));
         }
-        for(AgentGroupNode model: groups){
-            if(model.getParentId().equals(currentId)){
+        for (AgentGroupNode model : groups) {
+            if (model.getParentId().equals(currentId)) {
                 adapterData.add(model);
             }
         }
         adapter.setList(adapterData);
     }
 
-    private AgentGroupNode filterModel(String currentId){
-        for(AgentGroupNode model: groups){
-            if(model.getId().equals(currentId)){
+    /**
+     * 获取相应ID的客服组model
+     */
+    private AgentGroupNode filterModel(String currentId) {
+        for (AgentGroupNode model : groups) {
+            if (model.getId().equals(currentId)) {
                 return model;
             }
         }
         return null;
     }
 
-    private String buildTitleName(List<AgentGroupNode> temps){
+    /**
+     * 构造界面显示的组名 > 的字符串
+     */
+    private String buildTitleName(List<AgentGroupNode> temps) {
         StringBuilder builder = new StringBuilder();
-        for(int i = temps.size()-1;i>=0;i--){
+        for (int i = temps.size() - 1; i >= 0; i--) {
             builder.append(temps.get(i).getItem_name()).append(" > ");
         }
         String temp = builder.toString();
-        return temp.substring(0,temp.length()-2);
+        return temp.substring(0, temp.length() - 2);
     }
 
     @Override

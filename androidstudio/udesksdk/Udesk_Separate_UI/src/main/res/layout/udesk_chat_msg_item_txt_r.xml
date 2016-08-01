@@ -18,15 +18,20 @@
         android:textColor="@color/udesk_color_im_time_text"
         android:textSize="@dimen/udesk_sp12" />
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/udesk_iv_head"
         android:layout_width="@dimen/udesk_chat_head"
         android:layout_height="@dimen/udesk_chat_head"
         android:layout_alignParentRight="true"
         android:layout_below="@id/udesk_tv_time"
         android:layout_marginTop="@dimen/udesk_chat_head_margin"
-        android:scaleType="centerInside"
-        
+        />
+
+    <TextView
+        android:id="@+id/udesk_nick_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
         />
 
     <TableRow
