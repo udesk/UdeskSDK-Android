@@ -1,5 +1,8 @@
 # UdeskSDK Android 3.2.1 开发者文档
+## UdeskSDK工作流程图
+Udesk-SDK的工作流程如下图所示。
 
+![alt text](indeximg/andriod-new-liuchen.png)
 ## 集成UdeskSDK
 
 ###1下载UdeskSDK
