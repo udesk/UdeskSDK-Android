@@ -40,10 +40,6 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 	private EditText  mEmail;
 	//输入电话的EditText
 	private EditText  mPhone;
-	//输入微博账号的EditText
-	private EditText  mWeiBoId;
-	//输入微信账号的EditText
-	private EditText  mWeiXinId;
 	//输入描述账号的EditText
 	private EditText  mDescribe;
 
@@ -69,8 +65,6 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 		mNickname = (EditText) findViewById(R.id.udesk_nickname);
 		mEmail = (EditText) findViewById(R.id.udesk_email);
 		mPhone = (EditText) findViewById(R.id.udesk_phone);
-		mWeiBoId = (EditText)findViewById(R.id.udesk_weiboName);
-		mWeiXinId = (EditText)findViewById(R.id.udesk_weixinId);
 		mDescribe = (EditText)findViewById(R.id.udesk_describe);
 
 		findViewById(R.id.udesk_commituserinfo).setOnClickListener(this);
@@ -122,9 +116,8 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 		info.put(UdeskConst.UdeskUserInfo.NICK_NAME, mNickname.getText().toString());
 		info.put(UdeskConst.UdeskUserInfo.EMAIL, mEmail.getText().toString());
 		info.put(UdeskConst.UdeskUserInfo.CELLPHONE, mPhone.getText().toString());
-		info.put(UdeskConst.UdeskUserInfo.WEIXIN_ID,mWeiXinId.getText().toString());
-		info.put(UdeskConst.UdeskUserInfo.WEIBO_NAME, mWeiBoId.getText().toString());
 		info.put(UdeskConst.UdeskUserInfo.DESCRIPTION, mDescribe.getText().toString());
+
 		return info;
 
 	}
