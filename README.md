@@ -3,8 +3,12 @@
 ## 集成UdeskSDK
 
 ###1下载UdeskSDK
-
-解压后Udesk_Separate_UI做为独立的module import, 在你APP build.gradle文件中加入：
+``` java
+   解压后可以看到如下2个module
+   UdeskUIDemo  UdeskSdk集成demo,提供对Udesk_Separate_UI module使用的例子
+   Udesk_Separate_UI  UdeskSDK开源moudle
+```
+你所要做的是把Udesk_Separate_UI做为独立的module import, 并在你APP build.gradle文件中加入：
 ``` java
 dependencies {
     compile project(':Udesk_Separate_UI')
