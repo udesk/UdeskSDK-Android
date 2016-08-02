@@ -34,12 +34,6 @@ info.put(UdeskConst.UdeskUserInfo.NICK_NAME,"昵称");
 info.put(UdeskConst.UdeskUserInfo.EMAIL,"0631@163.com");
 //输入手机号
 info.put(UdeskConst.UdeskUserInfo.CELLPHONE,"15651818750");
-//输入微信账号
-info.put(UdeskConst.UdeskUserInfo.WEIXIN_ID,"huahua");
-//输入微博名字
-info.put(UdeskConst.UdeskUserInfo.WEIBO_NAME,"weiboName")
-//输入QQ号
-info.put(UdeskConst.UdeskUserInfo.QQ,"506313505");
 info.put(UdeskConst.UdeskUserInfo.DESCRIPTION,"描述信息")
 UdeskSDKManager.getInstance().setUserInfo(this, sdktoken, info);
 ```
@@ -199,12 +193,6 @@ info.put(UdeskConst.UdeskUserInfo.NICK_NAME,"更新后的昵称");
 info.put(UdeskConst.UdeskUserInfo.EMAIL,"0631@163.com");
 //更新后的手机号
 info.put(UdeskConst.UdeskUserInfo.CELLPHONE,"15651818750");
-//更新后的微信账号
-info.put(UdeskConst.UdeskUserInfo.WEIXIN_ID,"huahua");
-//更新后的微博名字
-info.put(UdeskConst.UdeskUserInfo.WEIBO_NAME,"weiboName")
-//更新后的QQ号
-info.put(UdeskConst.UdeskUserInfo.QQ,"506313505");
 info.put(UdeskConst.UdeskUserInfo.DESCRIPTION,"更新后的描述信息")
 
 //传入需要更新的Udesk系统默认字段
