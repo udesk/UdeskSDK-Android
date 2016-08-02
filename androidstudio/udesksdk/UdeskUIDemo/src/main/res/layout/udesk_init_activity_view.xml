@@ -65,40 +65,11 @@
             android:textColor="#ff606060"
             android:textSize="14sp" />
 
-
-        <EditText
-            android:id="@+id/udesk_weixinId"
-            android:layout_width="fill_parent"
-            android:layout_height="45dip"
-            android:layout_below="@+id/udesk_phone"
-            android:layout_margin="6dip"
-            android:background="@drawable/udesk_im_input_bg"
-            android:gravity="center_vertical"
-            android:hint="@string/udesk_weixin_id"
-            android:paddingLeft="10dp"
-            android:singleLine="true"
-            android:textColor="#ff606060"
-            android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/udesk_weiboName"
-            android:layout_width="fill_parent"
-            android:layout_height="45dip"
-            android:layout_below="@+id/udesk_weixinId"
-            android:layout_margin="6dip"
-            android:background="@drawable/udesk_im_input_bg"
-            android:gravity="center_vertical"
-            android:hint="@string/udesk_weibo_name"
-            android:paddingLeft="10dp"
-            android:singleLine="true"
-            android:textColor="#ff606060"
-            android:textSize="14sp" />
-
         <EditText
             android:id="@+id/udesk_describe"
             android:layout_width="fill_parent"
             android:layout_height="45dip"
-            android:layout_below="@+id/udesk_weiboName"
+            android:layout_below="@+id/udesk_phone"
             android:layout_margin="6dip"
             android:background="@drawable/udesk_im_input_bg"
             android:gravity="center_vertical"
