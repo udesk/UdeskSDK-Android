@@ -585,7 +585,8 @@ protected void goToForm() {
     UdeskTitleBar 标题栏
 ```
 ##UdeskSDK Udesk_Separate_UImodule的依赖
-   compile files('libs/qiniu-android-sdk-7.0.1.jar')
+``` java
+    compile files('libs/qiniu-android-sdk-7.0.1.jar')
     compile files('libs/universal-image-loader-1.9.4.jar')
     compile files('libs/bugly_crash_release__2.1.jar')
     compile 'org.igniterealtime.smack:smack-android-extensions:4.1.0'
@@ -593,7 +594,8 @@ protected void goToForm() {
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
     compile 'io.reactivex:rxjava:1.1.4'
     compile files('libs/android-async-http-1.4.6.jar')
-    compile files('libs/udesk_sdk_3.2.1.jar')	 
+    compile files('libs/udesk_sdk_3.2.1.jar')	
+```
 
 ##UdeskSDK混淆忽略设置
 ``` java
