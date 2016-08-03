@@ -147,7 +147,7 @@ roplistMap.put("SelectField_457","1");
 
 直接进入人工客服会话界面。系统根据客服分配规则安排客服接待；如果没有在线客服，则提示用户留言。
 
-```
+```java
  UdeskSDKManager.getInstance().toLanuchChatAcitvity(this);
 ```
 
@@ -155,7 +155,7 @@ roplistMap.put("SelectField_457","1");
 
 确保管理员后后【管理中心-即时通讯-IM机器人】开启机器人SDK IM渠道。可以设置是否允许转人员。使用此界面，则会根据后台配置显示机器人或人工客服对话界面
 
-```
+```java
   UdeskSDKManager.getInstance().showRobotOrConversation(this);
 ```
 
@@ -163,7 +163,7 @@ roplistMap.put("SelectField_457","1");
 
 Udek系统帮助中心后台可以创建帮助文档，客户通过帮助中心可查看相关文档。调用以下接口启动帮助中心界面
 
-```
+```java
 UdeskSDKManager.getInstance().toLanuchHelperAcitivty(this);
 ```
 
@@ -175,7 +175,7 @@ UdeskSDKManager.getInstance().toLanuchHelperAcitivty(this);
 
 4.1.1更新系统默认客户字段，昵称、邮箱、电话、描述
 
-```
+```java
 Map<String, String> info = new HashMap<String, String>();
 info.put(UdeskConst.UdeskUserInfo.NICK_NAME,"更新后的昵称");
 //更新后的邮箱
@@ -193,7 +193,7 @@ UdeskSDKManager.getInstance().setUpdateUserinfo(info);
 
 文本型字段示例：
 
-```
+```java
  {
       "field_name": "TextField_684",
       "field_label": "地址",
@@ -212,7 +212,7 @@ updateTextFieldMap.put("TextField_684","北京西城区");
 
 选择型字段示例
 
-```
+```java
 {
     "field_name": "SelectField_457", 
     "permission": 0, 
@@ -242,7 +242,7 @@ UdeskSDKManager.getInstance().setUpdateRoplist(updateRoplistMap);
 
 咨询对象目前最多支持发送4个属性(detail,image,title,url)，如下以商品举例说明
 
-```
+```java
  //创建商品的实例
 UdeskCommodityItem item = new UdeskCommodityItem();
 // 商品主标题
@@ -269,19 +269,21 @@ UdeskMessageManager.getInstance().sendComodityMessage(buildCommodityMessage(comm
 
 指定客服或客服组接口一次只能用一个
 
-```
-String agentId = "4418";UdeskSDKManager.getInstance().lanuchChatByAgentId(this,agentId);
+```java
+String agentId = "5236";
+UdeskSDKManager.getInstance().lanuchChatByAgentId(this,agentId);
 
 ```
 
-```
-String groupId = "9831";UdeskSDKManager.getInstance().lanuchChatByGroupId(this,groupId);
+```java
+String groupId = "14005";
+UdeskSDKManager.getInstance().lanuchChatByGroupId(this,groupId);
 
 ```
 
 **客服和客服组ID获取方式**
 
-管理员在【管理中心-渠道管理-即时通讯-自定义链接-指定客服和客服组】中选择指定的客服组，这样在上方链接中就会加载指定客服组的id。如下图所示，客服组“客服部”的groupId是“9831”。![udesk](http://7xr0de.com1.z0.glb.clouddn.com/%E8%8E%B7%E5%8F%96%E5%AE%A2%E6%9C%8Did.jpg)
+管理员在【管理中心-渠道管理-即时通讯-自定义链接-指定客服和客服组】中选择指定的客服组，如下图所示，客服组“客服部”的groupId是“9831”。![udesk](http://7xr0de.com1.z0.glb.clouddn.com/%E8%8E%B7%E5%8F%96%E5%AE%A2%E6%9C%8Did.jpg)
 
 
 
@@ -289,7 +291,7 @@ String groupId = "9831";UdeskSDKManager.getInstance().lanuchChatByGroupId(this,g
 
 管理员在【管理中心-渠道管理-即时通讯-自定义链接-使用导航菜单】中添加自定义菜单，引导客户选择客服组。调用此接口打开导航菜单选择客服组界面，选中客服组后进入自动进入对话界面。
 
-```
+```java
   UdeskSDKManager.getInstance().showConversationByImGroup(this);
 ```
 
@@ -300,7 +302,7 @@ String groupId = "9831";UdeskSDKManager.getInstance().lanuchChatByGroupId(this,g
 
   App运行时如果需要客服离线或不再接收客服消息，调此接口可以主动断开与Udesk服务器的的连接。
 
-```
+```java
 UdeskSDKManager.getInstance().disConnectXmpp();
 ```
 
@@ -315,13 +317,13 @@ UdeskMessageManager.getInstance().event_OnNewMsgNotice.bind(this, "OnNewMsgNotic
 ```
 
 OnNewMsgNotice方法的实现
-
+``` java
     public void OnNewMsgNotice(MsgNotice msgNotice) {
          if (msgNotice != null) {
              NotificationUtils.getInstance().notifyMsg(UdeskCaseActivity.this, msgNotice.getContent());
          }
     }
-
+```
 注意：1 消息上报的对象是：MsgNotice ；2 注册的方法和实现的方法  字符串必须保证一致分大小写；
 
 3 实现的方法  必须public修饰。
@@ -330,7 +332,7 @@ OnNewMsgNotice方法的实现
 
 sdk 3.2.0版本开始，可在退出对话界面后，没有断开与Udesk服务器的连接，可获得这个会话的未读消息数，打开对话界面后未读消息数会清空。
 
-```
+```java
 UdeskSDKManager.getInstance().getCurrentConnectUnReadMsgCount();
 ```
 
@@ -338,7 +340,7 @@ UdeskSDKManager.getInstance().getCurrentConnectUnReadMsgCount();
 
 sdk初始化成功，创建客户后，调用此接口可删除当前客户的聊天记录信息
 
-```
+```java
 UdeskSDKManager.getInstance().deleteMsg();
 ```
 
@@ -346,7 +348,7 @@ UdeskSDKManager.getInstance().deleteMsg();
 
 如果开发中，想在控制台看当前客户与Udesk服务器连接（xmpp)的交互报文，调用如下接口可实现
 
-```
+```java
 //true 表示开启控制台日志  false表示关闭控制台日志
 UdeskSDKManager.getInstance().isShowLog(true);
 ```
@@ -359,7 +361,7 @@ Udesk SDK已经兼容Android M不需开发，兼容方法如下。
 
 选取rxpermissions 原因是github上赞和使用最多，使用方便简单。举例拍照的运行代码:
 
-```
+```java
 
 RxPermissions.getInstance(this)
     .request(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -569,7 +571,7 @@ protected void goToForm() {
 
  聊天界面UdeskChatActivity中的MessageAdatper，展示语音，文本，图片等消息。
 
-```
+```java
 udesk_chat_msg_item_txt_l,//文本消息左边的UI布局文件
 udesk_chat_msg_item_txt_r,//文本消息右边的UI布局文件
 udesk_chat_msg_item_audiot_l,//语音消息左边的UI布局文件
@@ -586,14 +588,13 @@ AudioViewHolder 显示语音消息；
 ImgViewHolder    显示图片消息；
 RichTextViewHolder 显示富文本消息；
 CommodityViewHolder 显示广告商品信息；
-
 RedirectViewHolder  显示转移提示语信息；
 
 ```
 
 其它对应的UI
 
-```
+```java
     UdeskHelperActivity  帮助中心界面；
     UdeskHelperArticleActivity   显示一篇文章的具体内容
     UdeskRobotActivity   机器人会话界面    
