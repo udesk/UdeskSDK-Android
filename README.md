@@ -200,7 +200,7 @@ info.put(UdeskConst.UdeskUserInfo.DESCRIPTION,"更新后的描述信息")
 
 //传入需要更新的Udesk系统默认字段
 UdeskSDKManager.getInstance().setUpdateUserinfo(info);
-**更新邮箱或者手机号码，如果在后端有同样的手机号或邮箱，则会更新失败**
+注意更新邮箱或者手机号码，如果在后端有同样的手机号或邮箱，则会更新失败
 ```
 ####8.2更新自定义字段
 参考创建顾客信息时的添加自定义字段和获取自定义字段
