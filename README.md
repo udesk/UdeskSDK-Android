@@ -2,7 +2,7 @@
 ## 一、SDK工作流程图
 Udesk-SDK的工作流程如下图所示。
 
-![udesk](http://7xr0de.com2.z0.glb.qiniucdn.com/ios3.png)
+![udesk](http://7xr0de.com2.z0.glb.qiniucdn.com/ios-new-1.png
 ## 二、下载和集成SDK
 
 ####2.1[下载Udesk SDK](https://github.com/udesk/UdeskSDK-Android)
