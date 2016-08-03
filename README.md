@@ -605,6 +605,7 @@ protected void goToForm() {
 -keep class rx.** {*;} 
 -keep class org.jivesoftware.** {*;} 
 -keep class org.xmlpull.** {*;} 
--keep classcom.tbruyelle.rxpermissions.** {*;}
+-keep class com.tbruyelle.rxpermissions.** {*;}
+-keep class de.hdodenhof.circleimageview.** {*;}
 ```
 [1]:http://www.udesk.cn/
