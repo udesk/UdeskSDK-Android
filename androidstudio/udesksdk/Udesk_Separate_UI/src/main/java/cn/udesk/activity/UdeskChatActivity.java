@@ -1475,25 +1475,30 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
     //预览大图
     public void previewPhoto(MessageInfo message) {
-        if (message == null) {
-            return;
+        try{
+            if (message == null) {
+                return;
+            }
+            String sourceImagePath = "";
+            if (!TextUtils.isEmpty(message.getLocalPath())) {
+                sourceImagePath = message.getLocalPath();
+            } else {
+                sourceImagePath = ImageLoader.getInstance().getDiscCache()
+                        .get(message.getMsgContent()).getPath();
+            }
+            File sourceFile = new File(sourceImagePath);
+            if (sourceFile.exists()) {
+                Intent intent = new Intent(UdeskChatActivity.this,
+                        UdeskZoomImageActivty.class);
+                Bundle data = new Bundle();
+                data.putParcelable("image_path", Uri.fromFile(sourceFile));
+                intent.putExtras(data);
+                startActivity(intent);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        String sourceImagePath = "";
-        if (!TextUtils.isEmpty(message.getLocalPath())) {
-            sourceImagePath = message.getLocalPath();
-        } else {
-            sourceImagePath = ImageLoader.getInstance().getDiscCache()
-                    .get(message.getMsgContent()).getPath();
-        }
-        File sourceFile = new File(sourceImagePath);
-        if (sourceFile.exists()) {
-            Intent intent = new Intent(UdeskChatActivity.this,
-                    UdeskZoomImageActivty.class);
-            Bundle data = new Bundle();
-            data.putParcelable("image_path", Uri.fromFile(sourceFile));
-            intent.putExtras(data);
-            startActivity(intent);
-        }
+
     }
 
 
