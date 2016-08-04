@@ -629,12 +629,12 @@ RedirectViewHolder  显示转移提示语信息；
 ``` java
     compile files('libs/universal-image-loader-1.9.4.jar')
     compile files('libs/bugly_crash_release__2.1.jar')
+    compile files('libs/udesk_sdk_3.2.1.jar')
     compile 'org.igniterealtime.smack:smack-android-extensions:4.1.0'
     compile 'org.igniterealtime.smack:smack-tcp:4.1.0'
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
     compile 'io.reactivex:rxjava:1.1.4'
     compile 'de.hdodenhof:circleimageview:2.0.0'
-    compile files('libs/udesk_sdk_3.2.1.jar')
     compile 'com.qiniu:qiniu-android-sdk:7.2.+'
 ```
 
