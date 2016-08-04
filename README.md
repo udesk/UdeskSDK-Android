@@ -627,31 +627,39 @@ RedirectViewHolder  显示转移提示语信息；
 以下依赖文件已封装在SDK内，无需自行添加
 
 ``` java
-    compile files('libs/qiniu-android-sdk-7.0.1.jar')
     compile files('libs/universal-image-loader-1.9.4.jar')
     compile files('libs/bugly_crash_release__2.1.jar')
     compile 'org.igniterealtime.smack:smack-android-extensions:4.1.0'
     compile 'org.igniterealtime.smack:smack-tcp:4.1.0'
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
     compile 'io.reactivex:rxjava:1.1.4'
-    compile files('libs/android-async-http-1.4.6.jar')
-    compile files('libs/udesk_sdk_3.2.1.jar')	
+    compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile files('libs/udesk_sdk_3.2.1.jar')
+    compile 'com.qiniu:qiniu-android-sdk:7.2.+'
 ```
 
 #九、代码混淆
 
 ``` java
+//udesk
 -keep class udesk.core.** {*;} 
 -keep class cn.udesk.**{*; } 
--keep class com.loopj.android.http.** {*; } 
--keep class com.tencent.bugly.** {*; } 
+//七牛
+-keep class com.qiniu.android.dns.** {*; } 
+-keep class okhttp3.** {*;} 
+-keep class okio.** {*;} 
 -keep class com.qiniu.android.** {*;} 
--keep class com.nostra13.universalimageloader.** {*;} 
+//smack
 -keep class org.jxmpp.** {*;} 
 -keep class de.measite.** {*;} 
--keep class rx.** {*;} 
 -keep class org.jivesoftware.** {*;} 
 -keep class org.xmlpull.** {*;} 
+//Android M 权限
+-keep class rx.** {*;} 
 -keep class com.tbruyelle.rxpermissions.** {*;}
+ 
+ //其它
+-keep class com.tencent.bugly.** {*; } 
+-keep class com.nostra13.universalimageloader.** {*;} 
 -keep class de.hdodenhof.circleimageview.** {*;}
 ```
