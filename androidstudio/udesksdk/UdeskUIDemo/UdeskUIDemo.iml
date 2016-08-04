@@ -64,14 +64,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/jni" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/rs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/shaders" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/res" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/resources" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/assets" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/aidl" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/jni" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/rs" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/shaders" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/res" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/assets" type="java-test-resource" />
@@ -80,6 +72,14 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/jni" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/shaders" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/res" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/assets" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/aidl" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/jni" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/rs" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTest/shaders" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/assets" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/blame" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/builds" />
@@ -107,17 +107,21 @@
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="smack-android-extensions-4.1.0" level="project" />
+    <orderEntry type="library" exported="" name="qiniu-android-sdk-7.2.1" level="project" />
+    <orderEntry type="library" exported="" name="okio-1.6.0" level="project" />
     <orderEntry type="library" exported="" name="smack-extensions-4.1.0" level="project" />
-    <orderEntry type="library" exported="" name="jxmpp-core-0.4.2-beta1" level="project" />
     <orderEntry type="library" exported="" name="jxmpp-util-cache-0.4.2-beta1" level="project" />
-    <orderEntry type="library" exported="" name="minidns-0.1.7" level="project" />
+    <orderEntry type="library" exported="" name="happy-dns-0.2.7" level="project" />
     <orderEntry type="library" exported="" name="rxjava-1.1.4" level="project" />
-    <orderEntry type="library" exported="" name="smack-resolver-minidns-4.1.0" level="project" />
-    <orderEntry type="library" exported="" name="smack-android-4.1.0" level="project" />
-    <orderEntry type="library" exported="" name="smack-tcp-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="smack-im-4.1.0" level="project" />
-    <orderEntry type="library" exported="" name="smack-sasl-provided-4.1.0" level="project" />
+    <orderEntry type="library" exported="" name="smack-tcp-4.1.0" level="project" />
+    <orderEntry type="library" exported="" name="smack-android-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="smack-core-4.1.0" level="project" />
+    <orderEntry type="library" exported="" name="okhttp-3.2.0" level="project" />
+    <orderEntry type="library" exported="" name="jxmpp-core-0.4.2-beta1" level="project" />
+    <orderEntry type="library" exported="" name="minidns-0.1.7" level="project" />
+    <orderEntry type="library" exported="" name="smack-resolver-minidns-4.1.0" level="project" />
+    <orderEntry type="library" exported="" name="smack-sasl-provided-4.1.0" level="project" />
     <orderEntry type="module" module-name="Udesk_Separate_UI" exported="" />
     <orderEntry type="library" exported="" name="usb-android-19" level="project" />
     <orderEntry type="library" exported="" name="effects-android-19" level="project" />
