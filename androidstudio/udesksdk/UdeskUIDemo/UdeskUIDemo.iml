@@ -107,15 +107,15 @@
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="smack-android-extensions-4.1.0" level="project" />
-    <orderEntry type="library" exported="" name="qiniu-android-sdk-7.2.1" level="project" />
     <orderEntry type="library" exported="" name="okio-1.6.0" level="project" />
+    <orderEntry type="library" exported="" name="qiniu-android-sdk-7.2.2" level="project" />
     <orderEntry type="library" exported="" name="smack-extensions-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="jxmpp-util-cache-0.4.2-beta1" level="project" />
     <orderEntry type="library" exported="" name="happy-dns-0.2.7" level="project" />
     <orderEntry type="library" exported="" name="rxjava-1.1.4" level="project" />
+    <orderEntry type="library" exported="" name="smack-android-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="smack-im-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="smack-tcp-4.1.0" level="project" />
-    <orderEntry type="library" exported="" name="smack-android-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="smack-core-4.1.0" level="project" />
     <orderEntry type="library" exported="" name="okhttp-3.2.0" level="project" />
     <orderEntry type="library" exported="" name="jxmpp-core-0.4.2-beta1" level="project" />
