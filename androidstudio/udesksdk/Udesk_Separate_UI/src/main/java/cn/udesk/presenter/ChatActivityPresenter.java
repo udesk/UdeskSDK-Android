@@ -261,7 +261,11 @@ public class ChatActivityPresenter {
                     public void onSuccess(String message) {
                         // 获取客户成功，显示在线客服的信息，连接xmpp，进行会话
                         AgentInfo agentInfo = JsonUtils.parseAgentResult(message);
-                        mChatView.dealAgentInfo(agentInfo);
+                        if (agentInfo.getAgentCode() == 2000){
+                            getIMStatus(agentInfo);
+                        }else{
+                            mChatView.dealAgentInfo(agentInfo);
+                        }
                     }
 
                     @Override
@@ -276,11 +280,20 @@ public class ChatActivityPresenter {
     /**
      * 获取客服在线状态
      */
-    public void getIMStatus(String jid) {
+    public void getIMStatus(final AgentInfo agentInfo) {
+        if (agentInfo == null){
+            if (mChatView.getHandler() != null) {
+                Message message = mChatView.getHandler().obtainMessage(
+                        MessageWhat.IM_STATUS);
+                message.obj = "off";
+                mChatView.getHandler().sendMessage(message);
+            }
+            return;
+        }
         UdeskHttpFacade.getInstance().getIMstatus(
                 UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
                 UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
-                UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()), jid,
+                UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()), agentInfo.getAgentJid(),
                 new UdeskCallBack() {
                     @Override
                     public void onSuccess(String string) {
@@ -293,7 +306,10 @@ public class ChatActivityPresenter {
                         } catch (Exception e) {
                             imStatus = "off";
                         }
-
+                        if (imStatus.equals("on")){
+                            mChatView.dealAgentInfo(agentInfo);
+                            return ;
+                        }
                         if (mChatView.getHandler() != null) {
                             Message message = mChatView.getHandler().obtainMessage(
                                     MessageWhat.IM_STATUS);

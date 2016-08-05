@@ -323,14 +323,14 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         if( isbolcked.equals("true")){
                             return;
                         }
+                        if (mAgentInfo == null || !jid.contains(mAgentInfo.getAgentJid())) {
+                            return;
+                        }
                         if (mAgentInfo == null
                                 || TextUtils.isEmpty(mAgentInfo.getAgentJid())) {
                             if (mPresenter != null) {
                                 mPresenter.createIMCustomerInfo();
                             }
-                            return;
-                        }
-                        if (!jid.contains(mAgentInfo.getAgentJid())) {
                             return;
                         }
                         showOnlieStatus(mAgentInfo);
@@ -348,7 +348,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         }
                     } else if (onlineflag == UdeskCoreConst.OFFLINEFLAG) {
                         if (mPresenter != null) {
-                            mPresenter.getIMStatus(jid);
+                            mPresenter.getIMStatus(mAgentInfo);
                         }
 
                     }
@@ -365,6 +365,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                             currentStatusIsOnline = false;
                             isNeedStartExpandabLyout = true;
                         }
+                        confirmToForm();
                     }
                     break;
                 case MessageWhat.IM_BOLACKED:
@@ -1528,7 +1529,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
         @Override
         public void afterTextChanged(Editable s) { //发送输入预支消息
-            if(isbolcked.equals("true") ){
+            if(isbolcked.equals("true") || !currentStatusIsOnline){
                     return;
             }
             if (TextUtils.isEmpty(mInputEditView.getText().toString())) {
