@@ -76,6 +76,7 @@
 
     <!-- IM界面，客服状态的文字 -->
     <string name="udesk_label_customer_online">"客服%1$s在线"</string>
+    <string name="udesk_label_customer_offline_by_name">"客服%1$s不在线,请留言"</string>
     <string name="udesk_label_customer_offline">客服不在线，请留言</string>
 
     <!-- 商品咨询界面，链接按钮的展示文字 -->
