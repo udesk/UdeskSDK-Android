@@ -310,6 +310,7 @@ public class ChatActivityPresenter {
                             mChatView.dealAgentInfo(agentInfo);
                             return ;
                         }
+                        mChatView.setAgentInfo(agentInfo);
                         if (mChatView.getHandler() != null) {
                             Message message = mChatView.getHandler().obtainMessage(
                                     MessageWhat.IM_STATUS);

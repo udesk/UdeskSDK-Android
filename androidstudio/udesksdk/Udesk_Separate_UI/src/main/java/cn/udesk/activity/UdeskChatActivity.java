@@ -356,10 +356,18 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                 case MessageWhat.IM_STATUS:
                     String imStatus = (String) msg.obj;
                     if (imStatus.equals("off")) {
-                        setAgentStatus(
-                                UdeskChatActivity.this
-                                        .getString(R.string.udesk_label_customer_offline),
-                                View.VISIBLE);
+                        if(mAgentInfo != null){
+                            String name = getString(
+                                    R.string.udesk_label_customer_offline_by_name,
+                                    TextUtils.isEmpty(mAgentInfo.getAgentNick()) ? "" : " "
+                                            + mAgentInfo.getAgentNick() + " ");
+                            setAgentStatus(new String(name), View.VISIBLE);
+                        }else{
+                            setAgentStatus(
+                                    UdeskChatActivity.this
+                                            .getString(R.string.udesk_label_customer_offline),
+                                    View.VISIBLE);
+                        }
                         if (currentStatusIsOnline) {
                             expandableLayout.startAnimation(false);
                             currentStatusIsOnline = false;
@@ -1107,6 +1115,11 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
             return mAgentInfo;
         }
         return new AgentInfo();
+    }
+
+    @Override
+    public void setAgentInfo(AgentInfo agentInfo) {
+        mAgentInfo = agentInfo;
     }
 
     @Override

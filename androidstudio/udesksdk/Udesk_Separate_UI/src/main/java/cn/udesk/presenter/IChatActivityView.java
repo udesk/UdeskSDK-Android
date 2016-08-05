@@ -23,7 +23,7 @@ public interface IChatActivityView {
 	void addMessage(MessageInfo message);
 	
 	AgentInfo getAgentInfo();
-	
+	void setAgentInfo(AgentInfo agentInfo);
 	Handler getHandler();
 	
 	void refreshInputEmjio(String s) ;
