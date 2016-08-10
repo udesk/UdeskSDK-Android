@@ -1185,14 +1185,15 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         if (thumbnail != null) {
                             if (mPresenter != null) {
                                 mPresenter.sendBitmapMessage(thumbnail);
+                                return;
                             }
                         }
                     }
-                } else {
-                    if (mPresenter != null && photoUri != null) {
-                        mPresenter.sendBitmapMessage(photoUri.getPath());
-                    }
                 }
+                if (mPresenter != null && photoUri != null) {
+                    mPresenter.sendBitmapMessage(photoUri.getPath());
+                }
+
             }
         } else if (SELECT_IMAGE_ACTIVITY_REQUEST_CODE == requestCode) { //选择图片后发送
 
