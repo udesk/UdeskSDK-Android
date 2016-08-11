@@ -132,12 +132,14 @@ public class UdeskSDKManager {
 
 	public void toLanuchChatAcitvity(Context context){
 		Intent intent = new Intent(context, UdeskChatActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(intent);
 	}
 
 
 	public void toLanuchHelperAcitivty(Context context){
 		Intent intent = new Intent(context, UdeskHelperActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(intent);
 	}
 
@@ -225,6 +227,7 @@ public class UdeskSDKManager {
 	 */
 	public void showConversationByImGroup( Context context) {
 		Intent intent = new Intent(context, OptionsAgentGroupActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(intent);
 	}
 
@@ -373,6 +376,7 @@ public class UdeskSDKManager {
 		Intent intent = new Intent(context, UdeskRobotActivity.class);
 		intent.putExtra(UdeskConst.UDESKTRANSFER, tranfer);
 		intent.putExtra(UdeskConst.UDESKHTMLURL, url);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(intent);
 	}
 
@@ -386,6 +390,7 @@ public class UdeskSDKManager {
 		Intent intent = new Intent(context, UdeskChatActivity.class);
 		intent.putExtra(UdeskConst.UDESKGROUPID,groupId);
 		intent.putExtra(UdeskConst.UDESKAGENTID, agentId);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(intent);
 	}
 
