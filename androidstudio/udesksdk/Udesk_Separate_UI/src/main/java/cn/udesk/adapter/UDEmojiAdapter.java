@@ -104,31 +104,34 @@ public class UDEmojiAdapter extends BaseAdapter {
 		final int prefixLength = EMOJI_PREFIX.length();
 		int index = 0, start = 0;
 		SpannableString spannable = new SpannableString(text);
-
-		index = text.indexOf(EMOJI_PREFIX, index);
-		while (index > -1) {
-			start = index + prefixLength;
-			String emojiNumber = text
-					.substring(start, text.indexOf("]", start));
-			for (int j = 0; j < EMOJI_ARRAY.length; j++) {
-				if (EMOJI_ARRAY[j].equals(emojiNumber)) {
-					Drawable drawable = mContext.getResources().getDrawable(
-							EMOJI_RESOURCE_ID_ARRAY[j]);
-					if(emojiNumber.equals("028")){  //sdk 端最后一个表情替换成了删除，收到最后一个表情，做特殊处理
-						drawable = mContext.getResources().getDrawable(R.drawable.udesk_029);
-					}
-					if (drawable != null) {
-						drawable.setBounds(0, 0, emojiWidth, emojiWidth);
-						EmojiconSpan span = new EmojiconSpan(mContext,drawable,textSize);
-						spannable.setSpan(span, index,
-								start + emojiNumber.length() + 1,
-								Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-						break;
+		try{
+			index = text.indexOf(EMOJI_PREFIX, index);
+			while (index > -1) {
+				start = index + prefixLength;
+				String emojiNumber = text
+						.substring(start, text.indexOf("]", start));
+				for (int j = 0; j < EMOJI_ARRAY.length; j++) {
+					if (EMOJI_ARRAY[j].equals(emojiNumber)) {
+						Drawable drawable = mContext.getResources().getDrawable(
+								EMOJI_RESOURCE_ID_ARRAY[j]);
+						if(emojiNumber.equals("028")){  //sdk 端最后一个表情替换成了删除，收到最后一个表情，做特殊处理
+							drawable = mContext.getResources().getDrawable(R.drawable.udesk_029);
+						}
+						if (drawable != null) {
+							drawable.setBounds(0, 0, emojiWidth, emojiWidth);
+							EmojiconSpan span = new EmojiconSpan(mContext,drawable,textSize);
+							spannable.setSpan(span, index,
+									start + emojiNumber.length() + 1,
+									Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+							break;
+						}
 					}
 				}
-			}
 
-			index = text.indexOf(EMOJI_PREFIX, index + 7);
+				index = text.indexOf(EMOJI_PREFIX, index + 7);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 
 		return spannable;
