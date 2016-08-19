@@ -443,27 +443,31 @@ public class MessageAdatper extends BaseAdapter {
 
         @Override
         void bind(Context context) {
-            CharSequence charSequence = Html.fromHtml(message.getMsgContent().replaceAll("(<p>||</p>)", ""));
-            rich_tvmsg.setText(charSequence);
-            rich_tvmsg.setMovementMethod(LinkMovementMethod.getInstance());
-            CharSequence text = rich_tvmsg.getText();
-            if (text instanceof Spannable) {
-                int end = text.length();
-                Spannable sp = (Spannable) rich_tvmsg.getText();
-                URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
-                SpannableStringBuilder style = new SpannableStringBuilder(text);
-                SpannableStringBuilder builder = new SpannableStringBuilder(charSequence);
-                style.clearSpans();// should clear old spans
-                for (URLSpan url : urls) {
-                    int start = builder.getSpanStart(url);
-                    int ends = builder.getSpanEnd(url);
-                    String texttitle = builder.toString().substring(start, ends);
-                    MyURLSpan myURLSpan = new MyURLSpan(url.getURL(), texttitle);
-                    style.setSpan(myURLSpan, sp.getSpanStart(url),
-                            sp.getSpanEnd(url),
-                            Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            try{
+                CharSequence charSequence = Html.fromHtml(message.getMsgContent().replaceAll("(<p>||</p>)", ""));
+                rich_tvmsg.setText(charSequence);
+                rich_tvmsg.setMovementMethod(LinkMovementMethod.getInstance());
+                CharSequence text = rich_tvmsg.getText();
+                if (text instanceof Spannable) {
+                    int end = text.length();
+                    Spannable sp = (Spannable) rich_tvmsg.getText();
+                    URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
+                    SpannableStringBuilder style = new SpannableStringBuilder(text);
+                    SpannableStringBuilder builder = new SpannableStringBuilder(charSequence);
+                    style.clearSpans();
+                    for (URLSpan url : urls) {
+                        int start = builder.getSpanStart(url);
+                        int ends = builder.getSpanEnd(url);
+                        String texttitle = builder.toString().substring(start, ends);
+                        MyURLSpan myURLSpan = new MyURLSpan(url.getURL(), texttitle);
+                        style.setSpan(myURLSpan, sp.getSpanStart(url),
+                                sp.getSpanEnd(url),
+                                Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    }
+                    rich_tvmsg.setText(style);
                 }
-                rich_tvmsg.setText(style);
+            }catch (Exception e){
+                e.printStackTrace();
             }
         }
 
