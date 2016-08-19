@@ -1212,8 +1212,10 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         mPresenter.sendBitmapMessage(bitmap);
                     }
 
-                } catch (FileNotFoundException e) {
-
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }catch (OutOfMemoryError error){
+                    error.printStackTrace();
                 }
             } else {
                 Bundle extras = data.getExtras();
