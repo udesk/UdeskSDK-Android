@@ -30,15 +30,16 @@ public class UdeskUtil {
 	public static final String  AudioFolderName = "UDeskAudio";
 	public static final String  SaveImg = "saveImg";
 	
-    public static Uri getOutputMediaFileUri() {
+    public static Uri getOutputMediaFileUri(Context context) {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        return Uri.fromFile(getOutputMediaFile("IMG_" + timeStamp + ".jpg"));
+        return Uri.fromFile(getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
     }
 
-    public static File getOutputMediaFile(String mediaName) {
+    public static File getOutputMediaFile(Context context,String mediaName) {
         File mediaStorageDir = null;
         try {
-            mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), ImgFolderName);
+//            mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), ImgFolderName);
+            mediaStorageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), ImgFolderName);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,14 +63,13 @@ public class UdeskUtil {
 	}
     
     
-	public static boolean audiofileIsDown(String url) {
+	public static boolean audiofileIsDown(Context context ,String url) {
 		if (TextUtils.isEmpty(url)) {
 			return false;
 		}
 		String fileName = url.substring(url.lastIndexOf("/") + 1);
 		File mediaStorageDir = new File(
-				Environment
-						.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES),
+				context.getExternalFilesDir(Environment.DIRECTORY_RINGTONES),
 						AudioFolderName);
 		if (!mediaStorageDir.exists()) {
 			return false;
@@ -84,29 +84,28 @@ public class UdeskUtil {
 	}
 	
 	
-	public static String getDownAudioPath(String url) {
+	public static String getDownAudioPath(Context context ,String url) {
 		String fileName = url.substring(url.lastIndexOf("/") + 1);
 		File mediaStorageDir = new File(
-				Environment
-						.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES),
+				context.getExternalFilesDir(Environment.DIRECTORY_RINGTONES),
 						AudioFolderName);
 
 		return mediaStorageDir.getPath() + File.separator + fileName;
 	}
 	
 	
-	public static String getOutputAudioPath() {
-		return getOutputAudioPath("audio_"
+	public static String getOutputAudioPath(Context context) {
+		return getOutputAudioPath(context,"audio_"
 				+ new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
 	}
 
-	public static File getOutputAudioFile() {
-		return getOutputAudioFile("audio_"
+	public static File getOutputAudioFile(Context context) {
+		return getOutputAudioFile(context,"audio_"
 				+ new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()));
 	}
 
-	public static File getOutputAudioFile(String mediaName) {
-		String path = getOutputAudioPath(mediaName);
+	public static File getOutputAudioFile(Context context ,String mediaName) {
+		String path = getOutputAudioPath(context,mediaName);
 		if (TextUtils.isEmpty(path)) {
 			return null;
 		} else {
@@ -114,10 +113,9 @@ public class UdeskUtil {
 		}
 	}
 	
-	public static String getOutputAudioPath(String mediaName) {
+	public static String getOutputAudioPath(Context context , String mediaName) {
 		File mediaStorageDir = new File(
-				Environment
-						.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES),
+				context.getExternalFilesDir(Environment.DIRECTORY_RINGTONES),
 						AudioFolderName);
 
 		if (!mediaStorageDir.exists()) {
@@ -139,9 +137,9 @@ public class UdeskUtil {
 	}
 
 
-	public static File getAudioFile(String url) {
+	public static File getAudioFile(Context context ,String url) {
 		String fileName = url.substring(url.lastIndexOf("/") + 1);
-		String path = getOutputAudioPath(fileName);
+		String path = getOutputAudioPath(context,fileName);
 		if (TextUtils.isEmpty(path)) {
 			return null;
 		} else {
@@ -150,11 +148,10 @@ public class UdeskUtil {
 	}
 	
 	
-	public static String getSaveImgPath(String url) {
+	public static String getSaveImgPath(Context context ,String url) {
 //		String fileName = url.substring(url.lastIndexOf("/") + 1);
 		File mediaStorageDir = new File(
-				Environment
-						.getExternalStoragePublicDirectory(Environment.DIRECTORY_RINGTONES),
+				context.getExternalFilesDir(Environment.DIRECTORY_RINGTONES),
 						SaveImg);
 
 		return mediaStorageDir.getPath() ;

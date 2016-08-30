@@ -6,7 +6,7 @@ repositories {
 }
 
 android {
-    compileSdkVersion 'Google Inc.:Google APIs:19'
+    compileSdkVersion 19
     buildToolsVersion "23.0.2"
 
     defaultConfig {

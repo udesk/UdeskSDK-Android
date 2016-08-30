@@ -7,12 +7,12 @@ repositories {
 }
 
 android {
-    compileSdkVersion 'Google Inc.:Google APIs:19'
+    compileSdkVersion 19
     buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "udesk.udesksdk"
-        minSdkVersion 9
+        minSdkVersion 10
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -31,13 +31,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
+
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':Udesk_Separate_UI')
+//    compile(name: 'Udesk_Separate_UI-debug', ext: 'aar')
 }

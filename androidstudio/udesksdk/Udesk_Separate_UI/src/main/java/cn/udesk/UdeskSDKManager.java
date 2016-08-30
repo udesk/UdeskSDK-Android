@@ -94,10 +94,6 @@ public class UdeskSDKManager {
 	public void initApiKey(Context context,String domain, String secretKey){
 		this.domain = domain;
 		this.secretKey = secretKey;
-		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-				UdeskConst.SharePreParams.Udesk_Domain, domain);
-		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-				UdeskConst.SharePreParams.Udesk_SecretKey, secretKey);
 		UdeskUtil.initImageLoaderConfig(context);
 	}
 
@@ -302,14 +298,14 @@ public class UdeskSDKManager {
 		if(!TextUtils.isEmpty(domain)){
 			return domain;
 		}
-		return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_Domain);
+		return "";
 	}
 
 	public String getSecretKey(Context context) {
 		if(!TextUtils.isEmpty(secretKey)){
 			return secretKey;
 		}
-		return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_SecretKey);
+		return "";
 	}
 	
 	public String getUserId(Context context) {
