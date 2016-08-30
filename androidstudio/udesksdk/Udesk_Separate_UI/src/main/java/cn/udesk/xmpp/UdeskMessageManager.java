@@ -175,7 +175,7 @@ public class UdeskMessageManager {
 			return;
 		}
 		ensureMessageExecutor();
-		if(!type.equals(UdeskConst.ChatMsgTypeString.TYPE_AUDIO)){
+//		if(!type.equals(UdeskConst.ChatMsgTypeString.TYPE_AUDIO)){
 			if(!type.equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT)){
 				messageExecutor.submit(new Runnable() {
 
@@ -187,10 +187,11 @@ public class UdeskMessageManager {
 				});
 			}
 			eventui_OnNewMessage.invoke(msginfo);
-		}else{
-			messageExecutor.submit(new DownAudioTask(content,
-					msginfo));
-		}
+//		}
+//		else{
+//			messageExecutor.submit(new DownAudioTask(content,
+//					msginfo));
+//		}
 
 		if (type.equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT)){
 			return;
@@ -222,62 +223,62 @@ public class UdeskMessageManager {
 	}
 	
 	
-	private class DownAudioTask implements Runnable {
-		private String urlStr; // 下载链接
-		private File fvoice;
-		private MessageInfo info;
-
-		public DownAudioTask(String urlStr, MessageInfo info) {
-			this.urlStr = urlStr;
-			this.info = info;
-		}
-
-		public void run() {
-			OutputStream output = null;
-			InputStream input = null;
-			try {
-				fvoice = UdeskUtil.getAudioFile(urlStr);
-				if (fvoice == null) {
-					return;
-				}
-				URL audioUrl = new URL(urlStr);
-				HttpURLConnection conn = (HttpURLConnection) audioUrl
-						.openConnection();
-				conn.setDoInput(true);
-				conn.connect();
-				input = conn.getInputStream();
-				output = new FileOutputStream(fvoice);
-				// 读取大文件
-				byte[] voice_bytes = new byte[1024];
-				int len = -1;
-				while ((len = input.read(voice_bytes)) != -1) {
-					output.write(voice_bytes, 0, len);
-					output.flush();
-				}
-				output.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					if (output != null) {
-						output.close();
-						output = null;
-					}
-					if (input != null) {
-						input.close();
-						input = null;
-					}
-					if (fvoice != null) {
-						info.setLocalPath(fvoice.getPath());
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				UdeskDBManager.getInstance().addMessageInfo(info);
-				eventui_OnNewMessage.invoke(info);
-			}
-		}
-	}
+//	private class DownAudioTask implements Runnable {
+//		private String urlStr; // 下载链接
+//		private File fvoice;
+//		private MessageInfo info;
+//
+//		public DownAudioTask(String urlStr, MessageInfo info) {
+//			this.urlStr = urlStr;
+//			this.info = info;
+//		}
+//
+//		public void run() {
+//			OutputStream output = null;
+//			InputStream input = null;
+//			try {
+//				fvoice = UdeskUtil.getAudioFile(urlStr);
+//				if (fvoice == null) {
+//					return;
+//				}
+//				URL audioUrl = new URL(urlStr);
+//				HttpURLConnection conn = (HttpURLConnection) audioUrl
+//						.openConnection();
+//				conn.setDoInput(true);
+//				conn.connect();
+//				input = conn.getInputStream();
+//				output = new FileOutputStream(fvoice);
+//				// 读取大文件
+//				byte[] voice_bytes = new byte[1024];
+//				int len = -1;
+//				while ((len = input.read(voice_bytes)) != -1) {
+//					output.write(voice_bytes, 0, len);
+//					output.flush();
+//				}
+//				output.close();
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			} finally {
+//				try {
+//					if (output != null) {
+//						output.close();
+//						output = null;
+//					}
+//					if (input != null) {
+//						input.close();
+//						input = null;
+//					}
+//					if (fvoice != null) {
+//						info.setLocalPath(fvoice.getPath());
+//					}
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//				UdeskDBManager.getInstance().addMessageInfo(info);
+//				eventui_OnNewMessage.invoke(info);
+//			}
+//		}
+//	}
 
 
 	public void onNewPresence(String jid, Integer onlineflag) {
