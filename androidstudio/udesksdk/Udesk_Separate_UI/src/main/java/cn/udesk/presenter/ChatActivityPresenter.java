@@ -432,7 +432,7 @@ public class ChatActivityPresenter {
             byte[] data = stream.toByteArray();
 
             String imageName = UdeskUtils.MD5(data);
-            File scaleImageFile = UdeskUtil.getOutputMediaFile(imageName
+            File scaleImageFile = UdeskUtil.getOutputMediaFile(mChatView.getContext(),imageName
                     + UdeskConst.ORIGINAL_SUFFIX);
             if (!scaleImageFile.exists()) {
                 if (max > 1024) {
@@ -662,7 +662,7 @@ public class ChatActivityPresenter {
         // 后台录音开始
         mChatView.showmVoicePopWindow();
         mVoiceRecord = new AudioRecordingAacThread();// new
-        mRecordTmpFile = UdeskUtil.getOutputAudioPath();
+        mRecordTmpFile = UdeskUtil.getOutputAudioPath(mChatView.getContext());
         mVoiceRecord.initResource(mRecordTmpFile, new AudioRecordState() {
             @Override
             public void onRecordingError() {

@@ -1169,7 +1169,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     // 启动手机相机拍照
     private void takePhoto() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        photoUri = UdeskUtil.getOutputMediaFileUri();
+        photoUri = UdeskUtil.getOutputMediaFileUri(UdeskChatActivity.this);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
         startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     }
@@ -1336,7 +1336,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     public void clickRecordFile(MessageInfo message) {
 
         if (mRecordFilePlay == null) {
-            mRecordFilePlay = new RecordPlay();
+            mRecordFilePlay = new RecordPlay(UdeskChatActivity.this);
 
         }
         if (mPlayCallback == null) {
