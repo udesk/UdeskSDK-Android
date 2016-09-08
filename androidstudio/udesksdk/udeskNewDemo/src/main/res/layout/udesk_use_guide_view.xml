@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+   <ImageView
+       android:layout_width="fill_parent"
+       android:layout_height="0dip"
+       android:layout_weight="512"
+       android:scaleType="fitXY"
+       android:src="@mipmap/udesk_guide_bg"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:orientation="horizontal"
+        android:layout_weight="324"
+        android:gravity="center"
+        android:background="@color/android:white"
+        >
+
+        <RelativeLayout
+            android:id="@+id/udesk_group_help"
+            android:layout_weight="1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:background="@color/android:white"
+            android:onClick="onClick"
+            >
+
+            <ImageView
+                android:src="@mipmap/udesk_help_tip"
+                android:id="@+id/udesk_help_imgtips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginTop="20dip"
+                android:text="@string/udesk_help_tips"
+                android:gravity="center"
+                android:textColor="#0D253E"
+                android:layout_below="@+id/udesk_help_imgtips"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/udesk_group_conversation"
+            android:layout_weight="1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:background="@color/android:white"
+            android:onClick="onClick"
+            >
+
+            <ImageView
+                android:src="@mipmap/udesk_conversion_tips"
+                android:id="@+id/image_conversion_tips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginTop="20dip"
+                android:text="@string/udesk_conversion_tips"
+                android:textColor="#0D253E"
+                android:gravity="center"
+                android:layout_below="@+id/image_conversion_tips"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:orientation="horizontal"
+        android:layout_weight="324"
+        android:gravity="center"
+        android:background="@color/android:white"
+        >
+
+        <RelativeLayout
+            android:id="@+id/udesk_group_formtable"
+            android:layout_weight="1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:background="@color/android:white"
+            android:onClick="onClick"
+            >
+
+            <ImageView
+                android:src="@mipmap/udesk_form_table"
+                android:id="@+id/udesk_form_imgtips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginTop="20dip"
+                android:text="@string/udesk_form_tips"
+                android:gravity="center"
+                android:textColor="#0D253E"
+                android:layout_below="@+id/udesk_form_imgtips"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/udesk_group_utils"
+            android:layout_weight="1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:background="@color/android:white"
+            android:onClick="onClick"
+            >
+
+            <ImageView
+                android:src="@mipmap/udesk_utils"
+                android:id="@+id/image_utils_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                />
+
+            <TextView
+                android:id="@+id/text_iamge_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginTop="20dip"
+                android:text="@string/udesk_utils_tips"
+                android:textColor="#0D253E"
+                android:gravity="center"
+                android:layout_below="@+id/image_utils_text"
+                android:layout_centerHorizontal="true" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/udesk_group_reset"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:orientation="horizontal"
+        android:layout_weight="120"
+        android:gravity="center"
+        android:background="#F8FAFF"
+        android:onClick="onClick"
+        >
+
+        <TextView
+            android:textColor="#0093FF"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:text="@string/udesk_reset_init"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+
+    </LinearLayout>
+</LinearLayout>

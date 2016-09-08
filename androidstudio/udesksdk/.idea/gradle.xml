@@ -9,15 +9,17 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/UdeskUIDemo" />
-            <option value="$PROJECT_DIR$/Udesk_Separate_UI" />
+            <option value="$PROJECT_DIR$/UdeskOldDemo" />
+            <option value="$PROJECT_DIR$/UdeskSDKUI" />
+            <option value="$PROJECT_DIR$/udeskNewDemo" />
           </set>
         </option>
         <option name="myModules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/UdeskUIDemo" />
-            <option value="$PROJECT_DIR$/Udesk_Separate_UI" />
+            <option value="$PROJECT_DIR$/UdeskOldDemo" />
+            <option value="$PROJECT_DIR$/UdeskSDKUI" />
+            <option value="$PROJECT_DIR$/udeskNewDemo" />
           </set>
         </option>
       </GradleProjectSettings>

@@ -1,0 +1,36 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="udesk.sdk.demo">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/android:Theme.Translucent.NoTitleBar">
+
+
+        <activity
+            android:name="udesk.sdk.demo.activity.UdeskInitKeyActivity"
+            android:configChanges="screenSize|orientation|uiMode|keyboardHidden"
+             >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="udesk.sdk.demo.activity.UdeskUseGuideActivity"
+            android:configChanges="screenSize|orientation|uiMode|keyboardHidden"></activity>
+
+        <activity
+            android:name="udesk.sdk.demo.activity.UdeskFuncationExampleActivity"
+            android:configChanges="screenSize|orientation|uiMode|keyboardHidden"></activity>
+
+        <activity
+            android:name="udesk.sdk.demo.activity.UpdateUserInfoActivity"
+            android:configChanges="screenSize|orientation|uiMode|keyboardHidden"></activity>
+
+    </application>
+
+</manifest>
