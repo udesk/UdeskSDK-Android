@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_im_content"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/udesk_color_bg_white"
+    android:orientation="vertical" >
+
+    <cn.udesk.widget.UdeskTitleBar
+        android:id="@+id/udesktitlebar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <cn.udesk.widget.UdeskExpandableLayout
+        android:id="@+id/udesk_change_status_info"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <cn.udesk.widget.UDPullGetMoreListView
+        android:id="@+id/udesk_conversation"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/udesk_color_bg_white"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:listSelector="@android:color/transparent" />
+
+    <include layout="@layout/udesk_line_horizontal" />
+
+    <include layout="@layout/udesk_im_refactor_bottom_panel" />
+
+    <include layout="@layout/udesk_line_horizontal" />
+
+    <include layout="@layout/udesk_im_emoji_panel" />
+
+    <include layout="@layout/udesk_im_audio_panel" />
+</LinearLayout>
