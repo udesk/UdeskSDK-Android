@@ -234,7 +234,6 @@ public class UdeskFuncationExampleActivity extends Activity {
         UdeskConfig.udeskIMTimeTextColorResId = R.color.udesk_color_im_time_text1;
         UdeskConfig.udeskIMTipTextColorResId = R.color.udesk_color_im_tip_text1;
         UdeskConfig.udeskbackArrowIconResId = R.drawable.udesk_titlebar_back;
-
         UdeskConfig.udeskCommityBgResId = R.color.udesk_color_im_commondity_bg1;
         UdeskConfig.udeskCommityTitleColorResId = R.color.udesk_color_im_commondity_title1;
         UdeskConfig.udeskCommitysubtitleColorResId = R.color.udesk_color_im_commondity_subtitle1;

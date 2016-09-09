@@ -6,7 +6,6 @@
     android:background="@color/udesk_titlebar_bg1" >
 
     <LinearLayout
-        android:id="@+id/udesk_back_linear"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
@@ -14,19 +13,27 @@
         android:orientation="horizontal"
         android:gravity="center"
         >
+        <LinearLayout
+            android:id="@+id/udesk_back_linear"
+            android:orientation="vertical"
+            android:layout_width="50dp"
+            android:gravity="center"
+            android:layout_height="fill_parent">
 
-        <ImageView
-            android:id="@+id/udesk_back_img"
-            android:layout_width="@dimen/udesk_20"
-            android:layout_marginLeft="@dimen/udesk_15"
-            android:layout_height="@dimen/udesk_20"
-            android:src="@drawable/udesk_titlebar_back"
-            />
+            <ImageView
+                android:id="@+id/udesk_back_img"
+                android:layout_width="@dimen/udesk_20"
+                android:layout_height="@dimen/udesk_20"
+                android:src="@drawable/udesk_titlebar_back"
+                />
+
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/udesk_content"
             style="@style/udesk_titlebar_button_text_style"
-            android:layout_marginLeft="@dimen/udesk_35"
+            android:layout_marginLeft="@dimen/udesk_15"
             android:maxWidth="300dp"
             />
 

@@ -24,7 +24,7 @@
             android:maxLines="5"
             android:minHeight="21dp"
             android:textColor="@color/udesk_edit_input_msg_cololr1"
-            android:textColorHint="@color/udesk_edit_input_msg_cololr1"
+            android:textColorHint="@color/udesk_edit_input_hint_msg_cololr1"
             android:textCursorDrawable="@drawable/udesk_edit_cursor"
             android:textSize="15sp" />
 
