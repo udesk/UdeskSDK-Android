@@ -7,9 +7,11 @@ public class UdeskConfig {
 
     public static final int DEFAULT = -1;
 
-    public static int udeskTitlebarBgResId = DEFAULT; // 标题栏TitleBar的背景色  通过颜色设置
+    // 标题栏TitleBar的背景色  通过颜色设置
+    public static int udeskTitlebarBgResId = DEFAULT;
 
-    public static int udeskTitlebarTextLeftRightResId = DEFAULT; // 标题栏TitleBar，左右两侧文字的颜色
+    // 标题栏TitleBar，左右两侧文字的颜色
+    public static int udeskTitlebarTextLeftRightResId = DEFAULT;
 
     //IM界面，左侧文字的字体颜色
     public static int udeskIMLeftTextColorResId = DEFAULT;
