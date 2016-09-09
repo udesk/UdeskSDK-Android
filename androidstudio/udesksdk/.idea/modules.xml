@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/UdeskOldDemo/UdeskOldDemo.iml" filepath="$PROJECT_DIR$/UdeskOldDemo/UdeskOldDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UdeskSDKUI/UdeskSDKUI.iml" filepath="$PROJECT_DIR$/UdeskSDKUI/UdeskSDKUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/UdeskOldDemo/UdeskUIDemo.iml" filepath="$PROJECT_DIR$/UdeskOldDemo/UdeskUIDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/UdeskSDKUI/Udesk_Separate_UI.iml" filepath="$PROJECT_DIR$/UdeskSDKUI/Udesk_Separate_UI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/udeskNewDemo/udeskNewDemo.iml" filepath="$PROJECT_DIR$/udeskNewDemo/udeskNewDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/udeskNewDemo/udeskdemo.iml" filepath="$PROJECT_DIR$/udeskNewDemo/udeskdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/udesksdk.iml" filepath="$PROJECT_DIR$/udesksdk.iml" />
     </modules>

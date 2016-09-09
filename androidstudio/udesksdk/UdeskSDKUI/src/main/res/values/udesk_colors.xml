@@ -67,9 +67,10 @@
     <color name="udesk_message_bottom_pannel_bg1">#FAFBFC</color>
     <color name="udesk_message_bottom_pannel_bg2">#FFFFFF</color>
 
-    <color name="udesk_edit_input_msg_cololr1">#C3CDD4</color>
-    <color name="udesk_edit_input_msg_cololr2">#C3CDD4</color>
+    <color name="udesk_edit_input_msg_cololr1">#333333</color>
+    <color name="udesk_edit_input_msg_cololr2">#333333</color>
 
+    <color name="udesk_edit_input_hint_msg_cololr1">#C3CDD4</color>
     <color name="udesk_bottom_send1">#0093FF</color>
     <color name="udesk_bottom_send2">#0093FF</color>
 
