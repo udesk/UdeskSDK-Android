@@ -381,6 +381,15 @@ RxPermissions.getInstance(this)
 其它的动态权限可以看UdeskChatActivity代码。
 ```
 
+#### 4.11 支持设置客户的头像显示
+在UdeskSDKManager中设置客户头像的url
+``` java
+public void setCustomerUrl(String url){
+	this.customerUrl = url;
+}
+
+```
+
 # 五、SDK内部封装API
 
 #### 5.1支持的消息类型 
@@ -566,6 +575,64 @@ protected void goToForm() {
 ```
 
 # 六、自定义UI
+
+UdeskConfig这个类提供了一些颜色的资源的配置
+```java
+ // 标题栏TitleBar的背景色  通过颜色设置
+    public static int udeskTitlebarBgResId = DEFAULT;
+
+    // 标题栏TitleBar，左右两侧文字的颜色
+    public static int udeskTitlebarTextLeftRightResId = DEFAULT;
+
+    //IM界面，左侧文字的字体颜色
+    public static int udeskIMLeftTextColorResId = DEFAULT;
+
+    //IM界面，右侧文字的字体颜色
+    public static int udeskIMRightTextColorResId = DEFAULT;
+
+    //IM界面，左侧客服昵称文字的字体颜色
+    public static int udeskIMAgentNickNameColorResId = DEFAULT;
+
+    //IM界面，时间文字的字体颜色
+    public static int udeskIMTimeTextColorResId = DEFAULT;
+
+    // IM界面，提示语文字的字体颜色，比如客服转移
+    public static int udeskIMTipTextColorResId = DEFAULT;
+
+    // 返回箭头图标资源id
+    public static int udeskbackArrowIconResId = DEFAULT;
+
+    // 咨询商品item的背景颜色
+    public static int udeskCommityBgResId = DEFAULT;
+
+    //    商品介绍Title的字样颜色
+    public static int udeskCommityTitleColorResId = DEFAULT;
+
+    //  商品咨询页面中，商品介绍子Title的字样颜色
+    public static int udeskCommitysubtitleColorResId = DEFAULT;
+
+    //    商品咨询页面中，发送链接的字样颜色
+    public static int udeskCommityLinkColorResId = DEFAULT;
+```
+参照udeskNewDemo 提供的例子进行配置
+```java
+
+ private void UIStyle1(){
+        UdeskConfig.udeskTitlebarBgResId = R.color.udesk_titlebar_bg1;
+        UdeskConfig.udeskTitlebarTextLeftRightResId = R.color.udesk_color_navi_text1;
+        UdeskConfig.udeskIMRightTextColorResId = R.color.udesk_color_im_text_right1;
+        UdeskConfig.udeskIMLeftTextColorResId = R.color.udesk_color_im_text_left1;
+        UdeskConfig.udeskIMAgentNickNameColorResId = R.color.udesk_color_im_left_nickname1;
+        UdeskConfig.udeskIMTimeTextColorResId = R.color.udesk_color_im_time_text1;
+        UdeskConfig.udeskIMTipTextColorResId = R.color.udesk_color_im_tip_text1;
+        UdeskConfig.udeskbackArrowIconResId = R.drawable.udesk_titlebar_back;
+        UdeskConfig.udeskCommityBgResId = R.color.udesk_color_im_commondity_bg1;
+        UdeskConfig.udeskCommityTitleColorResId = R.color.udesk_color_im_commondity_title1;
+        UdeskConfig.udeskCommitysubtitleColorResId = R.color.udesk_color_im_commondity_subtitle1;
+        UdeskConfig.udeskCommityLinkColorResId = R.color.udesk_color_im_commondity_title1;
+    }
+    
+```
 
 可以通过以下文件名称快速定位SDK资源，修改相应的资源可以实现UI自定义
 
