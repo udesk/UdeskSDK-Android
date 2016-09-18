@@ -613,36 +613,42 @@ public class ChatActivityPresenter {
         @Override
         public void complete(String key, ResponseInfo info, JSONObject response) {
 
-            MessageInfo msg = mToMsgMap.get(key);
-            if (key != null && null != response && response.has("key")
-                    && msg != null) {
-                if (UdeskCoreConst.isDebug) {
-                    Log.i("DialogActivityPresenter", "UpCompletion : key="
-                            + key + "\ninfo=" + info.toString() + "\nresponse="
-                            + response.toString());
-                }
-                String qiniuKey = response.optString("key");
-                String qiniuUrl = UdeskCoreConst.UD_QINIU_UPLOAD + qiniuKey;
-                UdeskMessageManager.getInstance().sendMessage(msg.getMsgtype(),
-                        qiniuUrl, msg.getMsgId(),
-                        mChatView.getAgentInfo().getAgentJid(), 0);
-                UdeskDBManager.getInstance().updateMsgContent(msg.getMsgId(),
-                        qiniuUrl);
+            try{
+                MessageInfo msg = mToMsgMap.get(key);
+                if (key != null && null != response && response.has("key")
+                        && msg != null) {
+                    if (UdeskCoreConst.isDebug) {
+                        Log.i("DialogActivityPresenter", "UpCompletion : key="
+                                + key + "\ninfo=" + info.toString() + "\nresponse="
+                                + response.toString());
+                    }
+                    String qiniuKey = response.optString("key");
+                    String qiniuUrl = UdeskCoreConst.UD_QINIU_UPLOAD + qiniuKey;
+                    UdeskMessageManager.getInstance().sendMessage(msg.getMsgtype(),
+                            qiniuUrl, msg.getMsgId(),
+                            mChatView.getAgentInfo().getAgentJid(), 0);
+                    UdeskDBManager.getInstance().updateMsgContent(msg.getMsgId(),
+                            qiniuUrl);
 
-                UdeskDBManager.getInstance().addSendingMsg(msg.getMsgId(),
-                        UdeskConst.SendFlag.RESULT_SEND,
-                        System.currentTimeMillis());
-                mToMsgMap.remove(key);
-            } else {
-                if (mChatView.getHandler() != null) {
-                    Message message = mChatView.getHandler().obtainMessage(
-                            MessageWhat.changeImState);
-                    message.obj = msg.getMsgId();
-                    message.arg1 = UdeskConst.SendFlag.RESULT_FAIL;
-                    mChatView.getHandler().sendMessage(message);
+                    UdeskDBManager.getInstance().addSendingMsg(msg.getMsgId(),
+                            UdeskConst.SendFlag.RESULT_SEND,
+                            System.currentTimeMillis());
+                    mToMsgMap.remove(key);
+                } else {
+                    if (mChatView.getHandler() != null) {
+                        Message message = mChatView.getHandler().obtainMessage(
+                                MessageWhat.changeImState);
+                        message.obj = msg.getMsgId();
+                        message.arg1 = UdeskConst.SendFlag.RESULT_FAIL;
+                        mChatView.getHandler().sendMessage(message);
+                    }
+                    UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(),
+                            UdeskConst.SendFlag.RESULT_FAIL);
                 }
-                UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(),
-                        UdeskConst.SendFlag.RESULT_FAIL);
+            }catch (Exception e){
+                e.printStackTrace();
+            }catch (OutOfMemoryError error){
+                error.printStackTrace();
             }
         }
     }
@@ -775,39 +781,46 @@ public class ChatActivityPresenter {
         @Override
         public void complete(String key, ResponseInfo info, JSONObject response) {
 
-            MessageInfo msg = mToMsgMap.get(key);
-            if (key != null && null != response && response.has("key")
-                    && msg != null) {
-                if (UdeskCoreConst.isDebug) {
-                    Log.w("DialogActivityPresenter", "UpCompletion : key="
-                            + key + "\ninfo=" + info.toString() + "\nresponse="
-                            + response.toString());
+            try{
+                MessageInfo msg = mToMsgMap.get(key);
+                if (key != null && null != response && response.has("key")
+                        && msg != null) {
+                    if (UdeskCoreConst.isDebug) {
+                        Log.w("DialogActivityPresenter", "UpCompletion : key="
+                                + key + "\ninfo=" + info.toString() + "\nresponse="
+                                + response.toString());
+                    }
+                    String qiniuKey = response.optString("key");
+                    String qiniuUrl = UdeskCoreConst.UD_QINIU_UPLOAD + qiniuKey;
+
+                    UdeskMessageManager.getInstance().sendMessage(msg.getMsgtype(),
+                            qiniuUrl, msg.getMsgId(),
+                            mChatView.getAgentInfo().getAgentJid(), msg.getDuration());
+
+                    UdeskDBManager.getInstance().updateMsgContent(msg.getMsgId(),
+                            qiniuUrl);
+
+                    UdeskDBManager.getInstance().addSendingMsg(msg.getMsgId(),
+                            UdeskConst.SendFlag.RESULT_SEND,
+                            System.currentTimeMillis());
+                    mToMsgMap.remove(key);
+                } else {
+                    if (mChatView.getHandler() != null) {
+                        Message message = mChatView.getHandler().obtainMessage(
+                                MessageWhat.changeImState);
+                        message.obj = msg.getMsgId();
+                        message.arg1 = UdeskConst.SendFlag.RESULT_FAIL;
+                        mChatView.getHandler().sendMessage(message);
+                    }
+                    UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(),
+                            UdeskConst.SendFlag.RESULT_FAIL);
                 }
-                String qiniuKey = response.optString("key");
-                String qiniuUrl = UdeskCoreConst.UD_QINIU_UPLOAD + qiniuKey;
+            }catch (Exception e){
+                e.printStackTrace();
+            }catch (OutOfMemoryError error){
 
-                UdeskMessageManager.getInstance().sendMessage(msg.getMsgtype(),
-                        qiniuUrl, msg.getMsgId(),
-                        mChatView.getAgentInfo().getAgentJid(), msg.getDuration());
-
-                UdeskDBManager.getInstance().updateMsgContent(msg.getMsgId(),
-                        qiniuUrl);
-
-                UdeskDBManager.getInstance().addSendingMsg(msg.getMsgId(),
-                        UdeskConst.SendFlag.RESULT_SEND,
-                        System.currentTimeMillis());
-                mToMsgMap.remove(key);
-            } else {
-                if (mChatView.getHandler() != null) {
-                    Message message = mChatView.getHandler().obtainMessage(
-                            MessageWhat.changeImState);
-                    message.obj = msg.getMsgId();
-                    message.arg1 = UdeskConst.SendFlag.RESULT_FAIL;
-                    mChatView.getHandler().sendMessage(message);
-                }
-                UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(),
-                        UdeskConst.SendFlag.RESULT_FAIL);
             }
+
         }
 
     }
