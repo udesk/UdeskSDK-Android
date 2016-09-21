@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_root"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/udesk_titlebar_height"
+    android:background="@color/udesk_titlebar_bg1" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+        <LinearLayout
+            android:id="@+id/udesk_back_linear"
+            android:orientation="vertical"
+            android:layout_width="50dp"
+            android:gravity="center"
+            android:layout_height="fill_parent">
+
+            <ImageView
+                android:id="@+id/udesk_back_img"
+                android:layout_width="@dimen/udesk_20"
+                android:layout_height="@dimen/udesk_20"
+                android:src="@drawable/udesk_titlebar_back"
+                />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/udesk_content"
+            style="@style/udesk_titlebar_button_text_style"
+            android:layout_marginLeft="@dimen/udesk_15"
+            android:maxWidth="300dp"
+            />
+
+        <ImageView
+            android:id="@+id/udesk_status"
+            android:layout_width="@dimen/udesk_8"
+            android:layout_marginLeft="@dimen/udesk_2"
+            android:layout_height="@dimen/udesk_8"
+            android:src="@drawable/udesk_online_status"
+            android:visibility="gone"
+            />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+
+        <ImageView
+            android:id="@+id/udesk_transfer_agent"
+            android:layout_width="@dimen/udesk_15"
+            android:layout_marginRight = "@dimen/udesk_2"
+            android:layout_height="@dimen/udesk_15"
+            android:src="@drawable/udesk_tip_agent"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/udesk_titlebar_right"
+            style="@style/udesk_titlebar_button_text_style"
+            android:layout_marginRight="@dimen/udesk_titlebar_right_margin"
+            android:visibility="gone"
+            />
+
+        </LinearLayout>
+
+
+
+</RelativeLayout>

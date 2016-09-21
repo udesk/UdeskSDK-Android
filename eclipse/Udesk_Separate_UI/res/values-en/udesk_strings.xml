@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="udesk_titlebar_back">Back</string>
+    <string name="udesk_navi_open_im">Contact us</string>
+    <string name="udesk_navi_helper_title_main">Help</string>
+    <string name="udesk_send_message">Send</string>
+    <string name="udesk_send_message_empty">No empty message</string>
+    <string name="udesk_get_more_history">Draging history records</string>
+    <string name="udesk_release_to_get_more">Releasing history records</string>
+    <string name="udesk_loading_more">Loading history records</string>
+    <string name="udesk_no_more_history">No more history records</string>
+    <string name="udesk_helper_loadding">Loading, please wait&#8230;</string>
+    <string name="udesk_navi_helper_input_hint">Describe your question</string>
+    <string name="udesk_save">Save</string>
+    <string name="udesk_copy">Copy</string>
+    <string name="udesk_fail_save_image">Failed saveing</string>
+    <string name="udesk_success_save_image">Successful saving</string>
+    <string name="udesk_error_network">No network</string>
+    <string name="udesk_cancel">Cancel</string>
+    <string name="udesk_sure">Sure</string>
+    <string name="udesk_ok">Leave message</string>
+
+    <string name="udesk_msg_offline_to_form">Agent is offline,submitting list to inform us</string>
+    <string name="udesk_msg_busyline_to_form">Customer service is busy now, please press button to leave message</string>
+    <string name="udesk_label_search_fail">Can not search your content?</string>
+    <string name="udesk_label_no_sd">SD out of work, please check</string>
+
+
+    <string name="udesk_label_hint_too_short">Too short clicks</string>
+    <string name="udesk_im_record_error">Errors of recording, please check your authority of voice record on your application</string>
+
+
+    <string name="udesk_im_time_format_yday">"Yesterday"</string>
+    <string name="udesk_im_time_format_dby">"The day before yesterday"</string>
+    <string name="udesk_label_customer_offline">Agent is offline，please leaving message</string>
+
+    <!-- 商品咨询界面，链接按钮的展示文字 -->
+    <string name="udesk_label_send_commondity_link">"Send links"</string>
+    <string name="udesk_transfer_persion">Operator</string>
+    <string name="udesk_robot_title">Intelligent robot</string>
+
+    <string name="udesk_has_not_open_robot">You did not open intelligent robot service on your app</string>
+    <string name="udesk_has_wrong_net">Network error, please checking you network setting!</string>
+
+
+    <string name="udesk_options_agentgroup">Please choose agent group</string>
+
+    <string name="aduido_denied">Refused voice record authority, can not take a voice record</string>
+    <string name="camera_denied">Refused photo authrity, can not tak a photo </string>
+    <string name="photo_denied">Refused authority of getting photo album, can not get your photos</string>
+    <string name="add_bolcked_tips">Sorry, you are in blacklist</string>
+    <string name="udesk_agent_connecting">Aagent connecting...</string>
+    <string name="udesk_agent_connecting_error_net_uavailabl">Failed connection, please try later!</string>
+
+    <string name="udesk_edit_hint_msg">Typing...</string>
+    <string name="udesk_voice_init">Hold to talk</string>
+    <string name="udesk_voice_cancle">Release to cancel</string>
+    <string name="udesk_voice_ready">Preparing...</string>
+    <string name="udesk_thanks_survy">Thanks for your comment！</string>
+    <string name="udesk_transfer_success">Successfully tansfer to agent</string>
+    <string name="udesk_service">Service</string>
+    <string name="udesk_nonexistent_agent">Agent is not correct, please check agent ID </string>
+    <string name="udesk_nonexistent_groupId"> Agent agroup is not correct, please check agent group ID</string>
+</resources>
