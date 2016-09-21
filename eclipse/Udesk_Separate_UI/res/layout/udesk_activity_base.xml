@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_demo_activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical" >
+
+    <cn.udesk.widget.UdeskTitleBar
+        android:id="@+id/udesktitlebar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/udesk_helper_search"
+            android:layout_width="fill_parent"
+            android:layout_height="44dp"
+            android:background="#FFC9C8CE"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="32dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/udesk_helpersearch_editext"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp" >
+
+                <LinearLayout
+                    android:id="@+id/udesk_helper_search_button"
+                    android:layout_width="40dip"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center" >
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/udesk_ic_search" />
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/udesk_helper_search_input"
+                    android:layout_width="fill_parent"
+                    android:layout_height="32dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/udesk_helper_search_button"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/udesk_navi_helper_input_hint"
+                    android:singleLine="true"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="#ff606060" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/udesk_listviewcontain_view"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <include layout="@layout/udesk_line_horizontal" />
+
+            <ListView
+                android:id="@+id/udesk_helper_list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:cacheColorHint="@android:color/transparent"
+                android:divider="#FFCECECE"
+                android:dividerHeight="1px"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:scrollbarStyle="outsideOverlay" />
+
+            <include layout="@layout/udesk_line_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/udesk_navi_may_search_fail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:text="@string/udesk_label_search_fail"
+                android:textColor="@color/udesk_color_text_gray"
+                android:textSize="@dimen/udesk_sp14"
+                />
+
+            <TextView
+                android:id="@+id/udesk_navi_to_im"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/udesk_helper_shape_bg"
+                android:gravity="center_horizontal"
+                android:text="@string/udesk_navi_open_im"
+                android:textColor="@color/udesk_color_text_gray"
+                android:textSize="@dimen/udesk_sp16" />
+        </LinearLayout>
+
+        <cn.udesk.widget.UdeskLoadingView
+            android:id="@+id/udesk_loading"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</LinearLayout>

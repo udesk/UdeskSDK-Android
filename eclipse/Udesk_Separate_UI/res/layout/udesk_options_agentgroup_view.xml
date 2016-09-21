@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/udesk_default_gray_bg"
+    android:orientation="vertical" >
+
+    <cn.udesk.widget.UdeskTitleBar
+        android:id="@+id/udesktitlebar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    
+
+    <TextView
+        android:visibility="gone"
+        android:textSize="@dimen/udesk_sp16"
+        android:textColor="#787878"
+        android:id="@+id/udesk_title"
+        android:gravity="left|center"
+        android:paddingLeft="@dimen/udesk_15"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/udesk_50" />
+
+    <ListView
+        android:id="@+id/udesk_options_listview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@color/udesk_view_line"
+        android:dividerHeight="@dimen/udesk_1"
+        android:fadingEdge="none"
+        android:scrollbars="none"
+        android:scrollingCache="false"
+        />
+    
+    
+
+</LinearLayout>
