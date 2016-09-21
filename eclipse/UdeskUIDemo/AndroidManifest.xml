@@ -1,0 +1,86 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="udesk.udesksdk">
+
+    <uses-sdk
+        android:minSdkVersion="10"
+        />
+    
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" >
+        <activity
+            android:name="udesk.udesksdk.UdeskInitActivity"
+            android:theme="@android:style/Theme.Light"
+            android:configChanges="screenSize|orientation|uiMode|keyboardHidden"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="udesk.udesksdk.UdeskCaseActivity"
+            android:theme="@android:style/Theme.Light"
+            android:configChanges="screenSize|orientation|uiMode|keyboardHidden"
+            >
+        </activity>
+        
+        
+        
+        
+        
+        
+            <activity
+            android:name="cn.udesk.activity.UdeskHelperActivity"
+            android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
+            android:theme="@style/Udesk_Theme" >
+        </activity>
+        <activity
+            android:name="cn.udesk.activity.UdeskHelperArticleActivity"
+            android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
+            android:theme="@style/Udesk_Theme" />
+        <activity
+            android:name="cn.udesk.activity.UdeskRobotActivity"
+            android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
+            android:theme="@style/Udesk_Theme" />
+        <activity
+            android:name="cn.udesk.activity.UdeskFormActivity"
+            android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
+            android:theme="@style/Udesk_Theme" />
+        <activity
+            android:name="cn.udesk.activity.UdeskChatActivity"
+            android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
+            android:theme="@style/Udesk_Theme" />
+        <activity
+            android:name="cn.udesk.activity.UdeskZoomImageActivty"
+            android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
+            android:theme="@style/Udesk_Theme" />
+        <activity
+            android:name="cn.udesk.activity.SurvyDialogActivity"
+            android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
+            android:launchMode="singleInstance"
+            android:theme="@style/transcutestyle" />
+
+        <activity
+            android:name="cn.udesk.activity.OptionsAgentGroupActivity"
+            android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
+            android:theme="@style/Udesk_Theme" />
+
+        <activity
+            android:name="com.tbruyelle.rxpermissions.ShadowActivity"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            />
+    </application>
+
+</manifest>
