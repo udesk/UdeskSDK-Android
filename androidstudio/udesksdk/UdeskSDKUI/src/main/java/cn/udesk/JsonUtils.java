@@ -215,7 +215,8 @@ public class JsonUtils {
 	}
 
 
-	public static void  parserCustomersJson(Context context,String jsonString){
+	public static String  parserCustomersJson(Context context,String jsonString){
+		String robotUrl = "";
 		try {
 			JSONObject resultJson = new JSONObject(jsonString);
 			if(resultJson.has("customer")){
@@ -233,18 +234,21 @@ public class JsonUtils {
 					JSONObject robotJson = new JSONObject(robotString);
 					if(robotJson.has("transfer")){
 						UdeskSDKManager.getInstance().setTransfer(robotJson.getString("transfer"));
-						PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-								UdeskConst.SharePreParams.Udesk_Transfer, robotJson.getString("transfer"));
+//						PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+//								UdeskConst.SharePreParams.Udesk_Transfer, robotJson.getString("transfer"));
 					}
 					if(robotJson.has("h5_url")){
 						UdeskSDKManager.getInstance().setH5Url(robotJson.getString("h5_url"));
-						PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-								UdeskConst.SharePreParams.Udesk_h5url, robotJson.getString("h5_url"));
+//						PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+//								UdeskConst.SharePreParams.Udesk_h5url, robotJson.getString("h5_url"));
+						return robotJson.getString("h5_url");
 					}
 				}
 			}
 		} catch (JSONException e) {
 		}
+
+		return  robotUrl;
 	}
 
 }

@@ -206,10 +206,10 @@ public class UdeskSDKManager {
 
 					@Override
 					public void onSuccess(String string) {
-						JsonUtils.parserCustomersJson(context, string);
+						String robotUrl = JsonUtils.parserCustomersJson(context, string);
 						dismiss();
-						if (!TextUtils.isEmpty(getH5Url(context))) {
-							toLanuchRobotAcitivty(context, getH5Url(context), getTransfer(context));
+						if (!TextUtils.isEmpty(robotUrl)) {
+							toLanuchRobotAcitivty(context, robotUrl, getTransfer(context));
 						} else {
 							toLanuchChatAcitvity(context);
 						}
@@ -349,14 +349,16 @@ public class UdeskSDKManager {
 		if(!TextUtils.isEmpty(transfer)){
 			return transfer;
 		}
-		return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_Transfer);
+//		return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_Transfer);
+		return  "";
 	}
 
 	public String getH5Url(Context context) {
 		if(!TextUtils.isEmpty(h5Url)){
 			return h5Url;
 		}
-		return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_h5url);
+//		return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_h5url);
+		return  "";
 	}
 
 	public void setH5Url(String h5Url) {
