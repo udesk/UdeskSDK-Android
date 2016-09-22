@@ -179,10 +179,10 @@ public class UdeskSDKManager {
 				dismiss();
 				RobotInfo item = JsonUtils.parseRobotJsonResult(message);
 				if (item != null && !TextUtils.isEmpty(item.h5_url)) {
-					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-							UdeskConst.SharePreParams.Udesk_Transfer, item.transfer);
-					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-							UdeskConst.SharePreParams.Udesk_h5url, item.h5_url);
+//					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+//							UdeskConst.SharePreParams.Udesk_Transfer, item.transfer);
+//					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+//							UdeskConst.SharePreParams.Udesk_h5url, item.h5_url);
 					toLanuchRobotAcitivty(context, item.h5_url, item.transfer);
 				} else {
 					UdeskUtils.showToast(context, context.getString(R.string.udesk_has_not_open_robot));
