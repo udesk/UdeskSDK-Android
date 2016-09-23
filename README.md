@@ -1,4 +1,4 @@
-# UdeskSDK Android 3.2.1 开发者文档
+# UdeskSDK Android 3.3 开发者文档
 ## 一、SDK工作流程图
 Udesk-SDK的工作流程如下图所示。
 
@@ -709,7 +709,7 @@ RedirectViewHolder  显示转移提示语信息；
 
 ``` java
 //udesk
--keep class udesk.core.** {*;} 
+-keep class udesk.** {*;} 
 -keep class cn.udesk.**{*; } 
 //七牛
 -keep class com.qiniu.android.dns.** {*; } 
