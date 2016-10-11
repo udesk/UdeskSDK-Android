@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -1151,6 +1152,9 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     private void takePhoto() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         photoUri = UdeskUtil.getOutputMediaFileUri(UdeskChatActivity.this);
+        if (Build.VERSION.SDK_INT>=23){
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
         intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
         startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     }
@@ -1173,7 +1177,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         }
                     }
                     if (mPresenter != null && photoUri != null && photoUri.getPath() != null) {
-                        mPresenter.sendBitmapMessage(photoUri.getPath());
+                        mPresenter.sendBitmapMessage(UdeskUtil.parseOwnUri(photoUri));
                     }
 
                 }

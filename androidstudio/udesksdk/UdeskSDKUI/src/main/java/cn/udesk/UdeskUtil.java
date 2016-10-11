@@ -3,7 +3,9 @@ package cn.udesk;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
@@ -36,7 +38,28 @@ public class UdeskUtil {
 
 	public static Uri getOutputMediaFileUri(Context context) {
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-		return Uri.fromFile(getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
+		if (Build.VERSION.SDK_INT>=23){
+			return FileProvider.getUriForFile(context,"cn.udesk.provider",getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
+		}else{
+			return Uri.fromFile(getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
+		}
+
+	}
+
+	/**
+	 * 提供的Uri 解析出文件绝对路径
+	 * @param uri
+	 * @return
+	 */
+	public static String parseOwnUri(Uri uri){
+		if(uri==null)return "";
+		String path;
+		if(TextUtils.equals(uri.getAuthority(),"cn.udesk.provider")){
+			path=new File(Environment.getExternalStorageDirectory(),uri.getPath().replace("my_external/","")).getAbsolutePath();
+		}else {
+			path=uri.getPath();
+		}
+		return path;
 	}
 
 	public static File getOutputMediaFile(Context context,String mediaName) {
