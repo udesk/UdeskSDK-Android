@@ -129,7 +129,6 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 		final HashMap<String, String> extraInfoTextField = new HashMap<String, String>();
 		final HashMap<String, String> extraInfodRoplist = new HashMap<String, String>();
 		UdeskHttpFacade.getInstance().getUserFields(UDESK_DOMAIN, UDESK_SECRETKEY, new UdeskCallBack() {
-
 			@Override
 			public void onSuccess(String result) {
 				try {
@@ -158,7 +157,6 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 							}
 						}
 					}
-
 					if (TextUtils.isEmpty(mSdktoken.getText().toString())) {
 						Toast.makeText(UdeskInitActivity.this,
 								getString(R.string.udesk_sdktoken_toast),
@@ -171,13 +169,18 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 					toUseCaseActivity();
 				} catch (JSONException e) {
 					e.printStackTrace();
+					UdeskSDKManager.getInstance().setUserInfo(
+							UdeskInitActivity.this, mSdktoken.getText().toString(), getUserInfo());
+					toUseCaseActivity();
 				}
 
 			}
-
 			@Override
 			public void onFail(String arg0) {
 
+				UdeskSDKManager.getInstance().setUserInfo(
+						UdeskInitActivity.this, mSdktoken.getText().toString(), getUserInfo());
+				toUseCaseActivity();
 			}
 		});
 

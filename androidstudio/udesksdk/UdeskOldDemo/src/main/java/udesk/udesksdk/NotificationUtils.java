@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.NotificationCompat;
 
 import cn.udesk.activity.UdeskChatActivity;
 
@@ -33,26 +34,30 @@ public class NotificationUtils {
      */
 	public void notifyMsg(Context context,String message){
 
-			String notify_serivice = Context.NOTIFICATION_SERVICE;
-			NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(notify_serivice);
-			int icon = R.mipmap.ic_launcher;
-			CharSequence tickerText = "你有一条新消息！";
-			long when = System.currentTimeMillis();
-			Notification notification = new Notification(icon, tickerText, when);
-			notification.flags = Notification.FLAG_AUTO_CANCEL;
-			notification.defaults |= Notification.DEFAULT_VIBRATE;
-			notification.defaults |= Notification.DEFAULT_LIGHTS;
-			notification.defaults = Notification.DEFAULT_SOUND;
-			CharSequence contentTitle = "新消息";
-     		CharSequence contentText = message;
-     		Intent notificationIntent = null;
-			notificationIntent = new Intent(context, UdeskChatActivity.class);
-			notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-					notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-			notification.setLatestEventInfo(context, contentTitle, contentText,
-					contentIntent);
-			mNotificationManager.notify(1, notification);
+		String notify_serivice = Context.NOTIFICATION_SERVICE;
+		NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(notify_serivice);
+		int icon = R.mipmap.ic_launcher;
+		CharSequence tickerText = "你有新消息了";
+		long when = System.currentTimeMillis();
+		CharSequence contentTitle = "新消息";
+		CharSequence contentText = message;
+		Intent notificationIntent = null;
+		notificationIntent = new Intent(context, UdeskChatActivity.class);
+		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+				notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+		Notification noti = builder.setSmallIcon(icon)
+				.setContentTitle(contentTitle)
+				.setContentText(contentText)
+				.setTicker(tickerText)
+				.setContentIntent(contentIntent)
+				.setWhen(when).build();
+		noti.flags = Notification.FLAG_AUTO_CANCEL;
+		noti.defaults |= Notification.DEFAULT_VIBRATE;
+		noti.defaults |= Notification.DEFAULT_LIGHTS;
+		noti.defaults = Notification.DEFAULT_SOUND;
+		mNotificationManager.notify(1, noti);
 		}
 
 
