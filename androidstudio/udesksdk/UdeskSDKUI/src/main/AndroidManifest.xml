@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FLAG_GRANT_READ_URI_PERMISSION"/>
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application>
@@ -50,6 +51,15 @@
             android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
             android:theme="@style/Udesk_Theme" />
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="cn.udesk.provider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/udesk_provider_paths" />
+        </provider>
 
     </application>
 

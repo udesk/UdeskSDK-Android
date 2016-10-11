@@ -280,13 +280,14 @@ public class UdeskCaseActivity extends Activity {
                             UdeskSDKManager.getInstance().toLanuchChatAcitvity(UdeskCaseActivity.this);
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            UdeskSDKManager.getInstance().toLanuchChatAcitvity(UdeskCaseActivity.this);
                         }
 
                     }
 
                     @Override
                     public void onFail(String arg0) {
-
+                        UdeskSDKManager.getInstance().toLanuchChatAcitvity(UdeskCaseActivity.this);
                     }
                 });
 
