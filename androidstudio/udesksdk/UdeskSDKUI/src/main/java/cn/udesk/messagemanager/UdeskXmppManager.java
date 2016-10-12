@@ -92,7 +92,9 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
+            } catch (OutOfMemoryError error){
+                error.printStackTrace();
+            }finally {
                 isConnecting = false;
             }
         }
