@@ -39,7 +39,7 @@ public class UdeskUtil {
 	public static Uri getOutputMediaFileUri(Context context) {
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 		if (Build.VERSION.SDK_INT>=23){
-			return FileProvider.getUriForFile(context,"cn.udesk.provider",getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
+			return FileProvider.getUriForFile(context,getFileProviderName(context),getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
 		}else{
 			return Uri.fromFile(getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
 		}
@@ -51,15 +51,19 @@ public class UdeskUtil {
 	 * @param uri
 	 * @return
 	 */
-	public static String parseOwnUri(Uri uri){
+	public static String parseOwnUri(Uri uri,Context context){
 		if(uri==null)return "";
 		String path;
-		if(TextUtils.equals(uri.getAuthority(),"cn.udesk.provider")){
+		if(TextUtils.equals(uri.getAuthority(),getFileProviderName(context))){
 			path=new File(Environment.getExternalStorageDirectory(),uri.getPath().replace("my_external/","")).getAbsolutePath();
 		}else {
 			path=uri.getPath();
 		}
 		return path;
+	}
+
+	public final static String getFileProviderName(Context context){
+		return context.getPackageName()+".udeskfileprovider";
 	}
 
 	public static File getOutputMediaFile(Context context,String mediaName) {

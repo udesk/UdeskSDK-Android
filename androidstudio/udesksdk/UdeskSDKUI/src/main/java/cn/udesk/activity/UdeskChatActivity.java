@@ -1177,7 +1177,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         }
                     }
                     if (mPresenter != null && photoUri != null && photoUri.getPath() != null) {
-                        mPresenter.sendBitmapMessage(UdeskUtil.parseOwnUri(photoUri));
+                        mPresenter.sendBitmapMessage(UdeskUtil.parseOwnUri(photoUri,UdeskChatActivity.this));
                     }
 
                 }
