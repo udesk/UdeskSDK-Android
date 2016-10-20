@@ -53,7 +53,7 @@
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="cn.udesk.provider"
+            android:authorities="${applicationId}.udeskfileprovider"
             android:grantUriPermissions="true"
             android:exported="false">
             <meta-data
