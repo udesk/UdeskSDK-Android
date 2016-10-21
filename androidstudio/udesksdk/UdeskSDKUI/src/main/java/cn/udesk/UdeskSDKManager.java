@@ -33,42 +33,42 @@ public class UdeskSDKManager {
 	/**
 	 * 用户唯一的标识
 	 */
-	private String sdkToken = null;
+	private static String sdkToken = null;
 	/**
 	 * 用户的基本信息
 	 */
-	private Map<String, String> userinfo = null;
+	private static Map<String, String> userinfo = null;
 	/**
 	 * 用户自定义字段文本信息
 	 */
-	private Map<String, String> textField = null;
+	private static Map<String, String> textField = null;
 	
 	/**
 	 * 用户自定义字段的列表信息
 	 */
-	private Map<String, String> roplist = null;
+	private static Map<String, String> roplist = null;
 
 
 	/**
 	 * 用户需要更新的基本信息
 	 */
-	private Map<String, String> updateUserinfo = null;
+	private static Map<String, String> updateUserinfo = null;
 	/**
 	 * 用户需要更新自定义字段文本信息
 	 */
-	private Map<String, String> updateTextField = null;
+	private static Map<String, String> updateTextField = null;
 
 	/**
 	 * 用户需要更新自定义字段的列表信息
 	 */
-	private Map<String, String> updateRoplist = null;
+	private static Map<String, String> updateRoplist = null;
 
-	private String domain = null;
-	private String secretKey = null;
-	private String userId = null;
-	private String isBolcked =null;
-	private String transfer = null;
-	private String h5Url = null;
+	private static String domain = null;
+	private static String secretKey = null;
+	private static String userId = null;
+	private static String isBolcked =null;
+	private static String transfer = null;
+	private static String h5Url = null;
 	private UdeskCommodityItem commodity = null;
 	private UdeskDialog dialog;
 	private static UdeskSDKManager instance;
