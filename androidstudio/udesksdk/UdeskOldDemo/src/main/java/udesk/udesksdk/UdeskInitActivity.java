@@ -128,7 +128,7 @@ public class UdeskInitActivity extends Activity implements OnClickListener {
 	private void commitSelffield() {
 		final HashMap<String, String> extraInfoTextField = new HashMap<String, String>();
 		final HashMap<String, String> extraInfodRoplist = new HashMap<String, String>();
-		UdeskHttpFacade.getInstance().getUserFields(UDESK_DOMAIN, UDESK_SECRETKEY, new UdeskCallBack() {
+		UdeskHttpFacade.getInstance().getUserFields(UDESK_DOMAIN, UDESK_SECRETKEY, UdeskSDKManager.getInstance().getAppid(),new UdeskCallBack() {
 			@Override
 			public void onSuccess(String result) {
 				try {

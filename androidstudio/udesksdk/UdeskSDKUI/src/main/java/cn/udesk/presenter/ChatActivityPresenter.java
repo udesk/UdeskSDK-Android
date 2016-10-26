@@ -12,6 +12,7 @@ import android.util.Log;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -131,7 +132,7 @@ public class ChatActivityPresenter {
         UdeskHttpFacade.getInstance().getIMSurveyOptions(
                 UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
                 UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
-                UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()), new UdeskCallBack() {
+                UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()), UdeskSDKManager.getInstance().getAppid(), new UdeskCallBack() {
 
                     @Override
                     public void onSuccess(String message) {
@@ -162,7 +163,7 @@ public class ChatActivityPresenter {
                 UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
                 mChatView.getAgentInfo().getAgent_id(),
                 UdeskSDKManager.getInstance().getUserId(mChatView.getContext()),
-                optionId, new UdeskCallBack() {
+                optionId, UdeskSDKManager.getInstance().getAppid(), new UdeskCallBack() {
 
                     @Override
                     public void onSuccess(String message) {
@@ -179,27 +180,23 @@ public class ChatActivityPresenter {
     }
 
 
-    /**
-     * 先查看下终端用户账号ID是否创建， 如果终端用户账号ID没有创建，则先创建。 如果创建则直接使用获取 连接openfire的信息
-     */
 
     public void createIMCustomerInfo() {
         Context mContext = mChatView.getContext();
-        String userId = UdeskSDKManager.getInstance().getUserId(mContext);
         String mDomain = UdeskSDKManager.getInstance().getDomain(mContext);
         String mSecretKey = UdeskSDKManager.getInstance().getSecretKey(mContext);
         String sdkToken =  UdeskSDKManager.getInstance().getSdkToken(mContext);
         Map<String, String> mUserinfo =  UdeskSDKManager.getInstance().getUserinfo();
         Map<String, String> textField = UdeskSDKManager.getInstance().getTextField();
         Map<String, String> roplist = UdeskSDKManager.getInstance().getRoplist();
-        UdeskHttpFacade.getInstance().setUserInfo(mContext,userId,mDomain,mSecretKey,sdkToken, mUserinfo, textField,  roplist);
+        UdeskHttpFacade.getInstance().setUserInfo(mContext,mDomain,mSecretKey,sdkToken, mUserinfo, textField,  roplist, UdeskSDKManager.getInstance().getAppid(),null);
     }
 
-    public void onCreateCustomer(String result ,Boolean isJsonStrnh, String string){
+    public void onCreateCustomer(String result ,Boolean isJsonStr, String string){
         if (result.equals("failure")){
             mChatView.showFailToast(string);
         }else  if(result.equals("succes")){
-            if (isJsonStrnh){
+            if (isJsonStr){
                     JsonUtils.parserCustomersJson( mChatView.getContext(),string);
             }
             getAgentInfo();
@@ -228,6 +225,7 @@ public class ChatActivityPresenter {
                     UdeskSDKManager.getInstance().getUpdateRoplist(), userId,
                     UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
                     UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
+                    UdeskSDKManager.getInstance().getAppid(),
                     new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
@@ -251,6 +249,7 @@ public class ChatActivityPresenter {
                 UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
                 UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
                 mChatView.getAgentId(), mChatView.getGroupId(), false,
+                UdeskSDKManager.getInstance().getAppid(),
                 new UdeskCallBack() {
 
                     @Override
@@ -289,7 +288,7 @@ public class ChatActivityPresenter {
         UdeskHttpFacade.getInstance().getIMstatus(
                 UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
                 UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
-                UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()), agentInfo.getAgentJid(),
+                UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()), agentInfo.getAgentJid(), UdeskSDKManager.getInstance().getAppid(),
                 new UdeskCallBack() {
                     @Override
                     public void onSuccess(String string) {
@@ -334,7 +333,7 @@ public class ChatActivityPresenter {
                 UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
                 UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
                 UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
-                agent_id, group_id, true,
+                agent_id, group_id, true, UdeskSDKManager.getInstance().getAppid(),
                 new UdeskCallBack() {
 
                     @Override
@@ -350,6 +349,53 @@ public class ChatActivityPresenter {
                         mChatView.showFailToast(message);
                     }
                 });
+    }
+
+    public void getHasSurvey(String agent_id){
+        Context mContext = mChatView.getContext();
+        String userId = UdeskSDKManager.getInstance().getUserId(mContext);
+        if(TextUtils.isEmpty(userId)){
+            return;
+        }
+        UdeskHttpFacade.getInstance().hasSurvey(
+                UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+                UdeskSDKManager.getInstance().getSecretKey(mChatView.getContext()),
+                UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
+                agent_id,userId,UdeskSDKManager.getInstance().getAppid(),
+                new UdeskCallBack(){
+
+                    @Override
+                    public void onSuccess(String message) {
+                        try {
+                            JSONObject result = new JSONObject(message);
+                            if(result.has("code")&& result.getInt("code") == 1000){
+                                if (result.has("has_survey")){
+                                    if(TextUtils.equals(result.getString("has_survey"),"false")){
+                                        //未评价，可以发起评价
+                                        getIMSurveyOptions();
+                                    }else{
+                                        //已评价，给出提示
+                                        if (mChatView.getHandler() != null) {
+                                            Message messge = mChatView.getHandler().obtainMessage(
+                                                    MessageWhat.Has_Survey);
+                                            mChatView.getHandler().sendMessage(messge);
+                                        }
+                                    }
+                                }
+                            }else{
+                                       //出错给
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFail(String message) {
+
+                    }
+                }
+        );
     }
 
     //发送商品链接广告

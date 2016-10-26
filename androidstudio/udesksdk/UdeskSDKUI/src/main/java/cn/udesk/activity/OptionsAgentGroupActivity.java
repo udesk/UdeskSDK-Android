@@ -75,6 +75,7 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
         UdeskHttpFacade.getInstance().getImGroupApi(UdeskSDKManager.getInstance().getDomain(this),
                 UdeskSDKManager.getInstance().getSecretKey(this),
                 UdeskSDKManager.getInstance().getSdkToken(this),
+                UdeskSDKManager.getInstance().getAppid(),
                 new UdeskCallBack() {
 
                     @Override
