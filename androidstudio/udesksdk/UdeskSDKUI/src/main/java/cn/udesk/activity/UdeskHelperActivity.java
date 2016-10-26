@@ -180,6 +180,7 @@ public class UdeskHelperActivity extends Activity implements OnClickListener, Ad
         UdeskHttpFacade.getInstance().getListArticlesJsonAPi(
                 UdeskSDKManager.getInstance().getDomain(UdeskHelperActivity.this),
                 UdeskSDKManager.getInstance().getSecretKey(UdeskHelperActivity.this),
+                UdeskSDKManager.getInstance().getAppid(),
                 new UdeskCallBack() {
                     @Override
                     public void onSuccess(String message) {
@@ -209,6 +210,7 @@ public class UdeskHelperActivity extends Activity implements OnClickListener, Ad
                 UdeskSDKManager.getInstance().getDomain(UdeskHelperActivity.this),
                 UdeskSDKManager.getInstance().getSecretKey(UdeskHelperActivity.this),
                 query,
+                UdeskSDKManager.getInstance().getAppid(),
                 new UdeskCallBack() {
 
                     @Override

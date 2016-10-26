@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.util.UUID;
 
+import cn.udesk.UdeskSDKManager;
 import udesk.core.UdeskCoreConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.xmpp.XmppInfo;
@@ -117,7 +118,11 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
                                                    final String xmppLoginPassword) {
         try {
             xmppConnection.connect();
-            xmppConnection.login(xmppLoginName, xmppLoginPassword, UUID.randomUUID().toString());
+            if (!TextUtils.isEmpty(UdeskSDKManager.getInstance().getAppid())){
+                xmppConnection.login(xmppLoginName, xmppLoginPassword, UdeskSDKManager.getInstance().getAppid());
+            }else{
+                xmppConnection.login(xmppLoginName, xmppLoginPassword, UUID.randomUUID().toString());
+            }
             xmppConnection.sendPacket(new Presence(Presence.Type.available));
             if (handler != null) {
                 handler.post(runnable);
@@ -323,17 +328,6 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
         if (TextUtils.isEmpty(id)) {
             return;
         }
-        if (message.getExtension("request", "urn:xmpp:receipts") != null) {
-            ReceivedXmpp newUserInfoXmpp = new ReceivedXmpp();
-            newUserInfoXmpp.setMsgId(id);
-            xmppMsg = new Message(message.getFrom(), Message.Type.chat);
-            xmppMsg.addExtension(newUserInfoXmpp);
-            try {
-                xmppConnection.sendPacket(xmppMsg);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
         if (message.getBody() != null) {
             String type = "";
             String content = "";
@@ -359,7 +353,21 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
             }
 
             if (!TextUtils.isEmpty(type) && !TextUtils.isEmpty(content)) {
-                InvokeEventContainer.getInstance().event_OnNewMessage.invoke(message.getFrom(), type, id, content, duration);
+                UdeskMessageManager.getInstance().event_OnNewMessage.invoke(message,message.getFrom(), type, id, content, duration);
+            }
+        }
+    }
+
+    public  void  sendReceivedMsg(Message message){
+        if (message.getExtension("request", "urn:xmpp:receipts") != null) {
+            ReceivedXmpp newUserInfoXmpp = new ReceivedXmpp();
+            newUserInfoXmpp.setMsgId(message.getPacketID());
+            xmppMsg = new Message(message.getFrom(), Message.Type.chat);
+            xmppMsg.addExtension(newUserInfoXmpp);
+            try {
+                xmppConnection.sendPacket(xmppMsg);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

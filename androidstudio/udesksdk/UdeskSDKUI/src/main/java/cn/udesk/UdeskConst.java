@@ -107,6 +107,7 @@ public class UdeskConst {
 //		public static final String Udesk_Transfer = "udesk_transfer";
 //		public static final String Udesk_h5url = "udesk_h5url";
 		public static final String Udesk_userid = "udesk_userId";
+		public static final String Udesk_Push = "udesk_status_push";
 	}
 	
 	public static class AgentFlag{
