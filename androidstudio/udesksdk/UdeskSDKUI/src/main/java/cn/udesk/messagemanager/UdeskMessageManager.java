@@ -22,6 +22,7 @@ import rx.schedulers.Schedulers;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.event.ReflectInvokeMethod;
 import udesk.core.model.MessageInfo;
+import udesk.org.jivesoftware.smack.packet.Message;
 
 
 public class UdeskMessageManager {
@@ -29,7 +30,7 @@ public class UdeskMessageManager {
     private volatile static UdeskMessageManager instance;
     private UdeskXmppManager mUdeskXmppManager;
     private ExecutorService messageExecutor;
-
+    public ReflectInvokeMethod  event_OnNewMessage = new ReflectInvokeMethod(new Class<?>[]{Message.class,String.class,String.class ,String.class,String.class,Long.class});
     public ReflectInvokeMethod eventui_OnMessageReceived = new ReflectInvokeMethod(new Class<?>[]{String.class});
     public ReflectInvokeMethod eventui_OnNewMessage = new ReflectInvokeMethod(new Class<?>[]{MessageInfo.class});
     public ReflectInvokeMethod eventui_OnNewPresence = new ReflectInvokeMethod(new Class<?>[]{String.class, Integer.class});
@@ -98,20 +99,11 @@ public class UdeskMessageManager {
     }
 
     private void bindEvent() {
-        InvokeEventContainer.getInstance().event_OnNewMessage.bind(this, "onNewMessage");
+        event_OnNewMessage.bind(this, "onNewMessage");
         InvokeEventContainer.getInstance().event_OnMessageReceived.bind(this, "onMessageReceived");
         InvokeEventContainer.getInstance().event_OnNewPresence.bind(this, "onNewPresence");
         InvokeEventContainer.getInstance().event_OnReqsurveyMsg.bind(this, "onReqsurveyMsg");
         InvokeEventContainer.getInstance().event_OnActionMsg.bind(this, "onActionMsg");
-    }
-
-
-    public void clean() {
-        InvokeEventContainer.getInstance().event_OnNewMessage.unBind(this);
-        InvokeEventContainer.getInstance().event_OnMessageReceived.unBind(this);
-        InvokeEventContainer.getInstance().event_OnNewPresence.unBind(this);
-        InvokeEventContainer.getInstance().event_OnReqsurveyMsg.unBind(this);
-        InvokeEventContainer.getInstance().event_OnActionMsg.unBind(this);
     }
 
     public void onMessageReceived(final String msgId) {
@@ -128,11 +120,14 @@ public class UdeskMessageManager {
     }
 
 
-    public void onNewMessage(String agentJid, final String type, final String msgId, final String content,
+    public void onNewMessage(final Message message,String agentJid, final String type, final String msgId, final String content,
                              final Long duration) {
         String jid[] = agentJid.split("/");
         final MessageInfo msginfo = buildReceiveMessage(jid[0], type, msgId, content, duration);
         if (UdeskDBManager.getInstance().hasReceviedMsg(msgId)) {
+            if (mUdeskXmppManager != null){
+                mUdeskXmppManager.sendReceivedMsg(message);
+            }
             return;
         }
         ensureMessageExecutor();
@@ -142,9 +137,18 @@ public class UdeskMessageManager {
                 @Override
                 public void run() {
 
-                    UdeskDBManager.getInstance().addMessageInfo(msginfo);
+                    boolean isSaveSuccess = UdeskDBManager.getInstance().addMessageInfo(msginfo);
+                    if (isSaveSuccess){
+                        if (mUdeskXmppManager != null){
+                            mUdeskXmppManager.sendReceivedMsg(message);
+                        }
+                    }
                 }
             });
+        }else{
+            if (mUdeskXmppManager != null){
+                mUdeskXmppManager.sendReceivedMsg(message);
+            }
         }
         eventui_OnNewMessage.invoke(msginfo);
 

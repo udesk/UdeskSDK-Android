@@ -21,10 +21,15 @@ import udesk.sdk.demo.R;
 
 public class UdeskInitKeyActivity extends Activity {
 
+//    //替换成你们注册的域名
+//    private String UDESK_DOMAIN = "showshow.udesk.cn";
+//    //替换成你们在后台生成的密钥
+//    private String UDESK_SECRETKEY = "c18d023ff18902fdfdb6ce15a11ef47b";
+
     //替换成你们注册的域名
-    private String UDESK_DOMAIN = "showshow.udesk.cn";
+    private   String UDESK_DOMAIN = "udesksdk.udesk.cn";
     //替换成你们在后台生成的密钥
-    private String UDESK_SECRETKEY = "c18d023ff18902fdfdb6ce15a11ef47b";
+    private   String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
 
     private EditText mDomainEdit;
     //输入描述账号的EditText
@@ -61,7 +66,7 @@ public class UdeskInitKeyActivity extends Activity {
                     }
                     Map<String, String> info = new HashMap<String, String>();
                     info.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdkToken);
-                    info.put(UdeskConst.UdeskUserInfo.NICK_NAME, "Udesk good");
+                    info.put(UdeskConst.UdeskUserInfo.NICK_NAME, sdkToken);
                     UdeskSDKManager.getInstance().setUserInfo(
                             getApplicationContext(), sdkToken, info);
 

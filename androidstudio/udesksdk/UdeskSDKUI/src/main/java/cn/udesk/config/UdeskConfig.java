@@ -1,9 +1,56 @@
 package cn.udesk.config;
 
+import java.util.Map;
+
 /**
  * Created by user on 2016/8/12.
  */
 public class UdeskConfig {
+
+    /**
+     * 用户唯一的标识
+     */
+    public static String appid = "";
+    public static String domain = "";
+    public static  String secretKey = "";
+    /**
+     * 用户唯一的标识
+     */
+    public static String sdkToken = null;
+    /**
+     * 用户的基本信息
+     */
+    public static Map<String, String> userinfo = null;
+
+    /**
+     * 用户自定义字段文本信息
+     */
+    public static Map<String, String> textField = null;
+
+
+    /**
+     * 用户自定义字段的列表信息
+     */
+    public static Map<String, String> roplist = null;
+
+    /**
+     * 用户需要更新的基本信息
+     */
+    public static Map<String, String> updateUserinfo = null;
+
+    /**
+     * 用户需要更新自定义字段文本信息
+     */
+    public static Map<String, String> updateTextField = null;
+
+    /**
+     * 用户需要更新自定义字段的列表信息
+     */
+    public static  Map<String, String> updateRoplist = null;
+
+    //相关推送平台注册生成的ID
+    public static String registerId = "";
+
 
     public static final int DEFAULT = -1;
 
