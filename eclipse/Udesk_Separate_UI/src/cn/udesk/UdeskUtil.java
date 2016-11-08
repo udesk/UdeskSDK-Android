@@ -3,9 +3,12 @@ package cn.udesk;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
@@ -36,7 +39,32 @@ public class UdeskUtil {
 
 	public static Uri getOutputMediaFileUri(Context context) {
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-		return Uri.fromFile(getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
+//		if (Build.VERSION.SDK_INT>=24){
+//			return FileProvider.getUriForFile(context,getFileProviderName(context),getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
+//		}else{
+			return Uri.fromFile(getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
+//		}
+
+	}
+
+//	public final static String getFileProviderName(Context context){
+//		return context.getPackageName()+".udeskfileprovider";
+//	}
+
+	/**
+	 * 提供的Uri 解析出文件绝对路径
+	 * @param uri
+	 * @return
+	 */
+	public static String parseOwnUri(Uri uri,Context context){
+		if(uri==null)return "";
+		String path;
+//		if(TextUtils.equals(uri.getAuthority(),getFileProviderName(context))){
+//			path=new File(Environment.getExternalStorageDirectory(),uri.getPath().replace("my_external/","")).getAbsolutePath();
+//		}else {
+			path=uri.getPath();
+//		}
+		return path;
 	}
 
 	public static File getOutputMediaFile(Context context,String mediaName) {
@@ -323,5 +351,28 @@ public class UdeskUtil {
 			return true;
 		else
 			return false;
+	}
+
+
+	public static String getDeviceId(Context context) {
+		String deviceId = "";
+		TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+		try {
+			deviceId = telephonyManager.getDeviceId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(!TextUtils.isEmpty(deviceId)){
+			return  deviceId;
+		}
+		deviceId = telephonyManager.getSimSerialNumber();
+		if(!TextUtils.isEmpty(deviceId)){
+			return  deviceId;
+		}
+		deviceId = android.os.Build.SERIAL;
+		if(!TextUtils.isEmpty(deviceId)){
+			return  deviceId;
+		}
+		return deviceId;
 	}
 }

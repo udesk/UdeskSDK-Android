@@ -62,4 +62,6 @@
     <string name="udesk_service">Service</string>
     <string name="udesk_nonexistent_agent">Agent is not correct, please check agent ID </string>
     <string name="udesk_nonexistent_groupId"> Agent agroup is not correct, please check agent group ID</string>
+
+    <string name="udesk_has_survey">Thank you, you have already done!</string>
 </resources>

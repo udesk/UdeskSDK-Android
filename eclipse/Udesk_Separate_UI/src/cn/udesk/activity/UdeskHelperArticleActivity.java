@@ -75,7 +75,7 @@ public class UdeskHelperArticleActivity extends Activity {
 			UdeskHttpFacade.getInstance().getArticlesContentJsonApiById(
 					UdeskSDKManager.getInstance().getDomain(this),
 					UdeskSDKManager.getInstance().getSecretKey(this),
-					id, new UdeskCallBack() {
+					id, UdeskSDKManager.getInstance().getAppid(), new UdeskCallBack() {
 				
 				@Override
 				public void onSuccess(String message) {
