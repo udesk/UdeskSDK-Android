@@ -102,7 +102,6 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:visibility="gone"
             android:id="@+id/udesk_bottom_survy_rl"
             android:layout_width="50dp"
             android:layout_height="match_parent">

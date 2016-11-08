@@ -2,6 +2,7 @@ package cn.udesk;
 
 import android.content.Context;
 import android.content.Intent;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.activity.UdeskFormActivity;
 import cn.udesk.activity.UdeskHelperActivity;
 import cn.udesk.activity.UdeskRobotActivity;
+import cn.udesk.config.UdeskConfig;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.widget.UdeskDialog;
@@ -29,52 +31,14 @@ import udesk.core.utils.UdeskUtils;
 public class UdeskSDKManager {
 
 
-
-	/**
-	 * 用户唯一的标识
-	 */
-	private String sdkToken = null;
-	/**
-	 * 用户的基本信息
-	 */
-	private Map<String, String> userinfo = null;
-	/**
-	 * 用户自定义字段文本信息
-	 */
-	private Map<String, String> textField = null;
-	
-	/**
-	 * 用户自定义字段的列表信息
-	 */
-	private Map<String, String> roplist = null;
-
-
-	/**
-	 * 用户需要更新的基本信息
-	 */
-	private Map<String, String> updateUserinfo = null;
-	/**
-	 * 用户需要更新自定义字段文本信息
-	 */
-	private Map<String, String> updateTextField = null;
-
-	/**
-	 * 用户需要更新自定义字段的列表信息
-	 */
-	private Map<String, String> updateRoplist = null;
-
-	private String domain = null;
-	private String secretKey = null;
-	private String userId = null;
-	private String isBolcked =null;
-	private String transfer = null;
-	private String h5Url = null;
+	private static String userId = null;
+	private static String isBolcked =null;
+	private static String transfer = null;
+	private static String h5Url = null;
 	private UdeskCommodityItem commodity = null;
 	private UdeskDialog dialog;
 	private static UdeskSDKManager instance;
-
-	private String customerUrl = null;
-
+	private static String customerUrl = null;
 	private boolean isNeedMsgNotice = true;
 	private UdeskSDKManager() {
 	}
@@ -90,7 +54,6 @@ public class UdeskSDKManager {
 	}
 
 
-
 	/**
 	 *
 	 * @param context
@@ -98,8 +61,15 @@ public class UdeskSDKManager {
 	 * @param secretKey
 	 */
 	public void initApiKey(Context context,String domain, String secretKey){
-		this.domain = domain;
-		this.secretKey = secretKey;
+		UdeskConfig.domain = domain;
+		UdeskConfig.secretKey = secretKey;
+		UdeskUtil.initImageLoaderConfig(context);
+	}
+
+	public void initApiKey(Context context,String domain, String secretKey,String appid){
+		UdeskConfig.domain = domain;
+		UdeskConfig.secretKey = secretKey;
+		UdeskConfig.appid = appid;
 		UdeskUtil.initImageLoaderConfig(context);
 	}
 
@@ -117,18 +87,19 @@ public class UdeskSDKManager {
 		if ((cacheToken == null)|| (cacheToken != null && ! cacheToken.equals(token))){
 			clean(context);
 			disConnectXmpp();
+
 		}
-		this.sdkToken = token;
-		initDB(context,sdkToken);
+		UdeskConfig.sdkToken = token;
+		initDB(context,UdeskConfig.sdkToken);
 		PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-				UdeskConst.SharePreParams.Udesk_SdkToken, sdkToken);
+				UdeskConst.SharePreParams.Udesk_SdkToken, UdeskConfig.sdkToken);
 		if(info == null){
 			info = new HashMap<String,String>();
 		}
-		this.userinfo = info;
-		userinfo.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdkToken);
-		this.textField = textField;
-		this.roplist = roplist;
+		UdeskConfig.userinfo = info;
+		UdeskConfig.userinfo.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, UdeskConfig.sdkToken);
+		UdeskConfig.textField = textField;
+		UdeskConfig.roplist = roplist;
 	}
 
 
@@ -151,7 +122,7 @@ public class UdeskSDKManager {
 		UdeskHttpFacade.getInstance().setUserInfo(context,getDomain(context),
 				getSecretKey(context), getSdkToken(context),
 				getUserinfo(), getTextField(),
-				UdeskSDKManager.getInstance().getRoplist(), new UdeskCallBack() {
+				UdeskSDKManager.getInstance().getRoplist(),UdeskConfig.appid, new UdeskCallBack() {
 
 					@Override
 					public void onSuccess(String string) {
@@ -172,17 +143,13 @@ public class UdeskSDKManager {
 
 
 	private void getRobotJsonApi(final Context context){
-		UdeskHttpFacade.getInstance().getRobotJsonApi(getDomain(context), getSecretKey(context), new UdeskCallBack() {
+		UdeskHttpFacade.getInstance().getRobotJsonApi(getDomain(context), getSecretKey(context),UdeskConfig.appid, new UdeskCallBack() {
 
 			@Override
 			public void onSuccess(String message) {
 				dismiss();
 				RobotInfo item = JsonUtils.parseRobotJsonResult(message);
 				if (item != null && !TextUtils.isEmpty(item.h5_url)) {
-					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-							UdeskConst.SharePreParams.Udesk_Transfer, item.transfer);
-					PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-							UdeskConst.SharePreParams.Udesk_h5url, item.h5_url);
 					toLanuchRobotAcitivty(context, item.h5_url, item.transfer);
 				} else {
 					UdeskUtils.showToast(context, context.getString(R.string.udesk_has_not_open_robot));
@@ -202,14 +169,14 @@ public class UdeskSDKManager {
 		UdeskHttpFacade.getInstance().setUserInfo(context,getDomain(context),
 				getSecretKey(context), getSdkToken(context),
 				getUserinfo(), getTextField(),
-				UdeskSDKManager.getInstance().getRoplist(), new UdeskCallBack() {
+				UdeskSDKManager.getInstance().getRoplist(),UdeskConfig.appid, new UdeskCallBack() {
 
 					@Override
 					public void onSuccess(String string) {
-						JsonUtils.parserCustomersJson(context, string);
+						String robotUrl = JsonUtils.parserCustomersJson(context, string);
 						dismiss();
-						if (!TextUtils.isEmpty(getH5Url(context))) {
-							toLanuchRobotAcitivty(context, getH5Url(context), getTransfer(context));
+						if (!TextUtils.isEmpty(robotUrl)) {
+							toLanuchRobotAcitivty(context, robotUrl, getTransfer(context));
 						} else {
 							toLanuchChatAcitvity(context);
 						}
@@ -232,7 +199,6 @@ public class UdeskSDKManager {
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(intent);
 	}
-
 
 	/**
 	 * 指定客服 id 进行分配 进行会话
@@ -301,36 +267,30 @@ public class UdeskSDKManager {
 	}
 
 	public Map<String, String> getUserinfo() {
-		return userinfo;
+		return UdeskConfig.userinfo;
 	}
 
 	public Map<String, String> getTextField() {
-		return textField;
+		return UdeskConfig.textField;
 	}
 
 	public Map<String, String> getRoplist() {
-		return roplist;
+		return UdeskConfig.roplist;
 	}
 	
 	public String getSdkToken(Context context) {
-		if(!TextUtils.isEmpty(sdkToken)){
-			return sdkToken;
+		if(!TextUtils.isEmpty(UdeskConfig.sdkToken)){
+			return UdeskConfig.sdkToken;
 		}
 		return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_SdkToken);
 	}
 
 	public String getDomain(Context context) {
-		if(!TextUtils.isEmpty(domain)){
-			return domain;
-		}
-		return "";
+		return  UdeskConfig.domain;
 	}
 
 	public String getSecretKey(Context context) {
-		if(!TextUtils.isEmpty(secretKey)){
-			return secretKey;
-		}
-		return "";
+		return UdeskConfig.secretKey;
 	}
 	
 	public String getUserId(Context context) {
@@ -349,14 +309,14 @@ public class UdeskSDKManager {
 		if(!TextUtils.isEmpty(transfer)){
 			return transfer;
 		}
-		return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_Transfer);
+		return  "";
 	}
 
 	public String getH5Url(Context context) {
 		if(!TextUtils.isEmpty(h5Url)){
 			return h5Url;
 		}
-		return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_h5url);
+		return  "";
 	}
 
 	public void setH5Url(String h5Url) {
@@ -402,8 +362,12 @@ public class UdeskSDKManager {
 	}
 
 	private void dismiss() {
-		if (dialog != null) {
-			dialog.dismiss();
+		try {
+			if (dialog != null) {
+                dialog.dismiss();
+            }
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -440,16 +404,16 @@ public class UdeskSDKManager {
 		UdeskDBManager.getInstance().release();
 	}
 
-
-
 	private void clean(Context context){
 		this.userId = null;
 		this.transfer = null;
 		this.h5Url = null;
-		this.sdkToken = null;
-		this.userinfo = null;
-		this.textField = null;
-		this. roplist = null;
+		UdeskConfig.sdkToken = null;
+		UdeskConfig.userinfo = null;
+		UdeskConfig.textField = null;
+		UdeskConfig.updateUserinfo = null;
+		UdeskConfig.updateTextField = null;
+		UdeskConfig.roplist = null;
 		this.customerUrl = null;
 	}
 
@@ -462,27 +426,27 @@ public class UdeskSDKManager {
 	}
 
 	public Map<String, String> getUpdateUserinfo() {
-		return updateUserinfo;
+		return UdeskConfig.updateUserinfo;
 	}
 
 	public void setUpdateUserinfo(Map<String, String> updateUserinfo) {
-		this.updateUserinfo = updateUserinfo;
+		UdeskConfig.updateUserinfo = updateUserinfo;
 	}
 
 	public Map<String, String> getUpdateTextField() {
-		return updateTextField;
+		return UdeskConfig.updateTextField;
 	}
 
 	public void setUpdateTextField(Map<String, String> updateTextField) {
-		this.updateTextField = updateTextField;
+		UdeskConfig.updateTextField = updateTextField;
 	}
 
 	public Map<String, String> getUpdateRoplist() {
-		return updateRoplist;
+		return UdeskConfig.updateRoplist;
 	}
 
 	public void setUpdateRoplist(Map<String, String> updateRoplist) {
-		this.updateRoplist = updateRoplist;
+		UdeskConfig.updateRoplist = updateRoplist;
 	}
 
 	public void logoutUdesk(){
@@ -497,4 +461,9 @@ public class UdeskSDKManager {
 	public String getCustomerUrl() {
 		return customerUrl;
 	}
+
+	public String getAppid() {
+		return UdeskConfig.appid;
+	}
+
 }

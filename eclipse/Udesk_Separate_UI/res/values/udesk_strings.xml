@@ -50,4 +50,8 @@
     <string name="udesk_service">为您服务</string>
     <string name="udesk_nonexistent_agent"> 客服不存在，请核对输入的客服ID是否正确</string>
     <string name="udesk_nonexistent_groupId"> 客服组不存在，请核对输入的客服组ID是否正确</string>
+
+    <string name="udesk_has_survey"> 谢谢，您已对本次服务做出过评价了!</string>
+
+
 </resources>
