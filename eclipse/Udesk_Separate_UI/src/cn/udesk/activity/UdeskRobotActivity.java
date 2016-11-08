@@ -34,7 +34,6 @@ public class UdeskRobotActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.udesk_robot_view);
-		UdeskUtil.initCrashReport(this);
 		initData();
 		initView();
 	}
@@ -119,7 +118,6 @@ public class UdeskRobotActivity extends Activity {
 		mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
 		if (mTitlebar != null) {
 			UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId,mTitlebar.getLeftTextView(),mTitlebar.getRightTextView());
-//			UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextcenterResId,mTitlebar.getTitleTextView(),mTitlebar.getStateTextView());
 			UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId ,mTitlebar.getRootView());
 			if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
 				mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
@@ -163,6 +161,5 @@ public class UdeskRobotActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		UdeskUtil.closeCrashReport();
 	}
 }

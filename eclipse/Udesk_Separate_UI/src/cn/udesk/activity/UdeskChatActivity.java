@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -46,6 +47,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.udesk.PreferenceHelper;
 import cn.udesk.R;
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
@@ -77,6 +79,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import udesk.core.UdeskCallBack;
 import udesk.core.UdeskCoreConst;
 import udesk.core.UdeskHttpFacade;
 import udesk.core.event.InvokeEventContainer;
@@ -123,7 +126,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     private GridView emjoGridView;
     private View emojisPannel;
     private UDEmojiAdapter mEmojiAdapter;
-    private View btnPhoto, btnCamera;
+    private View btnPhoto, btnCamera,btnsurvy;
     private UDPullGetMoreListView mListView;
     private MessageAdatper mChatAdapter;
     private View showVoiceImg;
@@ -154,6 +157,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         public static final int surveyNotify = 16;
         public static final int IM_STATUS = 17;
         public static final int IM_BOLACKED = 18;
+        public static final int Has_Survey = 19;
     }
 
     private BroadcastReceiver mConnectivityChangedReceiver = null;
@@ -380,6 +384,10 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         });
                     }
                     break;
+                case  MessageWhat.Has_Survey:
+                    UdeskUtils.showToast(UdeskChatActivity.this, getResources()
+                            .getString(R.string.udesk_has_survey));
+                    break;
                 case MessageWhat.redirectSuccess:
                     MessageInfo redirectSuccessmsg = (MessageInfo) msg.obj;
                     if (mChatAdapter != null) {
@@ -507,6 +515,9 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
             btnCamera.setOnClickListener(this);
             btnPhoto = findViewById(R.id.udesk_bottom_option_photo);
             btnPhoto.setOnClickListener(this);
+            btnsurvy = findViewById(R.id.udesk_bottom_survy_rl);
+            btnsurvy.setOnClickListener(this);
+
             mListView = (UDPullGetMoreListView) findViewById(R.id.udesk_conversation);
             expandableLayout = (UdeskExpandableLayout) findViewById(R.id.udesk_change_status_info);
 
@@ -948,6 +959,10 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         }
                     });
 
+        }else if (R.id.udesk_bottom_survy_rl == v.getId()){
+            if (mPresenter != null){
+                mPresenter.getHasSurvey(mAgentInfo.getAgent_id());
+            }
         }
 
     }
@@ -1141,18 +1156,33 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
     //启动手机默认的选择照片
     private void selectPhoto() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*");
-        startActivityForResult(intent, SELECT_IMAGE_ACTIVITY_REQUEST_CODE);
+        try {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("image/*");
+            startActivityForResult(intent, SELECT_IMAGE_ACTIVITY_REQUEST_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }catch (OutOfMemoryError error){
+            error.printStackTrace();
+        }
     }
 
     // 启动手机相机拍照
     private void takePhoto() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        photoUri = UdeskUtil.getOutputMediaFileUri(UdeskChatActivity.this);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-        startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+        try {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            photoUri = UdeskUtil.getOutputMediaFileUri(UdeskChatActivity.this);
+//            if (Build.VERSION.SDK_INT>=24){
+//                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//            }
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }catch (OutOfMemoryError error){
+            error.printStackTrace();
+        }
     }
 
     @Override
@@ -1173,7 +1203,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         }
                     }
                     if (mPresenter != null && photoUri != null && photoUri.getPath() != null) {
-                        mPresenter.sendBitmapMessage(photoUri.getPath());
+                        mPresenter.sendBitmapMessage(UdeskUtil.parseOwnUri(photoUri,UdeskChatActivity.this));
                     }
 
                 }
@@ -1388,6 +1418,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     @Override
     protected void onPause() {
         super.onPause();
+
         new Thread(new Runnable() {
             @Override
             public void run() {

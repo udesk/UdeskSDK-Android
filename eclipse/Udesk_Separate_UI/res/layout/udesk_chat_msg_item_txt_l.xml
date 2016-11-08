@@ -54,7 +54,7 @@
             android:layout_marginLeft="6dp"
             android:layout_marginRight="@dimen/udesk_chat_head_margin"
             android:layout_marginTop="@dimen/udesk_chat_head_margin"
-            android:autoLink="all"
+            android:autoLink="web"
             android:background="@drawable/udesk_im_item_bg_left"
             android:gravity="left|center_vertical"
             android:lineSpacingExtra="3dip"

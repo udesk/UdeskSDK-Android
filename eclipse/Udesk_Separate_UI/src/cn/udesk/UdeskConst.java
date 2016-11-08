@@ -104,9 +104,10 @@ public class UdeskConst {
 	public static class SharePreParams{
 		public static  String Udesk_Sharepre_Name = "udesk_sdk";
 		public static final String Udesk_SdkToken = "udesk_sdktoken";
-		public static final String Udesk_Transfer = "udesk_transfer";
-		public static final String Udesk_h5url = "udesk_h5url";
+//		public static final String Udesk_Transfer = "udesk_transfer";
+//		public static final String Udesk_h5url = "udesk_h5url";
 		public static final String Udesk_userid = "udesk_userId";
+		public static final String Udesk_Push = "udesk_status_push";
 	}
 	
 	public static class AgentFlag{
