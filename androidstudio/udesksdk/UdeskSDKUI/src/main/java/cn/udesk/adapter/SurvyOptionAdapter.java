@@ -23,11 +23,15 @@ public class SurvyOptionAdapter extends BaseAdapter {
 
     public SurvyOptionAdapter(Context context , SurveyOptionsModel model) {
         mContext = context;
-        if(model != null  && model.getOptions() != null){
-        	list = model.getOptions();
-        	if(!list.isEmpty() && list.get(0)!= null){
-        		list.get(0).setCheck(true);
-        	}
+        try {
+            if(model != null  && model.getOptions() != null ){
+                list = model.getOptions();
+                if(!list.isEmpty() && list.get(0)!= null){
+                    list.get(0).setCheck(true);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -75,10 +79,14 @@ public class SurvyOptionAdapter extends BaseAdapter {
             viewHodler = (ViewHodler) convertView.getTag();
         }
 
-        OptionsModel  model = getItem(position);
-        if(model != null){
-            viewHodler.content.setText(model.getText());
-            viewHodler.mCheckBox.setChecked(model.isCheck());
+        try {
+            OptionsModel  model = getItem(position);
+            if(model != null){
+                viewHodler.content.setText(model.getText());
+                viewHodler.mCheckBox.setChecked(model.isCheck());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return convertView;
     }

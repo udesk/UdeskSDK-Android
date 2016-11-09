@@ -31,27 +31,31 @@ public class SurvyDialogActivity extends Activity implements OnItemClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.udesk_survy_view);
-        Intent intent = getIntent();
-        if (intent != null) {
-            surveyOptions = (SurveyOptionsModel) intent.getSerializableExtra(UdeskConst.SurvyDialogKey);
-        }
-
-        if (surveyOptions != null) {
-            optionsListView = (ListView) findViewById(R.id.udesk_list_choice);
-            titleView = (TextView) findViewById(R.id.udesk_title);
-            desc = (TextView) findViewById(R.id.udesk_desc);
-            cancle = (TextView) findViewById(R.id.udesk_cancle);
-            ok = (TextView) findViewById(R.id.udesk_ok);
-            cancle.setOnClickListener(this);
-            ok.setOnClickListener(this);
-            adapter = new SurvyOptionAdapter(this, surveyOptions);
-            titleView.setText(surveyOptions.getTitle());
-            desc.setText(surveyOptions.getDesc());
-            optionsListView.setAdapter(adapter);
-            optionsListView.setOnItemClickListener(this);
-            if (surveyOptions.getOptions().get(0) != null) {
-                checkOptions = surveyOptions.getOptions().get(0);
+        try {
+            Intent intent = getIntent();
+            if (intent != null) {
+                surveyOptions = (SurveyOptionsModel) intent.getSerializableExtra(UdeskConst.SurvyDialogKey);
             }
+
+            if (surveyOptions != null) {
+                optionsListView = (ListView) findViewById(R.id.udesk_list_choice);
+                titleView = (TextView) findViewById(R.id.udesk_title);
+                desc = (TextView) findViewById(R.id.udesk_desc);
+                cancle = (TextView) findViewById(R.id.udesk_cancle);
+                ok = (TextView) findViewById(R.id.udesk_ok);
+                cancle.setOnClickListener(this);
+                ok.setOnClickListener(this);
+                adapter = new SurvyOptionAdapter(this, surveyOptions);
+                titleView.setText(surveyOptions.getTitle());
+                desc.setText(surveyOptions.getDesc());
+                optionsListView.setAdapter(adapter);
+                optionsListView.setOnItemClickListener(this);
+                if (surveyOptions.getOptions().get(0) != null && surveyOptions.getOptions().size()> 0) {
+                    checkOptions = surveyOptions.getOptions().get(0);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
@@ -66,13 +70,19 @@ public class SurvyDialogActivity extends Activity implements OnItemClickListener
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.udesk_cancle) {
-            finish();
-        } else if (v.getId() == R.id.udesk_ok) {
-            Intent mIntent = new Intent();
-            mIntent.putExtra(UdeskConst.SurvyOptionIDKey, checkOptions.getId());
-            SurvyDialogActivity.this.setResult(Activity.RESULT_OK, mIntent);
-            finish();
+        try {
+            if (v.getId() == R.id.udesk_cancle) {
+                finish();
+            } else if (v.getId() == R.id.udesk_ok) {
+                Intent mIntent = new Intent();
+                if (checkOptions != null){
+                    mIntent.putExtra(UdeskConst.SurvyOptionIDKey, checkOptions.getId());
+                }
+                SurvyDialogActivity.this.setResult(Activity.RESULT_OK, mIntent);
+                finish();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
