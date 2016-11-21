@@ -686,10 +686,47 @@ RedirectViewHolder  显示转移提示语信息；
     "/udesk_im/sdk/v3/im/surveys.json";	//提交满意度评价的接口
     "/udesk_im/sdk/v3/im/im_group.json"; // 获取客服组列表接口
     "/udesk_im/sdk/v3/im/status.json"; //获取客服状态的接口
+    "/udesk_im/sdk/v3/im/sdk_push.json"; /控制推送状态开关的接口
 		
 ```
 
-#八、SDK 第三方库依赖
+# 八、离线消息推送
+当前仅支持一种推送方案，即Udesk务端发送消息至开发者的服务端，开发者再推送消息到 App。
+####8.1 设置接收推送的服务器地址
+        推送消息将会发送至开发者的服务器。
+	
+	设置服务器地址，请使用Udesk管理员帐号登录 Udesk，在 设置 -> 移动SDK 中设置。
+	![udesk](http://7xr0de.com1.z0.glb.clouddn.com/5D761252-3D9D-467C-93C9-8189D0B22424.png?attname=)
+	
+####8.2	设置用户的设备唯一标识
+``` java
+    UdeskSDKManager.getInstance().setRegisterId（context,"xxxxregisterId"）
+     //保存注册推送的的设备ID
+    public void setRegisterId(Context context, String registerId) {
+        UdeskConfig.registerId = registerId;
+        PreferenceHelper.write(context, UdeskConst.SharePreParams.RegisterIdName,
+                UdeskConst.SharePreParams.Udesk_Push_RegisterId, registerId);
+    }
+		
+```
+   关闭和开启Udesk推送服务，Udesk推送给开发者服务端的消息数据格式中，会有 device_token 的字段。
+   
+####8.3	关闭开启Udek推送服务
+``` java
+  /**
+     * @param domain    公司注册生成的域名
+     * @param key        创建app时，生成的app key
+     * @param sdkToken   用户唯一标识
+     * @param status         sdk推送状态 ["on" | "off"]  on表示开启Udesk推送服务， off表示关闭udesk推送服务
+     * @param registrationID 注册推送设备的ID
+     * @param appid  创建app时，生成的app id 
+     */
+
+    public void setSdkPushStatus(String domain, String key, String sdkToken, String status, String registrationID, String appid)
+		
+```
+
+# 九、SDK 第三方库依赖
 
 以下依赖文件已封装在SDK内，无需自行添加
 
@@ -705,7 +742,7 @@ RedirectViewHolder  显示转移提示语信息；
     compile 'com.qiniu:qiniu-android-sdk:7.2.+'
 ```
 
-#九、代码混淆
+# 十、代码混淆
 
 ``` java
 //udesk
