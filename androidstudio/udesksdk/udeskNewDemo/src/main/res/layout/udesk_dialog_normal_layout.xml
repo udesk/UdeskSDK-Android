@@ -66,12 +66,11 @@
             android:gravity="center" />
 
         <TextView
-            android:id="@+id/nickname"
+            android:id="@+id/style1_name"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_marginLeft="24dp"
             android:gravity="left|center"
-            android:text="原生"
             android:textColor="#666666"
             android:textSize="15sp" />
 
@@ -86,6 +85,7 @@
         android:visibility="gone">
 
         <CheckBox
+
             android:id="@+id/udesk_check_ui_style_2"
             android:layout_width="17dp"
             android:layout_height="17dp"
@@ -96,11 +96,11 @@
             android:gravity="center" />
 
         <TextView
+            android:id="@+id/style2_name"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_marginLeft="24dp"
             android:gravity="left|center"
-            android:text="经典"
             android:textColor="#666666"
             android:textSize="15sp" />
 

@@ -189,31 +189,35 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
 
     //根据id 画出相应的UI显示
     private void drawView(String currentId) {
-        adapterData.clear();
-        if (currentId.equals("item_0")) {
-            title.setVisibility(View.GONE);
-        } else {
-            String currentTempId = currentId;
-            List<AgentGroupNode> temps = new ArrayList<AgentGroupNode>();
-            boolean isHasParent = true;
-            while (isHasParent) {
-                AgentGroupNode model = filterModel(currentTempId);
-                if (model == null) {
-                    isHasParent = false;
-                } else {
-                    currentTempId = model.getParentId();
-                    temps.add(model);
+        try {
+            adapterData.clear();
+            if (currentId.equals("item_0")) {
+                title.setVisibility(View.GONE);
+            } else {
+                String currentTempId = currentId;
+                List<AgentGroupNode> temps = new ArrayList<AgentGroupNode>();
+                boolean isHasParent = true;
+                while (isHasParent) {
+                    AgentGroupNode model = filterModel(currentTempId);
+                    if (model == null) {
+                        isHasParent = false;
+                    } else {
+                        currentTempId = model.getParentId();
+                        temps.add(model);
+                    }
+                }
+                title.setVisibility(View.VISIBLE);
+                title.setText(buildTitleName(temps));
+            }
+            for (AgentGroupNode model : groups) {
+                if (model.getParentId().equals(currentId)) {
+                    adapterData.add(model);
                 }
             }
-            title.setVisibility(View.VISIBLE);
-            title.setText(buildTitleName(temps));
+            adapter.setList(adapterData);
+        } catch (Exception e) {
+            luanchChat();
         }
-        for (AgentGroupNode model : groups) {
-            if (model.getParentId().equals(currentId)) {
-                adapterData.add(model);
-            }
-        }
-        adapter.setList(adapterData);
     }
 
     /**

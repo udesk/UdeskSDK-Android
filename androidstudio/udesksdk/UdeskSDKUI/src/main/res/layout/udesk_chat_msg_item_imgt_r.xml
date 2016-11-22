@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:maxHeight="150dip"
                 android:maxWidth="100dip"
-                app:ninePNG="@drawable/udesk_im_item_bg_right"
+                app:udesk_ninePNG="@drawable/udesk_im_item_bg_right"
                 />
         </RelativeLayout>
     </TableRow>

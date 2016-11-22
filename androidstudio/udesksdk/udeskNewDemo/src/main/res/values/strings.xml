@@ -13,6 +13,7 @@
     <string name="udesk_update_uitemplemt">更换UI模板</string>
     <string name="udesk_conversion_bysetting_menu">咨询菜单</string>
     <string name="udesk_send_commodity_link">发送商品链接</string>
+    <string name="udesk_setting_push">推送消息设置</string>
 
     <string name="udesk_update_nick_name">姓名</string>
     <string name="udesk_update_hint_nick_name">请输入客户姓名</string>

@@ -14,14 +14,7 @@
             <option value="$PROJECT_DIR$/udeskNewDemo" />
           </set>
         </option>
-        <option name="myModules">
-          <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/UdeskOldDemo" />
-            <option value="$PROJECT_DIR$/UdeskSDKUI" />
-            <option value="$PROJECT_DIR$/udeskNewDemo" />
-          </set>
-        </option>
+        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

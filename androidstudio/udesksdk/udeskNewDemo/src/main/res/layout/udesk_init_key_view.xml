@@ -54,6 +54,29 @@
             android:textSize="16sp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/login_linearlayout_bg"
+        android:orientation="horizontal">
+
+
+        <EditText
+            android:id="@+id/appid"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="app id"
+            android:paddingLeft="12dp"
+            android:singleLine="true"
+            android:textColor="@color/android:white"
+            android:textColorHint="@color/android:white"
+            android:textSize="16sp" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/udesk_start"

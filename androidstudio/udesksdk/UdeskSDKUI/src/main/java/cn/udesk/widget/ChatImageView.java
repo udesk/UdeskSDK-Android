@@ -64,14 +64,14 @@ public class ChatImageView extends ImageView {
     }
 
     private void init(Context context, AttributeSet attrs) {
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ChatImageView);
-        mNinePatchDrawable = (NinePatchDrawable) ta.getDrawable(R.styleable.ChatImageView_ninePNG);
-        mArrowHeight = ta.getDimension(R.styleable.ChatImageView_arrow_height, dp2px(20));
-        mArrowWidth = ta.getDimension(R.styleable.ChatImageView_arrow_width, mArrowHeight);
-        mArrowOffset = ta.getDimension(R.styleable.ChatImageView_offset, mArrowHeight / 2);
-        mArrowTop = ta.getDimension(R.styleable.ChatImageView_arrow_top, mArrowHeight);
-        mRadius = ta.getDimension(R.styleable.ChatImageView_radius, dp2px(10));
-        mDirection = ta.getInteger(R.styleable.ChatImageView_direction, 0);
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.UdeskChatImageView);
+        mNinePatchDrawable = (NinePatchDrawable) ta.getDrawable(R.styleable.UdeskChatImageView_udesk_ninePNG);
+        mArrowHeight = ta.getDimension(R.styleable.UdeskChatImageView_udesk_arrow_height, dp2px(20));
+        mArrowWidth = ta.getDimension(R.styleable.UdeskChatImageView_udesk_arrow_width, mArrowHeight);
+        mArrowOffset = ta.getDimension(R.styleable.UdeskChatImageView_udesk_offset, mArrowHeight / 2);
+        mArrowTop = ta.getDimension(R.styleable.UdeskChatImageView_udesk_arrow_top, mArrowHeight);
+        mRadius = ta.getDimension(R.styleable.UdeskChatImageView_udesk_radius, dp2px(10));
+        mDirection = ta.getInteger(R.styleable.UdeskChatImageView_udesk_direction, 0);
         ta.recycle();
 
         mPaint = new Paint();
@@ -202,23 +202,38 @@ public class ChatImageView extends ImageView {
 
     @Override
     public void setImageDrawable(Drawable drawable) {
-        super.setImageDrawable(drawable);
-        mSrc = getBitmapFromDrawable(drawable);
-        setup();
+        try {
+            if (drawable == null){
+                return;
+            }
+            super.setImageDrawable(drawable);
+            mSrc = getBitmapFromDrawable(drawable);
+            setup();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setImageResource(int resId) {
-        super.setImageResource(resId);
-        mSrc = getBitmapFromDrawable(getDrawable());
-        setup();
+        try {
+            super.setImageResource(resId);
+            mSrc = getBitmapFromDrawable(getDrawable());
+            setup();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void setImageURI(Uri uri) {
-        super.setImageURI(uri);
-        mSrc = uri != null ?getBitmapFromDrawable(getDrawable()) : null;
-        setup();
+        try {
+            super.setImageURI(uri);
+            mSrc = uri != null ?getBitmapFromDrawable(getDrawable()) : null;
+            setup();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private Bitmap getBitmapFromDrawable(Drawable drawable) {
