@@ -709,14 +709,14 @@ RedirectViewHolder  显示转移提示语信息；
         推送消息将会发送至开发者的服务器。
 	
 	设置服务器地址，请使用Udesk管理员帐号登录 Udesk，在 设置 -> 移动SDK 中设置。
-	![udesk](http://7xr0de.com1.z0.glb.clouddn.com/5D761252-3D9D-467C-93C9-8189D0B22424.png)
+![udesk](http://7xr0de.com1.z0.glb.clouddn.com/5D761252-3D9D-467C-93C9-8189D0B22424.png)	
 	
 #### 8.2 使用Udesk 推送功能的配置
 ``` java
    //配置 是否使用推送服务  true 表示使用  false表示不使用
     public  static  boolean isUserSDkPush = false;
 
-'''
+``` 
 	
 #### 8.3 设置用户的设备唯一标识
 ``` java
@@ -728,7 +728,7 @@ RedirectViewHolder  显示转移提示语信息；
                 UdeskConst.SharePreParams.Udesk_Push_RegisterId, registerId);
     }
 		
-```
+``` 
    关闭和开启Udesk推送服务，Udesk推送给开发者服务端的消息数据格式中，会有 device_token 的字段。
    
 #### 8.4	关闭开启Udek推送服务
