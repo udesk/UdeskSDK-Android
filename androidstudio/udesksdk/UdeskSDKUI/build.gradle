@@ -28,12 +28,12 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('libs/universal-image-loader-1.9.4.jar')
-    compile files('libs/bugly_crash_release__2.1.jar')
+    compile files('libs/bugly_crash_release_2.1.jar')
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
     compile 'io.reactivex:rxjava:1.1.4'
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'com.qiniu:qiniu-android-sdk:7.2.+'
     compile files('libs/udesk-asmack-8-4.0.6.jar')
     compile 'com.android.support:appcompat-v7:24.0.0'
+    compile files('libs/udesk-universal-image-loader-1.9.4.jar')
 }

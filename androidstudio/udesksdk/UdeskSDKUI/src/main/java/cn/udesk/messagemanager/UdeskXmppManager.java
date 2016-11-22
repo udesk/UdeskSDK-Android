@@ -117,15 +117,17 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
     private synchronized boolean connectXMPPServer(final String xmppLoginName,
                                                    final String xmppLoginPassword) {
         try {
-            xmppConnection.connect();
-            if (!TextUtils.isEmpty(UdeskSDKManager.getInstance().getAppid())){
-                xmppConnection.login(xmppLoginName, xmppLoginPassword, UdeskSDKManager.getInstance().getAppid());
-            }else{
-                xmppConnection.login(xmppLoginName, xmppLoginPassword, UUID.randomUUID().toString());
-            }
-            xmppConnection.sendPacket(new Presence(Presence.Type.available));
-            if (handler != null) {
-                handler.post(runnable);
+            if (xmppConnection != null){
+                xmppConnection.connect();
+                if (!TextUtils.isEmpty(UdeskSDKManager.getInstance().getAppid())){
+                    xmppConnection.login(xmppLoginName, xmppLoginPassword, UdeskSDKManager.getInstance().getAppid());
+                }else{
+                    xmppConnection.login(xmppLoginName, xmppLoginPassword, UUID.randomUUID().toString());
+                }
+                xmppConnection.sendPacket(new Presence(Presence.Type.available));
+                if (handler != null) {
+                    handler.post(runnable);
+                }
             }
         } catch (Exception e) {
             return false;
@@ -225,20 +227,22 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
 
     public void sendPreMessage(String type, String text, String to) {
         try {
-            xmppMsg = new Message(to, Message.Type.chat);
-            text = StringUtils.escapeForXML(text).toString();
-            PreMsgXmpp preMsgXmpp = new PreMsgXmpp();
-            xmppMsg.addExtension(preMsgXmpp);
-            xmppMsg.setPacketID(" ");
-            JSONObject json = new JSONObject();
-            json.put("type", type);
-            JSONObject data = new JSONObject();
-            data.put("content", text);
-            json.put("data", data);
-            json.put("platform", "android");
-            json.put("version", UdeskCoreConst.sdkversion);
-            xmppMsg.setBody(json.toString());
-            xmppConnection.sendPacket(xmppMsg);
+            if (xmppConnection != null){
+                xmppMsg = new Message(to, Message.Type.chat);
+                text = StringUtils.escapeForXML(text).toString();
+                PreMsgXmpp preMsgXmpp = new PreMsgXmpp();
+                xmppMsg.addExtension(preMsgXmpp);
+                xmppMsg.setPacketID(" ");
+                JSONObject json = new JSONObject();
+                json.put("type", type);
+                JSONObject data = new JSONObject();
+                data.put("content", text);
+                json.put("data", data);
+                json.put("platform", "android");
+                json.put("version", UdeskCoreConst.sdkversion);
+                xmppMsg.setBody(json.toString());
+                xmppConnection.sendPacket(xmppMsg);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -290,7 +294,9 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
             Presence presencePacket = new Presence(Presence.Type.subscribed);
             presencePacket.setTo(pre.getFrom());
             try {
-                xmppConnection.sendPacket(presencePacket);
+                if (xmppConnection != null){
+                    xmppConnection.sendPacket(presencePacket);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -365,7 +371,9 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
             xmppMsg = new Message(message.getFrom(), Message.Type.chat);
             xmppMsg.addExtension(newUserInfoXmpp);
             try {
-                xmppConnection.sendPacket(xmppMsg);
+                if (xmppConnection != null){
+                    xmppConnection.sendPacket(xmppMsg);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

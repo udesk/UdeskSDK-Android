@@ -9,6 +9,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -37,7 +38,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.json.JSONException;
@@ -79,6 +79,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import udesk.com.nostra13.universalimageloader.core.ImageLoader;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskCoreConst;
 import udesk.core.UdeskHttpFacade;
@@ -118,7 +119,6 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     boolean hasSendCommodity = false;
     private long preMsgSendTime = 0;
     private String isbolcked = "";
-    private Boolean isOverConversation = false;
     //控件重构
     private Button sendBtn;
     private EditText mInputEditView;
@@ -165,26 +165,30 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     class ConnectivtyChangedReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!ConnectivityManager.CONNECTIVITY_ACTION.equals(intent
-                    .getAction()))
-                return;
-            boolean bNetWorkAvailabl = UdeskUtils.isNetworkConnected(context);
-            if (bNetWorkAvailabl) {
-                if (!currentStatusIsOnline && isNeedRelogin) {
-                    if (isbolcked.equals("true")) {
-                        return;
+            try {
+                if (!ConnectivityManager.CONNECTIVITY_ACTION.equals(intent
+                        .getAction()))
+                    return;
+                boolean bNetWorkAvailabl = UdeskUtils.isNetworkConnected(context);
+                if (bNetWorkAvailabl) {
+                    if (!currentStatusIsOnline && isNeedRelogin) {
+                        if (isbolcked.equals("true")) {
+                            return;
+                        }
+                        mPresenter.createIMCustomerInfo();
                     }
-                    mPresenter.createIMCustomerInfo();
+                } else {
+                    isNeedRelogin = true;
+                    UdeskUtils.showToast(
+                            context,
+                            context.getResources().getString(
+                                    R.string.udesk_has_wrong_net));
+                    setNoAgentStatus(context.getResources().getString(
+                            R.string.udesk_agent_connecting_error_net_uavailabl));
+                    currentStatusIsOnline = false;
                 }
-            } else {
-                isNeedRelogin = true;
-                UdeskUtils.showToast(
-                        context,
-                        context.getResources().getString(
-                                R.string.udesk_has_wrong_net));
-                setNoAgentStatus(context.getResources().getString(
-                        R.string.udesk_agent_connecting_error_net_uavailabl));
-                currentStatusIsOnline = false;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -259,6 +263,8 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                     break;
                 case MessageWhat.refreshAdapter:
                     if (mChatAdapter != null) {
+                        MessageInfo message = (MessageInfo) msg.obj;
+                        mChatAdapter.addItem(message);
                         notifyRefresh();
                     }
                     break;
@@ -448,6 +454,11 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
     //启动满意度调查
     private void toLuanchSurveyActivity(SurveyOptionsModel surveyOptions) {
+        if (surveyOptions.getOptions() == null || surveyOptions.getOptions().isEmpty()){
+            UdeskUtils.showToast(this,
+                    getString(R.string.udesk_no_set_survey));
+            return;
+        }
         Intent intent = new Intent();
         intent.setClass(UdeskChatActivity.this, SurvyDialogActivity.class);
         intent.putExtra(UdeskConst.SurvyDialogKey, surveyOptions);
@@ -467,25 +478,19 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
     }
 
-    public void onOverconversation(Boolean isOver) {
-        isOverConversation = isOver;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.udesk_activity_im);
-        InvokeEventContainer.getInstance().event_OnOverConversation.bind(this, "onOverconversation");
         UdeskUtil.initCrashReport(this);
         UdeskSDKManager.getInstance().setIsNeedMsgNotice(false);
+        UdeskMessageManager.getInstance().setOverConversation(false);
         initIntent();
         initView();
         settingTitlebar();
-
-
     }
 
-    //在指定客服组ID  或者指定客服ID  换传入值  其它的方式进入不会传值
+    //在指定客服组ID  或者指定客服ID  会传入值  其它的方式进入不会传值
     private void initIntent() {
         Intent intent = getIntent();
         if (intent != null) {
@@ -546,6 +551,16 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     @Override
     protected void onResume() {
         super.onResume();
+        if (mPresenter != null){
+            mPresenter.bindReqsurveyMsg();
+        }
+        if(UdeskMessageManager.getInstance().getOverConversation()){
+            mPresenter.createIMCustomerInfo();
+        }
+        //进入会话界面 关闭推送
+        if (!TextUtils.isEmpty(UdeskSDKManager.getInstance().getRegisterId(UdeskChatActivity.this)) && UdeskConfig.isUserSDkPush){
+            UdeskSDKManager.getInstance().setSdkPushStatus(UdeskConfig.domain, UdeskConfig.secretKey, UdeskConfig.sdkToken, "off", UdeskSDKManager.getInstance().getRegisterId(UdeskChatActivity.this), UdeskConfig.appid);
+        }
         registerNetWorkReceiver();
     }
 
@@ -784,6 +799,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                     @Override
                     public void onNext(Boolean aBoolean) {
                         if (aBoolean) {
+                            UdeskSDKManager.isSessioning = true;
                             UdeskDBManager.getInstance().addAgentInfo(agentInfo);
                             Message msgHasAgent = mHandler.obtainMessage(MessageWhat.HasAgent);
                             msgHasAgent.obj = agentInfo;
@@ -1099,9 +1115,9 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
     @Override
     public void addMessage(MessageInfo message) {
-        mChatAdapter.addItem(message);
         Message msgWaitAgent = mHandler
                 .obtainMessage(MessageWhat.refreshAdapter);
+        msgWaitAgent.obj = message;
         mHandler.sendMessage(msgWaitAgent);
     }
 
@@ -1176,7 +1192,9 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
             if (Build.VERSION.SDK_INT>=24){
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             }
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+            if (photoUri != null){
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+            }
             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
         } catch (Exception e) {
             e.printStackTrace();
@@ -1410,6 +1428,10 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     @Override
     protected void onStop() {
         super.onStop();
+        //设置了开启推送标识，离开会话界面开启推送，
+        if (!TextUtils.isEmpty(UdeskSDKManager.getInstance().getRegisterId(UdeskChatActivity.this)) && UdeskConfig.isUserSDkPush){
+            UdeskSDKManager.getInstance().setSdkPushStatus(UdeskConfig.domain, UdeskConfig.secretKey, UdeskConfig.sdkToken, "on", UdeskSDKManager.getInstance().getRegisterId(UdeskChatActivity.this), UdeskConfig.appid);
+        }
         recycleVoiceRes();
         hasSendCommodity = false;
         UdeskSDKManager.getInstance().setIsNeedMsgNotice(true);
@@ -1418,7 +1440,9 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     @Override
     protected void onPause() {
         super.onPause();
-
+        if (mPresenter != null){
+            mPresenter.unbindReqsurveyMsg();
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -1440,7 +1464,6 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     protected void onDestroy() {
         unRegister();
         UdeskHttpFacade.getInstance().cancel();
-        InvokeEventContainer.getInstance().event_OnOverConversation.unBind(this);
         if (mPresenter != null) {
             mPresenter.unBind();
             mPresenter.removeCallBack();
@@ -1453,9 +1476,6 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     }
 
     private void updateRecordStatus(int status) {
-//        if (mVoicePopWindow != null) {
-//            mVoicePopWindow.updateRecordStatus(status);
-//        }
         if (mHorVoiceView != null) {
             mHorVoiceView.addElement(status * 10);
         }
@@ -1527,9 +1547,8 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
 
     private void arfreshAgent() {
-        if (mPresenter != null && isOverConversation) {
-            isOverConversation = false;
-//            mPresenter.getAgentInfo();
+        if (mPresenter != null && UdeskMessageManager.getInstance().getOverConversation()) {
+            UdeskMessageManager.getInstance().setOverConversation(false);
             mPresenter.createIMCustomerInfo();
         }
     }
@@ -1560,7 +1579,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
         @Override
         public void afterTextChanged(Editable s) { //发送输入预支消息
-            if (isbolcked.equals("true") || !currentStatusIsOnline || isOverConversation) {
+            if (isbolcked.equals("true") || !currentStatusIsOnline || UdeskMessageManager.getInstance().getOverConversation()) {
                 return;
             }
             if (TextUtils.isEmpty(mInputEditView.getText().toString())) {

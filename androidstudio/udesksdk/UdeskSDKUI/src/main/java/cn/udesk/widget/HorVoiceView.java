@@ -49,12 +49,12 @@ public class HorVoiceView extends View {
 		}
 		paint = new Paint();
 		TypedArray mTypedArray = context.obtainStyledAttributes(attrs, R.styleable.UdeskVoiceView);
-		color = mTypedArray.getColor(R.styleable.UdeskVoiceView_voiceLineColor, Color.BLACK);
-		lineWidth = mTypedArray.getDimension(R.styleable.UdeskVoiceView_voiceLineWidth, 35);
-		lineHeight = mTypedArray.getDimension(R.styleable.UdeskVoiceView_voiceLineHeight, 4);
-		maxLineheight = mTypedArray.getDimension(R.styleable.UdeskVoiceView_voiceLineHeight, 32);
-		textSize = mTypedArray.getDimension(R.styleable.UdeskVoiceView_voiceTextSize, 45);
-		textColor = mTypedArray.getColor(R.styleable.UdeskVoiceView_voiceTextColor, Color.BLACK);
+		color = mTypedArray.getColor(R.styleable.UdeskVoiceView_udeskvoiceLineColor, Color.BLACK);
+		lineWidth = mTypedArray.getDimension(R.styleable.UdeskVoiceView_udeskvoiceLineWidth, 35);
+		lineHeight = mTypedArray.getDimension(R.styleable.UdeskVoiceView_udeskvoiceLineHeight, 4);
+		maxLineheight = mTypedArray.getDimension(R.styleable.UdeskVoiceView_udeskvoiceLineHeight, 32);
+		textSize = mTypedArray.getDimension(R.styleable.UdeskVoiceView_udeskvoiceTextSize, 45);
+		textColor = mTypedArray.getColor(R.styleable.UdeskVoiceView_udeskvoiceTextColor, Color.BLACK);
 		mTypedArray.recycle();
 	}
 	

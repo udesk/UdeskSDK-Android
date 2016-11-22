@@ -64,4 +64,7 @@
     <string name="udesk_nonexistent_groupId"> Agent agroup is not correct, please check agent group ID</string>
 
     <string name="udesk_has_survey">Thank you, you have already done!</string>
+
+    <string name="udesk_no_set_survey">Not set, temporarily unable to use!</string>
+
 </resources>

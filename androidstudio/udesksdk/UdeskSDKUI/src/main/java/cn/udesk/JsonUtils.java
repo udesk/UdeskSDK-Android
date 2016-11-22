@@ -224,9 +224,9 @@ public class JsonUtils {
 				if(customerJson.has("id")){
 					UdeskSDKManager.getInstance().setUserId( customerJson.getString("id"));
 				}
-				if(customerJson.has("is_blocked")){
-					UdeskSDKManager.getInstance().setIsBolcked(customerJson.getString("is_blocked"));
-				}
+//				if(customerJson.has("is_blocked")){
+//					UdeskSDKManager.getInstance().setIsBolcked(customerJson.getString("is_blocked"));
+//				}
 			}
 			if(resultJson.has("robot")){
 				String robotString = resultJson.getString("robot");

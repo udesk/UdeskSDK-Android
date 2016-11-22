@@ -54,7 +54,6 @@ public class UpdateUserInfoActivity extends Activity {
 
                 @Override
                 public void onClick(View v) {
-//                    setUpdateInfo();
                     finish();
                 }
             });
@@ -65,13 +64,6 @@ public class UpdateUserInfoActivity extends Activity {
             UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId ,mTitlebar.getRootView());
         }
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-//        setUpdateInfo();
-    }
-
 
     private void setUpdateInfo(){
         //取editText 编辑框的值 缓存到内存，之后进入会话修改客户信息。

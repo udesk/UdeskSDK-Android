@@ -4,11 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -29,6 +31,7 @@ public class UdeskRobotActivity extends Activity {
 	private UdeskTitleBar mTitlebar;
 	private String h5Url = null;
 	private String tranfer = null;
+	private boolean isTranferByImGroup = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,7 @@ public class UdeskRobotActivity extends Activity {
 		if(intent != null){
 			h5Url = intent.getStringExtra(UdeskConst.UDESKHTMLURL);
 			tranfer = intent.getStringExtra(UdeskConst.UDESKTRANSFER);
+			isTranferByImGroup = intent.getBooleanExtra(UdeskConst.UDESKISTRANFERSESSION,true);
 		}
 		
 	}
@@ -95,20 +99,25 @@ public class UdeskRobotActivity extends Activity {
 			}
 
 			@Override
+			public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+//				super.onReceivedSslError(view, handler, error);
+				handler.proceed();
+			}
+
+			@Override
 			public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 //				super.onReceivedError(view, errorCode, description, failingUrl);
 				Toast.makeText(UdeskRobotActivity.this,UdeskRobotActivity.this.getString(R.string.udesk_has_wrong_net),Toast.LENGTH_SHORT).show();
 				UdeskRobotActivity.this.finish();
 			}
-		});
-		mwebView.loadUrl(url);
-		mwebView.setWebViewClient(new WebViewClient() {
+
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				view.loadUrl(url);
 				return true;
 			}
 		});
+		mwebView.loadUrl(url);
 	}
 
 	/**
@@ -150,7 +159,12 @@ public class UdeskRobotActivity extends Activity {
 
 				@Override
 				public void onClick(View v) {
-					UdeskSDKManager.getInstance().toLanuchChatAcitvity(UdeskRobotActivity.this);
+					if (isTranferByImGroup){
+						UdeskSDKManager.getInstance().showConversationByImGroup(UdeskRobotActivity.this);
+					}else{
+						UdeskSDKManager.getInstance().toLanuchChatAcitvity(UdeskRobotActivity.this);
+					}
+
 				}
 			});
 		} else {
