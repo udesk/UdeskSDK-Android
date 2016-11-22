@@ -1,4 +1,11 @@
-# UdeskSDK Android 3.3 开发者文档
+# UdeskSDK Android 3.4 开发者文档
+
+## 注意
+3.4更新日志: 
+   1，增加离线消息推送
+   2，增加机器转人工通过导航页进入人工客服
+   3，增加上次会话记录得缓存，缓存判断会话客服未关闭，则直接进入会话。 
+
 ## 一、SDK工作流程图
 Udesk-SDK的工作流程如下图所示。
 
@@ -390,6 +397,12 @@ public void setCustomerUrl(String url){
 
 ```
 
+#### 4.12 设置机器人转人工通过导航页进入人工会话
+
+``` java
+ public void showRobotOrConversationByImGroup(final Context context)
+```
+
 # 五、SDK内部封装API
 
 #### 5.1支持的消息类型 
@@ -692,13 +705,20 @@ RedirectViewHolder  显示转移提示语信息；
 
 # 八、离线消息推送
 当前仅支持一种推送方案，即Udesk务端发送消息至开发者的服务端，开发者再推送消息到 App。
-####8.1 设置接收推送的服务器地址
+#### 8.1 设置接收推送的服务器地址
         推送消息将会发送至开发者的服务器。
 	
 	设置服务器地址，请使用Udesk管理员帐号登录 Udesk，在 设置 -> 移动SDK 中设置。
-	![udesk](http://7xr0de.com1.z0.glb.clouddn.com/5D761252-3D9D-467C-93C9-8189D0B22424.png?attname=)
+	![udesk](http://7xr0de.com1.z0.glb.clouddn.com/5D761252-3D9D-467C-93C9-8189D0B22424.png)
 	
-####8.2	设置用户的设备唯一标识
+#### 8.2 使用Udesk 推送功能的配置
+``` java
+   //配置 是否使用推送服务  true 表示使用  false表示不使用
+    public  static  boolean isUserSDkPush = false;
+
+'''
+	
+#### 8.3 设置用户的设备唯一标识
 ``` java
     UdeskSDKManager.getInstance().setRegisterId（context,"xxxxregisterId"）
      //保存注册推送的的设备ID
@@ -711,7 +731,7 @@ RedirectViewHolder  显示转移提示语信息；
 ```
    关闭和开启Udesk推送服务，Udesk推送给开发者服务端的消息数据格式中，会有 device_token 的字段。
    
-####8.3	关闭开启Udek推送服务
+#### 8.4	关闭开启Udek推送服务
 ``` java
   /**
      * @param domain    公司注册生成的域名
@@ -724,6 +744,54 @@ RedirectViewHolder  显示转移提示语信息；
 
     public void setSdkPushStatus(String domain, String key, String sdkToken, String status, String registrationID, String appid)
 		
+```
+
+#### 8.5 Udek推送给开发者服务端的接口说明
+**基本要求**
+
+- 推送接口只支持 http，不支持 https
+- 数据将以 JSON 格式发送
+
+
+
+**参数**
+
+当有消息或事件发生时，将会向推送接口传送以下数据
+
+| 参数名          | 类型       | 说明                                       |
+| ------------ | -------- | ---------------------------------------- |
+| message_id   | string   | 消息id                                     |
+| platform     | string   | 平台，'ios' 或 'android'                     |
+| device_token | string   | 设备标识                                     |
+| app_id       | string   | SDK app id                               |
+| content      | string   | 消息内容，仅 type 为 'message' 时有效              |
+| sent_at      | datetime | 消息推送时间，格式 iso8601                        |
+| from_id      | integer  | 发送者id(客服)                                |
+| from_name    | string   | 发送者名称                                    |
+| to_id        | integer  | 接收者id(客户)                                |
+| to_token     | string   | 接收者 sdk_token(唯一标识)                      |
+| type         | string   | 消息类型，'event' 为事件，'message'为消息            |
+| event        | string   | 事件类型，'redirect' 客服转接，'close'对话关闭，'survey'发送满意度调查 |
+
+
+
+**参数示例**
+
+```json
+{
+    "message_id": "di121jdlasf82jfdasfklj39dfda",
+    "platform": "ios",
+    "device_token": "4312kjklfds2",
+    "app_id": "dafjidalledaf",
+    "content": "Hello world!",
+    "sent_at": "2016-11-21T10:40:38+08:00",
+    "from_id": 231,
+    "from_name": "Tom",
+    "to_id": 12,
+    "to_token": "dae121dccepm1",
+    "type": "message",
+  	"event": "close"
+}
 ```
 
 # 九、SDK 第三方库依赖
