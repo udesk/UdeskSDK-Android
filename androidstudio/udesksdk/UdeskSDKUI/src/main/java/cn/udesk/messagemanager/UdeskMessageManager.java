@@ -37,6 +37,8 @@ public class UdeskMessageManager {
     public ReflectInvokeMethod eventui_OnReqsurveyMsg = new ReflectInvokeMethod(new Class<?>[]{Boolean.class});
     public ReflectInvokeMethod event_OnNewMsgNotice = new ReflectInvokeMethod(new Class<?>[]{MsgNotice.class});
 
+    private Boolean isOverConversation = false;
+
     private UdeskMessageManager() {
         bindEvent();
         mUdeskXmppManager = new UdeskXmppManager();
@@ -199,8 +201,9 @@ public class UdeskMessageManager {
         if (actionText.equals("overtest")) {
             mUdeskXmppManager.sendActionMessage(agentJId);
         } else if (actionText.equals("over")) {
+            UdeskSDKManager.isSessioning = false;
+            this.isOverConversation = true;
             wrapCancelXmppConnect();
-            InvokeEventContainer.getInstance().event_OnOverConversation.invoke(true);
         }
 
     }
@@ -228,4 +231,11 @@ public class UdeskMessageManager {
         });
     }
 
+    public Boolean getOverConversation() {
+        return isOverConversation;
+    }
+
+    public void setOverConversation(Boolean overConversation) {
+        isOverConversation = overConversation;
+    }
 }

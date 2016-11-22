@@ -50,5 +50,9 @@ public class PreferenceHelper {
         return preference.getString(k, "");
     }
 
-
+    public static String readPushStatusString(Context context, String fileName, String k) {
+        SharedPreferences preference = context.getSharedPreferences(fileName,
+                Context.MODE_PRIVATE);
+        return preference.getString(k, "on");
+    }
 }

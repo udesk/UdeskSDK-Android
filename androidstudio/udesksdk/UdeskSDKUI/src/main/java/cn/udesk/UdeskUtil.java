@@ -9,16 +9,6 @@ import android.support.v4.content.FileProvider;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
-
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.File;
@@ -30,6 +20,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import udesk.com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
+import udesk.com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
+import udesk.com.nostra13.universalimageloader.core.DisplayImageOptions;
+import udesk.com.nostra13.universalimageloader.core.ImageLoader;
+import udesk.com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import udesk.com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import udesk.com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+import udesk.com.nostra13.universalimageloader.utils.StorageUtils;
 import udesk.core.UdeskCoreConst;
 import udesk.core.model.MessageInfo;
 
@@ -43,7 +41,12 @@ public class UdeskUtil {
 		if (Build.VERSION.SDK_INT>=24){
 			return FileProvider.getUriForFile(context,getFileProviderName(context),getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
 		}else{
-			return Uri.fromFile(getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
+			if(getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg") != null){
+				return Uri.fromFile(getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
+			}else{
+				return null;
+			}
+
 		}
 
 	}

@@ -14,19 +14,21 @@ import udesk.sdk.demo.R;
 /**
  * 自定义customer
  */
-public class CustomDialog extends Dialog{
+public class UdeskCustomDialog extends Dialog{
 
     private EditText editText;
     private TextView okTextView, cancleTextView;
     private TextView title,contentText;
 
+
     private ListView mListView;
 
     private View style1,style2;
+    private TextView style1Txt,style2Txt;
     private CheckBox style1_checkbox,style2_checkbox;
 
 
-    public CustomDialog(Context context) {
+    public UdeskCustomDialog(Context context) {
         super(context, R.style.add_dialog);
         setCustomDialog();
     }
@@ -41,15 +43,23 @@ public class CustomDialog extends Dialog{
         mListView = (ListView) mView.findViewById(R.id.udeskdemo_listview);
         style1 = mView.findViewById(R.id.udesk_ui_style_1);
         style1_checkbox = (CheckBox)mView.findViewById(R.id.udesk_check_ui_style_1);
+        style1Txt = (TextView) mView.findViewById(R.id.style1_name);
 
         style2 = mView.findViewById(R.id.udesk_ui_style_2);
         style2_checkbox = (CheckBox) mView.findViewById(R.id.udesk_check_ui_style_2);
+        style2Txt = (TextView) mView.findViewById(R.id.style2_name);
         super.setContentView(mView);
     }
 
     public  View getViewStyle1(){
         style1.setVisibility(View.VISIBLE);
         return style1;
+    }
+
+    public void setStyle1Text(String string){
+        if (style1Txt != null){
+            style1Txt.setText(string);
+        }
     }
 
     public CheckBox getStyle1Checkbox(){
@@ -59,6 +69,12 @@ public class CustomDialog extends Dialog{
     public  View getViewStyle2(){
         style2.setVisibility(View.VISIBLE);
         return style2;
+    }
+
+    public void setStyle2Text(String string){
+        if (style2Txt != null){
+            style2Txt.setText(string);
+        }
     }
 
     public  CheckBox getStyle2Checkbox(){

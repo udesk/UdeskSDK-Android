@@ -23,10 +23,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +38,9 @@ import cn.udesk.config.UdeskConfig;
 import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.widget.ChatImageView;
 import de.hdodenhof.circleimageview.CircleImageView;
+import udesk.com.nostra13.universalimageloader.core.DisplayImageOptions;
+import udesk.com.nostra13.universalimageloader.core.ImageLoader;
+import udesk.com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import udesk.core.model.MessageInfo;
 import udesk.core.utils.UdeskUtils;
 
@@ -166,38 +166,43 @@ public class MessageAdatper extends BaseAdapter {
      */
     @Override
     public int getItemViewType(int position) {
-        MessageInfo message = getItem(position);
-        if (message == null) {
-            return ILLEGAL;
-        }
-        if (message instanceof UdeskCommodityItem) {
-            return COMMODITY;
-        }
-        switch (UdeskConst.parseTypeForMessage(message.getMsgtype())) {
-            case UdeskConst.ChatMsgTypeInt.TYPE_IMAGE:
-                if (message.getDirection() == UdeskConst.ChatMsgDirection.Recv) {
-                    return MSG_IMG_L;
-                } else {
-                    return MSG_IMG_R;
-                }
-            case UdeskConst.ChatMsgTypeInt.TYPE_TEXT:
-                if (message.getDirection() == UdeskConst.ChatMsgDirection.Recv) {
-                    return MSG_TXT_L;
-                } else {
-                    return MSG_TXT_R;
-                }
-            case UdeskConst.ChatMsgTypeInt.TYPE_RICH:
-                return RICH_TEXT;
-            case UdeskConst.ChatMsgTypeInt.TYPE_AUDIO:
-                if (message.getDirection() == UdeskConst.ChatMsgDirection.Recv) {
-                    return MSG_AUDIO_L;
-                } else {
-                    return MSG_AUDIO_R;
-                }
-            case UdeskConst.ChatMsgTypeInt.TYPE_REDIRECT:
-                return MSG_REDIRECT;
-            default:
+        try {
+            MessageInfo message = getItem(position);
+            if (message == null) {
                 return ILLEGAL;
+            }
+            if (message instanceof UdeskCommodityItem) {
+                return COMMODITY;
+            }
+            switch (UdeskConst.parseTypeForMessage(message.getMsgtype())) {
+                case UdeskConst.ChatMsgTypeInt.TYPE_IMAGE:
+                    if (message.getDirection() == UdeskConst.ChatMsgDirection.Recv) {
+                        return MSG_IMG_L;
+                    } else {
+                        return MSG_IMG_R;
+                    }
+                case UdeskConst.ChatMsgTypeInt.TYPE_TEXT:
+                    if (message.getDirection() == UdeskConst.ChatMsgDirection.Recv) {
+                        return MSG_TXT_L;
+                    } else {
+                        return MSG_TXT_R;
+                    }
+                case UdeskConst.ChatMsgTypeInt.TYPE_RICH:
+                    return RICH_TEXT;
+                case UdeskConst.ChatMsgTypeInt.TYPE_AUDIO:
+                    if (message.getDirection() == UdeskConst.ChatMsgDirection.Recv) {
+                        return MSG_AUDIO_L;
+                    } else {
+                        return MSG_AUDIO_R;
+                    }
+                case UdeskConst.ChatMsgTypeInt.TYPE_REDIRECT:
+                    return MSG_REDIRECT;
+                default:
+                    return ILLEGAL;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ILLEGAL;
         }
 
     }

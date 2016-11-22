@@ -8,9 +8,6 @@ public class UdeskConst {
 		public static final String USER_SDK_TOKEN = "sdk_token";
 		public static final String NICK_NAME = "nick_name";
 		public static final String CELLPHONE = "cellphone";
-//		public static final String WEIXIN_ID = "weixin_id";
-//		public static final String WEIBO_NAME = "weibo_name";
-//		public static final String QQ = "qq";
 		public static final String EMAIL = "email";
 		public static final String DESCRIPTION = "description";
 
@@ -19,8 +16,8 @@ public class UdeskConst {
 	public static final String UDESKTRANSFER = "transfer";
 	public static final String UDESKHTMLURL = "html_url";
 	public static final String UDESKGROUPID = "udesk_groupid";
+	public static final String UDESKISTRANFERSESSION= "udesk_tranfer_session";
 	public static final String UDESKAGENTID = "udesk_agentid";
-
 	public static  final  String  WELCOME_URL = "welcome_url";
 	public static  final  String  WELCOME_URL_TITLE = "welcome_url_title";
 
@@ -102,12 +99,13 @@ public class UdeskConst {
 	}
 	
 	public static class SharePreParams{
+		public static  String RegisterIdName = "registeridname";
 		public static  String Udesk_Sharepre_Name = "udesk_sdk";
 		public static final String Udesk_SdkToken = "udesk_sdktoken";
 //		public static final String Udesk_Transfer = "udesk_transfer";
 //		public static final String Udesk_h5url = "udesk_h5url";
-		public static final String Udesk_userid = "udesk_userId";
-		public static final String Udesk_Push = "udesk_status_push";
+//		public static final String Udesk_userid = "udesk_userId";
+		public static final String Udesk_Push_RegisterId = "udesk_push_registerid";
 	}
 	
 	public static class AgentFlag{

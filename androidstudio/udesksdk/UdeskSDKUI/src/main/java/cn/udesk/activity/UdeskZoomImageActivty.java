@@ -10,9 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +20,9 @@ import java.io.InputStream;
 
 import cn.udesk.R;
 import cn.udesk.widget.UdeskZoomImageView;
+import udesk.com.nostra13.universalimageloader.core.DisplayImageOptions;
+import udesk.com.nostra13.universalimageloader.core.ImageLoader;
+import udesk.com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 public class UdeskZoomImageActivty extends Activity implements
 		OnClickListener {

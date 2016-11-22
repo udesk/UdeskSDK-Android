@@ -90,4 +90,10 @@ public class UdeskConfig {
     //    商品咨询页面中，发送链接的字样颜色
     public static int udeskCommityLinkColorResId = DEFAULT;
 
+    //配置 是否使用推送服务  true 表示使用  false表示不使用
+    public  static  boolean isUserSDkPush = false;
+
+    //在调用进入会化通过导航页进入，配置是否使用直接进入会话  true 表示直接进入人工客服    false表示通过导航页进入
+    public  static  boolean isDirectAccessToSession = false;
+
 }

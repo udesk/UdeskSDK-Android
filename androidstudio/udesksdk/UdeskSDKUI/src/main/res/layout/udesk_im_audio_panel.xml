@@ -29,10 +29,10 @@
             android:layout_height="65dp"
             android:layout_centerInParent="true"
             android:visibility="gone"
-            app:voiceLineColor="#0074FF"
-            app:voiceLineWidth="1dp"
-            app:voiceTextColor="#767D85"
-            app:voiceTextSize="15sp" />
+            app:udeskvoiceLineColor="#0074FF"
+            app:udeskvoiceLineWidth="1dp"
+            app:udeskvoiceTextColor="#767D85"
+            app:udeskvoiceTextSize="15sp" />
 
 
         <LinearLayout

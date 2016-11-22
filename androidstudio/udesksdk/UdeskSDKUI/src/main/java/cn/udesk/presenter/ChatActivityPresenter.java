@@ -62,16 +62,23 @@ public class ChatActivityPresenter {
         UdeskMessageManager.getInstance().eventui_OnNewPresence.bind(this, "onPrenseMessage");
         UdeskMessageManager.getInstance().eventui_OnMessageReceived.bind(this, "onMessageReceived");
         UdeskMessageManager.getInstance().eventui_OnNewMessage.bind(this, "onNewMessage");
-        UdeskMessageManager.getInstance().eventui_OnReqsurveyMsg.bind(this, "onReqsurveyMsg");
         InvokeEventContainer.getInstance().event_OncreateCustomer.bind(this,"onCreateCustomer");
         InvokeEventContainer.getInstance().event_OnIsBolcked.bind(this,"onIsBolck");
+    }
+
+    public void bindReqsurveyMsg(){
+        UdeskMessageManager.getInstance().eventui_OnReqsurveyMsg.bind(this, "onReqsurveyMsg");
+    }
+
+    public void unbindReqsurveyMsg(){
+        UdeskMessageManager.getInstance().eventui_OnReqsurveyMsg.unBind(this);
     }
 
     public void unBind() {
         UdeskMessageManager.getInstance().eventui_OnNewPresence.unBind(this);
         UdeskMessageManager.getInstance().eventui_OnMessageReceived.unBind(this);
         UdeskMessageManager.getInstance().eventui_OnNewMessage.unBind(this);
-        UdeskMessageManager.getInstance().eventui_OnReqsurveyMsg.unBind(this);
+
         InvokeEventContainer.getInstance().event_OncreateCustomer.unBind(this);
         InvokeEventContainer.getInstance().event_OnIsBolcked.unBind(this);
     }
@@ -907,7 +914,9 @@ public class ChatActivityPresenter {
     };
 
     public void removeCallBack() {
-        mChatView.getHandler().removeCallbacks(runnable);
+        if(mChatView != null&&  mChatView.getHandler() != null && runnable != null ){
+            mChatView.getHandler().removeCallbacks(runnable);
+        }
     }
 
     private void retrySendMsg() {

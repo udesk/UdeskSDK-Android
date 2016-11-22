@@ -26,10 +26,12 @@
             android:theme="@style/Udesk_Theme" />
         <activity
             android:name="cn.udesk.activity.UdeskFormActivity"
+            android:launchMode="singleTop"
             android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
             android:theme="@style/Udesk_Theme" />
         <activity
             android:name="cn.udesk.activity.UdeskChatActivity"
+            android:launchMode="singleTop"
             android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
             android:theme="@style/Udesk_Theme" />
         <activity
