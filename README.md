@@ -799,7 +799,7 @@ RedirectViewHolder  显示转移提示语信息；
 以下依赖文件已封装在SDK内，无需自行添加
 
 ``` java
-    compile files('libs/universal-image-loader-1.9.4.jar')
+    compile files('libs/udesk-universal-image-loader-1.9.4.jar')
     compile files('libs/bugly_crash_release__2.1.jar')
     compile files('libs/udesk_sdk_3.2.1.jar')
     compile 'org.igniterealtime.smack:smack-android-extensions:4.1.0'
@@ -832,6 +832,5 @@ RedirectViewHolder  显示转移提示语信息；
  
  //其它
 -keep class com.tencent.bugly.** {*; } 
--keep class com.nostra13.universalimageloader.** {*;} 
 -keep class de.hdodenhof.circleimageview.** {*;}
 ```
