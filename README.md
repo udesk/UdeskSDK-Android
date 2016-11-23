@@ -1,10 +1,16 @@
 # UdeskSDK Android 3.4 开发者文档
 
 ## 注意
-3.4更新日志: 
-   1，增加离线消息推送
-   2，增加机器转人工通过导航页进入人工客服
-   3，增加上次会话记录得缓存，缓存判断会话客服未关闭，则直接进入会话。 
+
+
+### 3.4更新日志   
+
+``` java
+1增加离线消息推送 
+2增加机器转人工通过导航页进入人工客服
+3增加上次会话记录得缓存，缓存判断会话客服未关闭，则直接进入会话
+
+```
 
 ## 一、SDK工作流程图
 Udesk-SDK的工作流程如下图所示。
@@ -799,7 +805,7 @@ RedirectViewHolder  显示转移提示语信息；
 以下依赖文件已封装在SDK内，无需自行添加
 
 ``` java
-    compile files('libs/universal-image-loader-1.9.4.jar')
+    compile files('libs/udesk-universal-image-loader-1.9.4.jar')
     compile files('libs/bugly_crash_release__2.1.jar')
     compile files('libs/udesk_sdk_3.2.1.jar')
     compile 'org.igniterealtime.smack:smack-android-extensions:4.1.0'
@@ -832,6 +838,5 @@ RedirectViewHolder  显示转移提示语信息；
  
  //其它
 -keep class com.tencent.bugly.** {*; } 
--keep class com.nostra13.universalimageloader.** {*;} 
 -keep class de.hdodenhof.circleimageview.** {*;}
 ```
