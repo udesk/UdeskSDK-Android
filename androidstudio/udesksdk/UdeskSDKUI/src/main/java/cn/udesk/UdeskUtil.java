@@ -52,7 +52,7 @@ public class UdeskUtil {
 	}
 
 	public final static String getFileProviderName(Context context){
-		return context.getPackageName()+".udeskfileprovider";
+		return context.getPackageName()+".fileprovider";
 	}
 
 	/**
