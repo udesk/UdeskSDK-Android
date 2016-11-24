@@ -42,6 +42,8 @@ dependencies {
 
 ###3.1初始化
 
+旧版方式的初始化，密钥和域名，密钥获取是 管理-单点登录-共享密钥，见如下图：
+
 获取密钥和公司域名（xxxx.udesk.cn）
 
 ![udesk](http://7xr0de.com1.z0.glb.clouddn.com/key.jpeg)
@@ -51,8 +53,19 @@ dependencies {
 使用公司域名和密钥初始化SDK
 
 ``` java
-UdeskSDKManager.getInstance().initApiKey(this, "You domain","You Secretkey");
+UdeskSDKManager.getInstance().initApiKey(this, "You domain","You key");
 ```
+3.4版本开始增加新的初始化方式，且只有该方式支持多应用，支持推送。
+获取appid 和 密钥的方式，见如下图：
+
+![udesk](http://7xr0de.com1.z0.glb.clouddn.com/initUdesk.png)
+使用公司域名和密钥 和 appid 初始化SDK
+
+``` java
+UdeskSDKManager.getInstance().initApiKey(context, "You domain","You key","You appid") 
+```
+## 注意 2种初始化，只能选择一种，并且不允许混合。
+
 ###3.2初始化客户信息
 
 注意：若要在SDK中使用 客户自定义字段 需先在管理员网页端设置添加用户自定义字字段。 
