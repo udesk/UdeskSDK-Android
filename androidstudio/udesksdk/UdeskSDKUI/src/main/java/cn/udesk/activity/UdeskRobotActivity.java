@@ -63,6 +63,9 @@ public class UdeskRobotActivity extends Activity {
 			if (!UdeskUtil.isZh(this)){
 				url = url + "&language=en-us" ;
 			}
+			if(!TextUtils.isEmpty(UdeskConfig.appid)){
+				url = url + "&app_id="+UdeskConfig.appid ;
+			}
 			settingWebView(url);
 		} else {
 			finish();
@@ -169,6 +172,7 @@ public class UdeskRobotActivity extends Activity {
 			});
 		} else {
 			mTitlebar.setRightTextVis(View.GONE);
+			mTitlebar.setudeskTransferImgVis(View.GONE);
 		}
 	}
 
