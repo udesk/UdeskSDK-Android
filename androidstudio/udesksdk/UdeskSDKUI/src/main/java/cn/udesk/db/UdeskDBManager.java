@@ -379,7 +379,7 @@ public class UdeskDBManager {
 	 * @return
 	 */
 	public List<String> getNeedRetryMsg(long currentTime){
-		String sql = "select MsgID from " + UdeskDBHelper.UdeskSendIngMsgs + " where ("+ currentTime + " - Time >= 10000 )"  + " And (" + currentTime + " - Time <= 60000 )";
+		String sql = "select MsgID from " + UdeskDBHelper.UdeskSendIngMsgs + " where ("+ currentTime + " - Time >= 5000 )"  + " And (" + currentTime + " - Time <= 60000 )";
 		List<String> listItems = null;
 		Cursor cursor = null;
 		if(getSQLiteDatabase() == null){
