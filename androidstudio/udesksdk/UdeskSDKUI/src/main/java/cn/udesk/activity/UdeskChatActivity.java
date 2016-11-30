@@ -136,6 +136,8 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     private View audioCancle;
     private ImageView audioPop;
 
+    //如果是收到客服的满意度调查，则在onresume 处不在请求分配客服
+    private  boolean isSurvyOperate = false;
 
     private ChatActivityPresenter mPresenter = new ChatActivityPresenter(this);
 
@@ -158,6 +160,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         public static final int IM_STATUS = 17;
         public static final int IM_BOLACKED = 18;
         public static final int Has_Survey = 19;
+        public static final int Survey_error = 20;
     }
 
     private BroadcastReceiver mConnectivityChangedReceiver = null;
@@ -394,6 +397,10 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                     UdeskUtils.showToast(UdeskChatActivity.this, getResources()
                             .getString(R.string.udesk_has_survey));
                     break;
+                case MessageWhat.Survey_error:
+                    UdeskUtils.showToast(UdeskChatActivity.this, getResources()
+                            .getString(R.string.udesk_survey_error));
+                    break;
                 case MessageWhat.redirectSuccess:
                     MessageInfo redirectSuccessmsg = (MessageInfo) msg.obj;
                     if (mChatAdapter != null) {
@@ -554,7 +561,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         if (mPresenter != null){
             mPresenter.bindReqsurveyMsg();
         }
-        if(UdeskMessageManager.getInstance().getOverConversation()){
+        if(UdeskMessageManager.getInstance().getOverConversation() && !isSurvyOperate){
             mPresenter.createIMCustomerInfo();
         }
         //进入会话界面 关闭推送
@@ -1556,6 +1563,11 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     @Override
     public String getAgentId() {
         return agentId;
+    }
+
+    @Override
+    public void changgeiSSurvyOperate() {
+        isSurvyOperate = true;
     }
 
     @Override

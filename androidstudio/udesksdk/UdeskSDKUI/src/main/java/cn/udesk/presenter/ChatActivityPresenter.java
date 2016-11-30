@@ -127,9 +127,11 @@ public class ChatActivityPresenter {
 
     //收到满意度调查消息
     public void onReqsurveyMsg(Boolean isSurvey) {
-//        if (isSurvey) {
-            getIMSurveyOptions();
-//        }
+
+            if (mChatView!= null){
+                mChatView.changgeiSSurvyOperate();
+                getIMSurveyOptions();
+            }
 
     }
 
@@ -155,7 +157,7 @@ public class ChatActivityPresenter {
 
                     @Override
                     public void onFail(String message) {
-                        // TODO Auto-generated method stub
+                        sendSurveyerror();
 
                     }
                 });
@@ -390,7 +392,7 @@ public class ChatActivityPresenter {
                                     }
                                 }
                             }else{
-                                       //出错给
+                                sendSurveyerror();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -399,10 +401,19 @@ public class ChatActivityPresenter {
 
                     @Override
                     public void onFail(String message) {
-
+                        sendSurveyerror();
                     }
                 }
         );
+    }
+
+    private void sendSurveyerror(){
+        if (mChatView.getHandler() != null) {
+            Message message = mChatView.getHandler().obtainMessage(
+                    MessageWhat.Survey_error);
+            mChatView.getHandler().sendMessage(message);
+
+        }
     }
 
     //发送商品链接广告
