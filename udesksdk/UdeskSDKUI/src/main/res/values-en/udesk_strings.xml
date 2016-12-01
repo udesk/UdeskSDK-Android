@@ -16,7 +16,6 @@
     <string name="udesk_copy">Copy</string>
     <string name="udesk_fail_save_image">Failed saveing</string>
     <string name="udesk_success_save_image">Successful saving</string>
-    <string name="udesk_error_network">No network</string>
     <string name="udesk_cancel">Cancel</string>
     <string name="udesk_sure">Sure</string>
     <string name="udesk_ok">Leave message</string>
@@ -56,7 +55,6 @@
     <string name="udesk_edit_hint_msg">Typing...</string>
     <string name="udesk_voice_init">Hold to talk</string>
     <string name="udesk_voice_cancle">Release to cancel</string>
-    <string name="udesk_voice_ready">Preparing...</string>
     <string name="udesk_thanks_survy">Thanks for your comment！</string>
     <string name="udesk_transfer_success">Successfully tansfer to agent</string>
     <string name="udesk_service">Service</string>
