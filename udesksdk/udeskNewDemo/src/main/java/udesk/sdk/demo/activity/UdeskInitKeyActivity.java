@@ -64,16 +64,17 @@ public class UdeskInitKeyActivity extends Activity {
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UdeskCoreConst.HTTP = "http://";
+//                UdeskCoreConst.HTTP = "http://";
                 if (!TextUtils.isEmpty(mDomainEdit.getText().toString()) && !TextUtils.isEmpty(mKeyEdit.getText().toString())) {
                     /*  使用前需要设置的信息:
                         1 保存domain和key
                         2创建客户*/
                     UdeskSDKManager.getInstance().initApiKey(getApplicationContext(), mDomainEdit.getText().toString(), mKeyEdit.getText().toString(),mAppidEdit.getText().toString());
-                    String sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
-                    if (TextUtils.isEmpty(sdkToken)) {
-                        sdkToken = UUID.randomUUID().toString();
-                    }
+//                    String sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
+//                    if (TextUtils.isEmpty(sdkToken)) {
+//                        sdkToken = UUID.randomUUID().toString();
+//                    }
+                    String sdkToken = "1211";
                     Map<String, String> info = new HashMap<String, String>();
                     info.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdkToken);
                     info.put(UdeskConst.UdeskUserInfo.NICK_NAME, sdkToken);
