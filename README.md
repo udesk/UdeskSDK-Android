@@ -836,10 +836,11 @@ RedirectViewHolder  显示转移提示语信息；
 -keep class udesk.** {*;} 
 -keep class cn.udesk.**{*; } 
 //七牛
--keep class com.qiniu.android.dns.** {*; } 
 -keep class okhttp3.** {*;} 
 -keep class okio.** {*;} 
--keep class com.qiniu.android.** {*;} 
+-keep class com.qiniu.**{*;}
+-keep class com.qiniu.**{public <init>();}
+-ignorewarnings
 //smack
 -keep class org.jxmpp.** {*;} 
 -keep class de.measite.** {*;} 
