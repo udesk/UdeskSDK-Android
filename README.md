@@ -38,6 +38,9 @@ dependencies {
     compile project(':Udesk_Separate_UI')
 }
 ```
+### 注意[eclipse] [1]目录地址如下：
+ https://github.com/udesk/udesk_sdk_android_eclipse      
+
 ## 三、快速集成SDK
 
 ###3.1初始化
