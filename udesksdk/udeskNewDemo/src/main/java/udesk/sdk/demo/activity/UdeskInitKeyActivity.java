@@ -23,12 +23,19 @@ import udesk.sdk.demo.R;
 
 public class UdeskInitKeyActivity extends Activity {
 
+//    //替换成你们注册生成的域名
+//    private String UDESK_DOMAIN = "udesksdk.udesk.cn";
+//    //替换成你们生成应用产生的appid
+//    private String AppId = "cdc6da4fa97efc2c";
+//    // 替换成你们在后台生成的密钥
+//    private String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
+
     //替换成你们注册生成的域名
-    private String UDESK_DOMAIN = "udesksdk.udesk.cn";
+    private String UDESK_DOMAIN = "udeskdemo.udesk.cn";
     //替换成你们生成应用产生的appid
-    private String AppId = "cdc6da4fa97efc2c";
+    private String AppId = "07c7cb9df80efc81";
     // 替换成你们在后台生成的密钥
-    private String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
+    private String UDESK_SECRETKEY = "5bef76d133a6c69c6d95287a26ccbc7f";
 
     private EditText mDomainEdit;
 
@@ -64,17 +71,15 @@ public class UdeskInitKeyActivity extends Activity {
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                UdeskCoreConst.HTTP = "http://";
                 if (!TextUtils.isEmpty(mDomainEdit.getText().toString()) && !TextUtils.isEmpty(mKeyEdit.getText().toString())) {
                     /*  使用前需要设置的信息:
                         1 保存domain和key
                         2创建客户*/
                     UdeskSDKManager.getInstance().initApiKey(getApplicationContext(), mDomainEdit.getText().toString(), mKeyEdit.getText().toString(),mAppidEdit.getText().toString());
-//                    String sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
-//                    if (TextUtils.isEmpty(sdkToken)) {
-//                        sdkToken = UUID.randomUUID().toString();
-//                    }
-                    String sdkToken = "1211";
+                    String sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
+                    if (TextUtils.isEmpty(sdkToken)) {
+                        sdkToken = UUID.randomUUID().toString();
+                    }
                     Map<String, String> info = new HashMap<String, String>();
                     info.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdkToken);
                     info.put(UdeskConst.UdeskUserInfo.NICK_NAME, sdkToken);
