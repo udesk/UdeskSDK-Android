@@ -198,12 +198,25 @@ public class ChatActivityPresenter {
         Map<String, String> mUserinfo =  UdeskSDKManager.getInstance().getUserinfo();
         Map<String, String> textField = UdeskSDKManager.getInstance().getTextField();
         Map<String, String> roplist = UdeskSDKManager.getInstance().getRoplist();
+        if (TextUtils.isEmpty(mDomain)||TextUtils.isEmpty(mSecretKey) || TextUtils.isEmpty(sdkToken)){
+            if (mChatView.getHandler() != null) {
+                Message messge = mChatView.getHandler().obtainMessage(
+                        MessageWhat.Connecting_Error);
+                mChatView.getHandler().sendMessage(messge);
+            }
+            return;
+        }
         UdeskHttpFacade.getInstance().setUserInfo(mContext,mDomain,mSecretKey,sdkToken, mUserinfo, textField,  roplist, UdeskSDKManager.getInstance().getAppid(),null);
     }
 
     public void onCreateCustomer(String result ,Boolean isJsonStr, String string){
         if (result.equals("failure")){
-            mChatView.showFailToast(string);
+            if (mChatView.getHandler() != null) {
+                Message messge = mChatView.getHandler().obtainMessage(
+                        MessageWhat.Connecting_Error);
+                mChatView.getHandler().sendMessage(messge);
+            }
+//            mChatView.showFailToast(string);
         }else  if(result.equals("succes")){
             if (isJsonStr){
                     JsonUtils.parserCustomersJson( mChatView.getContext(),string);

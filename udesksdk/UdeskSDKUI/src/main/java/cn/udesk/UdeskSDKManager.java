@@ -14,6 +14,7 @@ import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.activity.UdeskFormActivity;
 import cn.udesk.activity.UdeskHelperActivity;
 import cn.udesk.activity.UdeskRobotActivity;
+import cn.udesk.config.UdekConfigUtil;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.model.UdeskCommodityItem;
@@ -590,6 +591,14 @@ public class UdeskSDKManager {
                 UdeskConst.SharePreParams.Udesk_Push_RegisterId, registerId);
     }
 
+
+    /**
+     * 设置表单留言的页面地址
+     * @param webUrl
+     */
+    public void setFormUrl(String webUrl){
+        UdeskConfig.udeskFormUrl = webUrl;
+    }
 
 
 
