@@ -152,6 +152,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         public static final int onNewMessage = 7;
         public static final int RECORD_ERROR = 8;
         public static final int RECORD_Too_Short = 10;
+        public static final int Connecting_Error = 11;
         public static final int UPDATE_VOCIE_STATUS = 12;
         public static final int recordllegal = 13;
         public static final int status_notify = 14;
@@ -309,6 +310,10 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                 case MessageWhat.RECORD_Too_Short:
                     UdeskUtils.showToast(UdeskChatActivity.this, getResources()
                             .getString(R.string.udesk_label_hint_too_short));
+                    break;
+                case MessageWhat.Connecting_Error:
+                    showErrorStatus(getString(
+                            R.string.udesk_agent_connecting_error));
                     break;
                 case MessageWhat.UPDATE_VOCIE_STATUS:
                     updateRecordStatus(msg.arg1);
@@ -481,6 +486,17 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
             mTitlebar
                     .setLeftTextSequence(mAgentInfo.getAgentNick());
             mTitlebar.getudeskStateImg().setImageResource(R.drawable.udesk_online_status);
+        }
+
+    }
+
+    //设置客服连接出错状态
+    private void showErrorStatus(String error) {
+        currentStatusIsOnline = false;
+        if (mTitlebar != null) {
+            mTitlebar
+                    .setLeftTextSequence(error);
+            mTitlebar.getudeskStateImg().setVisibility(View.GONE);
         }
 
     }
@@ -779,67 +795,75 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     @Override
     public void dealAgentInfo(final AgentInfo agentInfo) {
 
-        switch (agentInfo.getAgentCode()) {
-            case UdeskConst.AgentReponseCode.NoAgent:
-                Message msgNoAgent = mHandler.obtainMessage(MessageWhat.NoAgent);
-                msgNoAgent.obj = agentInfo;
-                mHandler.sendMessage(msgNoAgent);
-                break;
-            case UdeskConst.AgentReponseCode.HasAgent:
-                // 有客服连接xmpp, titlebar上显示
-                UdeskMessageManager.getInstance().cancelXmppConnect().flatMap(new Func1<Boolean, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(Boolean aBoolean) {
-                        return UdeskMessageManager.getInstance().loginXmppService();
-                    }
-                }).subscribe(new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
+        try {
+            switch (agentInfo.getAgentCode()) {
+                case UdeskConst.AgentReponseCode.NoAgent:
+                    Message msgNoAgent = mHandler.obtainMessage(MessageWhat.NoAgent);
+                    msgNoAgent.obj = agentInfo;
+                    mHandler.sendMessage(msgNoAgent);
+                    break;
+                case UdeskConst.AgentReponseCode.HasAgent:
+                    // 有客服连接xmpp, titlebar上显示
+                    UdeskMessageManager.getInstance().cancelXmppConnect().flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                        @Override
+                        public Observable<Boolean> call(Boolean aBoolean) {
+                            return UdeskMessageManager.getInstance().loginXmppService();
+                        }
+                    }).subscribe(new Subscriber<Boolean>() {
+                        @Override
+                        public void onCompleted() {
 
-                    }
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        if (aBoolean) {
-                            UdeskSDKManager.isSessioning = true;
-                            UdeskDBManager.getInstance().addAgentInfo(agentInfo);
-                            Message msgHasAgent = mHandler.obtainMessage(MessageWhat.HasAgent);
-                            msgHasAgent.obj = agentInfo;
+                        @Override
+                        public void onError(Throwable e) {
+                            Message msgHasAgent = mHandler.obtainMessage(MessageWhat.Connecting_Error);
                             mHandler.sendMessage(msgHasAgent);
                         }
-                    }
-                });
-                break;
-            case UdeskConst.AgentReponseCode.WaitAgent:
-                Message msgWaitAgent = mHandler
-                        .obtainMessage(MessageWhat.WaitAgent);
-                msgWaitAgent.obj = agentInfo;
-                mHandler.sendMessage(msgWaitAgent);
-                break;
-            case UdeskConst.AgentReponseCode.NonExistentAgent:
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(UdeskChatActivity.this, getString(R.string.udesk_nonexistent_agent), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                break;
-            case UdeskConst.AgentReponseCode.NonExistentGroupId:
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(UdeskChatActivity.this, getString(R.string.udesk_nonexistent_groupId), Toast.LENGTH_SHORT).show();
-                    }
-                });
-                break;
 
-            default:
-                break;
+                        @Override
+                        public void onNext(Boolean aBoolean) {
+                            if (aBoolean) {
+                                UdeskSDKManager.isSessioning = true;
+                                UdeskDBManager.getInstance().addAgentInfo(agentInfo);
+                                Message msgHasAgent = mHandler.obtainMessage(MessageWhat.HasAgent);
+                                msgHasAgent.obj = agentInfo;
+                                mHandler.sendMessage(msgHasAgent);
+                            }else{
+                                Message msgHasAgent = mHandler.obtainMessage(MessageWhat.Connecting_Error);
+                                mHandler.sendMessage(msgHasAgent);
+                            }
+                        }
+                    });
+                    break;
+                case UdeskConst.AgentReponseCode.WaitAgent:
+                    Message msgWaitAgent = mHandler
+                            .obtainMessage(MessageWhat.WaitAgent);
+                    msgWaitAgent.obj = agentInfo;
+                    mHandler.sendMessage(msgWaitAgent);
+                    break;
+                case UdeskConst.AgentReponseCode.NonExistentAgent:
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(UdeskChatActivity.this, getString(R.string.udesk_nonexistent_agent), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    break;
+                case UdeskConst.AgentReponseCode.NonExistentGroupId:
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(UdeskChatActivity.this, getString(R.string.udesk_nonexistent_groupId), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    break;
+
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -1078,7 +1102,6 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     //弹出表单留言的提示框
     private void confirmToForm() {
         try {
-
             String positiveLabel = this.getString(R.string.udesk_ok);
 
             String negativeLabel = this.getString(R.string.udesk_cancel);

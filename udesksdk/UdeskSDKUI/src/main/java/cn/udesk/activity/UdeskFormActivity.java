@@ -3,14 +3,18 @@ package cn.udesk.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
@@ -34,10 +38,15 @@ public class UdeskFormActivity extends Activity {
 		mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
 		settingTitlebar();
 		mwebView = (WebView) findViewById(R.id.udesk_form_webview);
+		String url = "";
+		if (TextUtils.isEmpty(UdeskConfig.udeskFormUrl)){
+			url = "http://" + UdeskSDKManager.getInstance().getDomain(this)
+					+ "/im_client/feedback.html"
+					+ UdeskUtil.getFormUrlPara(this);
+		}else{
+			url = UdeskConfig.udeskFormUrl;
+		}
 		//提交表单的url地址
-		String url = "http://" + UdeskSDKManager.getInstance().getDomain(this)
-				+ "/im_client/feedback.html"
-				+ UdeskUtil.getFormUrlPara(this);
 		settingWebView(url);
 	}
 
@@ -64,15 +73,31 @@ public class UdeskFormActivity extends Activity {
 		mwebView.getSettings()
 				.setCacheMode(WebSettings.LOAD_NO_CACHE);
 		mwebView.setWebChromeClient(new WebChromeClient());
-		mwebView.setWebViewClient(new WebViewClient());
-		mwebView.loadUrl(url);
-		mwebView.setWebViewClient(new WebViewClient() {
+		mwebView.setWebViewClient(new WebViewClient(){
+			@Override
+			public void onPageFinished(WebView view, String url) {
+				super.onPageFinished(view, url);
+
+			}
+
+			@Override
+			public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+
+				handler.proceed();
+			}
+
+			@Override
+			public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+				Toast.makeText(UdeskFormActivity.this,UdeskFormActivity.this.getString(R.string.udesk_has_wrong_net),Toast.LENGTH_SHORT).show();
+			}
+
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				view.loadUrl(url);
 				return true;
 			}
 		});
+		mwebView.loadUrl(url);
 	}
 
 	/**

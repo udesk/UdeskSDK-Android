@@ -94,6 +94,9 @@ public class UdeskConfig {
     public  static  boolean isUserSDkPush = false;
 
     //在调用进入会化通过导航页进入，配置是否使用直接进入会话  true 表示直接进入人工客服    false表示通过导航页进入
-    public  static  boolean isDirectAccessToSession = false;
+    public  static  boolean isDirectAccessToSession = true;
+
+    //客服不在线的时候，设置留言表单的地址，未设置，默认进入Udesk提供的留言表单页面
+    public  static  String  udeskFormUrl = "";
 
 }
