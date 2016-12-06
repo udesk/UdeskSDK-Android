@@ -65,4 +65,5 @@
 
     <string name="udesk_no_set_survey">Not set, temporarily unable to use!</string>
     <string name="udesk_survey_error"> Sorry, temporarily unable to use!</string>
+    <string name="udesk_agent_connecting_error">The connection failed. Please consult again later</string>
 </resources>
