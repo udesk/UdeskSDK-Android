@@ -26,8 +26,8 @@ Udesk-SDK的工作流程如下图所示。
 
 | SDK 中的文件          | 说明                                       |
 | ----------------- | ---------------------------------------- |
-| UdeskUIDemo       | UdeskSdk集成demo,提供对Udesk_Separate_UI module使用的例子 |
-| Udesk_Separate_UI | UdeskSDK开源moudle                         |
+| udeskNewDemo 和  UdeskOldDemo     | UdeskSdk集成demo,UdeskSDKUI module使用的例子 |
+| UdeskSDKUI | UdeskSDK开源moudle                         |
 
 2.2.2导入集成
 
@@ -35,7 +35,7 @@ Udesk-SDK的工作流程如下图所示。
 
 ``` java
 dependencies {
-    compile project(':Udesk_Separate_UI')
+    compile project(':UdeskSDKUI')
 }
 ```
 ### 注意[eclipse] [1]目录地址如下：
