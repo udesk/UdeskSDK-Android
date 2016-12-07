@@ -35,7 +35,7 @@ Udesk-SDK的工作流程如下图所示。
 
 ``` java
 dependencies {
-    compile project(':Udesk_Separate_UI')
+    compile project(':UdeskSDKUI')
 }
 ```
 ### 注意[eclipse] [1]目录地址如下：
