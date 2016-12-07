@@ -759,14 +759,16 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     private void changeImState(String msgId, int state) {
         if (!TextUtils.isEmpty(msgId) && mListView != null
                 && mChatAdapter != null) {
-            for (int i = mListView.getChildCount() - 1; i >= 0; i--) {
-                View child = mListView.getChildAt(i);
-                if (child != null) {
-                    if (mChatAdapter.changeImState(child, msgId, state)) {
-                        return;
-                    }
-                }
-            }
+            //getChildAt(i) 只能获取可见区域View， 会有bug
+//            for (int i = mListView.getChildCount() - 1; i >= 0; i--) {
+//                View child = mListView.getChildAt(i);
+//                if (child != null) {
+//                    if (mChatAdapter.changeImState(child, msgId, state)) {
+//                        return;
+//                    }
+//                }
+//            }
+            mChatAdapter.updateStatus(msgId, state);
         }
     }
 
