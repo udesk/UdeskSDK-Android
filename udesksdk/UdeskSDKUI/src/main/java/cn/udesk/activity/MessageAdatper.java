@@ -786,22 +786,36 @@ public class MessageAdatper extends BaseAdapter {
         return false;
     }
 
-    /**
-     * 根据消息ID  修改对应消息的状态
-     */
-    public boolean changeImState(View convertView, String msgId, int state) {
-        Object tag = convertView.getTag();
-        if (tag != null && tag instanceof BaseViewHolder) {
-            BaseViewHolder cache = (BaseViewHolder) tag;
-            if (cache.message != null && msgId.equals(cache.message.getMsgId())) {
-                cache.changeUiState(state);
-                cache.message.setSendFlag(state);
-                return true;
-            }
-        }
+//    /**
+//     * 根据消息ID  修改对应消息的状态
+//     */
+//    public boolean changeImState(View convertView, String msgId, int state) {
+//        Object tag = convertView.getTag();
+//        if (tag != null && tag instanceof BaseViewHolder) {
+//            BaseViewHolder cache = (BaseViewHolder) tag;
+//            if (cache.message != null && msgId.equals(cache.message.getMsgId())) {
+//                cache.changeUiState(state);
+//                cache.message.setSendFlag(state);
+//                return true;
+//            }
+//        }
+//
+//        return false;
+//    }
 
-        return false;
+    public void updateStatus(String msgId, int state){
+        try {
+            for (MessageInfo msg : list){
+                if (msg.getMsgId().equals(msgId)){
+                    msg.setSendFlag(state);
+                }
+            }
+            notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 
     public boolean changeVideoTime(View convertView, String msgId, int duration) {
         Object tag = convertView.getTag();
