@@ -329,7 +329,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
             }
             return;
         }
-
+        sendReceivedMsg(message);
         String id = message.getPacketID();
         if (TextUtils.isEmpty(id)) {
             return;
@@ -366,11 +366,11 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
 
     public  void  sendReceivedMsg(Message message){
         if (message.getExtension("request", "urn:xmpp:receipts") != null) {
-            ReceivedXmpp newUserInfoXmpp = new ReceivedXmpp();
-            newUserInfoXmpp.setMsgId(message.getPacketID());
-            xmppMsg = new Message(message.getFrom(), Message.Type.chat);
-            xmppMsg.addExtension(newUserInfoXmpp);
             try {
+                ReceivedXmpp newUserInfoXmpp = new ReceivedXmpp();
+                newUserInfoXmpp.setMsgId(message.getPacketID());
+                xmppMsg = new Message(message.getFrom(), Message.Type.chat);
+                xmppMsg.addExtension(newUserInfoXmpp);
                 if (xmppConnection != null){
                     xmppConnection.sendPacket(xmppMsg);
                 }
