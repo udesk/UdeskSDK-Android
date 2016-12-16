@@ -806,7 +806,7 @@ public class MessageAdatper extends BaseAdapter {
     public void updateStatus(String msgId, int state){
         try {
             for (MessageInfo msg : list){
-                if (msg.getMsgId().equals(msgId)){
+                if (msg.getMsgId() != null && msg.getMsgId().equals(msgId)){
                     msg.setSendFlag(state);
                 }
             }
