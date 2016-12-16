@@ -22,6 +22,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -768,14 +769,15 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         if (!TextUtils.isEmpty(msgId) && mListView != null
                 && mChatAdapter != null) {
             //getChildAt(i) 只能获取可见区域View， 会有bug
-//            for (int i = mListView.getChildCount() - 1; i >= 0; i--) {
-//                View child = mListView.getChildAt(i);
-//                if (child != null) {
-//                    if (mChatAdapter.changeImState(child, msgId, state)) {
-//                        return;
-//                    }
-//                }
-//            }
+            for (int i = mListView.getChildCount() - 1; i >= 0; i--) {
+                View child = mListView.getChildAt(i);
+                if (child != null) {
+                    if (mChatAdapter.changeImState(child, msgId, state)) {
+                        return;
+                    }
+                }
+            }
+            //当不在可见区域则调用整个刷新
             mChatAdapter.updateStatus(msgId, state);
         }
     }
