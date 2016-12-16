@@ -786,23 +786,26 @@ public class MessageAdatper extends BaseAdapter {
         return false;
     }
 
-//    /**
-//     * 根据消息ID  修改对应消息的状态
-//     */
-//    public boolean changeImState(View convertView, String msgId, int state) {
-//        Object tag = convertView.getTag();
-//        if (tag != null && tag instanceof BaseViewHolder) {
-//            BaseViewHolder cache = (BaseViewHolder) tag;
-//            if (cache.message != null && msgId.equals(cache.message.getMsgId())) {
-//                cache.changeUiState(state);
-//                cache.message.setSendFlag(state);
-//                return true;
-//            }
-//        }
-//
-//        return false;
-//    }
+    /**
+     * 根据消息ID  修改对应消息的状态
+     */
+    public boolean changeImState(View convertView, String msgId, int state) {
+        Object tag = convertView.getTag();
+        if (tag != null && tag instanceof BaseViewHolder) {
+            BaseViewHolder cache = (BaseViewHolder) tag;
+            if (cache.message != null && msgId.equals(cache.message.getMsgId())) {
+                cache.changeUiState(state);
+                cache.message.setSendFlag(state);
+                return true;
+            }
+        }
 
+        return false;
+    }
+    
+    /**
+     * 根据消息ID  修改对应消息的状态
+     */
     public void updateStatus(String msgId, int state){
         try {
             for (MessageInfo msg : list){
