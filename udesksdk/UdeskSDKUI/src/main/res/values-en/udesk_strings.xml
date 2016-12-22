@@ -14,7 +14,7 @@
     <string name="udesk_navi_helper_input_hint">Describe your question</string>
     <string name="udesk_save">Save</string>
     <string name="udesk_copy">Copy</string>
-    <string name="udesk_fail_save_image">Failed saveing</string>
+    <string name="udesk_fail_save_image">Failed saving</string>
     <string name="udesk_success_save_image">Successful saving</string>
     <string name="udesk_cancel">Cancel</string>
     <string name="udesk_sure">Sure</string>
@@ -65,5 +65,4 @@
 
     <string name="udesk_no_set_survey">Not set, temporarily unable to use!</string>
     <string name="udesk_survey_error"> Sorry, temporarily unable to use!</string>
-    <string name="udesk_agent_connecting_error">The connection failed. Please consult again later</string>
 </resources>

@@ -127,8 +127,7 @@ public class ChatActivityPresenter {
 
     //收到满意度调查消息
     public void onReqsurveyMsg(Boolean isSurvey) {
-
-            if (mChatView!= null){
+            if (mChatView != null){
                 mChatView.changgeiSSurvyOperate();
                 getIMSurveyOptions();
             }
@@ -182,7 +181,7 @@ public class ChatActivityPresenter {
 
                     @Override
                     public void onFail(String message) {
-
+                        sendSurveyerror();
 
                     }
                 });
@@ -198,25 +197,12 @@ public class ChatActivityPresenter {
         Map<String, String> mUserinfo =  UdeskSDKManager.getInstance().getUserinfo();
         Map<String, String> textField = UdeskSDKManager.getInstance().getTextField();
         Map<String, String> roplist = UdeskSDKManager.getInstance().getRoplist();
-        if (TextUtils.isEmpty(mDomain)||TextUtils.isEmpty(mSecretKey) || TextUtils.isEmpty(sdkToken)){
-            if (mChatView.getHandler() != null) {
-                Message messge = mChatView.getHandler().obtainMessage(
-                        MessageWhat.Connecting_Error);
-                mChatView.getHandler().sendMessage(messge);
-            }
-            return;
-        }
         UdeskHttpFacade.getInstance().setUserInfo(mContext,mDomain,mSecretKey,sdkToken, mUserinfo, textField,  roplist, UdeskSDKManager.getInstance().getAppid(),null);
     }
 
     public void onCreateCustomer(String result ,Boolean isJsonStr, String string){
         if (result.equals("failure")){
-            if (mChatView.getHandler() != null) {
-                Message messge = mChatView.getHandler().obtainMessage(
-                        MessageWhat.Connecting_Error);
-                mChatView.getHandler().sendMessage(messge);
-            }
-//            mChatView.showFailToast(string);
+            mChatView.showFailToast(string);
         }else  if(result.equals("succes")){
             if (isJsonStr){
                     JsonUtils.parserCustomersJson( mChatView.getContext(),string);
@@ -251,7 +237,7 @@ public class ChatActivityPresenter {
                     new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
-                            ;
+
                         }
 
                         @Override
@@ -405,10 +391,10 @@ public class ChatActivityPresenter {
                                     }
                                 }
                             }else{
-                                sendSurveyerror();
+                                sendSurveyerror();           //出错给
                             }
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            sendSurveyerror();
                         }
                     }
 
@@ -422,9 +408,8 @@ public class ChatActivityPresenter {
 
     private void sendSurveyerror(){
         if (mChatView.getHandler() != null) {
-            Message message = mChatView.getHandler().obtainMessage(
+            Message messge = mChatView.getHandler().obtainMessage(
                     MessageWhat.Survey_error);
-            mChatView.getHandler().sendMessage(message);
 
         }
     }
@@ -473,7 +458,7 @@ public class ChatActivityPresenter {
         mChatView.addMessage(msg);
         UdeskMessageManager.getInstance().sendMessage(msg.getMsgtype(),
                 msg.getMsgContent(), msg.getMsgId(),
-                mChatView.getAgentInfo().getAgentJid(), msg.getDuration());
+                mChatView.getAgentInfo().getAgentJid(), msg.getDuration(), mChatView.getAgentInfo().getIm_sub_session_id());
         UdeskDBManager.getInstance().addSendingMsg(msg.getMsgId(),
                 UdeskConst.SendFlag.RESULT_SEND, System.currentTimeMillis());
     }
@@ -507,7 +492,7 @@ public class ChatActivityPresenter {
             String imageName = UdeskUtils.MD5(data);
             File scaleImageFile = UdeskUtil.getOutputMediaFile(mChatView.getContext(),imageName
                     + UdeskConst.ORIGINAL_SUFFIX);
-            if (!scaleImageFile.exists()) {
+            if (scaleImageFile != null) {
                 if (max > 1024) {
                     factoryOptions.inSampleSize = max / 1024;
                 } else {
@@ -523,24 +508,25 @@ public class ChatActivityPresenter {
                     fos = null;
                 } catch (Exception e) {
                     e.printStackTrace();
+                    return;
                 }
+                if (bitmap != null) {
+                    bitmap.recycle();
+                    bitmap = null;
+                }
+                data = null;
+                if (TextUtils.isEmpty(scaleImageFile.getPath())) {
+                    UdeskUtils.showToast(mChatView.getContext(), "上传图片失败，请重试");
+                    return;
+                }
+                MessageInfo msg = buildSendMessage(
+                        UdeskConst.ChatMsgTypeString.TYPE_IMAGE,
+                        System.currentTimeMillis(), "", scaleImageFile.getPath());
+                saveMessage(msg);
+                mChatView.addMessage(msg);
+                upLoadImageFile(msg.getLocalPath(), msg);
+            }
 
-            }
-            if (bitmap != null) {
-                bitmap.recycle();
-                bitmap = null;
-            }
-            data = null;
-            if (TextUtils.isEmpty(scaleImageFile.getPath())) {
-                UdeskUtils.showToast(mChatView.getContext(), "上传图片失败，请重试");
-                return;
-            }
-            MessageInfo msg = buildSendMessage(
-                    UdeskConst.ChatMsgTypeString.TYPE_IMAGE,
-                    System.currentTimeMillis(), "", scaleImageFile.getPath());
-            saveMessage(msg);
-            mChatView.addMessage(msg);
-            upLoadImageFile(msg.getLocalPath(), msg);
         }catch (Exception e){
             e.printStackTrace();
         }catch (OutOfMemoryError error){
@@ -703,7 +689,7 @@ public class ChatActivityPresenter {
                     String qiniuUrl = UdeskCoreConst.UD_QINIU_UPLOAD + qiniuKey;
                     UdeskMessageManager.getInstance().sendMessage(msg.getMsgtype(),
                             qiniuUrl, msg.getMsgId(),
-                            mChatView.getAgentInfo().getAgentJid(), 0);
+                            mChatView.getAgentInfo().getAgentJid(), 0,mChatView.getAgentInfo().getIm_sub_session_id());
                     UdeskDBManager.getInstance().updateMsgContent(msg.getMsgId(),
                             qiniuUrl);
 
@@ -872,7 +858,7 @@ public class ChatActivityPresenter {
 
                     UdeskMessageManager.getInstance().sendMessage(msg.getMsgtype(),
                             qiniuUrl, msg.getMsgId(),
-                            mChatView.getAgentInfo().getAgentJid(), msg.getDuration());
+                            mChatView.getAgentInfo().getAgentJid(), msg.getDuration(),mChatView.getAgentInfo().getIm_sub_session_id());
 
                     UdeskDBManager.getInstance().updateMsgContent(msg.getMsgId(),
                             qiniuUrl);
@@ -907,7 +893,7 @@ public class ChatActivityPresenter {
         if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_TEXT) ) {
             UdeskMessageManager.getInstance().sendMessage(message.getMsgtype(),
                     message.getMsgContent(), message.getMsgId(),
-                    mChatView.getAgentInfo().getAgentJid(), message.getDuration());
+                    mChatView.getAgentInfo().getAgentJid(), message.getDuration(),mChatView.getAgentInfo().getIm_sub_session_id());
             UdeskDBManager.getInstance()
                     .addSendingMsg(message.getMsgId(),
                             UdeskConst.SendFlag.RESULT_SEND,
@@ -957,7 +943,8 @@ public class ChatActivityPresenter {
                 for (String msgID : retryMsgIds) {
                     MessageInfo msg = UdeskDBManager.getInstance().getMessage(msgID);
                     UdeskMessageManager.getInstance().sendMessage(msg.getMsgtype(), msg.getMsgContent(),
-                            msg.getMsgId(), mChatView.getAgentInfo().getAgentJid(), msg.getDuration());
+                            msg.getMsgId(), mChatView.getAgentInfo().getAgentJid(), msg.getDuration(),
+                            mChatView.getAgentInfo().getIm_sub_session_id());
 
                 }
             }
@@ -989,6 +976,8 @@ public class ChatActivityPresenter {
             UdeskDBManager.getInstance().deleteSendingMsg(msgId);
             UdeskDBManager.getInstance().updateMsgSendFlag(msgId,
                     UdeskConst.SendFlag.RESULT_FAIL);
+            //增加重新请求客服 连接xmpp逻辑
+            createIMCustomerInfo();
         }
 
     }

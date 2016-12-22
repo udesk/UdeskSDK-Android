@@ -17,25 +17,19 @@ import cn.jpush.android.api.JPushInterface;
 import cn.udesk.PreferenceHelper;
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
+import cn.udesk.config.UdeskConfig;
 import udesk.core.UdeskCoreConst;
 import udesk.sdk.demo.R;
 
 
 public class UdeskInitKeyActivity extends Activity {
 
-//    //替换成你们注册生成的域名
-//    private String UDESK_DOMAIN = "udesksdk.udesk.cn";
-//    //替换成你们生成应用产生的appid
-//    private String AppId = "cdc6da4fa97efc2c";
-//    // 替换成你们在后台生成的密钥
-//    private String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
-
     //替换成你们注册生成的域名
-    private String UDESK_DOMAIN = "udeskdemo.udesk.cn";
+    private String UDESK_DOMAIN = "udesksdk.udesk.cn";
     //替换成你们生成应用产生的appid
-    private String AppId = "07c7cb9df80efc81";
+    private String AppId = "cdc6da4fa97efc2c";
     // 替换成你们在后台生成的密钥
-    private String UDESK_SECRETKEY = "5bef76d133a6c69c6d95287a26ccbc7f";
+    private String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
 
     private EditText mDomainEdit;
 
@@ -75,6 +69,7 @@ public class UdeskInitKeyActivity extends Activity {
                     /*  使用前需要设置的信息:
                         1 保存domain和key
                         2创建客户*/
+//                    UdeskCoreConst.HTTP="http://";
                     UdeskSDKManager.getInstance().initApiKey(getApplicationContext(), mDomainEdit.getText().toString(), mKeyEdit.getText().toString(),mAppidEdit.getText().toString());
                     String sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
                     if (TextUtils.isEmpty(sdkToken)) {

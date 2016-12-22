@@ -98,14 +98,17 @@ public class UDEmojiAdapter extends BaseAdapter {
 	}
 
 	public static SpannableString replaceEmoji(Context mContext, String text ,int textSize) {
-		final int emojiWidth = (int) (mContext.getResources()
-				.getDisplayMetrics().density * 40 / 2.0f);
-
-		final int prefixLength = EMOJI_PREFIX.length();
-		int index = 0, start = 0;
-		SpannableString spannable = new SpannableString(text);
         try{
+			final int emojiWidth = (int) (mContext.getResources()
+					.getDisplayMetrics().density * 40 / 2.0f);
+
+			final int prefixLength = EMOJI_PREFIX.length();
+			int index = 0, start = 0;
 			index = text.indexOf(EMOJI_PREFIX, index);
+			if (index <=-1){
+				return  null;
+			}
+			SpannableString spannable = new SpannableString(text);
 			while (index > -1) {
 				start = index + prefixLength;
 				String emojiNumber = text
@@ -130,10 +133,11 @@ public class UDEmojiAdapter extends BaseAdapter {
 
 				index = text.indexOf(EMOJI_PREFIX, index + 7);
 			}
+			return spannable;
 		}catch ( Exception e){
 			e.printStackTrace();
 		}
-		return spannable;
+		return  null;
 	}
 
 }

@@ -55,6 +55,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_toLeftOf="@+id/udesk_im_commondity_link"
                 android:textColor="@color/udesk_color_im_commondity_subtitle1"
                 android:textSize="16sp" />
 

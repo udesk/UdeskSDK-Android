@@ -7,4 +7,5 @@
 
     <color name="update_userinfo_key">#333333</color>
     <color name="update_userinfo_value">#CCCCCC</color>
+    <color name="udesk_custom_dialog_des_color">#666666</color>
 </resources>
