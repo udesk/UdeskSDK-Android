@@ -36,4 +36,5 @@ dependencies {
     compile files('libs/udesk-asmack-8-4.0.6.jar')
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile files('libs/udesk-universal-image-loader-1.9.4.jar')
+    compile files('libs/udesk_sdk_3.4.4.jar')
 }

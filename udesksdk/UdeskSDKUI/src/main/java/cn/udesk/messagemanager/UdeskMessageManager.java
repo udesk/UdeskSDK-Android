@@ -2,18 +2,10 @@ package cn.udesk.messagemanager;
 
 import android.text.TextUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.concurrent.ExecutorService;
 
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
-import cn.udesk.UdeskUtil;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.model.MsgNotice;
 import rx.Observable;
@@ -27,10 +19,9 @@ import udesk.org.jivesoftware.smack.packet.Message;
 
 public class UdeskMessageManager {
 
-    private volatile static UdeskMessageManager instance;
     private UdeskXmppManager mUdeskXmppManager;
     private ExecutorService messageExecutor;
-    public ReflectInvokeMethod  event_OnNewMessage = new ReflectInvokeMethod(new Class<?>[]{Message.class,String.class,String.class ,String.class,String.class,Long.class});
+    public ReflectInvokeMethod event_OnNewMessage = new ReflectInvokeMethod(new Class<?>[]{Message.class,String.class,String.class ,String.class,String.class,Long.class});
     public ReflectInvokeMethod eventui_OnMessageReceived = new ReflectInvokeMethod(new Class<?>[]{String.class});
     public ReflectInvokeMethod eventui_OnNewMessage = new ReflectInvokeMethod(new Class<?>[]{MessageInfo.class});
     public ReflectInvokeMethod eventui_OnNewPresence = new ReflectInvokeMethod(new Class<?>[]{String.class, Integer.class});
@@ -39,21 +30,16 @@ public class UdeskMessageManager {
 
     private Boolean isOverConversation = false;
 
+    private static UdeskMessageManager instance = new UdeskMessageManager();
+
+    public static UdeskMessageManager getInstance() {
+        return instance;
+    }
+
     private UdeskMessageManager() {
         bindEvent();
         mUdeskXmppManager = new UdeskXmppManager();
         ensureMessageExecutor();
-    }
-
-    public static UdeskMessageManager getInstance() {
-        if (instance == null) {
-            synchronized (UdeskMessageManager.class) {
-                if (instance == null) {
-                    instance = new UdeskMessageManager();
-                }
-            }
-        }
-        return instance;
     }
 
     private void ensureMessageExecutor() {
@@ -88,8 +74,8 @@ public class UdeskMessageManager {
         }).subscribeOn(Schedulers.io());
     }
 
-    public void sendMessage(String type, String text, String msgId, String to, long duration) {
-        mUdeskXmppManager.sendMessage(type, text, msgId, to, duration);
+    public void sendMessage(String type, String text, String msgId, String to, long duration,String subsessionId) {
+        mUdeskXmppManager.sendMessage(type, text, msgId, to, duration,subsessionId);
     }
 
     public void sendComodityMessage(String text, String to) {
@@ -122,7 +108,7 @@ public class UdeskMessageManager {
     }
 
 
-    public void onNewMessage(final Message message,String agentJid, final String type, final String msgId, final String content,
+    public void onNewMessage(final Message message, String agentJid, final String type, final String msgId, final String content,
                              final Long duration) {
         String jid[] = agentJid.split("/");
         final MessageInfo msginfo = buildReceiveMessage(jid[0], type, msgId, content, duration);

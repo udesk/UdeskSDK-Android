@@ -104,30 +104,35 @@ public class HorVoiceView extends View {
 
 	public synchronized void startRecording(UdeskTimeCallback callback){
 		videoTime = 0;
+		time=60;
 		mCallback = callback;
 		mTimeHandler.removeMessages(HandleTypeTimeOver);
 		mTimeHandler.sendEmptyMessage(HandleTypeTimeOver);
 
 	}
 
+	public void stopRecording(){
+		mTimeHandler.removeMessages(HandleTypeTimeOver);
+	}
 
 	public interface UdeskTimeCallback{
 		void onTimeOver();
 	}
 
 	private int videoTime = 0;
+	private int time=60;
 	private final int HandleTypeTimeOver = 0;
 	private final int HandleTypeShowTooShort = 1;
 	private UdeskTimeCallback mCallback;
 	Handler mTimeHandler = new Handler(){
-		int time=60;
+
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 				case HandleTypeTimeOver:
 					time--;
 					videoTime ++ ;
-					if(time==0){
+					if(time<=0){
 						if(mCallback!=null){
 							mTimeHandler.removeMessages(HandleTypeTimeOver);
 							mCallback.onTimeOver();

@@ -47,7 +47,6 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.udesk_options_agentgroup_view);
-        UdeskUtil.initCrashReport(this);
         initView();
         getImGroupInfo();
     }
@@ -247,6 +246,5 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        UdeskUtil.closeCrashReport();
     }
 }

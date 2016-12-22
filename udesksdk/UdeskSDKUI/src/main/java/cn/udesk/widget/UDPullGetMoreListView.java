@@ -96,114 +96,118 @@ public class UDPullGetMoreListView extends ListView implements OnScrollListener 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if (isRefreshable) {
-            switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (firstItemIndex == 0 && !isRecored) {
-                    isRecored = true;
-                    isPush = true;
-                    startY = (int) event.getY();
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                if (state != REFRESHING && state != LOADING) {
-                    if (state == DONE) {
-                        // 什么都不做
+        try {
+            if (isRefreshable) {
+                switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (firstItemIndex == 0 && !isRecored) {
+                        isRecored = true;
+                        isPush = true;
+                        startY = (int) event.getY();
                     }
-                    if (state == PULL_To_REFRESH) {
-                        state = DONE;
-                        changeHeaderViewByState();
-
-                    }
-                    if (state == RELEASE_To_REFRESH) {
-                        state = REFRESHING;
-                        changeHeaderViewByState();
-                        onRefresh();
-
-                    }
-                }
-
-                isRecored = false;
-                isBack = false;
-
-                break;
-
-            case MotionEvent.ACTION_MOVE:
-                int tempY = (int) event.getY();
-
-                if (!isRecored && firstItemIndex == 0) {
-                    isRecored = true;
-                    startY = tempY;
-                }
-
-                if (state != REFRESHING && isRecored && state != LOADING) {
-
-                    // 保证在设置padding的过程中，当前的位置一直是在head，否则如果当列表超出屏幕的话，当在上推的时候，列表会同时进行滚动
-
-                    // 可以松手去刷新了
-                    if (state == RELEASE_To_REFRESH) {
-
-                        setSelection(0);
-
-                        // 往上推了，推到了屏幕足够掩盖head的程度，但是还没有推到全部掩盖的地步
-                        if (((tempY - startY) / RATIO < headContentHeight) && (tempY - startY) > 0) {
-                            state = PULL_To_REFRESH;
-                            changeHeaderViewByState();
-
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (state != REFRESHING && state != LOADING) {
+                        if (state == DONE) {
+                            // 什么都不做
                         }
-                        // 一下子推到顶了
-                        else if (tempY - startY <= 0) {
+                        if (state == PULL_To_REFRESH) {
                             state = DONE;
                             changeHeaderViewByState();
 
                         }
-                        // 往下拉了，或者还没有上推到屏幕顶部掩盖head的地步
-                        else {
-                            // 不用进行特别的操作，只用更新paddingTop的值就行了
-                        }
-                    }
-                    // 还没有到达显示松开刷新的时候,DONE或者是PULL_To_REFRESH状态
-                    if (state == PULL_To_REFRESH) {
-
-                        setSelection(0);
-
-                        // 下拉到可以进入RELEASE_TO_REFRESH的状态
-                        if ((tempY - startY) / RATIO >= headContentHeight) {
-                            state = RELEASE_To_REFRESH;
-                            isBack = true;
+                        if (state == RELEASE_To_REFRESH) {
+                            state = REFRESHING;
                             changeHeaderViewByState();
-                        }
-                        // 上推到顶了
-                        else if (tempY - startY <= 0) {
-                            state = DONE;
-                            changeHeaderViewByState();
-                            isPush = false;
+                            onRefresh();
+
                         }
                     }
 
-                    // done状态下
-                    if (state == DONE) {
-                        if (tempY - startY > 0) {
-                            state = PULL_To_REFRESH;
-                            changeHeaderViewByState();
+                    isRecored = false;
+                    isBack = false;
+
+                    break;
+
+                case MotionEvent.ACTION_MOVE:
+                    int tempY = (int) event.getY();
+
+                    if (!isRecored && firstItemIndex == 0) {
+                        isRecored = true;
+                        startY = tempY;
+                    }
+
+                    if (state != REFRESHING && isRecored && state != LOADING) {
+
+                        // 保证在设置padding的过程中，当前的位置一直是在head，否则如果当列表超出屏幕的话，当在上推的时候，列表会同时进行滚动
+
+                        // 可以松手去刷新了
+                        if (state == RELEASE_To_REFRESH) {
+
+                            setSelection(0);
+
+                            // 往上推了，推到了屏幕足够掩盖head的程度，但是还没有推到全部掩盖的地步
+                            if (((tempY - startY) / RATIO < headContentHeight) && (tempY - startY) > 0) {
+                                state = PULL_To_REFRESH;
+                                changeHeaderViewByState();
+
+                            }
+                            // 一下子推到顶了
+                            else if (tempY - startY <= 0) {
+                                state = DONE;
+                                changeHeaderViewByState();
+
+                            }
+                            // 往下拉了，或者还没有上推到屏幕顶部掩盖head的地步
+                            else {
+                                // 不用进行特别的操作，只用更新paddingTop的值就行了
+                            }
                         }
+                        // 还没有到达显示松开刷新的时候,DONE或者是PULL_To_REFRESH状态
+                        if (state == PULL_To_REFRESH) {
+
+                            setSelection(0);
+
+                            // 下拉到可以进入RELEASE_TO_REFRESH的状态
+                            if ((tempY - startY) / RATIO >= headContentHeight) {
+                                state = RELEASE_To_REFRESH;
+                                isBack = true;
+                                changeHeaderViewByState();
+                            }
+                            // 上推到顶了
+                            else if (tempY - startY <= 0) {
+                                state = DONE;
+                                changeHeaderViewByState();
+                                isPush = false;
+                            }
+                        }
+
+                        // done状态下
+                        if (state == DONE) {
+                            if (tempY - startY > 0) {
+                                state = PULL_To_REFRESH;
+                                changeHeaderViewByState();
+                            }
+                        }
+
+                        // 更新headView的size
+                        if (state == PULL_To_REFRESH) {
+                            llheader.setPadding(0, -1 * headContentHeight + (tempY - startY) / RATIO, 0, 0);
+
+                        }
+
+                        // 更新headView的paddingTop
+                        if (state == RELEASE_To_REFRESH) {
+                            llheader.setPadding(0, (tempY - startY) / RATIO - headContentHeight, 0, 0);
+                        }
+
                     }
 
-                    // 更新headView的size
-                    if (state == PULL_To_REFRESH) {
-                        llheader.setPadding(0, -1 * headContentHeight + (tempY - startY) / RATIO, 0, 0);
-
-                    }
-
-                    // 更新headView的paddingTop
-                    if (state == RELEASE_To_REFRESH) {
-                        llheader.setPadding(0, (tempY - startY) / RATIO - headContentHeight, 0, 0);
-                    }
-
+                    break;
                 }
-
-                break;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return super.onTouchEvent(event);
@@ -254,7 +258,7 @@ public class UDPullGetMoreListView extends ListView implements OnScrollListener 
 
 
     public interface OnRefreshListener {
-        public void onRefresh();
+        void onRefresh();
     }
 
 

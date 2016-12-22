@@ -26,9 +26,7 @@ import cn.udesk.config.UdeskConfig;
 import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskHttpFacade;
 
-public class UdeskRobotActivity extends Activity {
-	private WebView mwebView;
-	private UdeskTitleBar mTitlebar;
+public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
 	private String h5Url = null;
 	private String tranfer = null;
 	private boolean isTranferByImGroup = true;
@@ -36,9 +34,8 @@ public class UdeskRobotActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.udesk_robot_view);
 		initData();
-		initView();
+		loadingView();
 	}
 
 	private void initData() {
@@ -51,10 +48,8 @@ public class UdeskRobotActivity extends Activity {
 		
 	}
 
-	private void initView() {
-		mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
+	private void loadingView() {
 		settingTitlebar(tranfer);
-		mwebView = (WebView) findViewById(R.id.udesk_robot_webview);
 		if (!TextUtils.isEmpty(h5Url)) {
 			String url = UdeskHttpFacade.getInstance().buildRobotUrlWithH5(
 					this, UdeskSDKManager.getInstance().getSecretKey(this),
@@ -66,62 +61,13 @@ public class UdeskRobotActivity extends Activity {
 			if(!TextUtils.isEmpty(UdeskConfig.appid)){
 				url = url + "&app_id="+UdeskConfig.appid ;
 			}
-			settingWebView(url);
+			mwebView.loadUrl(url);
 		} else {
 			finish();
 		}
-
 	}
 
-	@SuppressLint("NewApi")
-	private void settingWebView(String url) {
-		final WebSettings settings = mwebView.getSettings();
-		settings.setJavaScriptEnabled(true);
-		mwebView.setInitialScale(1);
-		mwebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
-		mwebView.setScrollbarFadingEnabled(false);
-		settings.setDefaultTextEncodingName("UTF-8");
-		// 关于是否缩放
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			settings.setDisplayZoomControls(false);
-		}
-		settings.setSupportZoom(false); // 支持缩放
-		settings.setBuiltInZoomControls(false);
-		// 关于自适应屏幕
-		settings.setUseWideViewPort(true);
-		settings.setLoadWithOverviewMode(true);
-		settings.setDomStorageEnabled(true);
-		mwebView.getSettings()
-				.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-		mwebView.setWebChromeClient(new WebChromeClient());
-		mwebView.setWebViewClient(new WebViewClient(){
-			@Override
-			public void onPageFinished(WebView view, String url) {
-				super.onPageFinished(view, url);
 
-			}
-
-			@Override
-			public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-//				super.onReceivedSslError(view, handler, error);
-				handler.proceed();
-			}
-
-			@Override
-			public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-//				super.onReceivedError(view, errorCode, description, failingUrl);
-				Toast.makeText(UdeskRobotActivity.this,UdeskRobotActivity.this.getString(R.string.udesk_has_wrong_net),Toast.LENGTH_SHORT).show();
-				UdeskRobotActivity.this.finish();
-			}
-
-			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				view.loadUrl(url);
-				return true;
-			}
-		});
-		mwebView.loadUrl(url);
-	}
 
 	/**
 	 * titlebar 的设置

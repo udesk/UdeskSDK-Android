@@ -85,10 +85,10 @@
 
     <color name="udesk_color_text_light">#efeff3</color>
     <color name="udesk_color_text_gray">#dadada</color>
-    <color name="udesk_pw_text_color">#808080</color>
+
     <color name="udesk_default_gray_bg">#F0EFF5</color>
     <color name="udesk_view_line">#d0D8D8D8</color>
-    <color name="udesk_custom_dialog_des_color">#666666</color>
+
     <color name="udesk_custom_dialog_cancle_btn_color">#333333</color>
     <color name="udesk_custom_dialog_sure_btn_color">#007AFF</color>
 </resources>

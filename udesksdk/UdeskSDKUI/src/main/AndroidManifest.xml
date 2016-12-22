@@ -22,7 +22,8 @@
             android:theme="@style/Udesk_Theme" />
         <activity
             android:name="cn.udesk.activity.UdeskRobotActivity"
-            android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
+            android:configChanges="keyboardHidden|orientation"
+            android:windowSoftInputMode="stateVisible|adjustResize"
             android:theme="@style/Udesk_Theme" />
         <activity
             android:name="cn.udesk.activity.UdeskFormActivity"

@@ -164,8 +164,8 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
      * @param msgId 消息的id
      * @param to    发给客服的jid
      */
-    public void sendTxtMessage(String type, String text, String msgId, String to) {
-        this.sendMessage(type, text, msgId, to, 0);
+    public void sendTxtMessage(String type, String text, String msgId, String to,String im_sub_session_id) {
+        this.sendMessage(type, text, msgId, to, 0,im_sub_session_id);
     }
 
     /**
@@ -174,8 +174,8 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
      * @param msgId 消息的id
      * @param to    发给客服的jid
      */
-    public void sendImgMessage(String type, String text, String msgId, String to) {
-        this.sendMessage(type, text, msgId, to, 0);
+    public void sendImgMessage(String type, String text, String msgId, String to,String im_sub_session_id) {
+        this.sendMessage(type, text, msgId, to, 0,im_sub_session_id);
     }
 
     /**
@@ -184,8 +184,8 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
      * @param msgId 消息的id
      * @param to    发给客服的jid
      */
-    public void sendAudioMessage(String type, String text, String msgId, String to, long duration) {
-        this.sendMessage(type, text, msgId, to, duration);
+    public void sendAudioMessage(String type, String text, String msgId, String to, long duration,String im_sub_session_id) {
+        this.sendMessage(type, text, msgId, to, duration,im_sub_session_id);
     }
 
     /**
@@ -256,7 +256,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
      * @param to       发给客服的jid
      * @param duration 时长  默认传0,语音的发送语音的时长
      */
-    public boolean sendMessage(String type, String text, String msgId, String to, long duration) {
+    public boolean sendMessage(String type, String text, String msgId, String to, long duration,String im_sub_session_id) {
         try {
             xmppMsg = new Message(to, Message.Type.chat);
             text = StringUtils.escapeForXML(text).toString();
@@ -269,6 +269,13 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
             json.put("data", data);
             json.put("platform", "android");
             json.put("version", UdeskCoreConst.sdkversion);
+            if (!TextUtils.isEmpty(im_sub_session_id)){
+                try {
+                    json.put("im_sub_session_id",Integer.valueOf(im_sub_session_id));
+                }catch (Exception e) {
+                    json.put("im_sub_session_id",im_sub_session_id);
+                }
+            }
             xmppMsg.setBody(json.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -310,7 +317,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
     private void processMessage(Message message) {
         // 收到回执消息
         if (message.getExtension("received", "urn:xmpp:receipts") != null) {
-            DeliveryReceipt received = (DeliveryReceipt) message.getExtension("received", "urn:xmpp:receipts");
+            DeliveryReceipt received = message.getExtension("received", "urn:xmpp:receipts");
             if (received != null && !TextUtils.isEmpty(received.getId())) {
                 InvokeEventContainer.getInstance().event_OnMessageReceived.invoke(received.getId());
             }
@@ -323,13 +330,13 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
         }
 
         if (message.getExtension("action", "udesk:action") != null) {
-            ActionMsgXmpp actionMsgXmpp = (ActionMsgXmpp) message.getExtension("action", "udesk:action");
+            ActionMsgXmpp actionMsgXmpp = message.getExtension("action", "udesk:action");
             if (actionMsgXmpp != null) {
                 InvokeEventContainer.getInstance().event_OnActionMsg.invoke(actionMsgXmpp.getActionText(), message.getFrom());
             }
             return;
         }
-        sendReceivedMsg(message);
+//        sendReceivedMsg(message);
         String id = message.getPacketID();
         if (TextUtils.isEmpty(id)) {
             return;
@@ -407,7 +414,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
 
     @Override
     public void connected(XMPPConnection arg0) {
-        // TODO Auto-generated method stub
+
 
     }
 
