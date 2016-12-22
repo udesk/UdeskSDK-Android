@@ -37,7 +37,6 @@ public interface IChatActivityView {
 
 	String getGroupId();
 	String getAgentId();
-
 	void changgeiSSurvyOperate();
 
 }

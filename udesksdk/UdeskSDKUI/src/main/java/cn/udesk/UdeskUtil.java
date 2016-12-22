@@ -38,15 +38,19 @@ public class UdeskUtil {
 
 	public static Uri getOutputMediaFileUri(Context context) {
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-		if (Build.VERSION.SDK_INT>=24){
-			return FileProvider.getUriForFile(context,getFileProviderName(context),getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
-		}else{
-			if(getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg") != null){
-				return Uri.fromFile(getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
-			}else{
-				return null;
-			}
+		try {
+			if (Build.VERSION.SDK_INT>=24){
+                return FileProvider.getUriForFile(context,getFileProviderName(context),getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
+            }else{
+                if(getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg") != null){
+                    return Uri.fromFile(getOutputMediaFile(context,"IMG_" + timeStamp + ".jpg"));
+                }else{
+                    return null;
+                }
 
+            }
+		} catch (Exception e) {
+			return null;
 		}
 
 	}
@@ -72,30 +76,32 @@ public class UdeskUtil {
 	}
 
 	public static File getOutputMediaFile(Context context,String mediaName) {
-		File mediaStorageDir = null;
+		File mediaFile = null;
 		try {
-//            mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), ImgFolderName);
-			mediaStorageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), ImgFolderName);
+			File mediaStorageDir = null;
+			try {
+                mediaStorageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), ImgFolderName);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+
+			if (!mediaStorageDir.exists()) {
+                if (!mediaStorageDir.mkdirs()) {
+                    return null;
+                }
+            }
+
+			mediaFile = new File(mediaStorageDir.getPath() + File.separator + mediaName);
 		} catch (Exception e) {
-			e.printStackTrace();
+			return  null;
 		}
-
-		if (!mediaStorageDir.exists()) {
-			if (!mediaStorageDir.mkdirs()) {
-				return null;
-			}
-		}
-
-		File mediaFile = new File(mediaStorageDir.getPath() + File.separator + mediaName);
 		return mediaFile;
 	}
 
 	public static boolean isExitFile(String path) {
 		File file = new File(path);
-		if (file.exists()) {
-			return true;
-		}
-		return false;
+		return file.exists();
 	}
 
 
@@ -112,11 +118,7 @@ public class UdeskUtil {
 		}
 		String filepath = mediaStorageDir.getPath() + File.separator + fileName;
 		File file = new File(filepath);
-		if (!file.exists()) {
-			return false;
-		} else {
-			return true;
-		}
+		return file.exists();
 	}
 
 
@@ -269,21 +271,6 @@ public class UdeskUtil {
 		return config;
 	}
 
-	public static  void initCrashReport(Context context){
-		CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
-		strategy.setAppVersion(UdeskCoreConst.sdkversion);
-		CrashReport.initCrashReport(context, UdeskCoreConst.buglyAppid, false, strategy);
-	}
-
-	public static void closeCrashReport(){
-		try{
-			CrashReport.closeCrashReport();
-		}catch (Exception e){
-
-		}
-
-	}
-
 	public static int getDisplayWidthPixels(Activity activity) {
 		DisplayMetrics dMetrics = new DisplayMetrics();
 		activity.getWindowManager().getDefaultDisplay().getMetrics(dMetrics);
@@ -351,10 +338,7 @@ public class UdeskUtil {
 	public static boolean isZh(Context context) {
 		Locale locale = context.getResources().getConfiguration().locale;
 		String language = locale.getLanguage();
-		if (language.endsWith("zh"))
-			return true;
-		else
-			return false;
+		return language.endsWith("zh");
 	}
 
 

@@ -96,26 +96,24 @@ public class JsonUtils {
 			if(json.has("result")){
 				JSONObject result = json.getJSONObject("result");
 				if (result.has("code")) {
-//					agentInfo.agentCode = result.getInt("code");
 					agentInfo.setAgentCode(result.getInt("code"));
 				}
 				if (result.has("message")) {
-//					agentInfo.message = result.getString("message");
 					agentInfo.setMessage( result.getString("message"));
+				}
+				if (result.has("im_sub_session_id")){
+					agentInfo.setIm_sub_session_id(result.getString("im_sub_session_id"));
 				}
 				if (result.has("agent")) {
 					JSONObject agentJson = result.getJSONObject("agent");
 
 					if (agentJson.has("nick")) {
-//						agentInfo.agentNick = agentJson.getString("nick");
 						agentInfo.setAgentNick(agentJson.getString("nick"));
 					}
 					if (agentJson.has("jid")) {
-//						agentInfo.agentJid = agentJson.getString("jid");
 						agentInfo.setAgentJid(agentJson.getString("jid"));
 					}
 					if (agentJson.has("agent_id")) {
-//						agentInfo.agent_id = agentJson.getString("agent_id");
 						agentInfo.setAgent_id(agentJson.getString("agent_id"));
 					}
 					if (agentJson.has("avatar")){
@@ -124,11 +122,9 @@ public class JsonUtils {
 				}
 			}else{
 				if (json.has("code")) {
-//					agentInfo.agentCode = json.getInt("code");
 					agentInfo.setAgentCode(json.getInt("code"));
 				}
 				if (json.has("message")) {
-//					agentInfo.message = json.getString("message");
 					agentInfo.setMessage( json.getString("message"));
 				}
 			}

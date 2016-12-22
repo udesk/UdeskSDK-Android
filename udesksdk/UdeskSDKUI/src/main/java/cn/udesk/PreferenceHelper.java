@@ -11,7 +11,7 @@ public class PreferenceHelper {
                 Context.MODE_PRIVATE);
         Editor editor = preference.edit();
         editor.putInt(k, v);
-        editor.commit();
+        editor.apply();
     }
 
     public static void write(Context context, String fileName, String k,
@@ -20,7 +20,7 @@ public class PreferenceHelper {
                 Context.MODE_PRIVATE);
         Editor editor = preference.edit();
         editor.putBoolean(k, v);
-        editor.commit();
+        editor.apply();
     }
 
     public static void write(Context context, String fileName, String k,
@@ -29,7 +29,7 @@ public class PreferenceHelper {
                 Context.MODE_PRIVATE);
         Editor editor = preference.edit();
         editor.putString(k, v);
-        editor.commit();
+        editor.apply();
     }
 
     public static int readInt(Context context, String fileName, String k) {

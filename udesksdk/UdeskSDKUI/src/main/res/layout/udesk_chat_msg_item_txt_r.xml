@@ -77,7 +77,6 @@
             android:autoLink="web"
             android:background="@drawable/udesk_im_item_bg_right"
             android:gravity="center_vertical"
-            android:singleLine="false"
             android:textColor="#ffffffff"
             android:textColorLink="#ffffffff"
             android:textSize="@dimen/udesk_sp16" />

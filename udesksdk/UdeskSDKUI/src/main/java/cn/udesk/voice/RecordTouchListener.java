@@ -65,13 +65,9 @@ public class RecordTouchListener implements View.OnTouchListener{
 		case MotionEvent.ACTION_DOWN:
 			return true;
 		case MotionEvent.ACTION_MOVE:
-//			int Y = (int) event.getY();
-//			int X = (int) event.getX();
 			int eventX = (int) event.getRawX();
 			int eventY = (int) event.getRawY();
 			boolean willCancle = ( eventX > getCancleViewLeft() && eventY > getCancleViewTop() && eventY < getCancleViewBottmo());
-			Log.i("ttt","eventX = " + eventX + ";cancleViewLeft =  " + cancleViewLeft + " ;eventY =  " + eventY
-			+ "; cancleViewTop = " + cancleViewTop + "; cancleViewBottmo = " + getCancleViewBottmo() );
 			if (willCancle != mWillCancel) {
 				if (!willCancle) {
 					if (mRecordStateCallback != null) {

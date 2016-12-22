@@ -23,8 +23,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +40,6 @@ import udesk.com.nostra13.universalimageloader.core.DisplayImageOptions;
 import udesk.com.nostra13.universalimageloader.core.ImageLoader;
 import udesk.com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import udesk.core.model.MessageInfo;
-import udesk.core.utils.UdeskUtils;
 
 public class MessageAdatper extends BaseAdapter {
     private static final int[] layoutRes = {
@@ -228,9 +225,18 @@ public class MessageAdatper extends BaseAdapter {
         if (message == null) {
             return;
         }
+        //加上过滤含有相同msgID的消息
+        try {
+            for (MessageInfo info : list){
+                    if (!TextUtils.isEmpty(message.getMsgId()) && !TextUtils.isEmpty(info.getMsgId()) && message.getMsgId().equals(info.getMsgId())){
+                        return;
+                    }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         list.add(message);
     }
-
 
     public void addItems(List<MessageInfo> messages) {
         if (messages == null) {
@@ -485,13 +491,13 @@ public class MessageAdatper extends BaseAdapter {
                     Spannable sp = (Spannable) rich_tvmsg.getText();
                     URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
                     SpannableStringBuilder style = new SpannableStringBuilder(text);
-                    SpannableStringBuilder builder = new SpannableStringBuilder(charSequence);
+//                    SpannableStringBuilder builder = new SpannableStringBuilder(charSequence);
                     style.clearSpans();// should clear old spans
                     for (URLSpan url : urls) {
-                        int start = builder.getSpanStart(url);
-                        int ends = builder.getSpanEnd(url);
-                        String texttitle = builder.toString().substring(start, ends);
-                        MyURLSpan myURLSpan = new MyURLSpan(url.getURL(), texttitle);
+//                        int start = builder.getSpanStart(url);
+//                        int ends = builder.getSpanEnd(url);
+//                        String texttitle = builder.toString().substring(start, ends);
+                        MyURLSpan myURLSpan = new MyURLSpan(url.getURL());
                         style.setSpan(myURLSpan, sp.getSpanStart(url),
                                 sp.getSpanEnd(url),
                                 Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
@@ -512,11 +518,11 @@ public class MessageAdatper extends BaseAdapter {
     private class MyURLSpan extends ClickableSpan {
 
         private String mUrl;
-        private String textTitle;
+//        private String textTitle;
 
-        MyURLSpan(String url, String mtextTilte) {
+        MyURLSpan(String url) {
             mUrl = url;
-            textTitle = mtextTilte;
+//            textTitle = mtextTilte;
         }
 
 
@@ -524,8 +530,31 @@ public class MessageAdatper extends BaseAdapter {
         public void onClick(View widget) {
             Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
             intent.putExtra(UdeskConst.WELCOME_URL, mUrl);
-            intent.putExtra(UdeskConst.WELCOME_URL_TITLE, textTitle);
+//            intent.putExtra(UdeskConst.WELCOME_URL_TITLE, textTitle);
             mContext.startActivity(intent);
+        }
+    }
+
+    //文本消息的url事件拦截处理。  客户设置了事件则走客户的事件，没走默认弹出界面
+    private class TxtURLSpan extends ClickableSpan {
+
+        private String mUrl;
+
+        TxtURLSpan(String url) {
+            mUrl = url;
+        }
+
+
+        @Override
+        public void onClick(View widget) {
+            if (UdeskSDKManager.getInstance().getTxtMessageClick() != null){
+                UdeskSDKManager.getInstance().getTxtMessageClick().txtMsgOnclick(mUrl);
+            }else {
+                Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
+                intent.putExtra(UdeskConst.WELCOME_URL, mUrl);
+                mContext.startActivity(intent);
+            }
+
         }
     }
 
@@ -537,9 +566,31 @@ public class MessageAdatper extends BaseAdapter {
 
         @Override
         void bind(Context context) {
-            //设置文本消息内容，表情符转换对应的表情
-            tvMsg.setText(UDEmojiAdapter.replaceEmoji(context, message.getMsgContent(),
-                    (int) tvMsg.getTextSize()));
+            //设置文本消息内容，表情符转换对应的表情,没表情的另外处理
+            if(UDEmojiAdapter.replaceEmoji(context, message.getMsgContent(),
+                    (int) tvMsg.getTextSize()) != null){
+                tvMsg.setText(UDEmojiAdapter.replaceEmoji(context, message.getMsgContent(),
+                        (int) tvMsg.getTextSize()));
+            }else{
+                tvMsg.setText(message.getMsgContent());
+                tvMsg.setMovementMethod(LinkMovementMethod.getInstance());
+                CharSequence text = tvMsg.getText();
+                if (text instanceof Spannable) {
+                    int end = text.length();
+                    Spannable sp = (Spannable) tvMsg.getText();
+                    URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
+                    SpannableStringBuilder style = new SpannableStringBuilder(text);
+                    style.clearSpans();// should clear old spans
+                    for (URLSpan url : urls) {
+                        TxtURLSpan txtURLSpan = new TxtURLSpan(url.getURL());
+                        style.setSpan(txtURLSpan, sp.getSpanStart(url),
+                                sp.getSpanEnd(url),
+                                Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    }
+                    tvMsg.setText(style);
+                }
+            }
+
 
             //设置消息长按事件  复制文本
             tvMsg.setOnLongClickListener(new OnLongClickListener() {
@@ -802,7 +853,6 @@ public class MessageAdatper extends BaseAdapter {
 
         return false;
     }
-    
     /**
      * 根据消息ID  修改对应消息的状态
      */

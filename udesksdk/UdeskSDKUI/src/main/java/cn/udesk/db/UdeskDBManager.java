@@ -18,21 +18,27 @@ import udesk.core.model.MessageInfo;
 public class UdeskDBManager {
 
 	private static UdeskDBHelper helper;
-	private static UdeskDBManager instance;
+//	private static UdeskDBManager instance;
 	private SQLiteDatabase mDatabase;
-	private Context mContext;
+//	private Context mContext;
 	private String mSdktoken;
+
+	private static UdeskDBManager instance = new UdeskDBManager();
 
 	private UdeskDBManager() {
 
 	}
 
-	public static synchronized UdeskDBManager getInstance() {
-		if (instance == null) {
-			instance = new UdeskDBManager();
-		}
+	public static UdeskDBManager getInstance() {
 		return instance;
 	}
+
+//	public static synchronized UdeskDBManager getInstance() {
+//		if (instance == null) {
+//			instance = new UdeskDBManager();
+//		}
+//		return instance;
+//	}
 
 	/**
 	 * 初始化，需要在使用数据库之前调用此方法
@@ -43,9 +49,9 @@ public class UdeskDBManager {
 		if(context == null){
 			return;
 		}
-		mContext = context;
+//		mContext = context;
 		if(TextUtils.isEmpty(sdktoken)){
-			sdktoken = UdeskSDKManager.getInstance().getSdkToken(mContext);
+			sdktoken = UdeskSDKManager.getInstance().getSdkToken(context);
 		}
 		mSdktoken = sdktoken;
 		if (helper == null) {
@@ -63,33 +69,30 @@ public class UdeskDBManager {
 			helper = null;
 		}
 
-		if (instance != null) {
-			instance = null;
-		}
-
-		if (mContext != null) {
-			mContext = null;
-		}
+//		if (mContext != null) {
+//			mContext = null;
+//		}
 		if (mSdktoken != null) {
 			mSdktoken = null;
 		}
 	}
 
 	public SQLiteDatabase getSQLiteDatabase() {
-		if (mDatabase != null) {
-			return mDatabase;
-		} else {
-			try {
-				synchronized (this) {
-					if (mDatabase == null) {
-						init(mContext, mSdktoken);
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return mDatabase;
-		}
+		return mDatabase;
+//		if (mDatabase != null) {
+//			return mDatabase;
+//		} else {
+//			try {
+//				synchronized (this) {
+//					if (mDatabase == null) {
+//						init(mContext, mSdktoken);
+//					}
+//				}
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			return mDatabase;
+//		}
 
 	}
 
@@ -374,12 +377,12 @@ public class UdeskDBManager {
 	}
 	
 	/**
-	 * 获取10秒到一分钟之间都没发送成功的所有消息的MsgID
+	 * 获取10秒到半分钟之间都没发送成功的所有消息的MsgID
 	 * @param currentTime
 	 * @return
 	 */
 	public List<String> getNeedRetryMsg(long currentTime){
-		String sql = "select MsgID from " + UdeskDBHelper.UdeskSendIngMsgs + " where ("+ currentTime + " - Time >= 5000 )"  + " And (" + currentTime + " - Time <= 60000 )";
+		String sql = "select MsgID from " + UdeskDBHelper.UdeskSendIngMsgs + " where ("+ currentTime + " - Time >= 5000 )"  + " And (" + currentTime + " - Time <= 30000 )";
 		List<String> listItems = null;
 		Cursor cursor = null;
 		if(getSQLiteDatabase() == null){
@@ -407,12 +410,12 @@ public class UdeskDBManager {
 	}
 	
 	/**
-	 * 获取大于一分钟都未发送成功的消息
+	 * 获取大于半分钟都未发送成功的消息
 	 * @param currentTime
 	 * @return
 	 */
 	public List<String> getNeedUpdateFailedMsg(long currentTime){
-		String sql = "select MsgID from " + UdeskDBHelper.UdeskSendIngMsgs + " where ("+ currentTime + " - Time > 60000 )";
+		String sql = "select MsgID from " + UdeskDBHelper.UdeskSendIngMsgs + " where ("+ currentTime + " - Time > 30000 )";
 		List<String> listItems = null;
 		Cursor cursor = null;
 		if(getSQLiteDatabase() == null){
@@ -479,9 +482,9 @@ public class UdeskDBManager {
 		}
 	}
 
-	public void setContext(Context mContext) {
-		this.mContext = mContext;
-	}
+//	public void setContext(Context mContext) {
+//		this.mContext = mContext;
+//	}
 
 	public void updateMsgHasRead(String msgId){
 

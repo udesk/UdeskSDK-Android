@@ -38,7 +38,7 @@ public class UdeskZoomImageActivty extends Activity implements
 		zoomImageView = (UdeskZoomImageView) findViewById(R.id.udesk_zoom_imageview);
 		try{
 			Bundle bundle = getIntent().getExtras();
-			uri = (android.net.Uri) bundle.getParcelable("image_path");
+			uri = bundle.getParcelable("image_path");
 			DisplayImageOptions options = new DisplayImageOptions.Builder()
 					.cacheInMemory(true)
 					.cacheOnDisk(true)
@@ -154,12 +154,15 @@ public class UdeskZoomImageActivty extends Activity implements
 				out.flush();
 				try {
 					out.getFD().sync();
-				} catch (IOException e) {
+				} catch (Exception e) {
+				}finally {
+					out.close();
+					inputStream.close();
 				}
-				out.close();
+
 			}
 			return true;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			return false;
 		}
 	}

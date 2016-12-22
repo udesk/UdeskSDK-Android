@@ -54,6 +54,8 @@
     <string name="udesk_has_survey"> 谢谢，您已对本次服务做出过评价了!</string>
 
     <string name="udesk_no_set_survey"> 未设置，暂时无法使用!</string>
+
     <string name="udesk_survey_error"> 抱歉，暂时无法使用!</string>
-    <string name="udesk_agent_connecting_error">连接失败,请稍后再咨询</string>
+
+
 </resources>
