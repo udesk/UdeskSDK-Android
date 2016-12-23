@@ -478,6 +478,10 @@ public class UdeskSDKManager {
 
     //启动留言界面
     public void goToForm(Context context) {
+        if (formCallBak != null){
+            formCallBak.toLuachForm();
+            return;
+        }
         Intent intent = new Intent(context,
                 UdeskFormActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -628,5 +632,21 @@ public class UdeskSDKManager {
      */
     public void setTxtMessageClick(ITxtMessageWebonCliclk txtMessageClick) {
         this.txtMessageClick = txtMessageClick;
+    }
+
+    private IUdeskFormCallBak  formCallBak;
+    /**
+     * 设置留言界面的回调
+     */
+    public interface IUdeskFormCallBak {
+        void toLuachForm();
+    }
+
+    public IUdeskFormCallBak getFormCallBak() {
+        return formCallBak;
+    }
+
+    public void setFormCallBak(IUdeskFormCallBak formCallBak) {
+        this.formCallBak = formCallBak;
     }
 }
