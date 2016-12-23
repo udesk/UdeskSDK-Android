@@ -479,7 +479,7 @@ public class UdeskSDKManager {
     //启动留言界面
     public void goToForm(Context context) {
         if (formCallBak != null){
-            formCallBak.toLuachForm();
+            formCallBak.toLuachForm(context);
             return;
         }
         Intent intent = new Intent(context,
@@ -639,7 +639,7 @@ public class UdeskSDKManager {
      * 设置留言界面的回调
      */
     public interface IUdeskFormCallBak {
-        void toLuachForm();
+        void toLuachForm(Context context);
     }
 
     public IUdeskFormCallBak getFormCallBak() {
