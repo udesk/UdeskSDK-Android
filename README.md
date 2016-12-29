@@ -849,6 +849,8 @@ RedirectViewHolder  显示转移提示语信息；
 -keep class de.measite.** {*;} 
 -keep class org.jivesoftware.** {*;} 
 -keep class org.xmlpull.** {*;} 
+-dontwarn org.xbill.**
+-keep class org.xbill.** {*;} 
 //Android M 权限
 -keep class rx.** {*;} 
 -keep class com.tbruyelle.rxpermissions.** {*;}
