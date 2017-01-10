@@ -119,14 +119,18 @@ public class ChatImageView extends ImageView {
     }
 
     private void setupWithNinePatch() {
-        mTarget = Bitmap.createBitmap(mSrc.getWidth(), mSrc.getHeight(), BITMAP_CONFIG);
-        mCanvas = new Canvas(mTarget);
-        mNinePatchDrawable.setBounds(0, 0, getRight() - getLeft(), getBottom() - getTop());
-        mNinePatchDrawable.draw(mCanvas);
+        try {
+            mTarget = Bitmap.createBitmap(mSrc.getWidth(), mSrc.getHeight(), BITMAP_CONFIG);
+            mCanvas = new Canvas(mTarget);
+            mNinePatchDrawable.setBounds(0, 0, getRight() - getLeft(), getBottom() - getTop());
+            mNinePatchDrawable.draw(mCanvas);
 
-        updateMatrix();
-        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        mCanvas.drawBitmap(mSrc, 0, 0, mPaint);
+            updateMatrix();
+            mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            mCanvas.drawBitmap(mSrc, 0, 0, mPaint);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private Path drawRightPath() {
@@ -255,25 +259,29 @@ public class ChatImageView extends ImageView {
     }
 
     private void updateMatrix() {
-        float scale = 0f;
-        float dx = 0f;
-        float dy = 0f;
-        if (mSrc.getWidth() / (float) mSrc.getHeight() >
-                getWidth() / (float) getHeight()) {
-            scale = getHeight() / (float) mSrc.getHeight();
-            dx = (getWidth() - mSrc.getWidth() * scale) * 0.5f;
-        } else {
-            scale = getWidth() / (float) mSrc.getWidth();
-            dy = (getHeight() - mSrc.getHeight() * scale) * 0.5f;
-        }
-        if (mNinePatchDrawable != null) {
-            mCanvas.scale(scale, scale);
-            mCanvas.translate(dx, dy);
-        } else {
-            Matrix matrix = new Matrix();
-            matrix.setScale(scale, scale);
-            matrix.postTranslate(dx, dy);
-            mBitmapShader.setLocalMatrix(matrix);
+        try {
+            float scale = 0f;
+            float dx = 0f;
+            float dy = 0f;
+            if (mSrc.getWidth() / (float) mSrc.getHeight() >
+                    getWidth() / (float) getHeight()) {
+                scale = getHeight() / (float) mSrc.getHeight();
+                dx = (getWidth() - mSrc.getWidth() * scale) * 0.5f;
+            } else {
+                scale = getWidth() / (float) mSrc.getWidth();
+                dy = (getHeight() - mSrc.getHeight() * scale) * 0.5f;
+            }
+            if (mNinePatchDrawable != null) {
+                mCanvas.scale(scale, scale);
+                mCanvas.translate(dx, dy);
+            } else {
+                Matrix matrix = new Matrix();
+                matrix.setScale(scale, scale);
+                matrix.postTranslate(dx, dy);
+                mBitmapShader.setLocalMatrix(matrix);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     private int dp2px(float dipValue){

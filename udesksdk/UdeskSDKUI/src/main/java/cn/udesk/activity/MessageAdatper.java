@@ -32,6 +32,7 @@ import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.adapter.UDEmojiAdapter;
 import cn.udesk.config.UdekConfigUtil;
+import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.widget.ChatImageView;
@@ -142,7 +143,7 @@ public class MessageAdatper extends BaseAdapter {
         if (mImageLoader == null) {
             mImageLoader = ImageLoader.getInstance();
         }
-        if(!mImageLoader.isInited()){
+        if (!mImageLoader.isInited()) {
             mImageLoader.init(UdeskUtil.initImageLoaderConfig(context));
         }
         return mImageLoader;
@@ -227,15 +228,16 @@ public class MessageAdatper extends BaseAdapter {
         }
         //加上过滤含有相同msgID的消息
         try {
-            for (MessageInfo info : list){
-                    if (!TextUtils.isEmpty(message.getMsgId()) && !TextUtils.isEmpty(info.getMsgId()) && message.getMsgId().equals(info.getMsgId())){
-                        return;
-                    }
+            for (MessageInfo info : list) {
+                if (!TextUtils.isEmpty(message.getMsgId()) && !TextUtils.isEmpty(info.getMsgId()) && message.getMsgId().equals(info.getMsgId())) {
+                    return;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         list.add(message);
+        notifyDataSetChanged();
     }
 
     public void addItems(List<MessageInfo> messages) {
@@ -302,9 +304,9 @@ public class MessageAdatper extends BaseAdapter {
                     TxtViewHolder holder = new TxtViewHolder();
                     initItemNormalView(convertView, holder, itemType, position);
                     holder.tvMsg = (TextView) convertView.findViewById(R.id.udesk_tv_msg);
-                    if (itemType == MSG_TXT_L){
+                    if (itemType == MSG_TXT_L) {
                         UdekConfigUtil.setUITextColor(UdeskConfig.udeskIMLeftTextColorResId, holder.tvMsg);
-                    }else if(itemType == MSG_TXT_R) {
+                    } else if (itemType == MSG_TXT_R) {
                         UdekConfigUtil.setUITextColor(UdeskConfig.udeskIMRightTextColorResId, holder.tvMsg);
                     }
                     convertView.setTag(holder);
@@ -341,7 +343,7 @@ public class MessageAdatper extends BaseAdapter {
                     RedirectViewHolder holder = new RedirectViewHolder();
                     initItemNormalView(convertView, holder, itemType, position);
                     holder.redirectMsg = (TextView) convertView.findViewById(R.id.udesk_redirect_msg);
-                    UdekConfigUtil.setUITextColor(UdeskConfig.udeskIMTipTextColorResId,  holder.redirectMsg);
+                    UdekConfigUtil.setUITextColor(UdeskConfig.udeskIMTipTextColorResId, holder.redirectMsg);
                     convertView.setTag(holder);
                     break;
                 }
@@ -357,10 +359,10 @@ public class MessageAdatper extends BaseAdapter {
                             .findViewById(R.id.udesk_im_commondity_subtitle);
                     holder.link = (TextView) convertView
                             .findViewById(R.id.udesk_im_commondity_link);
-                    UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskCommityBgResId , holder.rootView);
-                    UdekConfigUtil.setUITextColor(UdeskConfig.udeskCommityTitleColorResId ,holder.title);
-                    UdekConfigUtil.setUITextColor(UdeskConfig.udeskCommitysubtitleColorResId , holder.subTitle);
-                    UdekConfigUtil.setUITextColor(UdeskConfig.udeskCommityLinkColorResId , holder.link);
+                    UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskCommityBgResId, holder.rootView);
+                    UdekConfigUtil.setUITextColor(UdeskConfig.udeskCommityTitleColorResId, holder.title);
+                    UdekConfigUtil.setUITextColor(UdeskConfig.udeskCommitysubtitleColorResId, holder.subTitle);
+                    UdekConfigUtil.setUITextColor(UdeskConfig.udeskCommityLinkColorResId, holder.link);
                     convertView.setTag(holder);
                     break;
                 }
@@ -404,15 +406,15 @@ public class MessageAdatper extends BaseAdapter {
                 case MSG_AUDIO_R:
                 case MSG_IMG_R:
                     this.isLeft = false;
-                    if (!TextUtils.isEmpty(UdeskSDKManager.getInstance().getCustomerUrl())){
-                        getImageLoader(mContext).displayImage(UdeskSDKManager.getInstance().getCustomerUrl(),ivHeader,
+                    if (!TextUtils.isEmpty(UdeskBaseInfo.customerUrl)) {
+                        getImageLoader(mContext).displayImage(UdeskBaseInfo.customerUrl, ivHeader,
                                 new DisplayImageOptions.Builder()
                                         .showImageOnFail(R.drawable.udesk_im_default_user_avatar)
                                         .showImageOnLoading(R.drawable.udesk_im_default_user_avatar)
                                         .showImageForEmptyUri(R.drawable.udesk_im_default_user_avatar)
                                         .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-                                        .build() );
-                    }else {
+                                        .build());
+                    } else {
                         ivHeader.setImageResource(R.drawable.udesk_im_default_user_avatar);
                     }
                     break;
@@ -421,9 +423,9 @@ public class MessageAdatper extends BaseAdapter {
                 case RICH_TEXT:
                 case MSG_IMG_L:
                     this.isLeft = true;
-                    if (message.getAgentUrl() == null || TextUtils.isEmpty(message.getAgentUrl().trim())){
+                    if (message.getAgentUrl() == null || TextUtils.isEmpty(message.getAgentUrl().trim())) {
                         ivHeader.setImageResource(R.drawable.udesk_im_default_agent_avatar);
-                    }else{
+                    } else {
                         getImageLoader(mContext).displayImage(message.getAgentUrl(), ivHeader, agentHeadOptions);
                     }
                     agentnickName.setText(message.getNickName());
@@ -481,7 +483,7 @@ public class MessageAdatper extends BaseAdapter {
 
         @Override
         void bind(Context context) {
-            try{
+            try {
                 CharSequence charSequence = Html.fromHtml(message.getMsgContent().replaceAll("(<p>||</p>)", ""));
                 rich_tvmsg.setText(charSequence);
                 rich_tvmsg.setMovementMethod(LinkMovementMethod.getInstance());
@@ -504,7 +506,7 @@ public class MessageAdatper extends BaseAdapter {
                     }
                     rich_tvmsg.setText(style);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -547,9 +549,9 @@ public class MessageAdatper extends BaseAdapter {
 
         @Override
         public void onClick(View widget) {
-            if (UdeskSDKManager.getInstance().getTxtMessageClick() != null){
+            if (UdeskSDKManager.getInstance().getTxtMessageClick() != null) {
                 UdeskSDKManager.getInstance().getTxtMessageClick().txtMsgOnclick(mUrl);
-            }else {
+            } else {
                 Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
                 intent.putExtra(UdeskConst.WELCOME_URL, mUrl);
                 mContext.startActivity(intent);
@@ -567,11 +569,11 @@ public class MessageAdatper extends BaseAdapter {
         @Override
         void bind(Context context) {
             //设置文本消息内容，表情符转换对应的表情,没表情的另外处理
-            if(UDEmojiAdapter.replaceEmoji(context, message.getMsgContent(),
-                    (int) tvMsg.getTextSize()) != null){
+            if (UDEmojiAdapter.replaceEmoji(context, message.getMsgContent(),
+                    (int) tvMsg.getTextSize()) != null) {
                 tvMsg.setText(UDEmojiAdapter.replaceEmoji(context, message.getMsgContent(),
                         (int) tvMsg.getTextSize()));
-            }else{
+            } else {
                 tvMsg.setText(message.getMsgContent());
                 tvMsg.setMovementMethod(LinkMovementMethod.getInstance());
                 CharSequence text = tvMsg.getText();
@@ -724,8 +726,17 @@ public class MessageAdatper extends BaseAdapter {
 
                     @Override
                     public void onClick(View v) {
-                        ((UdeskChatActivity) mContext).previewPhoto(message);
-
+                        if (message == null) {
+                            return;
+                        }
+                        String sourceImagePath = "";
+                        if (!TextUtils.isEmpty(message.getLocalPath())) {
+                            sourceImagePath = message.getLocalPath();
+                        } else {
+                            sourceImagePath = ImageLoader.getInstance().getDiscCache()
+                                    .get(message.getMsgContent()).getPath();
+                        }
+                        UdeskUtil.previewPhoto(mContext, sourceImagePath);
                     }
                 });
                 ivStatus.setOnClickListener(new OnClickListener() {
@@ -735,9 +746,9 @@ public class MessageAdatper extends BaseAdapter {
                         ((UdeskChatActivity) mContext).retrySendMsg(message);
                     }
                 });
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
-            }catch (OutOfMemoryError error){
+            } catch (OutOfMemoryError error) {
                 error.printStackTrace();
             }
         }
@@ -768,7 +779,7 @@ public class MessageAdatper extends BaseAdapter {
 
         @Override
         void bind(Context context) {
-            try{
+            try {
                 final UdeskCommodityItem item = (UdeskCommodityItem) message;
                 title.setText(item.getTitle());
                 subTitle.setText(item.getSubTitle());
@@ -779,9 +790,9 @@ public class MessageAdatper extends BaseAdapter {
                         ((UdeskChatActivity) mContext).sentLink(item.getCommodityUrl());
                     }
                 });
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
-            }catch (OutOfMemoryError error){
+            } catch (OutOfMemoryError error) {
                 error.printStackTrace();
             }
 
@@ -796,8 +807,8 @@ public class MessageAdatper extends BaseAdapter {
         holder.ivStatus = (ImageView) convertView.findViewById(R.id.udesk_iv_status);
         holder.pbWait = (ProgressBar) convertView.findViewById(R.id.udesk_im_wait);
         holder.agentnickName = (TextView) convertView.findViewById(R.id.udesk_nick_name);
-        UdekConfigUtil.setUITextColor(UdeskConfig.udeskIMTimeTextColorResId,holder.tvTime);
-        UdekConfigUtil.setUITextColor(UdeskConfig.udeskIMAgentNickNameColorResId,holder.agentnickName);
+        UdekConfigUtil.setUITextColor(UdeskConfig.udeskIMTimeTextColorResId, holder.tvTime);
+        UdekConfigUtil.setUITextColor(UdeskConfig.udeskIMAgentNickNameColorResId, holder.agentnickName);
     }
 
     /**
@@ -807,10 +818,10 @@ public class MessageAdatper extends BaseAdapter {
                              MessageInfo info) {
         if (info instanceof UdeskCommodityItem) {
             holder.tvTime.setVisibility(View.VISIBLE);
-            holder.tvTime.setText(UdeskUtil.formatLongTypeTimeToString(mContext,System.currentTimeMillis()));
+            holder.tvTime.setText(UdeskUtil.formatLongTypeTimeToString(mContext, System.currentTimeMillis()));
         } else if (needShowTime(position)) {
             holder.tvTime.setVisibility(View.VISIBLE);
-            holder.tvTime.setText(UdeskUtil.formatLongTypeTimeToString(mContext,info.getTime()));
+            holder.tvTime.setText(UdeskUtil.formatLongTypeTimeToString(mContext, info.getTime()));
         } else {
             holder.tvTime.setVisibility(View.GONE);
         }
@@ -853,13 +864,14 @@ public class MessageAdatper extends BaseAdapter {
 
         return false;
     }
+
     /**
      * 根据消息ID  修改对应消息的状态
      */
-    public void updateStatus(String msgId, int state){
+    public void updateStatus(String msgId, int state) {
         try {
-            for (MessageInfo msg : list){
-                if (msg.getMsgId() != null && msg.getMsgId().equals(msgId)){
+            for (MessageInfo msg : list) {
+                if (msg.getMsgId() != null && msg.getMsgId().equals(msgId)) {
                     msg.setSendFlag(state);
                 }
             }

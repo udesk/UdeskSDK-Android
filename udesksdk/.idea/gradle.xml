@@ -8,7 +8,6 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/UdeskOldDemo" />
             <option value="$PROJECT_DIR$/UdeskSDKUI" />
             <option value="$PROJECT_DIR$/udeskNewDemo" />
           </set>

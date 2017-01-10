@@ -22,6 +22,7 @@ import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.config.UdekConfigUtil;
+import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskHttpFacade;
@@ -52,14 +53,14 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
 		settingTitlebar(tranfer);
 		if (!TextUtils.isEmpty(h5Url)) {
 			String url = UdeskHttpFacade.getInstance().buildRobotUrlWithH5(
-					this, UdeskSDKManager.getInstance().getSecretKey(this),
+					this, UdeskBaseInfo.App_Key,
 					h5Url,
 					UdeskSDKManager.getInstance().getSdkToken(this));
 			if (!UdeskUtil.isZh(this)){
 				url = url + "&language=en-us" ;
 			}
-			if(!TextUtils.isEmpty(UdeskConfig.appid)){
-				url = url + "&app_id="+UdeskConfig.appid ;
+			if(!TextUtils.isEmpty(UdeskBaseInfo.App_Id)){
+				url = url + "&app_id="+UdeskBaseInfo.App_Id ;
 			}
 			mwebView.loadUrl(url);
 		} else {
@@ -111,7 +112,9 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
 					if (isTranferByImGroup){
 						UdeskSDKManager.getInstance().showConversationByImGroup(UdeskRobotActivity.this);
 					}else{
-						UdeskSDKManager.getInstance().toLanuchChatAcitvity(UdeskRobotActivity.this);
+						Intent intent = new Intent(UdeskRobotActivity.this, UdeskChatActivity.class);
+						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						UdeskRobotActivity.this.startActivity(intent);
 					}
 
 				}

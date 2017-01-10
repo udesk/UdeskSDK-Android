@@ -1,7 +1,7 @@
 package cn.udesk.activity;
 
 import android.app.Activity;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -17,9 +17,9 @@ import java.util.List;
 import cn.udesk.JsonUtils;
 import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
-import cn.udesk.UdeskUtil;
 import cn.udesk.adapter.OptionsAgentGroupAdapter;
 import cn.udesk.config.UdekConfigUtil;
+import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.model.AgentGroupNode;
 import cn.udesk.widget.UdeskDialog;
@@ -31,7 +31,7 @@ import udesk.core.UdeskHttpFacade;
 /**
  * 选择客服组
  */
-public class OptionsAgentGroupActivity extends Activity implements AdapterView.OnItemClickListener {
+public class UdeskOptionsAgentGroupActivity extends Activity implements AdapterView.OnItemClickListener {
 
     private UdeskTitleBar mTitlebar;
     private TextView title;
@@ -71,10 +71,10 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
      */
     private void getImGroupInfo() {
         showLoading();
-        UdeskHttpFacade.getInstance().getImGroupApi(UdeskSDKManager.getInstance().getDomain(this),
-                UdeskSDKManager.getInstance().getSecretKey(this),
+        UdeskHttpFacade.getInstance().getImGroupApi(UdeskBaseInfo.domain,
+                UdeskBaseInfo.App_Key,
                 UdeskSDKManager.getInstance().getSdkToken(this),
-                UdeskSDKManager.getInstance().getAppid(),
+                UdeskBaseInfo.App_Id,
                 new UdeskCallBack() {
 
                     @Override
@@ -109,7 +109,9 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
 
     //进入会话界面
     private void luanchChat() {
-        UdeskSDKManager.getInstance().toLanuchChatAcitvity(OptionsAgentGroupActivity.this);
+        Intent intent = new Intent(UdeskOptionsAgentGroupActivity.this, UdeskChatActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        UdeskOptionsAgentGroupActivity.this.startActivity(intent);
         finish();
     }
 
@@ -162,7 +164,7 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
             if (TextUtils.isEmpty(groupNode.getGroup_id())) {
                 drawView(groupNode.getId());
             } else {
-                UdeskSDKManager.getInstance().lanuchChatByGroupId(OptionsAgentGroupActivity.this, groupNode.getGroup_id());
+                UdeskSDKManager.getInstance().lanuchChatByGroupId(UdeskOptionsAgentGroupActivity.this, groupNode.getGroup_id());
                 finish();
             }
 
@@ -172,7 +174,7 @@ public class OptionsAgentGroupActivity extends Activity implements AdapterView.O
 
     private void showLoading() {
         try {
-            dialog = new UdeskDialog(OptionsAgentGroupActivity.this, R.style.udesk_dialog);
+            dialog = new UdeskDialog(UdeskOptionsAgentGroupActivity.this, R.style.udesk_dialog);
             dialog.show();
         } catch (Exception e) {
             e.printStackTrace();

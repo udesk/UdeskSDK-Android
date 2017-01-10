@@ -18,9 +18,7 @@ import udesk.core.model.MessageInfo;
 public class UdeskDBManager {
 
 	private static UdeskDBHelper helper;
-//	private static UdeskDBManager instance;
 	private SQLiteDatabase mDatabase;
-//	private Context mContext;
 	private String mSdktoken;
 
 	private static UdeskDBManager instance = new UdeskDBManager();
@@ -33,13 +31,6 @@ public class UdeskDBManager {
 		return instance;
 	}
 
-//	public static synchronized UdeskDBManager getInstance() {
-//		if (instance == null) {
-//			instance = new UdeskDBManager();
-//		}
-//		return instance;
-//	}
-
 	/**
 	 * 初始化，需要在使用数据库之前调用此方法
 	 * 
@@ -49,7 +40,6 @@ public class UdeskDBManager {
 		if(context == null){
 			return;
 		}
-//		mContext = context;
 		if(TextUtils.isEmpty(sdktoken)){
 			sdktoken = UdeskSDKManager.getInstance().getSdkToken(context);
 		}
@@ -69,9 +59,6 @@ public class UdeskDBManager {
 			helper = null;
 		}
 
-//		if (mContext != null) {
-//			mContext = null;
-//		}
 		if (mSdktoken != null) {
 			mSdktoken = null;
 		}
@@ -79,21 +66,6 @@ public class UdeskDBManager {
 
 	public SQLiteDatabase getSQLiteDatabase() {
 		return mDatabase;
-//		if (mDatabase != null) {
-//			return mDatabase;
-//		} else {
-//			try {
-//				synchronized (this) {
-//					if (mDatabase == null) {
-//						init(mContext, mSdktoken);
-//					}
-//				}
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//			return mDatabase;
-//		}
-
 	}
 
 	/**
@@ -377,7 +349,7 @@ public class UdeskDBManager {
 	}
 	
 	/**
-	 * 获取10秒到半分钟之间都没发送成功的所有消息的MsgID
+	 * 获取5秒到半分钟之间都没发送成功的所有消息的MsgID
 	 * @param currentTime
 	 * @return
 	 */
@@ -482,10 +454,6 @@ public class UdeskDBManager {
 		}
 	}
 
-//	public void setContext(Context mContext) {
-//		this.mContext = mContext;
-//	}
-
 	public void updateMsgHasRead(String msgId){
 
 		String sql =  "update " +  UdeskDBHelper.UdeskMessage + " set " + "ReadFlag= ?"
@@ -535,25 +503,12 @@ public class UdeskDBManager {
 			}
 			while (cursor.moveToNext()) {
 				String msgId = cursor.getString(0);
-//				long time = cursor.getLong(1);
 				String msgContent = cursor.getString(2);
 				String msgtype = cursor.getString(3);
-//				int readFlag = cursor.getInt(4);
-//				int sendFlag = cursor.getInt(5);
-//				int playFlag = cursor.getInt(6);
-//				int direction = cursor.getInt(7);
-//				String localPath = cursor.getString(8);
-//				long duration = cursor.getLong(9);
-//				String agentJid = cursor.getString(10);
 				MessageInfo message = new MessageInfo();
 				message.setMsgId(msgId);
 				message.setMsgContent(msgContent);
 				message.setMsgtype(msgtype);
-//				if (!TextUtils.isEmpty(agentJid.trim())){
-//					String[] urlAndNick = getAgentUrlAndNick(agentJid);
-//					message.setAgentUrl(urlAndNick[0]);
-//					message.setNickName(urlAndNick[1]);
-//				}
 				list.add(message);
 			}
 		} catch (Exception e) {

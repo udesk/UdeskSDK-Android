@@ -24,6 +24,7 @@ import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.adapter.UDHelperAdapter;
 import cn.udesk.config.UdekConfigUtil;
+import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.widget.UdeskLoadingView;
 import cn.udesk.widget.UdeskTitleBar;
@@ -177,9 +178,9 @@ public class UdeskHelperActivity extends Activity implements OnClickListener, Ad
     private void getListArticles() {
 
         UdeskHttpFacade.getInstance().getListArticlesJsonAPi(
-                UdeskSDKManager.getInstance().getDomain(UdeskHelperActivity.this),
-                UdeskSDKManager.getInstance().getSecretKey(UdeskHelperActivity.this),
-                UdeskSDKManager.getInstance().getAppid(),
+                UdeskBaseInfo.domain,
+                UdeskBaseInfo.App_Key,
+                UdeskBaseInfo.App_Id,
                 new UdeskCallBack() {
                     @Override
                     public void onSuccess(String message) {
@@ -206,10 +207,10 @@ public class UdeskHelperActivity extends Activity implements OnClickListener, Ad
     //获取包含搜索内容的文章列表
     private void getArticlesSearch(String query) {
         UdeskHttpFacade.getInstance().getArticlesSearchJsonAPi(
-                UdeskSDKManager.getInstance().getDomain(UdeskHelperActivity.this),
-                UdeskSDKManager.getInstance().getSecretKey(UdeskHelperActivity.this),
+                UdeskBaseInfo.domain,
+                UdeskBaseInfo.App_Key,
                 query,
-                UdeskSDKManager.getInstance().getAppid(),
+                UdeskBaseInfo.App_Id,
                 new UdeskCallBack() {
 
                     @Override
