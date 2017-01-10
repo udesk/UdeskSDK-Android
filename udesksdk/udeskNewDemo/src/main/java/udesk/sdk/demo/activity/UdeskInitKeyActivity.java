@@ -31,11 +31,7 @@ public class UdeskInitKeyActivity extends Activity {
     // 替换成你们在后台生成的密钥
     private String UDESK_SECRETKEY = "08919a2194e9844795c8f589854ad559";
 
-
-//    private String AppId = "8e2eda5e40c39c7b";
-//    private String UDESK_DOMAIN = "xueche.udesk.cn";
-//    //替换成你们在后台生成的密钥
-//    private String UDESK_SECRETKEY = "97513923664ed8b40b42ccda23fb1140";
+    
 
     private EditText mDomainEdit;
 
