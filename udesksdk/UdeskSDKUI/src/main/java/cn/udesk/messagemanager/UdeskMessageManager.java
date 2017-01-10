@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
+import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.model.MsgNotice;
 import rx.Observable;
@@ -21,7 +22,7 @@ public class UdeskMessageManager {
 
     private UdeskXmppManager mUdeskXmppManager;
     private ExecutorService messageExecutor;
-    public ReflectInvokeMethod event_OnNewMessage = new ReflectInvokeMethod(new Class<?>[]{Message.class,String.class,String.class ,String.class,String.class,Long.class});
+    public ReflectInvokeMethod event_OnNewMessage = new ReflectInvokeMethod(new Class<?>[]{Message.class, String.class, String.class, String.class, String.class, Long.class});
     public ReflectInvokeMethod eventui_OnMessageReceived = new ReflectInvokeMethod(new Class<?>[]{String.class});
     public ReflectInvokeMethod eventui_OnNewMessage = new ReflectInvokeMethod(new Class<?>[]{MessageInfo.class});
     public ReflectInvokeMethod eventui_OnNewPresence = new ReflectInvokeMethod(new Class<?>[]{String.class, Integer.class});
@@ -74,8 +75,8 @@ public class UdeskMessageManager {
         }).subscribeOn(Schedulers.io());
     }
 
-    public void sendMessage(String type, String text, String msgId, String to, long duration,String subsessionId) {
-        mUdeskXmppManager.sendMessage(type, text, msgId, to, duration,subsessionId);
+    public void sendMessage(String type, String text, String msgId, String to, long duration, String subsessionId) {
+        mUdeskXmppManager.sendMessage(type, text, msgId, to, duration, subsessionId);
     }
 
     public void sendComodityMessage(String text, String to) {
@@ -113,7 +114,7 @@ public class UdeskMessageManager {
         String jid[] = agentJid.split("/");
         final MessageInfo msginfo = buildReceiveMessage(jid[0], type, msgId, content, duration);
         if (UdeskDBManager.getInstance().hasReceviedMsg(msgId)) {
-            if (mUdeskXmppManager != null){
+            if (mUdeskXmppManager != null) {
                 mUdeskXmppManager.sendReceivedMsg(message);
             }
             return;
@@ -126,15 +127,15 @@ public class UdeskMessageManager {
                 public void run() {
 
                     boolean isSaveSuccess = UdeskDBManager.getInstance().addMessageInfo(msginfo);
-                    if (isSaveSuccess){
-                        if (mUdeskXmppManager != null){
+                    if (isSaveSuccess) {
+                        if (mUdeskXmppManager != null) {
                             mUdeskXmppManager.sendReceivedMsg(message);
                         }
                     }
                 }
             });
-        }else{
-            if (mUdeskXmppManager != null){
+        } else {
+            if (mUdeskXmppManager != null) {
                 mUdeskXmppManager.sendReceivedMsg(message);
             }
         }
@@ -143,7 +144,7 @@ public class UdeskMessageManager {
         if (type.equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT)) {
             return;
         }
-        if (UdeskSDKManager.getInstance().isNeedMsgNotice()) {
+        if (UdeskBaseInfo.isNeedMsgNotice) {
             MsgNotice msgNotice = new MsgNotice(msgId, type, content);
             event_OnNewMsgNotice.invoke(msgNotice);
         }
@@ -174,9 +175,7 @@ public class UdeskMessageManager {
     }
 
     public void onReqsurveyMsg(Boolean isSurvey) {
-//        if (!UdeskSDKManager.getInstance().isNeedMsgNotice()) {
-            eventui_OnReqsurveyMsg.invoke(isSurvey);
-//        }
+        eventui_OnReqsurveyMsg.invoke(isSurvey);
 
     }
 
@@ -187,7 +186,6 @@ public class UdeskMessageManager {
         if (actionText.equals("overtest")) {
             mUdeskXmppManager.sendActionMessage(agentJId);
         } else if (actionText.equals("over")) {
-            UdeskSDKManager.isSessioning = false;
             this.isOverConversation = true;
             wrapCancelXmppConnect();
         }

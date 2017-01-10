@@ -17,6 +17,7 @@ import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.config.UdekConfigUtil;
+import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.widget.UdeskTitleBar;
 
@@ -30,14 +31,10 @@ public class UdeskFormActivity extends UdeskBaseWebViewActivity {
 
     private void loadingView() {
         settingTitlebar();
-        String url = "";
-        if (TextUtils.isEmpty(UdeskConfig.udeskFormUrl)) {
-            url = "http://" + UdeskSDKManager.getInstance().getDomain(this)
-                    + "/im_client/feedback.html"
-                    + UdeskUtil.getFormUrlPara(this);
-        } else {
-            url = UdeskConfig.udeskFormUrl;
-        }
+        String url = "http://" + UdeskBaseInfo.domain
+                + "/im_client/feedback.html"
+                + UdeskUtil.getFormUrlPara(this);
+
         mwebView.loadUrl(url);
     }
 

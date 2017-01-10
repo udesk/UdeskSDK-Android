@@ -24,11 +24,14 @@ public class UdeskWebChromeClient extends WebChromeClient {
     private ValueCallback<Uri> uploadMessage;
     private ValueCallback<Uri[]> uploadMessageAboveL;
     private final static int FILE_CHOOSER_RESULT_CODE = 10000;
-    ICloseWindow closeWindow = null;
-
+    private ICloseWindow closeWindow = null;
     private GetH5Title h5TitleListener;
     public interface GetH5Title {
         void h5Title(String title);
+    }
+
+    public interface ICloseWindow {
+        void closeActivty();
     }
 
     public GetH5Title getH5TitleListener() {

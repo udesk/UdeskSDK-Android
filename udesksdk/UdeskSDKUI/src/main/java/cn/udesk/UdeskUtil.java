@@ -2,8 +2,11 @@ package cn.udesk;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.telephony.TelephonyManager;
@@ -20,6 +23,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import cn.udesk.activity.UdeskZoomImageActivty;
+import cn.udesk.config.UdeskBaseInfo;
+import cn.udesk.config.UdeskConfig;
 import udesk.com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import udesk.com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import udesk.com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -186,17 +192,6 @@ public class UdeskUtil {
 	}
 
 
-	public static String getSaveImgPath(Context context ,String url) {
-//		String fileName = url.substring(url.lastIndexOf("/") + 1);
-		File mediaStorageDir = new File(
-				context.getExternalFilesDir(Environment.DIRECTORY_RINGTONES),
-				SaveImg);
-
-		return mediaStorageDir.getPath() ;
-//				+ File.separator + fileName;
-	}
-
-
 	public static String buildImageLoaderImgUrl(MessageInfo message){
 
 		if(!TextUtils.isEmpty(message.getLocalPath()) && isExitFile(message.getLocalPath())){
@@ -206,17 +201,15 @@ public class UdeskUtil {
 		}
 	}
 
-
-
 	public static String getFormUrlPara(Context context){
 		StringBuilder builder = new StringBuilder();
 		builder.append("?sdk_token=").append(UdeskSDKManager.getInstance().getSdkToken(context))
-				.append("&sdk_version=").append(UdeskCoreConst.sdkversion);
+				.append("&sdk_version=").append(UdeskCoreConst.sdkversion).append("&app_id=").append(UdeskBaseInfo.App_Id);
 		if (!isZh(context)){
 			builder.append("&language=en-us");
 		}
-		Map<String, String> userinfo = UdeskSDKManager.getInstance().getUserinfo();
-		Map<String,String> textField = UdeskSDKManager.getInstance().getTextField();
+		Map<String, String> userinfo = UdeskBaseInfo.userinfo;
+		Map<String,String> textField =UdeskBaseInfo.textField;
 		if(userinfo != null && !userinfo.isEmpty()){
 			Set<String> keySet = userinfo.keySet();
 			for (String key : keySet) {
@@ -342,25 +335,25 @@ public class UdeskUtil {
 	}
 
 
-	public static String getDeviceId(Context context) {
-		String deviceId = "";
-		TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+	//预览大图
+	public static void previewPhoto(Context context ,String sourceImagePath) {
 		try {
-			deviceId = telephonyManager.getDeviceId();
+			if (TextUtils.isEmpty(sourceImagePath)){
+				return;
+			}
+			File sourceFile = new File(sourceImagePath);
+			if (sourceFile.exists()) {
+				Intent intent = new Intent(context,
+						UdeskZoomImageActivty.class);
+				Bundle data = new Bundle();
+				data.putParcelable("image_path", Uri.fromFile(sourceFile));
+				intent.putExtras(data);
+				context.startActivity(intent);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(!TextUtils.isEmpty(deviceId)){
-			return  deviceId;
-		}
-		deviceId = telephonyManager.getSimSerialNumber();
-		if(!TextUtils.isEmpty(deviceId)){
-			return  deviceId;
-		}
-		deviceId = android.os.Build.SERIAL;
-		if(!TextUtils.isEmpty(deviceId)){
-			return  deviceId;
-		}
-		return deviceId;
+
 	}
+
 }

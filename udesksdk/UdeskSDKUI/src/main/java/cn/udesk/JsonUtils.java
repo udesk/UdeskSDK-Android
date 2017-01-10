@@ -10,16 +10,18 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.model.AgentGroupNode;
 import cn.udesk.model.OptionsModel;
+import cn.udesk.model.SDKIMSetting;
 import cn.udesk.model.SurveyOptionsModel;
 import udesk.core.model.AgentInfo;
-import udesk.core.model.RobotInfo;
 import udesk.core.model.UDHelperArticleContentItem;
 import udesk.core.model.UDHelperItem;
 
 public class JsonUtils {
 
+	//解析帮助中心接口  请求获取到文章列表字符串
 	public static List<UDHelperItem> parseListArticlesResult(String result) {
 		List<UDHelperItem> mList = new ArrayList<UDHelperItem>();
 		try {
@@ -42,6 +44,7 @@ public class JsonUtils {
 		return mList;
 	}
 
+	//解析帮助中心文章内容
 	public static UDHelperArticleContentItem parseArticleContentItem(
 			String result) {
 		UDHelperArticleContentItem item = null;
@@ -62,30 +65,7 @@ public class JsonUtils {
 		return item;
 	}
 
-	public static RobotInfo parseRobotJsonResult(String jsonString) {
-		RobotInfo item = null;
-		try {
-			JSONObject resultJson = new JSONObject(jsonString);
-			if (resultJson.has("robot")) {
-				String robotString = resultJson.getString("robot");
-				if (!TextUtils.isEmpty(robotString)) {
-					JSONObject robotJson = new JSONObject(robotString);
-					item = new RobotInfo();
-					if (robotJson.has("transfer")) {
-						item.transfer = robotJson.getString("transfer");
-					}
-					if (robotJson.has("h5_url")) {
-						item.h5_url = robotJson.getString("h5_url");
-					}
-				}
-			}
-
-		} catch (Exception e) {
-
-		}
-		return item;
-	}
-
+	//解析请求到客服的信息
 	public static AgentInfo parseAgentResult(String response) {
 		AgentInfo agentInfo = new AgentInfo();
 		if (TextUtils.isEmpty(response)) {
@@ -130,13 +110,13 @@ public class JsonUtils {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-//			agentInfo.message = "当前没有客服在线";
 			agentInfo.setMessage("当前没有客服在线");
 		}
 		return agentInfo;
 
 	}
-	
+
+	//解析设置的满意度调查选项
 	public static SurveyOptionsModel parseSurveyOptions(String response){
 		
 		SurveyOptionsModel optionsMode = new SurveyOptionsModel();
@@ -176,6 +156,7 @@ public class JsonUtils {
 	}
 
 
+	//解析请求导航页选项返回的结果
 	public static List<AgentGroupNode> parseIMGroup(String response){
 
 		List<AgentGroupNode> groupsModel = null;
@@ -211,40 +192,75 @@ public class JsonUtils {
 	}
 
 
-	public static String  parserCustomersJson(Context context,String jsonString){
-		String robotUrl = "";
+	public static void  parserCustomersJson(String jsonString){
 		try {
 			JSONObject resultJson = new JSONObject(jsonString);
 			if(resultJson.has("customer")){
 				JSONObject customerJson = resultJson.getJSONObject("customer");
 				if(customerJson.has("id")){
-					UdeskSDKManager.getInstance().setUserId( customerJson.getString("id"));
-				}
-//				if(customerJson.has("is_blocked")){
-//					UdeskSDKManager.getInstance().setIsBolcked(customerJson.getString("is_blocked"));
-//				}
-			}
-			if(resultJson.has("robot")){
-				String robotString = resultJson.getString("robot");
-				if(!TextUtils.isEmpty(robotString)){
-					JSONObject robotJson = new JSONObject(robotString);
-					if(robotJson.has("transfer")){
-						UdeskSDKManager.getInstance().setTransfer(robotJson.getString("transfer"));
-//						PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-//								UdeskConst.SharePreParams.Udesk_Transfer, robotJson.getString("transfer"));
-					}
-					if(robotJson.has("h5_url")){
-						UdeskSDKManager.getInstance().setH5Url(robotJson.getString("h5_url"));
-//						PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-//								UdeskConst.SharePreParams.Udesk_h5url, robotJson.getString("h5_url"));
-						return robotJson.getString("h5_url");
-					}
+					UdeskBaseInfo.customerId = customerJson.getString("id");
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	//解析获取配置选项
+
+	public static SDKIMSetting  parserIMSettingJson(String jsonString){
+		SDKIMSetting sdkimSetting = new SDKIMSetting();
+		try {
+			JSONObject rootJson = new JSONObject(jsonString);
+			if (rootJson != null){
+				if (rootJson.has("code")){
+					sdkimSetting.setCode(rootJson.getInt("code"));
+				}
+				if (rootJson.has("message")){
+					sdkimSetting.setMessage(rootJson.get("message"));
+				}
+				if (rootJson.has("result")){
+					JSONObject resultJson = new JSONObject(rootJson.getString("result"));
+					if (resultJson != null){
+						if (resultJson.has("enable_im_group")){
+							sdkimSetting.setEnable_im_group(resultJson.get("enable_im_group"));
+						}
+						if (resultJson.has("in_session")){
+							sdkimSetting.setIn_session(resultJson.get("in_session"));
+						}
+						if (resultJson.has("is_worktime")){
+							sdkimSetting.setIs_worktime(resultJson.get("is_worktime"));
+						}
+						if (resultJson.has("has_robot")){
+							sdkimSetting.setHas_robot(resultJson.get("has_robot"));
+						}
+						if (resultJson.has("enable_robot")){
+							sdkimSetting.setEnable_robot(resultJson.get("enable_robot"));
+						}
+						if (resultJson.has("enable_sdk_robot")){
+							sdkimSetting.setEnable_sdk_robot(resultJson.get("enable_sdk_robot"));
+						}
+						if (resultJson.has("enable_agent")){
+							sdkimSetting.setEnable_agent(resultJson.get("enable_agent"));
+						}
+						if (resultJson.has("enable_web_im_feedback")){
+							sdkimSetting.setEnable_web_im_feedback(resultJson.get("enable_web_im_feedback"));
+						}
+						if (resultJson.has("no_reply_hint")){
+							sdkimSetting.setNo_reply_hint(resultJson.get("no_reply_hint"));
+						}
+						if(resultJson.has("robot")){
+							sdkimSetting.setRobot(resultJson.get("robot"));
+						}
+					}
+				}
+			}
+
+
 		} catch (JSONException e) {
 		}
 
-		return  robotUrl;
+		return  sdkimSetting;
 	}
 
 }

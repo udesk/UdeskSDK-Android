@@ -21,13 +21,15 @@
     <string name="udesk_ok">留言</string>
     <string name="udesk_msg_offline_to_form">当前客服不在线，您可以选择提交表单来通知客服</string>
     <string name="udesk_msg_busyline_to_form">当前客服正繁忙，如需留言请点击按钮进入表单留言</string>
+    <string name="udesk_msg_busyline_to_wait">当前客服正繁忙，请稍等</string>
+    <string name="udesk_msg_busy_default_to_form">您好，当前无客服在线，请在工作时间联系客服</string>
     <string name="udesk_label_search_fail">无法找到你搜索的内容么?</string>
     <string name="udesk_label_no_sd">SD卡不可用，请检查</string>
     <string name="udesk_label_hint_too_short">按键时间太短</string>
     <string name="udesk_im_record_error">录音出错，请检查是否开启了应用的录音权限</string>
     <string name="udesk_im_time_format_yday">"昨天"</string>
     <string name="udesk_im_time_format_dby">"前天"</string>
-    <string name="udesk_label_customer_offline">客服不在线，请留言</string>
+    <string name="udesk_label_customer_offline">客服不在线</string>
     <string name="udesk_label_send_commondity_link">"发送链接"</string>
     <string name="udesk_transfer_persion">转人工</string>
     <string name="udesk_robot_title">智能机器人对话</string>
@@ -54,4 +56,8 @@
     <string name="udesk_has_survey"> 谢谢，您已对本次服务做出过评价了!</string>
     <string name="udesk_no_set_survey"> 未设置，暂时无法使用!</string>
     <string name="udesk_survey_error"> 抱歉，暂时无法使用!</string>
+    <string name="udesk_service_line"> 客服上线了</string>
+    <string name="udesk_service_offline"> 客服离线了</string>
+    <string name="udesk_upload_img_error">上传图片失败，请重试</string>
+
 </resources>
