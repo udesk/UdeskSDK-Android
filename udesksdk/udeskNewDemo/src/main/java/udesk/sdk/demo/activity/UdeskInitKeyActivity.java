@@ -27,9 +27,15 @@ public class UdeskInitKeyActivity extends Activity {
     //替换成你们注册生成的域名
     private String UDESK_DOMAIN = "udesksdk.udesk.cn";
     //替换成你们生成应用产生的appid
-    private String AppId = "cdc6da4fa97efc2c";
+    private String AppId = "6a424855941db2d1";
     // 替换成你们在后台生成的密钥
-    private String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
+    private String UDESK_SECRETKEY = "08919a2194e9844795c8f589854ad559";
+
+
+//    private String AppId = "8e2eda5e40c39c7b";
+//    private String UDESK_DOMAIN = "xueche.udesk.cn";
+//    //替换成你们在后台生成的密钥
+//    private String UDESK_SECRETKEY = "97513923664ed8b40b42ccda23fb1140";
 
     private EditText mDomainEdit;
 
@@ -70,6 +76,13 @@ public class UdeskInitKeyActivity extends Activity {
                         1 保存domain和key
                         2创建客户*/
 //                    UdeskCoreConst.HTTP="http://";
+//                    UdeskSDKManager.getInstance().setFormUrl("https://www.baidu.com/");
+//                    UdeskSDKManager.getInstance().setFormCallBak(new UdeskSDKManager.IUdeskFormCallBak() {
+//                        @Override
+//                        public void toLuachForm() {
+//
+//                        }
+//                    });
                     UdeskSDKManager.getInstance().initApiKey(getApplicationContext(), mDomainEdit.getText().toString(), mKeyEdit.getText().toString(),mAppidEdit.getText().toString());
                     String sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
                     if (TextUtils.isEmpty(sdkToken)) {

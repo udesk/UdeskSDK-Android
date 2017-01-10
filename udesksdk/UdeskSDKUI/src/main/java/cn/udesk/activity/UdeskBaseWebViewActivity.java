@@ -37,7 +37,7 @@ public class UdeskBaseWebViewActivity extends Activity {
 
     private void initView() {
         try {
-            udeskWebChromeClient = new UdeskWebChromeClient(this, new ICloseWindow() {
+            udeskWebChromeClient = new UdeskWebChromeClient(this, new UdeskWebChromeClient.ICloseWindow() {
                 @Override
                 public void closeActivty() {
                     finish();
@@ -83,6 +83,15 @@ public class UdeskBaseWebViewActivity extends Activity {
         // 关于是否缩放
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             settings.setDisplayZoomControls(false);
+        }
+
+        /**
+         *  Webview在安卓5.0之前默认允许其加载混合网络协议内容
+         *  在安卓5.0之后，默认不允许加载http与https混合内容，需要设置webview允许其加载混合网络协议内容
+         */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+
         }
         settings.setLoadsImagesAutomatically(true);  //支持自动加载图片
 
@@ -138,12 +147,6 @@ public class UdeskBaseWebViewActivity extends Activity {
     @Override
     protected void onDestroy() {
 
-        try {
-            mwebView.removeAllViews();
-            mwebView.destroy();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         super.onDestroy();
     }
 }

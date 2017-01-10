@@ -22,6 +22,8 @@
 
     <string name="udesk_msg_offline_to_form">Agent is offline,submitting list to inform us</string>
     <string name="udesk_msg_busyline_to_form">Customer service is busy now, please press button to leave message</string>
+    <string name="udesk_msg_busyline_to_wait">Customer service is busy now,please wait a moment</string>
+    <string name="udesk_msg_busy_default_to_form">No Agents available right now. Please contacting us at our working hours</string>
     <string name="udesk_label_search_fail">Can not search your content?</string>
     <string name="udesk_label_no_sd">SD out of work, please check</string>
 
@@ -32,7 +34,7 @@
 
     <string name="udesk_im_time_format_yday">"Yesterday"</string>
     <string name="udesk_im_time_format_dby">"The day before yesterday"</string>
-    <string name="udesk_label_customer_offline">Agent is offline，please leaving message</string>
+    <string name="udesk_label_customer_offline">Agent is offline</string>
 
     <!-- 商品咨询界面，链接按钮的展示文字 -->
     <string name="udesk_label_send_commondity_link">"Send links"</string>
@@ -65,4 +67,8 @@
 
     <string name="udesk_no_set_survey">Not set, temporarily unable to use!</string>
     <string name="udesk_survey_error"> Sorry, temporarily unable to use!</string>
+    <string name="udesk_service_line"> Customer service line</string>
+    <string name="udesk_service_offline"> Customer service offline</string>
+    <string name="udesk_upload_img_error">Failed to upload pictures, please try again</string>
+
 </resources>

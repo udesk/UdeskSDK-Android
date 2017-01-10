@@ -36,8 +36,7 @@ public class UdeskUseGuideActivity extends Activity {
             UdeskSDKManager.getInstance().toLanuchHelperAcitivty(UdeskUseGuideActivity.this);
         }else if (v.getId() == R.id.udesk_group_conversation){
             //咨询会话
-//            UdeskSDKManager.getInstance().showRobotOrConversation(UdeskUseGuideActivity.this);
-            UdeskSDKManager.getInstance().showRobotOrConversationByImGroup(UdeskUseGuideActivity.this);
+            UdeskSDKManager.getInstance().entryChat(UdeskUseGuideActivity.this);
         }else if (v.getId() == R.id.udesk_group_formtable){
             //留言表单
             UdeskSDKManager.getInstance().goToForm(UdeskUseGuideActivity.this);

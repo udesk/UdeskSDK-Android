@@ -40,12 +40,12 @@
             android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
             android:theme="@style/Udesk_Theme" />
         <activity
-            android:name="cn.udesk.activity.SurvyDialogActivity"
+            android:name="cn.udesk.activity.UdeskSurvyDialogActivity"
             android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
             android:theme="@style/transcutestyle" />
 
         <activity
-            android:name="cn.udesk.activity.OptionsAgentGroupActivity"
+            android:name="cn.udesk.activity.UdeskOptionsAgentGroupActivity"
             android:configChanges="screenSize|orientation|navigation|uiMode|keyboardHidden"
             android:theme="@style/Udesk_Theme" />
 

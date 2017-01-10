@@ -35,6 +35,7 @@
     <dimen name="udesk_70">70dip</dimen>
     <dimen name="udesk_80">80dip</dimen>
     <dimen name="udesk_160">160dip</dimen>
+    <dimen name="udesk_300">300dip</dimen>
 
     <dimen name="udesk_sp12">12sp</dimen>
     <dimen name="udesk_sp14">14sp</dimen>

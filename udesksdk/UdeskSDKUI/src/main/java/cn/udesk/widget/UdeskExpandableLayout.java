@@ -39,11 +39,15 @@ public class UdeskExpandableLayout extends LinearLayout {
 	}
 
 	private void init(Context mContext) {
-		mInflater = LayoutInflater.from(mContext);
-		mExpandView= mInflater.inflate(R.layout.udesk_expandlayout_xml, this);
-		this.mContentView = (RelativeLayout) mExpandView.findViewById(R.id.expand_value);
-		mContentView.setVisibility(View.GONE);
-		txt = (TextView) mExpandView.findViewById(R.id.text_context);
+		try {
+			mInflater = LayoutInflater.from(mContext);
+			mExpandView= mInflater.inflate(R.layout.udesk_expandlayout_xml, this);
+			this.mContentView = (RelativeLayout) mExpandView.findViewById(R.id.expand_value);
+			mContentView.setVisibility(View.GONE);
+			txt = (TextView) mExpandView.findViewById(R.id.text_context);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -101,28 +105,36 @@ public class UdeskExpandableLayout extends LinearLayout {
 		}
 		
 		public void setLine(boolean isLine) {
-			if(isLine){
-				this.view.setBackgroundColor(Color.rgb(65, 207, 124));
-				txtView.setText("客服上线了");
-			}else{
-				this.view.setBackgroundColor(Color.rgb(233, 93, 79));
-				txtView.setText("客服离线了");
+			try {
+				if(isLine){
+                    this.view.setBackgroundColor(Color.rgb(65, 207, 124));
+                    txtView.setText(mContext.getString(R.string.udesk_service_line));
+                }else{
+                    this.view.setBackgroundColor(Color.rgb(233, 93, 79));
+                    txtView.setText(mContext.getString(R.string.udesk_service_offline));
+                }
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		
 		@Override
 		protected void applyTransformation(float interpolatedTime,
 				Transformation t) {
-			int newHeight;
-			if (down) {
-				newHeight = (int) (targetHeight * interpolatedTime);
-			} else {
-				newHeight = (int) (targetHeight * (1 - interpolatedTime));
-			}
-			view.getLayoutParams().height = newHeight;
-			view.requestLayout();
-			if (view.getVisibility() == View.GONE) {
-				view.setVisibility(View.VISIBLE);
+			try {
+				int newHeight;
+				if (down) {
+                    newHeight = (int) (targetHeight * interpolatedTime);
+                } else {
+                    newHeight = (int) (targetHeight * (1 - interpolatedTime));
+                }
+				view.getLayoutParams().height = newHeight;
+				view.requestLayout();
+				if (view.getVisibility() == View.GONE) {
+                    view.setVisibility(View.VISIBLE);
+                }
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 

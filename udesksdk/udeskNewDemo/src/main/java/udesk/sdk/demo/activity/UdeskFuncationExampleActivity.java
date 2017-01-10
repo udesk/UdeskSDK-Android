@@ -21,6 +21,7 @@ import cn.udesk.PreferenceHelper;
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.config.UdekConfigUtil;
+import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.widget.UdeskTitleBar;
@@ -288,10 +289,10 @@ public class UdeskFuncationExampleActivity extends Activity {
     private  void setSdkPush(String status,String registerId){
         //设置推送状态关闭
         UdeskSDKManager.getInstance().setSdkPushStatus(
-                UdeskSDKManager.getInstance().getDomain(this),
-                UdeskSDKManager.getInstance().getSecretKey(this),
+                UdeskBaseInfo.domain,
+                UdeskBaseInfo.App_Key,
                 UdeskSDKManager.getInstance().getSdkToken(this), status,
-                registerId, UdeskSDKManager.getInstance().getAppid(), new UdeskCallBack() {
+                registerId, UdeskBaseInfo.App_Id, new UdeskCallBack() {
                     @Override
                     public void onSuccess(String message) {
 

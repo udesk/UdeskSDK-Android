@@ -16,6 +16,7 @@ import cn.udesk.R;
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.config.UdekConfigUtil;
+import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskCallBack;
@@ -73,9 +74,9 @@ public class UdeskHelperArticleActivity extends Activity {
 		private void getArticlesContentJsonApiById(int id) {
 			udeskLoading.setVisibility(View.VISIBLE);
 			UdeskHttpFacade.getInstance().getArticlesContentJsonApiById(
-					UdeskSDKManager.getInstance().getDomain(this),
-					UdeskSDKManager.getInstance().getSecretKey(this),
-					id, UdeskSDKManager.getInstance().getAppid(), new UdeskCallBack() {
+					UdeskBaseInfo.domain,
+					UdeskBaseInfo.App_Key,
+					id, UdeskBaseInfo.App_Id, new UdeskCallBack() {
 				
 				@Override
 				public void onSuccess(String message) {
