@@ -41,6 +41,8 @@ dependencies {
 ### 注意[eclipse] [1]目录地址如下：
  https://github.com/udesk/udesk_sdk_android_eclipse      
 
+ webview方式接入的参考demo目录地址：
+ https://github.com/udesk/udesk_android_sdk_h5
 ## 三、快速集成SDK
 
 ###3.1初始化
