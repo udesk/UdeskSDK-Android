@@ -542,9 +542,13 @@ public class UdeskSDKManager {
     }
 
     private void initCrashReport(Context context) {
-        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
-        strategy.setAppVersion(UdeskCoreConst.sdkversion);
-        CrashReport.initCrashReport(context, UdeskCoreConst.buglyAppid, false, strategy);
+        try {
+            CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
+            strategy.setAppVersion(UdeskCoreConst.sdkversion + UdeskUtil.getAppName(context));
+            CrashReport.initCrashReport(context, UdeskCoreConst.buglyAppid, false, strategy);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void showLoading(Context context) {
