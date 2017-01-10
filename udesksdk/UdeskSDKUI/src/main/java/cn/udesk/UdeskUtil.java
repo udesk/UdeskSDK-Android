@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -354,6 +356,19 @@ public class UdeskUtil {
 			e.printStackTrace();
 		}
 
+	}
+
+	public static  String getAppName(Context context){
+		String appName = "";
+		try {
+			PackageManager manager = context.getPackageManager();
+			PackageInfo info = null;
+			info = manager.getPackageInfo(context.getPackageName(), 0);
+			appName = info.applicationInfo.loadLabel(manager).toString();
+		} catch (PackageManager.NameNotFoundException e) {
+			e.printStackTrace();
+		}
+		return appName;
 	}
 
 }
