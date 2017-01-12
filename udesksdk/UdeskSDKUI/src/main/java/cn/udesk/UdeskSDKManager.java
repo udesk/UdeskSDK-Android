@@ -104,7 +104,6 @@ public class UdeskSDKManager {
         UdeskBaseInfo.domain = domain;
         UdeskBaseInfo.App_Key = appkey;
         UdeskBaseInfo.App_Id = appid;
-        initCrashReport(context);
         UdeskUtil.initImageLoaderConfig(context);
     }
 
@@ -135,7 +134,7 @@ public class UdeskSDKManager {
      * @param roplist   包含自定义的列表信息
      */
     public void setUserInfo(final Context context, String token, Map<String, String> info, Map<String, String> textField, Map<String, String> roplist) {
-
+        initCrashReport(context);
         String cacheToken = getSdkToken(context);
         if ((cacheToken == null)) {
             clean(context);
