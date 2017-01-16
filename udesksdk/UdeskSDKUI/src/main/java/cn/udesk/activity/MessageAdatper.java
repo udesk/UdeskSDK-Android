@@ -102,6 +102,7 @@ public class MessageAdatper extends BaseAdapter {
     private List<MessageInfo> list = new ArrayList<MessageInfo>();
     private DisplayImageOptions options;
     private DisplayImageOptions agentHeadOptions;
+    private DisplayImageOptions customerHeadOptions;
     private ImageLoader mImageLoader;
 
     public MessageAdatper(Context context) {
@@ -128,6 +129,16 @@ public class MessageAdatper extends BaseAdapter {
                     .showImageOnFail(R.drawable.udesk_im_default_agent_avatar)
                     .showImageOnLoading(R.drawable.udesk_im_default_agent_avatar)
                     .showImageForEmptyUri(R.drawable.udesk_im_default_agent_avatar)
+                    .cacheInMemory(true)
+                    .cacheOnDisk(true)
+                    .bitmapConfig(Bitmap.Config.RGB_565)
+                    .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+                    .build();
+
+            customerHeadOptions = new DisplayImageOptions.Builder()
+                    .showImageOnFail(R.drawable.udesk_im_default_user_avatar)
+                    .showImageOnLoading(R.drawable.udesk_im_default_user_avatar)
+                    .showImageForEmptyUri(R.drawable.udesk_im_default_user_avatar)
                     .cacheInMemory(true)
                     .cacheOnDisk(true)
                     .bitmapConfig(Bitmap.Config.RGB_565)
@@ -407,13 +418,7 @@ public class MessageAdatper extends BaseAdapter {
                 case MSG_IMG_R:
                     this.isLeft = false;
                     if (!TextUtils.isEmpty(UdeskBaseInfo.customerUrl)) {
-                        getImageLoader(mContext).displayImage(UdeskBaseInfo.customerUrl, ivHeader,
-                                new DisplayImageOptions.Builder()
-                                        .showImageOnFail(R.drawable.udesk_im_default_user_avatar)
-                                        .showImageOnLoading(R.drawable.udesk_im_default_user_avatar)
-                                        .showImageForEmptyUri(R.drawable.udesk_im_default_user_avatar)
-                                        .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-                                        .build());
+                        getImageLoader(mContext).displayImage(UdeskBaseInfo.customerUrl, ivHeader, customerHeadOptions);
                     } else {
                         ivHeader.setImageResource(R.drawable.udesk_im_default_user_avatar);
                     }
