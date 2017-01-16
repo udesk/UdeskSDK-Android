@@ -1024,10 +1024,11 @@ public class ChatActivityPresenter {
             if (retryMsgIds != null) {
                 for (String msgID : retryMsgIds) {
                     MessageInfo msg = UdeskDBManager.getInstance().getMessage(msgID);
-                    UdeskMessageManager.getInstance().sendMessage(msg.getMsgtype(), msg.getMsgContent(),
-                            msg.getMsgId(), mChatView.getAgentInfo().getAgentJid(), msg.getDuration(),
-                            mChatView.getAgentInfo().getIm_sub_session_id());
-
+                    if (msg != null){
+                        UdeskMessageManager.getInstance().sendMessage(msg.getMsgtype(), msg.getMsgContent(),
+                                msg.getMsgId(), mChatView.getAgentInfo().getAgentJid(), msg.getDuration(),
+                                mChatView.getAgentInfo().getIm_sub_session_id());
+                    }
                 }
             }
         } catch (Exception e) {

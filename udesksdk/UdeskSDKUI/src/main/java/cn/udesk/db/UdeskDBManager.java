@@ -163,6 +163,9 @@ public class UdeskDBManager {
 		MessageInfo msg = null;
 		Cursor cursor = null;
 		try {
+			if (getSQLiteDatabase() == null){
+				return msg;
+			}
 			cursor = getSQLiteDatabase().rawQuery(sql, new String[] { msgid });
 			if (cursor.moveToFirst()) {
 				String msgId = cursor.getString(0);
@@ -181,8 +184,14 @@ public class UdeskDBManager {
 						duration,agentJid);
 				if (!TextUtils.isEmpty(agentJid.trim())){
 					String[] urlAndNick = getAgentUrlAndNick(agentJid);
-					msg.setAgentUrl(urlAndNick[0]);
-					msg.setNickName(urlAndNick[1]);
+					if (urlAndNick != null){
+						try {
+							msg.setAgentUrl(urlAndNick[0]);
+							msg.setNickName(urlAndNick[1]);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -240,8 +249,14 @@ public class UdeskDBManager {
 						localPath, duration,agentJid);
 				if (!TextUtils.isEmpty(agentJid.trim())){
 					String[] urlAndNick = getAgentUrlAndNick(agentJid);
-					message.setAgentUrl(urlAndNick[0]);
-					message.setNickName(urlAndNick[1]);
+					if (urlAndNick != null){
+						try {
+							message.setAgentUrl(urlAndNick[0]);
+							message.setNickName(urlAndNick[1]);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
 				}
 				list.add(message);
 			}
@@ -446,6 +461,9 @@ public class UdeskDBManager {
 	 */
 	public boolean deleteAllMsg() {
 		try {
+			if (getSQLiteDatabase() == null){
+				return  false;
+			}
 			String sql =  "delete from " +  UdeskDBHelper.UdeskMessage ;
 			getSQLiteDatabase().execSQL(sql);
 			return true;
@@ -472,9 +490,12 @@ public class UdeskDBManager {
 		String sql =  "update " +  UdeskDBHelper.UdeskMessage + " set " + "ReadFlag= ?";
 		try
 		{
+			if (getSQLiteDatabase() == null){
+				return;
+			}
 			getSQLiteDatabase().execSQL(sql, new Object[] { UdeskConst.ChatMsgReadFlag.read});
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 
 	}
@@ -525,6 +546,9 @@ public class UdeskDBManager {
 	//获取未读消息数
 	public int getUnReadMessageCount() {
 		try {
+			if(getSQLiteDatabase() == null){
+				return 0;
+			}
 			String sql = "select count(*) from " + UdeskDBHelper.UdeskMessage
 					+ " where  ReadFlag = ?";
 			Cursor cursor = null;
@@ -556,7 +580,9 @@ public class UdeskDBManager {
 	public String[] getAgentUrlAndNick(String agentJId) {
 		String sql = "select * from " + UdeskDBHelper.UdeskAgentMsg
 				+ " where AgentJid = ?";
-
+		if(getSQLiteDatabase() == null){
+			return null;
+		}
 		String[] urlAndNick = new String[2];
 		Cursor cursor = null;
 		try {
