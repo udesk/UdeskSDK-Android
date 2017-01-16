@@ -9,6 +9,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -850,11 +851,13 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
             offset = (offset < 0 ? 0 : offset);
             List<MessageInfo> list = UdeskDBManager.getInstance().getMessages(
                     offset, UdeskConst.UDESK_HISTORY_COUNT);
-            Message msg = Message.obtain();
-            msg.what = MessageWhat.loadHistoryDBMsg;
-            msg.arg1 = mode;
-            msg.obj = list;
-            mHandler.sendMessage(msg);
+            if(list != null){
+                Message msg = Message.obtain();
+                msg.what = MessageWhat.loadHistoryDBMsg;
+                msg.arg1 = mode;
+                msg.obj = list;
+                mHandler.sendMessage(msg);
+            }
         }
 
     }
@@ -1007,19 +1010,23 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
     // 判断可发送消息
     private boolean isShowNotSendMsg() {
-        if (isbolcked != null && isbolcked.equals("true")) {
-            toBolckedView();
-            return false;
-        }
-        if (!UdeskUtils.isNetworkConnected(this)) {
-            UdeskUtils.showToast(this,
-                    getResources().getString(R.string.udesk_has_wrong_net));
-            return false;
-        }
+        try {
+            if (isbolcked != null && isbolcked.equals("true")) {
+                toBolckedView();
+                return false;
+            }
+            if (!UdeskUtils.isNetworkConnected(this)) {
+                UdeskUtils.showToast(this,
+                        getResources().getString(R.string.udesk_has_wrong_net));
+                return false;
+            }
 
-        if (!currentStatusIsOnline) {
-            confirmToForm();
-            return false;
+            if (!currentStatusIsOnline) {
+                confirmToForm();
+                return false;
+            }
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
         }
 
         return true;
