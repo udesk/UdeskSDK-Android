@@ -101,14 +101,13 @@ public class UDEmojiAdapter extends BaseAdapter {
         try{
 			final int emojiWidth = (int) (mContext.getResources()
 					.getDisplayMetrics().density * 40 / 2.0f);
-
+			SpannableString spannable = new SpannableString(text);
 			final int prefixLength = EMOJI_PREFIX.length();
 			int index = 0, start = 0;
 			index = text.indexOf(EMOJI_PREFIX, index);
 			if (index <=-1){
-				return  null;
+				return  spannable;
 			}
-			SpannableString spannable = new SpannableString(text);
 			while (index > -1) {
 				start = index + prefixLength;
 				String emojiNumber = text
