@@ -205,6 +205,120 @@ public class UdeskDBManager {
 		return msg;
 	}
 
+	//获取聊天记录的最后一条
+	public MessageInfo getLastMessage() {
+
+		String sql = "select * from " + UdeskDBHelper.UdeskMessage
+				+ " order by Time desc limit 1" ;
+		MessageInfo msgInfo = new MessageInfo();
+		SQLiteDatabase db = getSQLiteDatabase();
+		Cursor cursor = null;
+		if (db == null) {
+			return msgInfo;
+		}
+		try {
+			cursor = db.rawQuery(sql, null);
+			int count = cursor.getCount();
+			if (count < 1) {
+				return msgInfo;
+			}
+			while (cursor.moveToNext()) {
+				String msgId = cursor.getString(0);
+				long time = cursor.getLong(1);
+				String msgContent = cursor.getString(2);
+				String msgtype = cursor.getString(3);
+				int readFlag = cursor.getInt(4);
+				int sendFlag = cursor.getInt(5);
+				int playFlag = cursor.getInt(6);
+				int direction = cursor.getInt(7);
+				String localPath = cursor.getString(8);
+				long duration = cursor.getLong(9);
+				String agentJid = cursor.getString(10);
+				msgInfo = new MessageInfo(time, msgId, msgtype,
+						msgContent, readFlag, sendFlag, playFlag, direction,
+						localPath, duration,agentJid);
+				if (!TextUtils.isEmpty(agentJid.trim())){
+					String[] urlAndNick = getAgentUrlAndNick(agentJid);
+					if (urlAndNick != null){
+						try {
+							msgInfo.setAgentUrl(urlAndNick[0]);
+							msgInfo.setNickName(urlAndNick[1]);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				return  msgInfo;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+				cursor = null;
+			}
+		}
+		return msgInfo;
+	}
+
+	//获取客服聊天记录最后一条
+	public MessageInfo getAgentLastMessage() {
+
+		String sql = "select * from " + UdeskDBHelper.UdeskMessage
+				+ " where Direction = ? "
+				+ " order by Time desc limit 1" ;
+		MessageInfo msgInfo = new MessageInfo();
+		SQLiteDatabase db = getSQLiteDatabase();
+		Cursor cursor = null;
+		if (db == null) {
+			return msgInfo;
+		}
+		try {
+			cursor = db.rawQuery(sql, new String[] { String.valueOf(UdeskConst.ChatMsgDirection.Recv )});
+			int count = cursor.getCount();
+			if (count < 1) {
+				return msgInfo;
+			}
+			while (cursor.moveToNext()) {
+				String msgId = cursor.getString(0);
+				long time = cursor.getLong(1);
+				String msgContent = cursor.getString(2);
+				String msgtype = cursor.getString(3);
+				int readFlag = cursor.getInt(4);
+				int sendFlag = cursor.getInt(5);
+				int playFlag = cursor.getInt(6);
+				int direction = cursor.getInt(7);
+				String localPath = cursor.getString(8);
+				long duration = cursor.getLong(9);
+				String agentJid = cursor.getString(10);
+				msgInfo = new MessageInfo(time, msgId, msgtype,
+						msgContent, readFlag, sendFlag, playFlag, direction,
+						localPath, duration,agentJid);
+				if (!TextUtils.isEmpty(agentJid.trim())){
+					String[] urlAndNick = getAgentUrlAndNick(agentJid);
+					if (urlAndNick != null){
+						try {
+							msgInfo.setAgentUrl(urlAndNick[0]);
+							msgInfo.setNickName(urlAndNick[1]);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				return  msgInfo;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+				cursor = null;
+			}
+		}
+		return msgInfo;
+	}
+
+
 	/**
 	 * 获取指定条数的聊天记录
 	 * 
