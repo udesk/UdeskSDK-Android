@@ -382,8 +382,7 @@ UdeskSDKManager.getInstance().disConnectXmpp();
 ```
 #### 4.13 设置退出排队的模式
 
-  App运行时如果需要客服离线或不再接收客服消息，调此接口可以主动断开与Udesk服务器的的连接。
-
+ quitmode: mark (默认,标记放弃)/ cannel_mark(取消标记) / force_quit(强制立即放弃)
 ```java
 UdeskSDKManager.getInstance().setQuitQuenuMode(quitmode);
 ```
