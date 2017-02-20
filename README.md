@@ -292,9 +292,7 @@ UdeskSDKManager.getInstance().lanuchChatByGroupId(this,groupId);
 
 **客服和客服组ID获取方式**
 
-管理员在【管理中心-渠道管理-即时通讯-自定义链接-指定客服和客服组】中选择指定的客服组，如下图所示，客服组“客服部”的groupId是“9831”。![udesk](http://7xr0de.com1.z0.glb.clouddn.com/%E8%8E%B7%E5%8F%96%E5%AE%A2%E6%9C%8Did.jpg)
-
-
+管理员在【管理中心-即时通讯-基本信息-专用链接】中选择指定的客服组或客服，可看到客服ID和客服组ID。
 #### 4.4 支持设置客户的头像显示
 在UdeskSDKManager中设置客户头像的url
 ``` java
@@ -384,8 +382,7 @@ UdeskSDKManager.getInstance().disConnectXmpp();
 ```
 #### 4.13 设置退出排队的模式
 
-  App运行时如果需要客服离线或不再接收客服消息，调此接口可以主动断开与Udesk服务器的的连接。
-
+ quitmode: mark (默认,标记放弃)/ cannel_mark(取消标记) / force_quit(强制立即放弃)
 ```java
 UdeskSDKManager.getInstance().setQuitQuenuMode(quitmode);
 ```
