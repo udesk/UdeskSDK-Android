@@ -307,7 +307,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
             }
             return;
         }
-//        sendReceivedMsg(message);
+        sendReceivedMsg(message);
         String id = message.getPacketID();
         if (id == null || TextUtils.isEmpty(id)) {
             return;
