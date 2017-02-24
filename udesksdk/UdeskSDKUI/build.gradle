@@ -37,5 +37,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile files('libs/udesk-universal-image-loader-1.9.4.jar')
     compile files('libs/org.xbill.dns_2.1.6.jar')
-    compile files('libs/udesk_sdk_3.5.2.jar')
+    compile files('libs/udesk_sdk_3.5.jar')
 }
