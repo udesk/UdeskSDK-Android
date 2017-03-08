@@ -31,7 +31,7 @@
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="Udesk_Theme" parent="Theme.AppCompat.Light.NoActionBar"></style>
+    <style name="Udesk_Theme" parent="Theme.AppCompat.NoActionBar"></style>
 
 
     <style name="transcutestyle" parent="@android:style/Theme.Dialog">
