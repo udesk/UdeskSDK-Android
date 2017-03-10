@@ -92,6 +92,8 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
                     xmppConnection.addConnectionListener(this);
                     return connectXMPPServer(loginName, loginPassword);
                 }
+            }catch (ExceptionInInitializerError initializerError){
+                initializerError.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
             } catch (OutOfMemoryError error) {
@@ -104,11 +106,17 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
     }
 
     private void init(String domain, int port) {
-        mConfiguration = new ConnectionConfiguration(domain, port, domain);
-        mConfiguration
-                .setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
-        mConfiguration.setDebuggerEnabled(UdeskCoreConst.xmppDebug);
-        xmppConnection = new XMPPTCPConnection(mConfiguration);
+        try {
+            mConfiguration = new ConnectionConfiguration(domain, port, domain);
+            mConfiguration
+                    .setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
+            mConfiguration.setDebuggerEnabled(UdeskCoreConst.xmppDebug);
+            xmppConnection = new XMPPTCPConnection(mConfiguration);
+        } catch (ExceptionInInitializerError initializerError){
+            initializerError.printStackTrace();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
