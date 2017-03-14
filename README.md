@@ -18,7 +18,7 @@
 ```
 ### 常见问题
 ``` java
-   1. 集成sdk后，发现编译报不好定位的错误，单独编译我们提供的demo没有问题.
+   1. 集成sdk后，发现编译报不好定位的错误，单独编译我们提供的demo没有问题；出现java.lang.NoClassDefFoundError错误的时候，类方法代码里存在；
       可能的原因： 项目方法数超过65536。 采用dex 分包解决。 参考博客：http://www.cnblogs.com/chenxibobo/p/6076459.html
       
       注意的是multidex有一个版本问题，在Android 5.0以前使用multidex需要加入 compile ‘com.android.support:multidex:1.0.0’。
