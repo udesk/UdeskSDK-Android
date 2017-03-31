@@ -1,34 +1,52 @@
-# UdeskSDK Android 3.5 开发者文档
+# UdeskSDK Android 3.5+ 开发者文档
+### 快速接入
+------
+   一.初始管理员后台创建应用是生成的对应app key 和 app id
+      UdeskSDKManager.getInstance().initApiKey(context, "you domain","App Key","App Id");
+   二.设置客户的信息。
+      Map<String, String> info = new HashMap<String, String>();
+      String sdkToken = "你们识别客户的唯一标识，和我们系统一一映射";
+      info.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdkToken);
+      info.put(UdeskConst.UdeskUserInfo.NICK_NAME, "客户的姓名");
+      UdeskSDKManager.getInstance().setUserInfo(context, sdkToken, info);
+      注意sdktoken是客户的唯一标识，用来识别身份，sdk_token: 你们传入的字符请使用 字母或数字 等常见字符集。
+  三. 进入页面分配会话
+      UdeskSDKManager.getInstance().entryChat(context);
+      
+  更多功参考demo。
+------
 
-## 注意
-### 3.5.2更新重要说明
-``` java
-    
-    概率性出现这样问题的优化：pc端客服发送消息，app端已经收到消息，PC端客服消息状态还一直转圈，
-```
-### 3.5更新重要说明
-``` java
-    Udesk系统对移动sdk栏的设计改动比较大，增加了创建多个应用和对每个应用都支持独立的配置。
-    
-    移动端提供的接口也有改动，为了更好配置，之前版本的有些接口删掉了。
-    
-    初始化不再支持单点登录的key，统一使用创建每个应用时生成对应的appid，和appkey。
-    
-    增加了统一的会话入口entryChat方法，具体的跳转行为可以在后台灵活的控制。
-```
 ### 常见问题
+------
 ``` java
-   1. 集成sdk后，发现编译报不好定位的错误，单独编译我们提供的demo没有问题；出现java.lang.NoClassDefFoundError错误的时候，类方法代码里存在；
-      可能的原因： 项目方法数超过65536。 采用dex 分包解决。 参考博客：http://www.cnblogs.com/chenxibobo/p/6076459.html
-      
-      注意的是multidex有一个版本问题，在Android 5.0以前使用multidex需要加入 compile ‘com.android.support:multidex:1.0.0’。
-      而从Android 5.0开始，Andorid默认支持了multidex。 
-      
-   2. 集成编译后，出现FileProvider重复的相关错误。
-      原因：项目中出现了多个FileProvider， 合并使用一个，来处理android 7.0的共享文件权限。
+   1. 指定客服组或者客服分配出现与指定客服组客服不一致的情况？
+     先要确认客服没有关闭会话。
+     我们产品逻辑： 假设客户A   选了客服组B下的客服B1，进行会话。  之后客户A退出会话界面，进入另外界面，之后通过客服组C下的客服C 1分配会话：  这时      后台会判断，如果和B1会话还存在，则会直接分配给B1，而不会分配給客服C 1。  只有B1会话关闭了，才会分配給客服C1。 
+     
+   2.出现在不同客户分配的会话在一个会话中?
+      出现这种情况，是客服传的sdktoken值一样。 sdktoken像身份证一样，是用户唯一的标识。让客户检查接入是传入的sdktoken值。
+      如果设置了email 或者 cellphone  出现相同也会在一个客服的会话里。
    
+   3.某个手机打不开机器人页面？
+     这个问题的可能情况之一： 手机时间设置和当前时间不一致造成的。时间误差超过一小时，必然会出现链接不上机器人界面。
+     
+   4.集成sdk后出现找不到类的错误？
+     检查是否加分包策略：
+      由于Android的Gradle插件在Android Build Tool 21.1开始支持使用multidex，所以我们需要使用Android Build Tools 21.1及以上版本，修改app目录下       的build.gradle文件，有两点需要修改。
+     （1）在defaultConfig中添加multiDexEnabled true这个配置项。 
+     （2）在dependencies中添加multidex的依赖： compile ‘com.android.support:multidex:1.0.0’
+     （3）继承Application，然后重写attachBaseContext方法，并在AndroidManifest.xml的application标签中进行注册。
+    
+          @Override
+   	 protected void attachBaseContext(Context base) {
+     	    super.attachBaseContext(base);
+      	    MultiDex.install(this);
+	  }
+     
+   
    有问题直接加QQ：1979305929
 ```
+------
 ## 一、SDK工作流程图
 Udesk-SDK的工作流程如下图所示。
 
