@@ -64,6 +64,8 @@
       	     MultiDex.install(this);
 	  }
      
+    5.h5接入参考例子
+    https://github.com/udesk/udesk_android_sdk_h5
    
    有问题直接加QQ：1979305929
 ``` 
@@ -144,7 +146,7 @@ UdeskSDKManager.getInstance().setUserInfo(this, sdktoken, info);
 ![udesk](http://7xr0de.com1.z0.glb.clouddn.com/custom.jpeg)
 #####3.2.2获取自定义字段信息
 ``` java
-UdeskHttpFacade.getInstance().getUserFields(UDESK_DOMAIN, UDESK_SECRETKEY, new UdeskCallBack(){
+UdeskHttpFacade.getInstance().getUserFields(UDESK_DOMAIN, "you App key", "you App Id",new UdeskCallBack(){
 
 	@Override
 	public void onSuccess(String message) {
