@@ -2,18 +2,33 @@
 ### 快速接入
 ------
    一.初始管理员后台创建应用是生成的对应app key 和 app id
+   
+   ``` java
       UdeskSDKManager.getInstance().initApiKey(context, "you domain","App Key","App Id");
+   ```
+      
    二.设置客户的信息。
+   
+  ``` java   
       Map<String, String> info = new HashMap<String, String>();
       String sdkToken = "你们识别客户的唯一标识，和我们系统一一映射";
       info.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdkToken);
       info.put(UdeskConst.UdeskUserInfo.NICK_NAME, "客户的姓名");
       UdeskSDKManager.getInstance().setUserInfo(context, sdkToken, info);
       注意sdktoken是客户的唯一标识，用来识别身份，sdk_token: 你们传入的字符请使用 字母或数字 等常见字符集。
+     ``` java   
+     
   三. 进入页面分配会话
+  
+    ``` java
+    
       UdeskSDKManager.getInstance().entryChat(context);
       
+   ``` java
+      
   更多功参考demo。
+  
+ 
 ------
 
 ### 常见问题
