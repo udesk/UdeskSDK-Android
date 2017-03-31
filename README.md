@@ -35,19 +35,23 @@
 
 ### 常见问题
 ------
-
+``` java
    1. 指定客服组或者客服分配出现与指定客服组客服不一致的情况？
+   
      先要确认客服没有关闭会话。
      我们产品逻辑： 假设客户A   选了客服组B下的客服B1，进行会话。  之后客户A退出会话界面，进入另外界面，之后通过客服组C下的客服C 1分配会话：  这时      后台会判断，如果和B1会话还存在，则会直接分配给B1，而不会分配給客服C 1。  只有B1会话关闭了，才会分配給客服C1。 
      
    2.出现在不同客户分配的会话在一个会话中?
+   
       出现这种情况，是客服传的sdktoken值一样。 sdktoken像身份证一样，是用户唯一的标识。让客户检查接入是传入的sdktoken值。
       如果设置了email 或者 cellphone  出现相同也会在一个客服的会话里。
    
    3.某个手机打不开机器人页面？
+   
      这个问题的可能情况之一： 手机时间设置和当前时间不一致造成的。时间误差超过一小时，必然会出现链接不上机器人界面。
      
    4.集成sdk后出现找不到类的错误？
+   
      检查是否加分包策略：
       由于Android的Gradle插件在Android Build Tool 21.1开始支持使用multidex，所以我们需要使用Android Build Tools 21.1及以上版本，修改app目录下       的build.gradle文件，有两点需要修改。
      （1）在defaultConfig中添加multiDexEnabled true这个配置项。 
@@ -56,13 +60,13 @@
     
           @Override
    	 protected void attachBaseContext(Context base) {
-     	    super.attachBaseContext(base);
-      	    MultiDex.install(this);
+     	     super.attachBaseContext(base);
+      	     MultiDex.install(this);
 	  }
      
    
    有问题直接加QQ：1979305929
-
+``` 
 ------
 ## 一、SDK工作流程图
 Udesk-SDK的工作流程如下图所示。
