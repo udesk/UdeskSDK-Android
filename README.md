@@ -1,4 +1,5 @@
 # UdeskSDK Android 3.5+ 开发者文档
+
 ### 快速接入
 ------
    一.初始管理员后台创建应用是生成的对应app key 和 app id
@@ -16,15 +17,16 @@
       info.put(UdeskConst.UdeskUserInfo.NICK_NAME, "客户的姓名");
       UdeskSDKManager.getInstance().setUserInfo(context, sdkToken, info);
       注意sdktoken是客户的唯一标识，用来识别身份，sdk_token: 你们传入的字符请使用 字母或数字 等常见字符集。
-     ``` java   
+      
+  ```    
      
   三. 进入页面分配会话
   
-    ``` java
+``` java
     
       UdeskSDKManager.getInstance().entryChat(context);
       
-   ``` java
+``` 
       
   更多功参考demo。
   
@@ -33,7 +35,7 @@
 
 ### 常见问题
 ------
-``` java
+
    1. 指定客服组或者客服分配出现与指定客服组客服不一致的情况？
      先要确认客服没有关闭会话。
      我们产品逻辑： 假设客户A   选了客服组B下的客服B1，进行会话。  之后客户A退出会话界面，进入另外界面，之后通过客服组C下的客服C 1分配会话：  这时      后台会判断，如果和B1会话还存在，则会直接分配给B1，而不会分配給客服C 1。  只有B1会话关闭了，才会分配給客服C1。 
@@ -60,7 +62,7 @@
      
    
    有问题直接加QQ：1979305929
-```
+
 ------
 ## 一、SDK工作流程图
 Udesk-SDK的工作流程如下图所示。
