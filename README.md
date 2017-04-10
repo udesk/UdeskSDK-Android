@@ -825,6 +825,7 @@ RedirectViewHolder  显示转移提示语信息；
 - 推送接口只支持 http，不支持 https
 - 请求已 POST 方法发送
 - 请求 Body 数据为 JSON 格式，见示例
+- 请求时使用的 content-type 为 application/x-www-form-urlencoded
 
 
 
