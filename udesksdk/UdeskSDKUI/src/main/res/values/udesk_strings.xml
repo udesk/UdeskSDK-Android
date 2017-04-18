@@ -41,7 +41,8 @@
     <string name="camera_denied">拒绝了拍照权限，无法拍照</string>
     <string name="photo_denied">拒绝了获取相册权限，无法获取图片</string>
     <string name="add_bolcked_tips">抱歉，你已经被加入了黑名单</string>
-    <string name="udesk_agent_connecting">客服连接中...</string>
+    <string name="udesk_agent_connecting">客服连接中&#8230;</string>
+    <string name="udesk_agent_inti">客服连接中,请稍后&#8230;</string>
     <string name="udesk_agent_connecting_error_net_uavailabl">连接失败,稍后再试!</string>
 
     <string name="udesk_edit_hint_msg">输入消息...</string>

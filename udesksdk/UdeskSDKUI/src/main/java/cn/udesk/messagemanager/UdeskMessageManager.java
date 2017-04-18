@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.config.UdeskBaseInfo;
+import cn.udesk.config.UdeskConfig;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.model.MsgNotice;
 import rx.Observable;
@@ -29,7 +30,6 @@ public class UdeskMessageManager {
     public ReflectInvokeMethod eventui_OnReqsurveyMsg = new ReflectInvokeMethod(new Class<?>[]{Boolean.class});
     public ReflectInvokeMethod event_OnNewMsgNotice = new ReflectInvokeMethod(new Class<?>[]{MsgNotice.class});
 
-    private Boolean isOverConversation = false;
 
     private static UdeskMessageManager instance = new UdeskMessageManager();
 
@@ -50,18 +50,14 @@ public class UdeskMessageManager {
         }
     }
 
-    public Observable<Boolean> loginXmppService() {
-
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+    public void connection() {
+        new Thread(new Runnable() {
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                Boolean isConetted = mUdeskXmppManager.startLoginXmpp();
-                subscriber.onNext(isConetted);
-                subscriber.onCompleted();
+            public void run() {
+                mUdeskXmppManager.cancel();
+                mUdeskXmppManager.startLoginXmpp();
             }
-        }).subscribeOn(Schedulers.io());
-
-
+        }).start();
     }
 
     public Observable<Boolean> cancelXmppConnect() {
@@ -147,10 +143,12 @@ public class UdeskMessageManager {
         if (UdeskBaseInfo.isNeedMsgNotice) {
             MsgNotice msgNotice = new MsgNotice(msgId, type, content);
             event_OnNewMsgNotice.invoke(msgNotice);
+            if (msgNotice != null && UdeskSDKManager.getInstance().getOnlineMessage() != null && !UdeskConfig.isUserSDkPush) {
+                UdeskSDKManager.getInstance().getOnlineMessage().onlineMessageReceive(msgNotice);
+            }
         }
 
     }
-
 
     public MessageInfo buildReceiveMessage(String agentJid, String msgType, String msgId,
                                            String content, long duration) {
@@ -186,15 +184,18 @@ public class UdeskMessageManager {
         if (actionText.equals("overtest")) {
             mUdeskXmppManager.sendActionMessage(agentJId);
         } else if (actionText.equals("over")) {
-            this.isOverConversation = true;
-            wrapCancelXmppConnect();
+            InvokeEventContainer.getInstance().event_IsOver.invoke(true);
+            try {
+                Thread.sleep(2000);
+                wrapCancelXmppConnect();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         }
 
     }
 
-    public boolean isConnected() {
-        return mUdeskXmppManager.isConnect();
-    }
 
     private void wrapCancelXmppConnect() {
         UdeskMessageManager.getInstance().cancelXmppConnect().subscribe(new Subscriber<Boolean>() {
@@ -213,13 +214,5 @@ public class UdeskMessageManager {
 
             }
         });
-    }
-
-    public Boolean getOverConversation() {
-        return isOverConversation;
-    }
-
-    public void setOverConversation(Boolean overConversation) {
-        isOverConversation = overConversation;
     }
 }

@@ -37,17 +37,21 @@ public class UdeskDBManager {
 	 * @param context
 	 */
 	public synchronized void init(Context context, String sdktoken) {
-		if(context == null){
-			return;
+		try {
+			if(context == null){
+                return;
+            }
+			if(TextUtils.isEmpty(sdktoken)){
+                sdktoken = UdeskSDKManager.getInstance().getSdkToken(context);
+            }
+			mSdktoken = sdktoken;
+			if (helper == null) {
+                helper = new UdeskDBHelper(context, mSdktoken);
+            }
+			mDatabase = helper.getWritableDatabase();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		if(TextUtils.isEmpty(sdktoken)){
-			sdktoken = UdeskSDKManager.getInstance().getSdkToken(context);
-		}
-		mSdktoken = sdktoken;
-		if (helper == null) {
-			helper = new UdeskDBHelper(context, mSdktoken);
-		}
-		mDatabase = helper.getWritableDatabase();
 	}
 
 	/**
@@ -205,6 +209,72 @@ public class UdeskDBManager {
 		return msg;
 	}
 
+	/**
+	 * 获取指定条数的聊天记录
+	 * 
+	 * @param offset
+	 *            偏移量
+	 * @param pageNum
+	 *            默认每次查询的数量 见UdeskConst.UDESK_HISTORY_COUNT值
+	 * @return
+	 */
+	public List<MessageInfo> getMessages(int offset, int pageNum) {
+
+		String sql = "select * from " + UdeskDBHelper.UdeskMessage
+				+ " order by Time limit " + UdeskConst.UDESK_HISTORY_COUNT
+				+ " offset " + offset;
+
+		List<MessageInfo> list = new ArrayList<MessageInfo>();
+		SQLiteDatabase db = getSQLiteDatabase();
+		Cursor cursor = null;
+		if (db == null) {
+			return list;
+		}
+		try {
+			cursor = db.rawQuery(sql, null);
+			int count = cursor.getCount();
+			if (count < 1) {
+				return list;
+			}
+			while (cursor.moveToNext()) {
+				String msgId = cursor.getString(0);
+				long time = cursor.getLong(1);
+				String msgContent = cursor.getString(2);
+				String msgtype = cursor.getString(3);
+				int readFlag = cursor.getInt(4);
+				int sendFlag = cursor.getInt(5);
+				int playFlag = cursor.getInt(6);
+				int direction = cursor.getInt(7);
+				String localPath = cursor.getString(8);
+				long duration = cursor.getLong(9);
+				String agentJid = cursor.getString(10);
+				MessageInfo message = new MessageInfo(time, msgId, msgtype,
+						msgContent, readFlag, sendFlag, playFlag, direction,
+						localPath, duration,agentJid);
+				if (!TextUtils.isEmpty(agentJid.trim())){
+					String[] urlAndNick = getAgentUrlAndNick(agentJid);
+					if (urlAndNick != null){
+						try {
+							message.setAgentUrl(urlAndNick[0]);
+							message.setNickName(urlAndNick[1]);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				list.add(message);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+				cursor = null;
+			}
+		}
+		return list;
+	}
+
 	//获取聊天记录的最后一条
 	public MessageInfo getLastMessage() {
 
@@ -316,73 +386,6 @@ public class UdeskDBManager {
 			}
 		}
 		return msgInfo;
-	}
-
-
-	/**
-	 * 获取指定条数的聊天记录
-	 * 
-	 * @param offset
-	 *            偏移量
-	 * @param pageNum
-	 *            默认每次查询的数量 见UdeskConst.UDESK_HISTORY_COUNT值
-	 * @return
-	 */
-	public List<MessageInfo> getMessages(int offset, int pageNum) {
-
-		String sql = "select * from " + UdeskDBHelper.UdeskMessage
-				+ " order by Time limit " + UdeskConst.UDESK_HISTORY_COUNT
-				+ " offset " + offset;
-
-		List<MessageInfo> list = new ArrayList<MessageInfo>();
-		SQLiteDatabase db = getSQLiteDatabase();
-		Cursor cursor = null;
-		if (db == null) {
-			return list;
-		}
-		try {
-			cursor = db.rawQuery(sql, null);
-			int count = cursor.getCount();
-			if (count < 1) {
-				return list;
-			}
-			while (cursor.moveToNext()) {
-				String msgId = cursor.getString(0);
-				long time = cursor.getLong(1);
-				String msgContent = cursor.getString(2);
-				String msgtype = cursor.getString(3);
-				int readFlag = cursor.getInt(4);
-				int sendFlag = cursor.getInt(5);
-				int playFlag = cursor.getInt(6);
-				int direction = cursor.getInt(7);
-				String localPath = cursor.getString(8);
-				long duration = cursor.getLong(9);
-				String agentJid = cursor.getString(10);
-				MessageInfo message = new MessageInfo(time, msgId, msgtype,
-						msgContent, readFlag, sendFlag, playFlag, direction,
-						localPath, duration,agentJid);
-				if (!TextUtils.isEmpty(agentJid.trim())){
-					String[] urlAndNick = getAgentUrlAndNick(agentJid);
-					if (urlAndNick != null){
-						try {
-							message.setAgentUrl(urlAndNick[0]);
-							message.setNickName(urlAndNick[1]);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}
-				list.add(message);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-				cursor = null;
-			}
-		}
-		return list;
 	}
 
 	/**

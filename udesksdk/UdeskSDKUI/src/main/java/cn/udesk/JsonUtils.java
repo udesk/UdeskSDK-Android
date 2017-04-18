@@ -1,6 +1,5 @@
 package cn.udesk;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import org.json.JSONArray;
@@ -14,6 +13,7 @@ import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.model.AgentGroupNode;
 import cn.udesk.model.OptionsModel;
 import cn.udesk.model.SDKIMSetting;
+import cn.udesk.model.StructModel;
 import cn.udesk.model.SurveyOptionsModel;
 import udesk.core.model.AgentInfo;
 import udesk.core.model.UDHelperArticleContentItem;
@@ -261,6 +261,48 @@ public class JsonUtils {
 		}
 
 		return  sdkimSetting;
+	}
+
+	public static StructModel parserStructMsg(String jsonString){
+		StructModel structModel = new StructModel();
+		try {
+			JSONObject rootJson = new JSONObject(jsonString);
+			if (rootJson.has("title")){
+				structModel.setTitle(rootJson.getString("title"));
+			}
+			if (rootJson.has("description")){
+				structModel.setDescription(rootJson.getString("description"));
+			}
+			if (rootJson.has("img_url")){
+				structModel.setImg_url(rootJson.getString("img_url"));
+			}
+
+			if (rootJson.has("buttons")){
+				JSONArray btnArray = rootJson.optJSONArray("buttons");
+				List<StructModel.ButtonsBean> structBtns = new ArrayList<StructModel.ButtonsBean>();
+				if (btnArray != null && btnArray.length() > 0) {
+					for (int i = 0; i < btnArray.length(); i++) {
+						JSONObject data = btnArray.optJSONObject(i);
+						StructModel.ButtonsBean  buttonsBean = new StructModel.ButtonsBean();
+						if (data.has("type")){
+							buttonsBean.setType(data.getString("type"));
+						}
+						if (data.has("text")){
+							buttonsBean.setText(data.getString("text"));
+						}
+						if (data.has("value")){
+							buttonsBean.setValue(data.getString("value"));
+						}
+						structBtns.add(buttonsBean);
+					}
+				}
+				structModel.setButtons(structBtns);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return  structModel;
 	}
 
 }

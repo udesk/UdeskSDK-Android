@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -13,6 +14,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,12 +22,14 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.udesk.JsonUtils;
 import cn.udesk.R;
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
@@ -34,6 +38,7 @@ import cn.udesk.adapter.UDEmojiAdapter;
 import cn.udesk.config.UdekConfigUtil;
 import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
+import cn.udesk.model.StructModel;
 import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.widget.ChatImageView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -52,7 +57,8 @@ public class MessageAdatper extends BaseAdapter {
             R.layout.udesk_chat_msg_item_imgt_r,//图片消息右边的UI布局文件
             R.layout.udesk_chat_msg_item_redirect,//转移消息提示信息UI布局文件
             R.layout.udesk_chat_rich_item_txt,//富文本消息UI布局文件
-            R.layout.udesk_im_commodity_item  //显示商品信息的UI布局文件
+            R.layout.udesk_im_commodity_item,  //显示商品信息的UI布局文件
+            R.layout.udesk_chat_msg_itemstruct_l //显示结构化消息
     };
 
     /**
@@ -95,6 +101,13 @@ public class MessageAdatper extends BaseAdapter {
      * 发送商品链接本消息标识
      */
     private static final int COMMODITY = 8;
+
+    /**
+     * 收到结构化消息
+     */
+    private static final int MSG_STRUCT = 9;
+
+
     //2条消息之间 时间间隔超过SPACE_TIME， 会话界面会显示出消息的收发时间
     private static final long SPACE_TIME = 3 * 60 * 1000;
 
@@ -206,6 +219,8 @@ public class MessageAdatper extends BaseAdapter {
                     }
                 case UdeskConst.ChatMsgTypeInt.TYPE_REDIRECT:
                     return MSG_REDIRECT;
+                case UdeskConst.ChatMsgTypeInt.TYPE_STRUCT:
+                    return  MSG_STRUCT;
                 default:
                     return ILLEGAL;
             }
@@ -313,7 +328,7 @@ public class MessageAdatper extends BaseAdapter {
                 case MSG_TXT_L:
                 case MSG_TXT_R: {
                     TxtViewHolder holder = new TxtViewHolder();
-                    initItemNormalView(convertView, holder, itemType, position);
+                    initItemNormalView(convertView, holder);
                     holder.tvMsg = (TextView) convertView.findViewById(R.id.udesk_tv_msg);
                     if (itemType == MSG_TXT_L) {
                         UdekConfigUtil.setUITextColor(UdeskConfig.udeskIMLeftTextColorResId, holder.tvMsg);
@@ -325,7 +340,7 @@ public class MessageAdatper extends BaseAdapter {
                 }
                 case RICH_TEXT: {
                     RichTextViewHolder holder = new RichTextViewHolder();
-                    initItemNormalView(convertView, holder, itemType, position);
+                    initItemNormalView(convertView, holder);
                     holder.rich_tvmsg = (TextView) convertView.findViewById(R.id.udesk_tv_rich_msg);
                     UdekConfigUtil.setUITextColor(UdeskConfig.udeskIMLeftTextColorResId, holder.rich_tvmsg);
                     convertView.setTag(holder);
@@ -334,7 +349,7 @@ public class MessageAdatper extends BaseAdapter {
                 case MSG_AUDIO_L:
                 case MSG_AUDIO_R: {
                     AudioViewHolder holder = new AudioViewHolder();
-                    initItemNormalView(convertView, holder, itemType, position);
+                    initItemNormalView(convertView, holder);
                     holder.tvDuration = (TextView) convertView
                             .findViewById(R.id.udesk_im_item_record_duration);
                     holder.record_item_content = convertView.findViewById(R.id.udesk_im_record_item_content);
@@ -345,14 +360,14 @@ public class MessageAdatper extends BaseAdapter {
                 case MSG_IMG_L:
                 case MSG_IMG_R: {
                     ImgViewHolder holder = new ImgViewHolder();
-                    initItemNormalView(convertView, holder, itemType, position);
+                    initItemNormalView(convertView, holder);
                     holder.imgView = (ChatImageView) convertView.findViewById(R.id.udesk_im_image);
                     convertView.setTag(holder);
                     break;
                 }
                 case MSG_REDIRECT: {
                     RedirectViewHolder holder = new RedirectViewHolder();
-                    initItemNormalView(convertView, holder, itemType, position);
+                    initItemNormalView(convertView, holder);
                     holder.redirectMsg = (TextView) convertView.findViewById(R.id.udesk_redirect_msg);
                     UdekConfigUtil.setUITextColor(UdeskConfig.udeskIMTipTextColorResId, holder.redirectMsg);
                     convertView.setTag(holder);
@@ -377,6 +392,25 @@ public class MessageAdatper extends BaseAdapter {
                     convertView.setTag(holder);
                     break;
                 }
+                case MSG_STRUCT:
+                    StructViewHolder holder = new StructViewHolder();
+                    initItemNormalView(convertView, holder);
+                    holder.structImgView = convertView.findViewById(R.id.udesk_struct_img_container);
+                    holder.structTextView = convertView.findViewById(R.id.udesk_struct_text_container);
+                    holder.structBtnLineayLayout = (LinearLayout) convertView.findViewById(R.id.udesk_struct_btn_container);
+
+                    holder.structImg = (ImageView) convertView.findViewById(R.id.udesk_struct_img);
+                    holder.structTitle = (TextView) convertView.findViewById(R.id.udesk_struct_title);
+                    holder.structDes = (TextView) convertView.findViewById(R.id.udesk_struct_des);
+
+//                    holder.structTextView1 = (TextView) convertView.findViewById(R.id.udesk_struct_btn_1);
+//                    holder.structTextView2 = (TextView) convertView.findViewById(R.id.udesk_struct_btn_2);
+//                    holder.structTextView3 = (TextView) convertView.findViewById(R.id.udesk_struct_btn_3);
+//                    holder.structTextView4 = (TextView) convertView.findViewById(R.id.udesk_struct_btn_4);
+//                    holder.structTextView5 = (TextView) convertView.findViewById(R.id.udesk_struct_btn_4);
+
+                    convertView.setTag(holder);
+                    break;
             }
         }
         return convertView;
@@ -427,6 +461,7 @@ public class MessageAdatper extends BaseAdapter {
                 case MSG_AUDIO_L:
                 case RICH_TEXT:
                 case MSG_IMG_L:
+                case MSG_STRUCT:
                     this.isLeft = true;
                     if (message.getAgentUrl() == null || TextUtils.isEmpty(message.getAgentUrl().trim())) {
                         ivHeader.setImageResource(R.drawable.udesk_im_default_agent_avatar);
@@ -434,7 +469,6 @@ public class MessageAdatper extends BaseAdapter {
                         getImageLoader(mContext).displayImage(message.getAgentUrl(), ivHeader, agentHeadOptions);
                     }
                     agentnickName.setText(message.getNickName());
-//                    ivHeader.setImageResource(R.drawable.udesk_im_default_agent_avatar);
                     break;
                 default:
                     break;
@@ -453,6 +487,7 @@ public class MessageAdatper extends BaseAdapter {
                     || itemType == MSG_AUDIO_L
                     || itemType == MSG_IMG_L
                     || itemType == MSG_REDIRECT
+                    || itemType == MSG_STRUCT
                     ) {
                 ivStatus.setVisibility(View.GONE);
             } else {
@@ -498,12 +533,8 @@ public class MessageAdatper extends BaseAdapter {
                     Spannable sp = (Spannable) rich_tvmsg.getText();
                     URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
                     SpannableStringBuilder style = new SpannableStringBuilder(text);
-//                    SpannableStringBuilder builder = new SpannableStringBuilder(charSequence);
                     style.clearSpans();// should clear old spans
                     for (URLSpan url : urls) {
-//                        int start = builder.getSpanStart(url);
-//                        int ends = builder.getSpanEnd(url);
-//                        String texttitle = builder.toString().substring(start, ends);
                         MyURLSpan myURLSpan = new MyURLSpan(url.getURL());
                         style.setSpan(myURLSpan, sp.getSpanStart(url),
                                 sp.getSpanEnd(url),
@@ -525,11 +556,9 @@ public class MessageAdatper extends BaseAdapter {
     private class MyURLSpan extends ClickableSpan {
 
         private String mUrl;
-//        private String textTitle;
 
         MyURLSpan(String url) {
             mUrl = url;
-//            textTitle = mtextTilte;
         }
 
 
@@ -537,7 +566,6 @@ public class MessageAdatper extends BaseAdapter {
         public void onClick(View widget) {
             Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
             intent.putExtra(UdeskConst.WELCOME_URL, mUrl);
-//            intent.putExtra(UdeskConst.WELCOME_URL_TITLE, textTitle);
             mContext.startActivity(intent);
         }
     }
@@ -804,9 +832,140 @@ public class MessageAdatper extends BaseAdapter {
         }
     }
 
+    /**
+     * 处理结构化消息
+     */
+    public class StructViewHolder extends BaseViewHolder {
+        public View structImgView;
+        public View structTextView;
+        public LinearLayout structBtnLineayLayout;
 
-    private void initItemNormalView(View convertView, BaseViewHolder holder,
-                                    int itemType, final int position) {
+        public ImageView structImg;
+        public TextView structTitle;
+        public TextView structDes;
+
+        @Override
+        void bind(Context context) {
+            StructModel structModel = JsonUtils.parserStructMsg(message.getMsgContent());
+            if (structModel != null){
+                //显示图片部分
+                showStructImg(context,structModel,structImgView,structImg);
+                //标题描述部分
+                showStructText(structModel,structTextView,structTitle,structDes);
+                //按钮部分
+                showStructBtn(context,structModel,structBtnLineayLayout);
+            }
+
+        }
+    }
+
+    private  void showStructImg(Context context, StructModel structModel,View structImgView,ImageView structImg){
+        try {
+            final String imgUrl = structModel.getImg_url();
+            if (!TextUtils.isEmpty(imgUrl)){
+                structImgView.setVisibility(View.VISIBLE);
+                if (options == null) {
+                    initDisplayOptions();
+                }
+                getImageLoader(context).displayImage(imgUrl, structImg, options);
+                structImgView.setOnClickListener(new OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        UdeskUtil.previewPhoto(mContext, ImageLoader.getInstance().getDiscCache()
+                                .get(imgUrl).getPath());
+                    }
+                });
+            }else{
+                structImgView.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }catch (OutOfMemoryError error){
+            error.printStackTrace();
+        }
+    }
+
+    private void showStructText( StructModel structModel, View structTextView,TextView structTitle,TextView structDes){
+        try {
+            if (!TextUtils.isEmpty(structModel.getTitle()) || !TextUtils.isEmpty(structModel.getDescription())){
+                structTextView.setVisibility(View.VISIBLE);
+                if (!TextUtils.isEmpty(structModel.getTitle())){
+                    structTitle.setVisibility(View.VISIBLE);
+                    structTitle.setText(structModel.getTitle());
+                }else{
+                    structTitle.setVisibility(View.GONE);
+                }
+                if (!TextUtils.isEmpty(structModel.getDescription())){
+                    structDes.setVisibility(View.VISIBLE);
+                    structDes.setText(structModel.getDescription());
+                }else{
+                    structDes.setVisibility(View.GONE);
+                }
+            }else{
+                structTextView.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showStructBtn(Context context ,StructModel structModel,LinearLayout structBtnLineayLayout){
+        if (structModel.getButtons() != null && structModel.getButtons().size()>0){
+            structBtnLineayLayout.removeAllViews();
+            structBtnLineayLayout.setVisibility(View.VISIBLE);
+            List<StructModel.ButtonsBean> buttonsBeens = structModel.getButtons();
+            for (int i= 0; i<buttonsBeens.size();i++){
+                StructModel.ButtonsBean buttonsBean =  buttonsBeens.get(i);
+                TextView textView = new TextView(context);
+                textView.setText(buttonsBean.getText());
+                textView.setOnClickListener(new MyStructBtnOnClick(buttonsBean));
+                textView.setTextColor(context.getResources().getColor(R.color.udesk_custom_dialog_sure_btn_color));
+                textView.setGravity(Gravity.CENTER);
+                textView.setPadding(5,5,5,5);
+                textView.setTextSize(18);
+                LinearLayout.LayoutParams textviewParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                View line = new View(context);
+                line.setBackgroundColor(context.getResources().getColor(R.color.udesk_struct_bg_line_color));
+                LinearLayout.LayoutParams lineParas = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+                        1);
+                structBtnLineayLayout.addView(textView,textviewParams);
+                structBtnLineayLayout.addView(line,lineParas);
+            }
+
+        }else{
+            structBtnLineayLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private class MyStructBtnOnClick implements OnClickListener {
+        StructModel.ButtonsBean mStructBtn;
+        public  MyStructBtnOnClick( StructModel.ButtonsBean structBtn){
+             this.mStructBtn = structBtn;
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (mStructBtn.getType().equals(UdeskConst.StructBtnTypeString.link)){
+                Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
+                intent.putExtra(UdeskConst.WELCOME_URL, mStructBtn.getValue());
+                mContext.startActivity(intent);
+            }else if (mStructBtn.getType().equals(UdeskConst.StructBtnTypeString.phone)){
+                Intent dialIntent =  new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mStructBtn.getValue()));
+                mContext.startActivity(dialIntent);
+            }else if(mStructBtn.getType().equals(UdeskConst.StructBtnTypeString.sdkCallBack)){
+                if (UdeskSDKManager.getInstance().getStructMessageCallBack()!= null){
+                    UdeskSDKManager.getInstance().getStructMessageCallBack().structMsgCallBack(mContext,mStructBtn.getValue());
+                }
+            }
+
+        }
+    }
+
+
+    private void initItemNormalView(View convertView, BaseViewHolder holder) {
         holder.ivHeader = (CircleImageView) convertView.findViewById(R.id.udesk_iv_head);
         holder.tvTime = (TextView) convertView.findViewById(R.id.udesk_tv_time);
         holder.ivStatus = (ImageView) convertView.findViewById(R.id.udesk_iv_status);

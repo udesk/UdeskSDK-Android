@@ -1,21 +1,11 @@
 package cn.udesk.activity;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.net.http.SslError;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.Toast;
+
 
 import cn.udesk.R;
 import cn.udesk.UdeskConst;
@@ -53,14 +43,14 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
 		settingTitlebar(tranfer);
 		if (!TextUtils.isEmpty(h5Url)) {
 			String url = UdeskHttpFacade.getInstance().buildRobotUrlWithH5(
-					this, UdeskBaseInfo.App_Key,
+					this, UdeskSDKManager.getInstance().getAppkey(this),
 					h5Url,
 					UdeskSDKManager.getInstance().getSdkToken(this));
 			if (!UdeskUtil.isZh(this)){
 				url = url + "&language=en-us" ;
 			}
-			if(!TextUtils.isEmpty(UdeskBaseInfo.App_Id)){
-				url = url + "&app_id="+UdeskBaseInfo.App_Id ;
+			if(!TextUtils.isEmpty( UdeskSDKManager.getInstance().getAppId(this))){
+				url = url + "&app_id="+UdeskSDKManager.getInstance().getAppId(this) ;
 			}
 			mwebView.loadUrl(url);
 		} else {

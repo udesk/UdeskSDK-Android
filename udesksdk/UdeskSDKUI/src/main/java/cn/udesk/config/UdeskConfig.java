@@ -1,6 +1,5 @@
 package cn.udesk.config;
 
-import java.util.Map;
 
 /**
  * Created by user on 2016/8/12.
@@ -46,13 +45,16 @@ public class UdeskConfig {
     public static int udeskCommityLinkColorResId = DEFAULT;
 
     //配置 是否使用推送服务  true 表示使用  false表示不使用
-    public  static  boolean isUserSDkPush = false;
+    public  static  boolean isUserSDkPush = true;
 
     //配置放弃排队的策略
     public  static  String  UdeskQuenuMode = UdeskQuenuFlag.Mark;
 
     //配置开启留言时的    留言表单留言提示语
     public  static  String  UdeskLeavingMsg = "";
+
+    //配置是否把domain 和 appid 和 appkey 和 sdktoken 存在sharePrefence中， ftrue保存，false 不存
+    public  static  boolean  isUseShare = true;
 
     //mode: mark (默认,标记放弃)/ cannel_mark(取消标记) / force_quit(强制立即放弃)
     public static  class  UdeskQuenuFlag{

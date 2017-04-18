@@ -2,7 +2,6 @@ package cn.udesk.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -178,9 +177,9 @@ public class UdeskHelperActivity extends Activity implements OnClickListener, Ad
     private void getListArticles() {
 
         UdeskHttpFacade.getInstance().getListArticlesJsonAPi(
-                UdeskBaseInfo.domain,
-                UdeskBaseInfo.App_Key,
-                UdeskBaseInfo.App_Id,
+                UdeskSDKManager.getInstance().getDomain(this),
+                UdeskSDKManager.getInstance().getAppkey(this),
+                UdeskSDKManager.getInstance().getAppId(this),
                 new UdeskCallBack() {
                     @Override
                     public void onSuccess(String message) {
@@ -207,10 +206,10 @@ public class UdeskHelperActivity extends Activity implements OnClickListener, Ad
     //获取包含搜索内容的文章列表
     private void getArticlesSearch(String query) {
         UdeskHttpFacade.getInstance().getArticlesSearchJsonAPi(
-                UdeskBaseInfo.domain,
-                UdeskBaseInfo.App_Key,
+                UdeskSDKManager.getInstance().getDomain(this),
+                UdeskSDKManager.getInstance().getAppkey(this),
                 query,
-                UdeskBaseInfo.App_Id,
+                UdeskSDKManager.getInstance().getAppId(this),
                 new UdeskCallBack() {
 
                     @Override

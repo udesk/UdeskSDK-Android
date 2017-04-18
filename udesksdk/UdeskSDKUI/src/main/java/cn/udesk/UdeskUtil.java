@@ -3,7 +3,6 @@ package cn.udesk;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -11,10 +10,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +24,6 @@ import java.util.Set;
 
 import cn.udesk.activity.UdeskZoomImageActivty;
 import cn.udesk.config.UdeskBaseInfo;
-import cn.udesk.config.UdeskConfig;
 import udesk.com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import udesk.com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import udesk.com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -206,7 +202,7 @@ public class UdeskUtil {
 	public static String getFormUrlPara(Context context){
 		StringBuilder builder = new StringBuilder();
 		builder.append("?sdk_token=").append(UdeskSDKManager.getInstance().getSdkToken(context))
-				.append("&sdk_version=").append(UdeskCoreConst.sdkversion).append("&app_id=").append(UdeskBaseInfo.App_Id);
+				.append("&sdk_version=").append(UdeskCoreConst.sdkversion).append("&app_id=").append(UdeskSDKManager.getInstance().getAppId(context));
 		if (!isZh(context)){
 			builder.append("&language=en-us");
 		}

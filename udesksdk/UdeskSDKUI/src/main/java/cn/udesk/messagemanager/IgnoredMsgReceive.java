@@ -14,12 +14,12 @@ import udesk.org.jivesoftware.smack.provider.PacketExtensionProvider;
 /**
  * Created by sks on 2016/6/12.
  */
-public class ActionMsgReceive implements PacketExtensionProvider {
+public class IgnoredMsgReceive implements PacketExtensionProvider {
 
 
     @Override
     public PacketExtension parseExtension(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
-        ActionMsgXmpp actionMsgXmpp = null;
+        IgnoredMsgXmpp ignoredMsg = null;
         boolean stop = false;
         String xmlName = null;
         int evtType;
@@ -28,16 +28,15 @@ public class ActionMsgReceive implements PacketExtensionProvider {
             xmlName = parser.getName();
             switch (evtType){
                 case XmlPullParser.START_TAG:
-                    if ("action".equals(xmlName)){
-                        String type  = parser.getAttributeValue("", "type");
+                    if ("sdk_version".equals(xmlName)){
+//                        String type  = parser.getAttributeValue("", "type");
                         String actionText = parser.nextText();
-                        actionMsgXmpp = new ActionMsgXmpp();
-                        actionMsgXmpp.setType(type);
-                        actionMsgXmpp.setActionText(actionText);
+                        ignoredMsg = new IgnoredMsgXmpp();
+                        ignoredMsg.setSdkversion(actionText);
                     }
                     break;
                 case XmlPullParser.END_TAG:
-                    if(xmlName.equals("action")){
+                    if(xmlName.equals("sdk_version")){
                         stop = true;
                     }
                     break;
@@ -45,7 +44,7 @@ public class ActionMsgReceive implements PacketExtensionProvider {
 
         }
 
-        return actionMsgXmpp;
+        return ignoredMsg;
     }
 
 }

@@ -2,7 +2,6 @@ package cn.udesk.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -52,7 +51,6 @@ public class UdeskHelperArticleActivity extends Activity {
 			mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
 			if(mTitlebar != null){
 				UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId,mTitlebar.getLeftTextView(),mTitlebar.getRightTextView());
-//				UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextcenterResId,mTitlebar.getTitleTextView(),mTitlebar.getStateTextView());
 				UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId ,mTitlebar.getRootView());
 				if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
 					mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
@@ -74,9 +72,9 @@ public class UdeskHelperArticleActivity extends Activity {
 		private void getArticlesContentJsonApiById(int id) {
 			udeskLoading.setVisibility(View.VISIBLE);
 			UdeskHttpFacade.getInstance().getArticlesContentJsonApiById(
-					UdeskBaseInfo.domain,
-					UdeskBaseInfo.App_Key,
-					id, UdeskBaseInfo.App_Id, new UdeskCallBack() {
+					UdeskSDKManager.getInstance().getDomain(this),
+					UdeskSDKManager.getInstance().getAppkey(this),
+					id, UdeskSDKManager.getInstance().getAppId(this), new UdeskCallBack() {
 				
 				@Override
 				public void onSuccess(String message) {
