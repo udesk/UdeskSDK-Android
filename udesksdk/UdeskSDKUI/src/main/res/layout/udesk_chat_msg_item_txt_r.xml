@@ -74,11 +74,11 @@
             android:layout_marginRight="6dp"
             android:layout_marginTop="@dimen/udesk_chat_head_margin"
             android:lineSpacingExtra="3dip"
-            android:autoLink="web"
+            android:autoLink="all"
             android:background="@drawable/udesk_im_item_bg_right"
             android:gravity="center_vertical"
-            android:textColor="#ffffffff"
-            android:textColorLink="#ffffffff"
+            android:textColor="@color/udesk_color_im_text_right1"
+            android:textColorLink="@color/udesk_color_im_text_right1"
             android:textSize="@dimen/udesk_sp16" />
     </TableRow>
 

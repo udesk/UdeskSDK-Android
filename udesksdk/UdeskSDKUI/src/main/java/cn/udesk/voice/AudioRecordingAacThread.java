@@ -78,7 +78,7 @@ public class AudioRecordingAacThread extends Thread implements VoiceRecord {
 						isError = true;
 						break;
 					}
-				} catch (InterruptedException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}

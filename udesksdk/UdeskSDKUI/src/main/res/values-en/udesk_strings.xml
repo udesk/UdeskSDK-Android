@@ -51,7 +51,8 @@
     <string name="camera_denied">Refused photo authrity, can not tak a photo </string>
     <string name="photo_denied">Refused authority of getting photo album, can not get your photos</string>
     <string name="add_bolcked_tips">Sorry, you are in blacklist</string>
-    <string name="udesk_agent_connecting">Aagent connecting...</string>
+    <string name="udesk_agent_connecting">Aagent connecting&#8230;</string>
+    <string name="udesk_agent_inti">Aagent connecting,please wait&#8230;</string>
     <string name="udesk_agent_connecting_error_net_uavailabl">Failed connection, please try later!</string>
 
     <string name="udesk_edit_hint_msg">Typing...</string>

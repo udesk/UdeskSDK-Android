@@ -1,25 +1,16 @@
 package cn.udesk.activity;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
+
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-
 import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.config.UdekConfigUtil;
 import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
-import cn.udesk.widget.UdeskTitleBar;
+
 
 public class UdeskFormActivity extends UdeskBaseWebViewActivity {
 
@@ -31,7 +22,7 @@ public class UdeskFormActivity extends UdeskBaseWebViewActivity {
 
     private void loadingView() {
         settingTitlebar();
-        String url = "http://" + UdeskBaseInfo.domain
+        String url = "http://" +  UdeskSDKManager.getInstance().getDomain(this)
                 + "/im_client/feedback.html"
                 + UdeskUtil.getFormUrlPara(this);
 

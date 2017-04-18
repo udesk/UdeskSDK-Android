@@ -91,4 +91,8 @@
 
     <color name="udesk_custom_dialog_cancle_btn_color">#333333</color>
     <color name="udesk_custom_dialog_sure_btn_color">#007AFF</color>
+
+    <color name="udesk_struct_bg_line_color">#e4e4e4</color>
+
+
 </resources>

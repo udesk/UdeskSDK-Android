@@ -4,18 +4,9 @@ import udesk.org.jivesoftware.smack.packet.PacketExtension;
 
 public class ActionMsgXmpp implements PacketExtension {
 
-	public static  String elementName = "action";
-	public static  String namespace = "udesk:action";
-
 	String type = "";
 
 	String actionText = "";
-
-
-	public ActionMsgXmpp(String elementName, String namespace) {
-
-	}
-
 
 	@Override
 	public String getElementName() {

@@ -18,12 +18,12 @@
         android:textSize="@dimen/udesk_sp12" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/udesk_iv_head"
-        android:layout_width="@dimen/udesk_chat_head"
-        android:layout_height="@dimen/udesk_chat_head"
-        android:layout_below="@id/udesk_tv_time"
-        android:layout_marginTop="@dimen/udesk_chat_head_margin"
-        />
+    android:id="@+id/udesk_iv_head"
+    android:layout_width="@dimen/udesk_chat_head"
+    android:layout_height="@dimen/udesk_chat_head"
+    android:layout_below="@id/udesk_tv_time"
+    android:layout_marginTop="@dimen/udesk_chat_head_margin"
+    />
 
     <TextView
         android:id="@+id/udesk_nick_name"
@@ -54,12 +54,12 @@
             android:layout_marginLeft="6dp"
             android:layout_marginRight="@dimen/udesk_chat_head_margin"
             android:layout_marginTop="@dimen/udesk_chat_head_margin"
-            android:autoLink="web"
+            android:autoLink="all"
             android:background="@drawable/udesk_im_item_bg_left"
             android:gravity="left|center_vertical"
             android:lineSpacingExtra="3dip"
-            android:textColor="#3B3A3C"
-            android:textColorLink="#3B3A3C"
+            android:textColor="@color/udesk_color_im_text_left1"
+            android:textColorLink="@color/udesk_color_im_text_left1"
             android:textSize="@dimen/udesk_sp16" />
 
         <ImageView

@@ -3,12 +3,15 @@ package cn.udesk;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cn.udesk.activity.UdeskOptionsAgentGroupActivity;
 import cn.udesk.activity.UdeskChatActivity;
@@ -19,6 +22,7 @@ import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.messagemanager.UdeskMessageManager;
+import cn.udesk.model.MsgNotice;
 import cn.udesk.model.SDKIMSetting;
 import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.widget.UdeskDialog;
@@ -27,6 +31,8 @@ import udesk.core.UdeskCallBack;
 import udesk.core.UdeskCoreConst;
 import udesk.core.UdeskHttpFacade;
 import udesk.core.model.MessageInfo;
+
+import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
 
 public class UdeskSDKManager {
@@ -39,7 +45,9 @@ public class UdeskSDKManager {
     private ITxtMessageWebonCliclk txtMessageClick;
 
     //离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
-    private IUdeskFormCallBak formCallBak;
+    private IUdeskFormCallBack formCallBack;
+
+    private IUdeskStructMessageCallBack structMessageCallBack;
 
     //多应用 配置选项mode
     private SDKIMSetting imSetting;
@@ -62,8 +70,19 @@ public class UdeskSDKManager {
     /**
      * 留言界面的回调接口
      */
-    public interface IUdeskFormCallBak {
+    public interface IUdeskFormCallBack {
         void toLuachForm(Context context);
+    }
+
+    /**
+     * 处理结构化消息的 回调性按钮接口
+     */
+    public interface IUdeskStructMessageCallBack {
+        /**
+         * @param context   上下文
+         * @param josnValue 接口配置的字符串
+         */
+        void structMsgCallBack(Context context, String josnValue);
     }
 
     public ITxtMessageWebonCliclk getTxtMessageClick() {
@@ -79,17 +98,44 @@ public class UdeskSDKManager {
         this.txtMessageClick = txtMessageClick;
     }
 
-    public IUdeskFormCallBak getFormCallBak() {
-        return formCallBak;
+    public IUdeskFormCallBack getFormCallBak() {
+        return formCallBack;
     }
 
     /**
      * 设置留言界面的回调接口
      *
-     * @param formCallBak
+     * @param formCallBack
      */
-    public void setFormCallBak(IUdeskFormCallBak formCallBak) {
-        this.formCallBak = formCallBak;
+    public void setFormCallBak(IUdeskFormCallBack formCallBack) {
+        this.formCallBack = formCallBack;
+    }
+
+    public IUdeskStructMessageCallBack getStructMessageCallBack() {
+        return structMessageCallBack;
+    }
+
+    /**
+     * 设置结构化消息的回调接口
+     *
+     * @param structMessageCallBack
+     */
+    public void setStructMessageCallBack(IUdeskStructMessageCallBack structMessageCallBack) {
+        this.structMessageCallBack = structMessageCallBack;
+    }
+
+    private IOnlineMessageCallBack onlineMessage;
+
+    public interface IOnlineMessageCallBack {
+        void onlineMessageReceive(MsgNotice msgNotice);
+    }
+
+    public IOnlineMessageCallBack getOnlineMessage() {
+        return onlineMessage;
+    }
+
+    public void setOnlineMessage(IOnlineMessageCallBack onlineMessage) {
+        this.onlineMessage = onlineMessage;
     }
 
     /**
@@ -104,6 +150,14 @@ public class UdeskSDKManager {
         UdeskBaseInfo.domain = domain;
         UdeskBaseInfo.App_Key = appkey;
         UdeskBaseInfo.App_Id = appid;
+        if (UdeskConfig.isUseShare){
+            PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                    UdeskConst.SharePreParams.Udesk_Domain, domain);
+            PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                    UdeskConst.SharePreParams.Udesk_App_Key, appkey);
+            PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                    UdeskConst.SharePreParams.Udesk_App_Id, appid);
+        }
         UdeskUtil.initImageLoaderConfig(context);
     }
 
@@ -134,20 +188,18 @@ public class UdeskSDKManager {
      * @param roplist   包含自定义的列表信息
      */
     public void setUserInfo(final Context context, String token, Map<String, String> info, Map<String, String> textField, Map<String, String> roplist) {
-        initCrashReport(context);
         String cacheToken = getSdkToken(context);
         if ((cacheToken == null)) {
             clean(context);
             disConnectXmpp();
         } else if ((cacheToken != null && !cacheToken.equals(token))) {
-            clean(context);
-            disConnectXmpp();
             // 一个应用内切换用户，的关闭上个用户的推送
             if (!TextUtils.isEmpty(UdeskBaseInfo.registerId) && UdeskConfig.isUserSDkPush) {
-                setSdkPushStatus(UdeskBaseInfo.domain, UdeskBaseInfo.App_Key, UdeskBaseInfo.sdkToken, UdeskConfig.UdeskPushFlag.OFF, UdeskBaseInfo.registerId, UdeskBaseInfo.App_Id);
+                setSdkPushStatus(getDomain(context), getAppkey(context), UdeskBaseInfo.sdkToken,
+                        UdeskConfig.UdeskPushFlag.OFF, UdeskBaseInfo.registerId, getAppId(context));
             }
         }
-        UdeskBaseInfo.sdkToken = token;
+        UdeskBaseInfo.sdkToken = stringFilter(token);
         initDB(context, UdeskBaseInfo.sdkToken);
         PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                 UdeskConst.SharePreParams.Udesk_SdkToken, UdeskBaseInfo.sdkToken);
@@ -159,10 +211,17 @@ public class UdeskSDKManager {
         UdeskBaseInfo.textField = textField;
         UdeskBaseInfo.roplist = roplist;
     }
+    //过滤掉字符串中的特殊字符
+    private String stringFilter(String str) {
+        String regEx = "[/=]";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(str);
+        return m.replaceAll("").trim();
+    }
 
     //进入会话入口,支持配置,根据配置进入会话
     public void entryChat(Context context) {
-        if (TextUtils.isEmpty(UdeskBaseInfo.App_Id)) {
+        if (TextUtils.isEmpty(getAppId(context))) {
             showConversationByImGroup(context);
             return;
         }
@@ -233,8 +292,8 @@ public class UdeskSDKManager {
 
     //启动留言界面
     public void goToForm(Context context) {
-        if (formCallBak != null) {
-            formCallBak.toLuachForm(context);
+        if (formCallBack != null) {
+            formCallBack.toLuachForm(context);
             return;
         }
         Intent intent = new Intent(context,
@@ -395,16 +454,17 @@ public class UdeskSDKManager {
         UdeskBaseInfo.updateRoplist = updateRoplist;
     }
 
-   //配置开启留言时的    留言表单的留言提示语
-    public void setLeavingMsg(String leavingMsg){
+    //配置开启留言时的    留言表单的留言提示语
+    public void setLeavingMsg(String leavingMsg) {
         UdeskConfig.UdeskLeavingMsg = leavingMsg;
     }
 
     /**
      * 设置退出排队的模式
+     *
      * @param quitQuenuMode
      */
-    public void setQuitQuenuMode(String quitQuenuMode){
+    public void setQuitQuenuMode(String quitQuenuMode) {
         UdeskConfig.UdeskQuenuMode = quitQuenuMode;
     }
 
@@ -440,11 +500,49 @@ public class UdeskSDKManager {
         UdeskCoreConst.isDebug = isShow;
     }
 
+
     public String getSdkToken(Context context) {
         if (!TextUtils.isEmpty(UdeskBaseInfo.sdkToken)) {
             return UdeskBaseInfo.sdkToken;
         }
-        return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_SdkToken);
+        if (UdeskConfig.isUseShare){
+            return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_SdkToken);
+        }else{
+            return "";
+        }
+    }
+
+    public String getDomain(Context context){
+        if (!TextUtils.isEmpty(UdeskBaseInfo.domain)) {
+            return UdeskBaseInfo.domain;
+        }
+        if (UdeskConfig.isUseShare){
+            return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_Domain);
+        }else{
+            return "";
+        }
+    }
+
+    public String getAppkey(Context context){
+        if (!TextUtils.isEmpty(UdeskBaseInfo.App_Key)) {
+            return UdeskBaseInfo.App_Key;
+        }
+        if (UdeskConfig.isUseShare){
+            return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Key);
+        }else{
+            return "";
+        }
+    }
+
+    public String getAppId(Context context){
+        if (!TextUtils.isEmpty(UdeskBaseInfo.App_Id)) {
+            return UdeskBaseInfo.App_Id;
+        }
+        if (UdeskConfig.isUseShare){
+            return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Id);
+        }else{
+            return "";
+        }
     }
 
     public SDKIMSetting getImSetting() {
@@ -460,7 +558,9 @@ public class UdeskSDKManager {
     private void getSDKImSetting(final Context context) {
         try {
             showLoading(context);
-            UdeskHttpFacade.getInstance().getIMSettings(UdeskBaseInfo.domain, UdeskBaseInfo.App_Key, UdeskBaseInfo.sdkToken, UdeskBaseInfo.App_Id, new UdeskCallBack() {
+            initCrashReport(context);
+            UdeskHttpFacade.getInstance().getIMSettings(getDomain(context), getAppkey(context), UdeskBaseInfo.sdkToken,
+                    getAppId(context), new UdeskCallBack() {
                 @Override
                 public void onSuccess(String message) {
                     imSetting = JsonUtils.parserIMSettingJson(message);
@@ -514,10 +614,10 @@ public class UdeskSDKManager {
     private void showRobotByConfigSetting(final Context context, final SDKIMSetting imSetting) {
 
         try {
-            UdeskHttpFacade.getInstance().setUserInfo(context, UdeskBaseInfo.domain,
-                    UdeskBaseInfo.App_Key, getSdkToken(context),
+            UdeskHttpFacade.getInstance().setUserInfo(context, getDomain(context),
+                    getAppkey(context), getSdkToken(context),
                     UdeskBaseInfo.userinfo, UdeskBaseInfo.textField,
-                    UdeskBaseInfo.roplist, UdeskBaseInfo.App_Id, new UdeskCallBack() {
+                    UdeskBaseInfo.roplist, getAppId(context), new UdeskCallBack() {
 
                         @Override
                         public void onSuccess(String string) {

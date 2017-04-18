@@ -12,6 +12,7 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.LinearLayout;
 
 import cn.udesk.R;
 import cn.udesk.widget.UdeskTitleBar;
@@ -23,6 +24,7 @@ import cn.udesk.widget.UdeskTitleBar;
 public class UdeskBaseWebViewActivity extends Activity {
 
     protected WebView mwebView;
+    private LinearLayout linearLayout;
     protected UdeskTitleBar mTitlebar;
     protected UdeskWebChromeClient udeskWebChromeClient;
 
@@ -43,8 +45,14 @@ public class UdeskBaseWebViewActivity extends Activity {
                     finish();
                 }
             });
+            linearLayout = (LinearLayout) findViewById(R.id.udesk_webview_root);
             mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
-            mwebView = (WebView) findViewById(R.id.udesk_webview);
+//            mwebView = (WebView) findViewById(R.id.udesk_webview);
+            mwebView = new WebView(this);
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.
+                    LayoutParams.FILL_PARENT,LinearLayout.LayoutParams.FILL_PARENT);
+            mwebView.setLayoutParams(param);
+            linearLayout.addView(mwebView);
             settingWebView();
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,8 +78,8 @@ public class UdeskBaseWebViewActivity extends Activity {
         settings.setLoadWithOverviewMode(true); // 缩放至屏幕的大小
 
         //若setSupportZoom是false，则该WebView不可缩放，这个不管设置什么都不能缩放。
-        settings.setSupportZoom(true);  //支持缩放，默认为true。是setBuiltInZoomControls的前提。
-        settings.setBuiltInZoomControls(true); //设置内置的缩放控件。
+//        settings.setSupportZoom(true);  //支持缩放，默认为true。是setBuiltInZoomControls的前提。
+//        settings.setBuiltInZoomControls(true); //设置内置的缩放控件。
         settings.supportMultipleWindows();  //多窗口
 
         settings.setAllowFileAccess(true);  //设置可以访问文件
@@ -120,10 +128,10 @@ public class UdeskBaseWebViewActivity extends Activity {
 
             }
 
-//            @Override
-//            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-//                handler.proceed();
-//            }
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                handler.proceed();
+            }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -146,7 +154,13 @@ public class UdeskBaseWebViewActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-
+        try {
+            mwebView.removeAllViews();
+            mwebView.destroy();
+            mwebView = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         super.onDestroy();
     }
 }

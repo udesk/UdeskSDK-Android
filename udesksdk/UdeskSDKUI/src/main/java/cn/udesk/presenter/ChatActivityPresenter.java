@@ -1,11 +1,8 @@
 package cn.udesk.presenter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Bundle;
 import android.os.Message;
 import android.text.Selection;
 import android.text.Spannable;
@@ -15,7 +12,6 @@ import android.util.Log;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -30,9 +26,7 @@ import cn.udesk.R;
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
-import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.activity.UdeskChatActivity.MessageWhat;
-import cn.udesk.activity.UdeskZoomImageActivty;
 import cn.udesk.adapter.UDEmojiAdapter;
 import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
@@ -43,7 +37,6 @@ import cn.udesk.voice.AudioRecordState;
 import cn.udesk.voice.AudioRecordingAacThread;
 import cn.udesk.voice.VoiceRecord;
 import cn.udesk.messagemanager.UdeskMessageManager;
-import udesk.com.nostra13.universalimageloader.core.ImageLoader;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskCoreConst;
 import udesk.core.UdeskHttpFacade;
@@ -148,12 +141,12 @@ public class ChatActivityPresenter {
     }
 
     //加入黑名单通知
-    public void onIsBolck(String isBolcked) {
+    public void onIsBolck(String isBolcked,String notice) {
         if (isBolcked.equals("true")) {
             if (mChatView.getHandler() != null) {
                 Message messge = mChatView.getHandler().obtainMessage(
                         MessageWhat.IM_BOLACKED);
-                messge.obj = isBolcked;
+                messge.obj = notice;
                 mChatView.getHandler().sendMessage(messge);
             }
         }
@@ -166,6 +159,7 @@ public class ChatActivityPresenter {
             if (result.equals("failure")) {
                 mChatView.showFailToast(string);
             } else if (result.equals("succes")) {
+                UdeskMessageManager.getInstance().connection();
                 if (isJsonStr) {
                     JsonUtils.parserCustomersJson(string);
                     updateUserInfo(UdeskBaseInfo.customerId);
@@ -186,18 +180,21 @@ public class ChatActivityPresenter {
     public void createIMCustomerInfo() {
         Context mContext = mChatView.getContext();
         String sdkToken = UdeskSDKManager.getInstance().getSdkToken(mContext);
-        UdeskHttpFacade.getInstance().setUserInfo(mContext, UdeskBaseInfo.domain, UdeskBaseInfo.App_Key, sdkToken, UdeskBaseInfo.userinfo, UdeskBaseInfo.textField, UdeskBaseInfo.roplist, UdeskBaseInfo.App_Id, null);
+        UdeskHttpFacade.getInstance().setUserInfo(mContext, UdeskSDKManager.getInstance().getDomain(mContext),
+                UdeskSDKManager.getInstance().getAppkey(mContext), sdkToken,
+                UdeskBaseInfo.userinfo, UdeskBaseInfo.textField, UdeskBaseInfo.roplist,
+                UdeskSDKManager.getInstance().getAppId(mContext), null);
     }
 
     //请求分配客服信息
     public void getAgentInfo() {
         try {
             UdeskHttpFacade.getInstance().getAgentInfo(
-                    UdeskBaseInfo.domain,
-                    UdeskBaseInfo.App_Key,
+                    UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+                    UdeskSDKManager.getInstance().getAppkey(mChatView.getContext()),
                     UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
                     mChatView.getAgentId(), mChatView.getGroupId(), false,
-                    UdeskBaseInfo.App_Id,
+                    UdeskSDKManager.getInstance().getAppId(mChatView.getContext()),
                     new UdeskCallBack() {
 
                         @Override
@@ -237,9 +234,10 @@ public class ChatActivityPresenter {
                 return;
             }
             UdeskHttpFacade.getInstance().getIMstatus(
-                    UdeskBaseInfo.domain,
-                    UdeskBaseInfo.App_Key,
-                    UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()), agentInfo.getAgentJid(), UdeskBaseInfo.App_Id,
+                    UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+                    UdeskSDKManager.getInstance().getAppkey(mChatView.getContext()),
+                    UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
+                    agentInfo.getAgentJid(), UdeskSDKManager.getInstance().getAppId(mChatView.getContext()),
                     new UdeskCallBack() {
                         @Override
                         public void onSuccess(String string) {
@@ -285,10 +283,10 @@ public class ChatActivityPresenter {
     public void getRedirectAgentInfo(String agent_id, String group_id) {
         try {
             UdeskHttpFacade.getInstance().getAgentInfo(
-                    UdeskBaseInfo.domain,
-                    UdeskBaseInfo.App_Key,
+                    UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+                    UdeskSDKManager.getInstance().getAppkey(mChatView.getContext()),
                     UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
-                    agent_id, group_id, true, UdeskBaseInfo.App_Id,
+                    agent_id, group_id, true, UdeskSDKManager.getInstance().getAppId(mChatView.getContext()),
                     new UdeskCallBack() {
 
                         @Override
@@ -318,9 +316,9 @@ public class ChatActivityPresenter {
                 UdeskHttpFacade.getInstance().updateUserInfo(UdeskBaseInfo.updateUserinfo,
                         UdeskBaseInfo.updateTextField,
                         UdeskBaseInfo.updateRoplist, userId,
-                        UdeskBaseInfo.domain,
-                        UdeskBaseInfo.App_Key,
-                        UdeskBaseInfo.App_Id,
+                        UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+                        UdeskSDKManager.getInstance().getAppkey(mChatView.getContext()),
+                        UdeskSDKManager.getInstance().getAppId(mChatView.getContext()),
                         new UdeskCallBack() {
                             @Override
                             public void onSuccess(String message) {
@@ -346,10 +344,11 @@ public class ChatActivityPresenter {
                 return;
             }
             UdeskHttpFacade.getInstance().hasSurvey(
-                    UdeskBaseInfo.domain,
-                    UdeskBaseInfo.App_Key,
+                    UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+                    UdeskSDKManager.getInstance().getAppkey(mChatView.getContext()),
                     UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
-                    agent_id, UdeskBaseInfo.customerId, UdeskBaseInfo.App_Id,
+                    agent_id, UdeskBaseInfo.customerId,
+                    UdeskSDKManager.getInstance().getAppId(mChatView.getContext()),
                     new UdeskCallBack() {
 
                         @Override
@@ -394,9 +393,10 @@ public class ChatActivityPresenter {
     private void getIMSurveyOptions() {
         try {
             UdeskHttpFacade.getInstance().getIMSurveyOptions(
-                    UdeskBaseInfo.domain,
-                    UdeskBaseInfo.App_Key,
-                    UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()), UdeskBaseInfo.App_Id, new UdeskCallBack() {
+                    UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+                    UdeskSDKManager.getInstance().getAppkey(mChatView.getContext()),
+                    UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
+                    UdeskSDKManager.getInstance().getAppId(mChatView.getContext()), new UdeskCallBack() {
 
                         @Override
                         public void onSuccess(String message) {
@@ -427,12 +427,12 @@ public class ChatActivityPresenter {
 
         try {
             UdeskHttpFacade.getInstance().putSurveyVote(
-                    UdeskBaseInfo.domain,
-                    UdeskBaseInfo.App_Key,
+                    UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+                    UdeskSDKManager.getInstance().getAppkey(mChatView.getContext()),
                     UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
                     mChatView.getAgentInfo().getAgent_id(),
                     UdeskBaseInfo.customerId,
-                    optionId, UdeskBaseInfo.App_Id, new UdeskCallBack() {
+                    optionId, UdeskSDKManager.getInstance().getAppId(mChatView.getContext()), new UdeskCallBack() {
 
                         @Override
                         public void onSuccess(String message) {
@@ -454,10 +454,11 @@ public class ChatActivityPresenter {
     //客户端返回会话界面，在排队中通知移除排队
     public void quitQuenu() {
         try {
-            UdeskHttpFacade.getInstance().quitQueue(UdeskBaseInfo.domain,
-                    UdeskBaseInfo.App_Key,
+            UdeskHttpFacade.getInstance().quitQueue(
+                    UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+                    UdeskSDKManager.getInstance().getAppkey(mChatView.getContext()),
                     UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
-                    UdeskBaseInfo.App_Id,
+                    UdeskSDKManager.getInstance().getAppId(mChatView.getContext()),
                     UdeskConfig.UdeskQuenuMode, new UdeskCallBack() {
 
                         @Override

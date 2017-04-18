@@ -71,10 +71,11 @@ public class UdeskOptionsAgentGroupActivity extends Activity implements AdapterV
      */
     private void getImGroupInfo() {
         showLoading();
-        UdeskHttpFacade.getInstance().getImGroupApi(UdeskBaseInfo.domain,
-                UdeskBaseInfo.App_Key,
+        UdeskHttpFacade.getInstance().getImGroupApi(
+                UdeskSDKManager.getInstance().getDomain(this),
+                UdeskSDKManager.getInstance().getAppkey(this),
                 UdeskSDKManager.getInstance().getSdkToken(this),
-                UdeskBaseInfo.App_Id,
+                UdeskSDKManager.getInstance().getAppId(this),
                 new UdeskCallBack() {
 
                     @Override

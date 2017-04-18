@@ -1,11 +1,9 @@
 package cn.udesk.voice;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import cn.udesk.R;
 
 public class RecordTouchListener implements View.OnTouchListener{
 	RecordStateCallback mRecordStateCallback;
