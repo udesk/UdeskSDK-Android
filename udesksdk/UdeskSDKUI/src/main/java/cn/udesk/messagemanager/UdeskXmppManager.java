@@ -169,13 +169,16 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
      * @param to
      */
     public void sendComodityMessage(String text, String to) {
-        xmppMsg = new Message(to, Message.Type.chat);
-        text = StringUtils.escapeForXML(text).toString();
-        ProductXmpp product = new ProductXmpp();
-        product.setBody(text);
-        xmppMsg.addExtension(product);
+        if (TextUtils.isEmpty(to)) {
+            return ;
+        }
         if (xmppConnection != null) {
             try {
+                xmppMsg = new Message(to, Message.Type.chat);
+                text = StringUtils.escapeForXML(text).toString();
+                ProductXmpp product = new ProductXmpp();
+                product.setBody(text);
+                xmppMsg.addExtension(product);
                 xmppConnection.sendPacket(xmppMsg);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -185,14 +188,17 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
     }
 
     public void sendActionMessage(String to) {
-        xmppMsg = new Message(to, Message.Type.chat);
-        xmppMsg.setPacketID(" ");
-        ActionMsgXmpp actionMsgXmpp = new ActionMsgXmpp();
-        actionMsgXmpp.setActionText("overready");
-        actionMsgXmpp.setType("isover");
-        xmppMsg.addExtension(actionMsgXmpp);
+        if (TextUtils.isEmpty(to)) {
+            return ;
+        }
         if (xmppConnection != null) {
             try {
+                xmppMsg = new Message(to, Message.Type.chat);
+                xmppMsg.setPacketID(" ");
+                ActionMsgXmpp actionMsgXmpp = new ActionMsgXmpp();
+                actionMsgXmpp.setActionText("overready");
+                actionMsgXmpp.setType("isover");
+                xmppMsg.addExtension(actionMsgXmpp);
                 xmppConnection.sendPacket(xmppMsg);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -202,6 +208,9 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
 
     public void sendPreMessage(String type, String text, String to) {
         try {
+            if (TextUtils.isEmpty(to)) {
+                return ;
+            }
             if (xmppConnection != null) {
                 xmppMsg = new Message(to, Message.Type.chat);
                 text = StringUtils.escapeForXML(text).toString();
@@ -233,6 +242,9 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
      */
     public boolean sendMessage(String type, String text, String msgId, String to, long duration, String im_sub_session_id) {
         try {
+            if (TextUtils.isEmpty(to)) {
+                return false;
+            }
             xmppMsg = new Message(to, Message.Type.chat);
             text = StringUtils.escapeForXML(text).toString();
             xmppMsg.setPacketID(msgId);
@@ -319,7 +331,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
         }
         sendReceivedMsg(message);
         String id = message.getPacketID();
-        if (id == null || TextUtils.isEmpty(id)) {
+        if (id == null || TextUtils.isEmpty(id.trim())) {
             return;
         }
         if (message.getBody() != null) {
