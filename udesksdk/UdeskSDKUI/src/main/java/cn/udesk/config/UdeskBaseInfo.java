@@ -78,4 +78,6 @@ public class UdeskBaseInfo {
     //发送商品链接的mode
     public static UdeskCommodityItem commodity = null;
 
+    public static String sendMsgTo = "";
+
 }

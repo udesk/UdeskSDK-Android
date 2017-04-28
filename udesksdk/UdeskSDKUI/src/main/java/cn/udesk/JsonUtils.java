@@ -92,6 +92,7 @@ public class JsonUtils {
 					}
 					if (agentJson.has("jid")) {
 						agentInfo.setAgentJid(agentJson.getString("jid"));
+						UdeskBaseInfo.sendMsgTo = agentJson.getString("jid");
 					}
 					if (agentJson.has("agent_id")) {
 						agentInfo.setAgent_id(agentJson.getString("agent_id"));
