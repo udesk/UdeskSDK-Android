@@ -89,7 +89,7 @@ Udesk-SDK的工作流程如下图所示。
 
 2.2.2导入集成
 
-你所要做的是把Udesk_Separate_UI做为独立的module import, 并在你APP build.gradle文件中加入：
+你所要做的是把UdeskSDKUI做为独立的module import, 并在你APP build.gradle文件中加入：
 
 ``` java
 dependencies {
