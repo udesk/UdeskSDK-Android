@@ -312,7 +312,9 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                             if (activity.isbolcked.equals("true")) {
                                 return;
                             }
-                            if (activity.mAgentInfo == null || !jid.contains(activity.mAgentInfo.getAgentJid())) {
+                            if (activity.mAgentInfo == null ||
+                                    TextUtils.isEmpty(activity.mAgentInfo.getAgentJid())
+                                    || !jid.contains(activity.mAgentInfo.getAgentJid())) {
                                 return;
                             }
                             if (!activity.currentStatusIsOnline && activity.isNeedStartExpandabLyout) {
