@@ -152,8 +152,12 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
 
     private void sendSelfStatus() {
         try {
+            if (TextUtils.isEmpty(UdeskBaseInfo.sendMsgTo)){
+                return;
+            }
             Presence statusPacket = new Presence(Presence.Type.available);
             statusPacket.setStatus("online");
+            statusPacket.setTo(UdeskBaseInfo.sendMsgTo);
             if (xmppConnection != null) {
                 xmppConnection.sendPacket(statusPacket);
             }
