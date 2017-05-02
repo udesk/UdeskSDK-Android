@@ -13,6 +13,7 @@ import com.qiniu.android.common.Zone;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.Configuration;
 import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UpProgressHandler;
 import com.qiniu.android.storage.UploadManager;
 
 import org.json.JSONObject;
@@ -818,7 +819,7 @@ public class ChatActivityPresenter {
     //上传语音文件
     private void upLoadVodieFile(String filePath, MessageInfo message) {
         try {
-            Configuration config = new Configuration.Builder().zone(Zone.httpAutoZone).build();
+            Configuration config = new Configuration.Builder().zone(Zone.httpsAutoZone).build();
             UploadManager uploadManager = new UploadManager(config);
             if (mMyUpCompletionAudioHandler == null) {
                 mMyUpCompletionAudioHandler = new MyUpCompletionAudioHandler();
@@ -841,7 +842,7 @@ public class ChatActivityPresenter {
 
     //上传图片文件
     private void upLoadImageFile(String filePath, MessageInfo message) {
-        Configuration config = new Configuration.Builder().zone(Zone.httpAutoZone).build();
+        Configuration config = new Configuration.Builder().zone(Zone.httpsAutoZone).build();
         UploadManager uploadManager = new UploadManager(config);
         if (mMyUpCompletionImgHandler == null) {
             mMyUpCompletionImgHandler = new MyUpCompletionImgHandler();
@@ -867,7 +868,7 @@ public class ChatActivityPresenter {
     /**
      * 七牛上传进度
      */
-    private com.qiniu.android.storage.UpProgressHandler mUpProgressHandler = new com.qiniu.android.storage.UpProgressHandler() {
+    private UpProgressHandler mUpProgressHandler = new UpProgressHandler() {
         public void progress(String key, double percent) {
         }
     };
