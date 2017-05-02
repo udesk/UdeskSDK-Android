@@ -9,8 +9,11 @@ import android.text.Spannable;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.qiniu.android.common.Zone;
 import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.Configuration;
 import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UploadManager;
 
 import org.json.JSONObject;
 
@@ -815,7 +818,8 @@ public class ChatActivityPresenter {
     //上传语音文件
     private void upLoadVodieFile(String filePath, MessageInfo message) {
         try {
-            com.qiniu.android.storage.UploadManager uploadManager = new com.qiniu.android.storage.UploadManager();
+            Configuration config = new Configuration.Builder().zone(Zone.httpAutoZone).build();
+            UploadManager uploadManager = new UploadManager(config);
             if (mMyUpCompletionAudioHandler == null) {
                 mMyUpCompletionAudioHandler = new MyUpCompletionAudioHandler();
             }
@@ -837,7 +841,8 @@ public class ChatActivityPresenter {
 
     //上传图片文件
     private void upLoadImageFile(String filePath, MessageInfo message) {
-        com.qiniu.android.storage.UploadManager uploadManager = new com.qiniu.android.storage.UploadManager();
+        Configuration config = new Configuration.Builder().zone(Zone.httpAutoZone).build();
+        UploadManager uploadManager = new UploadManager(config);
         if (mMyUpCompletionImgHandler == null) {
             mMyUpCompletionImgHandler = new MyUpCompletionImgHandler();
         }
@@ -888,7 +893,7 @@ public class ChatActivityPresenter {
             try {
                 MessageInfo msg = mToMsgMap.get(key);
                 if (key != null && null != response && response.has("key")
-                        && msg != null) {
+                        && msg != null && info.isOK()) {
                     if (UdeskCoreConst.isDebug) {
                         Log.i("DialogActivityPresenter", "UpCompletion : key="
                                 + key + "\ninfo=" + info.toString() + "\nresponse="
@@ -946,7 +951,7 @@ public class ChatActivityPresenter {
             try {
                 MessageInfo msg = mToMsgMap.get(key);
                 if (key != null && null != response && response.has("key")
-                        && msg != null) {
+                        && msg != null && info.isOK()) {
                     if (UdeskCoreConst.isDebug) {
                         Log.w("DialogActivityPresenter", "UpCompletion : key="
                                 + key + "\ninfo=" + info.toString() + "\nresponse="

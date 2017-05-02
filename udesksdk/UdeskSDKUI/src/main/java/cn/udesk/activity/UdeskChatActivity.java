@@ -1539,6 +1539,9 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
     //发送广告的连接地址消息
     public void sentLink(String linkMsg) {
+        if (!isShowNotSendMsg()) {
+            return;
+        }
         if (mPresenter != null) {
             mPresenter.sendTxtMessage(linkMsg);
         }

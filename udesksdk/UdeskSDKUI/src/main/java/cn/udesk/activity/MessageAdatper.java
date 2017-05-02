@@ -403,12 +403,6 @@ public class MessageAdatper extends BaseAdapter {
                     holder.structTitle = (TextView) convertView.findViewById(R.id.udesk_struct_title);
                     holder.structDes = (TextView) convertView.findViewById(R.id.udesk_struct_des);
 
-//                    holder.structTextView1 = (TextView) convertView.findViewById(R.id.udesk_struct_btn_1);
-//                    holder.structTextView2 = (TextView) convertView.findViewById(R.id.udesk_struct_btn_2);
-//                    holder.structTextView3 = (TextView) convertView.findViewById(R.id.udesk_struct_btn_3);
-//                    holder.structTextView4 = (TextView) convertView.findViewById(R.id.udesk_struct_btn_4);
-//                    holder.structTextView5 = (TextView) convertView.findViewById(R.id.udesk_struct_btn_4);
-
                     convertView.setTag(holder);
                     break;
             }

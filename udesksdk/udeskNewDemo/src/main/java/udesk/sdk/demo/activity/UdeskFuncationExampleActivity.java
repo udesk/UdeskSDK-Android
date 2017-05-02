@@ -326,7 +326,7 @@ public class UdeskFuncationExampleActivity extends Activity {
         item.setThumbHttpUrl("https://img.alicdn.com/imgextra/i1/1728293990/TB2ngm0qFXXXXcOXXXXXXXXXXXX_!!1728293990.jpg_430x430q90.jpg");// 左侧图片
         item.setCommodityUrl("https://detail.tmall.com/item.htm?spm=a1z10.3746-b.w4946-14396547293.1.4PUcgZ&id=529634221064&sku_properties=-1:-1");// 商品网络链接
         UdeskSDKManager.getInstance().setCommodity(item);
-        UdeskSDKManager.getInstance().toLanuchChatAcitvity(UdeskFuncationExampleActivity.this);
+        UdeskSDKManager.getInstance().entryChat(UdeskFuncationExampleActivity.this);
     }
 
     private void UIStyle1(){
