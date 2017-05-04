@@ -142,6 +142,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     private boolean isSurvyOperate = false;//如果是收到客服的满意度调查，则在onresume 处不在请求分配客服
     private boolean isInitComplete = false; //标识进入请求分配客服的流程是否结束
     private boolean isOverConversation = false;//标识会话是否客服已经关闭会话
+    private boolean isPermmitSurvy = true;
 
     public static class MessageWhat {
         public static final int loadHistoryDBMsg = 1;
@@ -701,7 +702,8 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                     });
 
         } else if (R.id.udesk_bottom_survy_rl == v.getId()) {
-            if (mPresenter != null) {
+            if (mPresenter != null && isPermmitSurvy) {
+                setIsPermmitSurvy(false);
                 mPresenter.getHasSurvey(mAgentInfo.getAgent_id());
             }
         }
@@ -801,6 +803,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                 }
 
             } else if (SELECT_SURVY_OPTION_REQUEST_CODE == requestCode) {
+                setIsPermmitSurvy(true);
                 if (resultCode != Activity.RESULT_OK || data == null) {
                     return;
                 }
@@ -909,6 +912,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         if (surveyOptions.getOptions() == null || surveyOptions.getOptions().isEmpty()) {
             UdeskUtils.showToast(this,
                     getString(R.string.udesk_no_set_survey));
+            setIsPermmitSurvy(true);
             return;
         }
         Intent intent = new Intent();
@@ -1332,7 +1336,6 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     public void doCancelRecord() {
         if (mPresenter != null) {
             mPresenter.doRecordStop(true);
-
         }
         if (mHorVoiceView != null) {
             mHorVoiceView.stopRecording();
@@ -1380,6 +1383,16 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     @Override
     public void changgeiSSurvyOperate() {
         isSurvyOperate = true;
+    }
+
+    @Override
+    public void setIsPermmitSurvy(boolean isPermmit) {
+        if (isPermmit){
+            btnsurvy.setOnClickListener(this);
+        }else{
+            btnsurvy.setOnClickListener(null);
+        }
+        isPermmitSurvy = isPermmit;
     }
 
 

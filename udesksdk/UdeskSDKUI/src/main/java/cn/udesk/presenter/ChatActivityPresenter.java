@@ -345,6 +345,7 @@ public class ChatActivityPresenter {
     public void getHasSurvey(String agent_id) {
         try {
             if (TextUtils.isEmpty(UdeskBaseInfo.customerId)) {
+                mChatView.setIsPermmitSurvy(true);
                 return;
             }
             UdeskHttpFacade.getInstance().hasSurvey(
@@ -370,6 +371,7 @@ public class ChatActivityPresenter {
                                                 Message messge = mChatView.getHandler().obtainMessage(
                                                         MessageWhat.Has_Survey);
                                                 mChatView.getHandler().sendMessage(messge);
+                                                mChatView.setIsPermmitSurvy(true);
                                             }
                                         }
                                     }
@@ -862,6 +864,7 @@ public class ChatActivityPresenter {
             Message message = mChatView.getHandler().obtainMessage(
                     MessageWhat.Survey_error);
             mChatView.getHandler().sendMessage(message);
+            mChatView.setIsPermmitSurvy(true);
         }
     }
 

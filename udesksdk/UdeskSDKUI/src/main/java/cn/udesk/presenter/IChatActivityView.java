@@ -38,5 +38,6 @@ public interface IChatActivityView {
 	String getGroupId();
 	String getAgentId();
 	void changgeiSSurvyOperate();
+	void setIsPermmitSurvy( boolean isPermmitSurvy);
 
 }
