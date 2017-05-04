@@ -6,6 +6,8 @@
    
    ``` java
       UdeskSDKManager.getInstance().initApiKey(context, "you domain","App Key","App Id");
+      
+      注意：域名不要带有http://部分，加入注册生成的域名是"http://udesksdk.udesk.cn/" ,只要传入"udesksdk.udesk.cn"
    ```
       
    二.设置客户的信息。
@@ -112,6 +114,8 @@ dependencies {
 
 ``` java
 UdeskSDKManager.getInstance().initApiKey(context, "You domain","You key","You appid") 
+
+注意：域名不要带有http://部分，加入注册生成的域名是"http://udesksdk.udesk.cn/" ,只要传入"udesksdk.udesk.cn"
 ```
 
 ###3.2初始化客户信息
