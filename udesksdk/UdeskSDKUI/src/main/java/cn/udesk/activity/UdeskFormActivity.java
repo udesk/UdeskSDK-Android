@@ -22,7 +22,7 @@ public class UdeskFormActivity extends UdeskBaseWebViewActivity {
 
     private void loadingView() {
         settingTitlebar();
-        String url = "http://" +  UdeskSDKManager.getInstance().getDomain(this)
+        String url = "https://" +  UdeskSDKManager.getInstance().getDomain(this)
                 + "/im_client/feedback.html"
                 + UdeskUtil.getFormUrlPara(this);
 
