@@ -1387,10 +1387,12 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
     @Override
     public void setIsPermmitSurvy(boolean isPermmit) {
-        if (isPermmit){
-            btnsurvy.setOnClickListener(this);
-        }else{
-            btnsurvy.setOnClickListener(null);
+        if (btnsurvy != null){
+            if (isPermmit){
+                btnsurvy.setOnClickListener(this);
+            }else{
+                btnsurvy.setOnClickListener(null);
+            }
         }
         isPermmitSurvy = isPermmit;
     }
