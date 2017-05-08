@@ -428,7 +428,7 @@ UdeskSDKManager.getInstance().setTxtMessageClick(txtMessageClick);
 
 
 #### 4.11 设置结构化消息type为sdk_callback的消息回调
-对于会话中的链接地址想自由处理，设置该接口
+设置结构化消息type为sdk_callback的消息回调接口
 ```java
   UdeskSDKManager.getInstance().setStructMessageCallBack(structMessageCallBack);
 
