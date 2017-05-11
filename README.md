@@ -6,6 +6,8 @@
    
    ``` java
       UdeskSDKManager.getInstance().initApiKey(context, "you domain","App Key","App Id");
+      
+      注意：域名不要带有http://部分，加入注册生成的域名是"http://udesksdk.udesk.cn/" ,只要传入"udesksdk.udesk.cn"
    ```
       
    二.设置客户的信息。
@@ -112,6 +114,8 @@ dependencies {
 
 ``` java
 UdeskSDKManager.getInstance().initApiKey(context, "You domain","You key","You appid") 
+
+注意：域名不要带有http://部分，加入注册生成的域名是"http://udesksdk.udesk.cn/" ,只要传入"udesksdk.udesk.cn"
 ```
 
 ###3.2初始化客户信息
@@ -422,7 +426,24 @@ UdeskSDKManager.getInstance().setTxtMessageClick(txtMessageClick);
     }
 ```
 
-#### 4.11控制台日志开关
+
+#### 4.11 设置结构化消息type为sdk_callback的消息回调
+设置结构化消息type为sdk_callback的消息回调接口
+```java
+  UdeskSDKManager.getInstance().setStructMessageCallBack(structMessageCallBack);
+
+   /**
+     * 设置结构化消息的回调接口
+     *
+     * @param structMessageCallBack
+     */
+    public void setStructMessageCallBack(IUdeskStructMessageCallBack structMessageCallBack) {
+        this.structMessageCallBack = structMessageCallBack;
+    }
+    
+```
+
+#### 4.12控制台日志开关
 
 如果开发中，想在控制台看当前客户与Udesk服务器连接（xmpp)的交互报文，调用如下接口可实现
 
@@ -431,21 +452,21 @@ UdeskSDKManager.getInstance().setTxtMessageClick(txtMessageClick);
 UdeskSDKManager.getInstance().isShowLog(true);
 ```
 
-#### 4.12 断开与Udesk服务器连接
+#### 4.13 断开与Udesk服务器连接
 
   App运行时如果需要客服离线或不再接收客服消息，调此接口可以主动断开与Udesk服务器的的连接。
 
 ```java
 UdeskSDKManager.getInstance().disConnectXmpp();
 ```
-#### 4.13 设置退出排队的模式
+#### 4.14设置退出排队的模式
 
  quitmode: mark (默认,标记放弃)/ cannel_mark(取消标记) / force_quit(强制立即放弃)
 ```java
 UdeskSDKManager.getInstance().setQuitQuenuMode(quitmode);
 ```
 
-#### 4.14 Android M 权限处理
+#### 4.15 Android M 权限处理
 
 Udesk SDK已经兼容Android M不需开发，兼容方法如下。
 
