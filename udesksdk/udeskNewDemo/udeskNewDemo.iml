@@ -108,8 +108,8 @@
     <orderEntry type="library" exported="" name="udesk-asmack-8-4.0.6" level="project" />
     <orderEntry type="library" exported="" name="okio-1.6.0" level="project" />
     <orderEntry type="library" exported="" name="bugly_crash_release_2.1" level="project" />
+    <orderEntry type="library" exported="" name="qiniu-android-sdk-7.2.3" level="project" />
     <orderEntry type="library" exported="" name="rxpermissions-0.7.0" level="project" />
-    <orderEntry type="library" exported="" name="qiniu-android-sdk-7.3.3" level="project" />
     <orderEntry type="library" exported="" name="udesk_sdk_3.6.0" level="project" />
     <orderEntry type="library" exported="" name="rxjava-1.1.4" level="project" />
     <orderEntry type="library" exported="" name="happy-dns-0.2.7" level="project" />

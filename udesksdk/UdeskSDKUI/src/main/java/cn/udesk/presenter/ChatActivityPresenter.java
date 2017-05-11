@@ -821,8 +821,9 @@ public class ChatActivityPresenter {
     //上传语音文件
     private void upLoadVodieFile(String filePath, MessageInfo message) {
         try {
-            Configuration config = new Configuration.Builder().zone(Zone.httpsAutoZone).build();
-            UploadManager uploadManager = new UploadManager(config);
+//            Configuration config = new Configuration.Builder().zone(Zone.httpsAutoZone).build();
+//            UploadManager uploadManager = new UploadManager(config);
+            UploadManager uploadManager = new UploadManager();
             if (mMyUpCompletionAudioHandler == null) {
                 mMyUpCompletionAudioHandler = new MyUpCompletionAudioHandler();
             }
@@ -844,8 +845,9 @@ public class ChatActivityPresenter {
 
     //上传图片文件
     private void upLoadImageFile(String filePath, MessageInfo message) {
-        Configuration config = new Configuration.Builder().zone(Zone.httpsAutoZone).build();
-        UploadManager uploadManager = new UploadManager(config);
+//        Configuration config = new Configuration.Builder().zone(Zone.httpsAutoZone).build();
+//        UploadManager uploadManager = new UploadManager(config);
+        UploadManager uploadManager = new UploadManager();
         if (mMyUpCompletionImgHandler == null) {
             mMyUpCompletionImgHandler = new MyUpCompletionImgHandler();
         }
