@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.tencent.bugly.crashreport.CrashReport;
 
@@ -188,6 +189,10 @@ public class UdeskSDKManager {
      * @param roplist   包含自定义的列表信息
      */
     public void setUserInfo(final Context context, String token, Map<String, String> info, Map<String, String> textField, Map<String, String> roplist) {
+        if (TextUtils.isEmpty(token)){
+            Toast.makeText(context.getApplicationContext(),context.getString(R.string.udesk_no_sdktoken),Toast.LENGTH_SHORT).show();
+            return;
+        }
         String cacheToken = getSdkToken(context);
         if ((cacheToken == null)) {
             clean(context);
