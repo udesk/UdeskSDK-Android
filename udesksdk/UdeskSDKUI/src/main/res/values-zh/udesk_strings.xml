@@ -60,5 +60,6 @@
     <string name="udesk_service_line"> 客服上线了</string>
     <string name="udesk_service_offline"> 客服离线了</string>
     <string name="udesk_upload_img_error">上传图片失败，请重试</string>
+    <string name="udesk_no_sdktoken">sdktoken为空,请传入合法的值</string>
 
 </resources>

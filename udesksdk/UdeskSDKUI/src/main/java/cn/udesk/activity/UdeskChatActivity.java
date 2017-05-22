@@ -1679,7 +1679,6 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         }
         recycleVoiceRes();
         hasSendCommodity = false;
-        UdeskBaseInfo.isNeedMsgNotice = true;
         super.onStop();
     }
 
@@ -1689,6 +1688,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         if (mHandler != null && myRunnable != null) {
             mHandler.removeCallbacks(myRunnable);
         }
+        UdeskBaseInfo.isNeedMsgNotice = true;
         unRegister();
         UdeskHttpFacade.getInstance().cancel();
         if (mPresenter != null) {

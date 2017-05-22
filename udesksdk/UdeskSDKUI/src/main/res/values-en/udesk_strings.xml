@@ -71,5 +71,6 @@
     <string name="udesk_service_line"> Customer service line</string>
     <string name="udesk_service_offline"> Customer service offline</string>
     <string name="udesk_upload_img_error">Failed to upload pictures, please try again</string>
+    <string name="udesk_no_sdktoken">Sdktoken is empty. Please import a valid value</string>
 
 </resources>
