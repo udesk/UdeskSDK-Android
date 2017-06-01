@@ -156,7 +156,6 @@ public class UdeskBaseWebViewActivity extends Activity {
     protected void onDestroy() {
         try {
             mwebView.removeAllViews();
-            mwebView.destroy();
             mwebView = null;
         } catch (Exception e) {
             e.printStackTrace();
