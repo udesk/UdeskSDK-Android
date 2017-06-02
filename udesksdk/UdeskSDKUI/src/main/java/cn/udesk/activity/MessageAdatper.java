@@ -518,7 +518,7 @@ public class MessageAdatper extends BaseAdapter {
         @Override
         void bind(Context context) {
             try {
-                CharSequence charSequence = Html.fromHtml(message.getMsgContent().replaceAll("(<p>||</p>)", ""));
+                CharSequence charSequence = Html.fromHtml(message.getMsgContent());
                 rich_tvmsg.setText(charSequence);
                 rich_tvmsg.setMovementMethod(LinkMovementMethod.getInstance());
                 CharSequence text = rich_tvmsg.getText();
