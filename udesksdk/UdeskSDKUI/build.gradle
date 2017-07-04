@@ -7,7 +7,7 @@ repositories {
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         minSdkVersion 10
@@ -36,6 +36,5 @@ dependencies {
     compile files('libs/udesk-asmack-8-4.0.6.jar')
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile files('libs/udesk-universal-image-loader-1.9.4.jar')
-    compile files('libs/org.xbill.dns_2.1.6.jar')
     compile files('libs/udesk_sdk_3.6.0.jar')
 }
