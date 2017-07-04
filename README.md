@@ -29,6 +29,14 @@
       UdeskSDKManager.getInstance().entryChat(context);
       
 ``` 
+
+  四. 如果应用内切换用户
+``` java
+     1调用
+      UdeskSDKManager.getInstance().logoutUdesk;
+     之后重复对应的 二和三步骤
+      
+``` 
       
   更多功参考demo。
   
@@ -78,7 +86,7 @@ Udesk-SDK的工作流程如下图所示。
 ![alt text](indeximg/andriod-new-liuchen.png)
 ## 二、下载和集成SDK
 
-####2.1下载Udesk SDK
+#### 2.1下载Udesk SDK
 
 #### 2.2集成到AndroidStudio
 
@@ -105,7 +113,7 @@ dependencies {
  https://github.com/udesk/udesk_android_sdk_h5
 ## 三、快速集成SDK
 
-###3.1初始化
+### 3.1初始化
 
 获取appid 和 密钥的方式，见如下图：
 
@@ -118,7 +126,7 @@ UdeskSDKManager.getInstance().initApiKey(context, "You domain","You key","You ap
 注意：域名不要带有http://部分，加入注册生成的域名是"http://udesksdk.udesk.cn/" ,只要传入"udesksdk.udesk.cn"
 ```
 
-###3.2初始化客户信息
+### 3.2初始化客户信息
 
 注意：若要在SDK中使用 客户自定义字段 需先在管理员网页端设置添加用户自定义字字段。 
 
@@ -145,7 +153,7 @@ UdeskSDKManager.getInstance().setUserInfo(this, sdktoken, info);
 | email         | 可选     | 邮箱账号       |
 | description   | 可选     | 用户描述       |
 
-#####3.2.1添加用户自定义字段 
+##### 3.2.1添加用户自定义字段 
 用管理员账号登录后台，在[管理中心-用户字段]中添加自定义字段。
 ![udesk](http://7xr0de.com1.z0.glb.clouddn.com/custom.jpeg)
 #####3.2.2获取自定义字段信息
@@ -163,7 +171,7 @@ UdeskHttpFacade.getInstance().getUserFields(UDESK_DOMAIN, "you App key", "you Ap
 	}
 });
 ```
-#####3.2.3给自定义字段赋值
+##### 3.2.3给自定义字段赋值
 用户自定义字段共有两类：文本型字段和选择型字段。 
 文本型字段示例：
 ``` java
@@ -200,7 +208,7 @@ textFieldMap.put("TextField_684","北京西城区");
 取该json中字段“field_name”对应的value值作为自定义字段key值进行赋值,取"options"中的某一项key值作为value，示例如下：
 roplistMap.put("SelectField_457","1");
 ```
-#####3.2.4初始化客户逻辑
+##### 3.2.4初始化客户逻辑
 
 ``` java
 1使用主键 sdk_token email cellphone 依次查找用户,找到转1.1
@@ -541,7 +549,7 @@ RxPermissions.getInstance(this)
      */
     private static final int COMMODITY = 8;
 ```
-####5.2 发送文本消息
+#### 5.2 发送文本消息
 ``` java
      //发送文本消息  见ChatActivityPresenter
     public void sendTxtMessage(String msgString) {
@@ -570,7 +578,7 @@ RxPermissions.getInstance(this)
 	<request xmlns='urn:xmpp:receipts'/>
 </message>	
 ```
-####5.2 输入预知
+#### 5.3 输入预知
 
 通过以下方法将用户正在输入的内容，实时显示在客服对话窗口，每500毫秒发送一次消息。注掉以下实现方法可以取消输入预知功能。
 
@@ -594,7 +602,7 @@ public void sendPreMessage() {
 	<premsg xmlns="udesk:premsg" premsg= "true"></premsg>
 </message>
 ```
-####5.3 发送语音消息
+#### 5.4 发送语音消息
 
 ``` java
 //xmpp发语音消息message报文
@@ -615,7 +623,7 @@ public void sendPreMessage() {
 </message>
 
 ```
-####5.4 发送图片消息
+#### 5.5 发送图片消息
 ``` java
 //xmpp发图片消息message报文
 <message to='agent_5236_3055@im03.udesk.cn' id='6314154919339229186' type='chat'>
@@ -631,7 +639,7 @@ public void sendPreMessage() {
 </message>
 ```
 
-####5.5支持满意度调查
+#### 5.6支持满意度调查
 5.5.1客服在pc端叉掉会话，sdk会受到一条满意度调查信息。
 
 ``` java
@@ -671,7 +679,7 @@ private void toLuanchSurveyActivity(SurveyOptionsModel surveyOptions) {
     mPresenter.putIMSurveyResult(optionId);
 ```
 
-####5.6支持客服不在线留言
+#### 5.7支持客服不在线留言
 当前客服繁忙或者不在线，输入内容发送消息，弹出留言提示，如果客户点击则跳转到表单界面。
 ``` java
 protected void goToForm() {
