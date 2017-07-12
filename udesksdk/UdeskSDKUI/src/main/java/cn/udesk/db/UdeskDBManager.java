@@ -81,15 +81,15 @@ public class UdeskDBManager {
 	public boolean addMessageInfo(MessageInfo msg) {
 		try {
 
-			if (getSQLiteDatabase() == null) {
+			if (getSQLiteDatabase() == null || msg == null) {
 				return false;
 			}
 
 			String sql = "replace into "
 					+ UdeskDBHelper.UdeskMessage
 					+ "(MsgID ,Time ,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,"
-					+ "Direction,LocalPath,Duration,AgentJid)"
-					+ " values (?,?,?,?,?,?,?,?,?,?,?)";
+					+ "Direction,LocalPath,Duration,AgentJid,created_at,updated_at,reply_user,reply_userurl)"
+					+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 			getSQLiteDatabase().execSQL(
 					sql,
@@ -97,7 +97,11 @@ public class UdeskDBManager {
 							msg.getMsgContent(), msg.getMsgtype(),
 							msg.getReadFlag(), msg.getSendFlag(),
 							msg.getPlayflag(), msg.getDirection(),
-							msg.getLocalPath(), msg.getDuration() ,msg.getmAgentJid()});
+							msg.getLocalPath(), msg.getDuration() ,
+							msg.getmAgentJid(),msg.getCreatedTime(),
+							msg.getUpdateTime(),msg.getReplyUser(),
+							msg.getUser_avatar()
+					});
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -122,6 +126,25 @@ public class UdeskDBManager {
 		}
 		return false;
 		
+	}
+
+	//更新缓存的路径
+	public boolean updateMsgLoaclUrl(String msgid,String text){
+
+		String sql =  "update " +  UdeskDBHelper.UdeskMessage + " set " + "LocalPath= ?"
+				+ " where MsgID = ? ";
+		try
+		{
+			if (getSQLiteDatabase() == null) {
+				return false;
+			}
+			getSQLiteDatabase().execSQL(sql, new Object[] { text ,msgid });
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+
 	}
 
 	//更新消息发送的状态
@@ -248,9 +271,17 @@ public class UdeskDBManager {
 				String localPath = cursor.getString(8);
 				long duration = cursor.getLong(9);
 				String agentJid = cursor.getString(10);
+				String createdTime = cursor.getString(11);
+				String updatedTime = cursor.getString(12);
+				String replyUser = cursor.getString(13);
+				String reply_userurl = cursor.getString(14);
 				MessageInfo message = new MessageInfo(time, msgId, msgtype,
 						msgContent, readFlag, sendFlag, playFlag, direction,
 						localPath, duration,agentJid);
+				message.setCreatedTime(createdTime);
+				message.setUpdateTime(updatedTime);
+				message.setReplyUser(replyUser);
+				message.setUser_avatar(reply_userurl);
 				if (!TextUtils.isEmpty(agentJid.trim())){
 					String[] urlAndNick = getAgentUrlAndNick(agentJid);
 					if (urlAndNick != null){
@@ -583,6 +614,20 @@ public class UdeskDBManager {
 			}
 			String sql =  "delete from " +  UdeskDBHelper.UdeskMessage ;
 			getSQLiteDatabase().execSQL(sql);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	public boolean deleteMsgById(String msgId){
+		try {
+			if (getSQLiteDatabase() == null){
+				return  false;
+			}
+			String sql =  "delete from " +  UdeskDBHelper.UdeskMessage
+					+ " where MsgID = ? ";
+			getSQLiteDatabase().execSQL(sql,new Object[]{msgId});
 			return true;
 		} catch (Exception e) {
 			return false;

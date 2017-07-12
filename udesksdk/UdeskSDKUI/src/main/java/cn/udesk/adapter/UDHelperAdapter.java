@@ -29,17 +29,26 @@ public class UDHelperAdapter extends BaseAdapter {
     }
 
     public void setList(List<UDHelperItem> items) {
-        list.clear();
-        list = items;
-        notifyDataSetChanged();
+        try {
+            list.clear();
+            list = items;
+            notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public UDHelperItem getItem(int position) {
-        if(position < 0 || position >= list.size()) {
+        try {
+            if(position < 0 || position >= list.size()) {
+                return null;
+            }
+            return list.get(position);
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
-        return list.get(position);
     }
 
     @Override
@@ -49,10 +58,14 @@ public class UDHelperAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_layout_helper_item, null);
+        try {
+            if(convertView == null) {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_layout_helper_item, null);
+            }
+            ((TextView)convertView).setText(list.get(position).subject);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        ((TextView)convertView).setText(list.get(position).subject);
         return convertView;
     }
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingRight="@dimen/udesk_chat_head_margin_left_or_right"
-    android:paddingTop="@dimen/udesk_5" >
+    android:paddingTop="@dimen/udesk_5">
 
     <TextView
         android:id="@+id/udesk_tv_time"
@@ -16,34 +16,38 @@
         android:layout_marginTop="@dimen/udesk_5"
         android:gravity="center"
         android:textColor="@color/udesk_color_im_time_text1"
-        android:textSize="@dimen/udesk_sp12" />
+        android:textSize="@dimen/udesk_sp14" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/udesk_iv_head"
         android:layout_width="@dimen/udesk_chat_head"
         android:layout_height="@dimen/udesk_chat_head"
         android:layout_alignParentRight="true"
         android:layout_below="@id/udesk_tv_time"
         android:layout_marginTop="@dimen/udesk_chat_head_margin"
+        fresco:actualImageScaleType="centerCrop"
+        fresco:roundAsCircle="true"
+        fresco:roundingBorderColor="@color/udesk_color_line2"
+        fresco:roundingBorderWidth="1dp"
+        fresco:placeholderImage="@drawable/udesk_im_default_user_avatar"
         />
 
     <TextView
         android:id="@+id/udesk_nick_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
     <TableRow
         android:id="@+id/udesk_rl_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="45dip"
-        android:minWidth="45dip"
         android:layout_alignTop="@id/udesk_iv_head"
         android:layout_below="@id/udesk_tv_time"
         android:layout_marginLeft="@dimen/udesk_chat_context_margin_other_derction"
-        android:layout_toLeftOf="@id/udesk_iv_head" >
+        android:layout_toLeftOf="@id/udesk_iv_head"
+        android:minHeight="45dip"
+        android:minWidth="45dip">
 
         <ImageView
             android:id="@+id/udesk_iv_status"
@@ -71,34 +75,22 @@
             android:id="@+id/udesk_im_img_item_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/udesk_chat_head_margin"
             android:layout_marginRight="@dimen/udesk_chat_head_margin"
-            android:padding="1dip"
-            android:layout_gravity="center_vertical"
-            >
+            android:padding="1dip">
 
-            <!--<cn.udesk.widget.ChatImageView-->
-                <!--android:id="@+id/udesk_im_image"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:maxHeight="150dip"-->
-                <!--android:maxWidth="100dip"-->
-                <!--android:gravity="center"-->
-                <!--app:direction="right"-->
-                <!--app:arrow_height="10dp"-->
-                <!--app:arrow_width="10dp"-->
-                <!--app:arrow_top="13dp"-->
-                <!--app:offset="5dp"-->
-                <!--app:radius="3dp"-->
-                <!--/>-->
-            <cn.udesk.widget.ChatImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/udesk_im_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxHeight="150dip"
-                android:maxWidth="100dip"
-                app:udesk_ninePNG="@drawable/udesk_im_item_bg_right"
+                android:layout_width="@dimen/udesk_140"
+                android:layout_height="@dimen/udesk_220"
+                fresco:actualImageScaleType="centerCrop"
+                fresco:failureImage="@drawable/udesk_defualt_failure"
+                fresco:failureImageScaleType="centerCrop"
+                fresco:placeholderImage="@drawable/udesk_defalut_image_loading"
+                fresco:placeholderImageScaleType="centerCrop"
+                fresco:roundingBorderWidth="2dp"
+                fresco:roundingBorderColor="#C3CDD4"
                 />
         </RelativeLayout>
     </TableRow>

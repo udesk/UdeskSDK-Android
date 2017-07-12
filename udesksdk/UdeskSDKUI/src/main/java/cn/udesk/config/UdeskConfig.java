@@ -56,6 +56,9 @@ public class UdeskConfig {
     //配置是否把domain 和 appid 和 appkey 和 sdktoken 存在sharePrefence中， ftrue保存，false 不存
     public  static  boolean  isUseShare = true;
 
+    //是否使用录音功能  true表示使用 false表示不使用
+    public  static  boolean  isUseVoice = true;
+
     //mode: mark (默认,标记放弃)/ cannel_mark(取消标记) / force_quit(强制立即放弃)
     public static  class  UdeskQuenuFlag{
         public static final String Mark ="mark";

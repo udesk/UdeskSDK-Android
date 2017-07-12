@@ -52,68 +52,80 @@ public class UdeskOptionsAgentGroupActivity extends Activity implements AdapterV
     }
 
     private void initView() {
-        title = (TextView) findViewById(R.id.udesk_title);
-        listView = (ListView) findViewById(R.id.udesk_options_listview);
-        mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
-        adapter = new OptionsAgentGroupAdapter(this);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(this);
-        title.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                backParentView();
-            }
-        });
+        try {
+            title = (TextView) findViewById(R.id.udesk_title);
+            listView = (ListView) findViewById(R.id.udesk_options_listview);
+            mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
+            adapter = new OptionsAgentGroupAdapter(this);
+            listView.setAdapter(adapter);
+            listView.setOnItemClickListener(this);
+            title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    backParentView();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * 请求客服组信息，没有客服组则直接进入会话界面
      */
     private void getImGroupInfo() {
-        showLoading();
-        UdeskHttpFacade.getInstance().getImGroupApi(
-                UdeskSDKManager.getInstance().getDomain(this),
-                UdeskSDKManager.getInstance().getAppkey(this),
-                UdeskSDKManager.getInstance().getSdkToken(this),
-                UdeskSDKManager.getInstance().getAppId(this),
-                new UdeskCallBack() {
+        try {
+            showLoading();
+            UdeskHttpFacade.getInstance().getImGroupApi(
+                    UdeskSDKManager.getInstance().getDomain(this),
+                    UdeskSDKManager.getInstance().getAppkey(this),
+                    UdeskSDKManager.getInstance().getSdkToken(this),
+                    UdeskSDKManager.getInstance().getAppId(this),
+                    new UdeskCallBack() {
 
-                    @Override
-                    public void onSuccess(String message) {
-                        dismiss();
-                        try {
-                            JSONObject resultJson = new JSONObject(message);
-                            if (resultJson.optInt("code") == 1000) {
-                                groups = JsonUtils.parseIMGroup(message);
-                                if (groups == null || groups.isEmpty()) {
+                        @Override
+                        public void onSuccess(String message) {
+                            dismiss();
+                            try {
+                                JSONObject resultJson = new JSONObject(message);
+                                if (resultJson.optInt("code") == 1000) {
+                                    groups = JsonUtils.parseIMGroup(message);
+                                    if (groups == null || groups.isEmpty()) {
+                                        luanchChat();
+                                        return;
+                                    }
+                                    settingTitlebar();
+                                    drawView(rootId);
+                                } else {
                                     luanchChat();
-                                    return;
                                 }
-                                settingTitlebar();
-                                drawView(rootId);
-                            } else {
+                            } catch (Exception e) {
                                 luanchChat();
                             }
-                        } catch (Exception e) {
-                            luanchChat();
+
                         }
 
-                    }
-
-                    @Override
-                    public void onFail(String message) {
-                        dismiss();
-                        luanchChat();
-                    }
-                });
+                        @Override
+                        public void onFail(String message) {
+                            dismiss();
+                            luanchChat();
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //进入会话界面
     private void luanchChat() {
-        Intent intent = new Intent(UdeskOptionsAgentGroupActivity.this, UdeskChatActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        UdeskOptionsAgentGroupActivity.this.startActivity(intent);
-        finish();
+        try {
+            Intent intent = new Intent(UdeskOptionsAgentGroupActivity.this, UdeskChatActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            UdeskOptionsAgentGroupActivity.this.startActivity(intent);
+            finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -121,22 +133,26 @@ public class UdeskOptionsAgentGroupActivity extends Activity implements AdapterV
      */
     private void settingTitlebar() {
 
-        if (mTitlebar != null) {
-            UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId,mTitlebar.getLeftTextView(),mTitlebar.getRightTextView());
-            UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId ,mTitlebar.getRootView());
-            if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
-                mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
-            }
-            mTitlebar
-                    .setLeftTextSequence(getString(R.string.udesk_options_agentgroup));
-            mTitlebar.setLeftLinearVis(View.VISIBLE);
-            mTitlebar.setLeftViewClick(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    finish();
+        try {
+            if (mTitlebar != null) {
+                UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId,mTitlebar.getLeftTextView(),mTitlebar.getRightTextView());
+                UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId ,mTitlebar.getRootView());
+                if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
+                    mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
                 }
-            });
+                mTitlebar
+                        .setLeftTextSequence(getString(R.string.udesk_options_agentgroup));
+                mTitlebar.setLeftLinearVis(View.VISIBLE);
+                mTitlebar.setLeftViewClick(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -145,11 +161,15 @@ public class UdeskOptionsAgentGroupActivity extends Activity implements AdapterV
      * 返回到上一级
      */
     private void backParentView() {
-        if (backMode == null) {
-            finish();
-        } else {
-            drawView(backMode.getParentId());
-            backMode = filterModel(backMode.getParentId());
+        try {
+            if (backMode == null) {
+                finish();
+            } else {
+                drawView(backMode.getParentId());
+                backMode = filterModel(backMode.getParentId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -159,16 +179,20 @@ public class UdeskOptionsAgentGroupActivity extends Activity implements AdapterV
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-        AgentGroupNode groupNode = adapter.getItem(i);
-        backMode = groupNode;
-        if (groupNode != null) {
-            if (TextUtils.isEmpty(groupNode.getGroup_id())) {
-                drawView(groupNode.getId());
-            } else {
-                UdeskSDKManager.getInstance().lanuchChatByGroupId(UdeskOptionsAgentGroupActivity.this, groupNode.getGroup_id());
-                finish();
-            }
+        try {
+            AgentGroupNode groupNode = adapter.getItem(i);
+            backMode = groupNode;
+            if (groupNode != null) {
+                if (TextUtils.isEmpty(groupNode.getGroup_id())) {
+                    drawView(groupNode.getId());
+                } else {
+                    UdeskSDKManager.getInstance().lanuchChatByGroupId(UdeskOptionsAgentGroupActivity.this, groupNode.getGroup_id());
+                    finish();
+                }
 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -226,10 +250,14 @@ public class UdeskOptionsAgentGroupActivity extends Activity implements AdapterV
      * 获取相应ID的客服组model
      */
     private AgentGroupNode filterModel(String currentId) {
-        for (AgentGroupNode model : groups) {
-            if (model.getId().equals(currentId)) {
-                return model;
+        try {
+            for (AgentGroupNode model : groups) {
+                if (model.getId().equals(currentId)) {
+                    return model;
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -238,12 +266,17 @@ public class UdeskOptionsAgentGroupActivity extends Activity implements AdapterV
      * 构造界面显示的组名 > 的字符串
      */
     private String buildTitleName(List<AgentGroupNode> temps) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = temps.size() - 1; i >= 0; i--) {
-            builder.append(temps.get(i).getItem_name()).append(" > ");
+        try {
+            StringBuilder builder = new StringBuilder();
+            for (int i = temps.size() - 1; i >= 0; i--) {
+                builder.append(temps.get(i).getItem_name()).append(" > ");
+            }
+            String temp = builder.toString();
+            return temp.substring(0, temp.length() - 2);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
         }
-        String temp = builder.toString();
-        return temp.substring(0, temp.length() - 2);
     }
 
     @Override

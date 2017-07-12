@@ -21,36 +21,44 @@ public class UdeskFormActivity extends UdeskBaseWebViewActivity {
     }
 
     private void loadingView() {
-        settingTitlebar();
-        String url = "https://" +  UdeskSDKManager.getInstance().getDomain(this)
-                + "/im_client/feedback.html"
-                + UdeskUtil.getFormUrlPara(this);
+        try {
+            settingTitlebar();
+            String url = "https://" +  UdeskSDKManager.getInstance().getDomain(this)
+                    + "/im_client/feedback.html"
+                    + UdeskUtil.getFormUrlPara(this);
 
-        mwebView.loadUrl(url);
+            mwebView.loadUrl(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * titlebar 的设置
      */
     private void settingTitlebar() {
-        if (mTitlebar != null) {
-            UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId, mTitlebar.getLeftTextView(), mTitlebar.getRightTextView());
-            UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId, mTitlebar.getRootView());
-            if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
-                mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
-            }
-            mTitlebar
-                    .setLeftTextSequence(getString(R.string.udesk_ok));
-            mTitlebar.setLeftLinearVis(View.VISIBLE);
-            mTitlebar.setLeftViewClick(new OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    finish();
-
+        try {
+            if (mTitlebar != null) {
+                UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId, mTitlebar.getLeftTextView(), mTitlebar.getRightTextView());
+                UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId, mTitlebar.getRootView());
+                if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
+                    mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
                 }
-            });
+                mTitlebar
+                        .setLeftTextSequence(getString(R.string.udesk_ok));
+                mTitlebar.setLeftLinearVis(View.VISIBLE);
+                mTitlebar.setLeftViewClick(new OnClickListener() {
 
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+
+                    }
+                });
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -21,8 +21,8 @@ public class SurvyOptionAdapter extends BaseAdapter {
     private List<OptionsModel> list = new ArrayList<OptionsModel>();
 
     public SurvyOptionAdapter(Context context , SurveyOptionsModel model) {
-        mContext = context;
         try {
+            mContext = context;
             if(model != null  && model.getOptions() != null ){
                 list = model.getOptions();
                 if(!list.isEmpty() && list.get(0)!= null){
@@ -40,24 +40,34 @@ public class SurvyOptionAdapter extends BaseAdapter {
     }
     
     public void updateCheckOptions(int position){
-    	
-    	for(int i=0; i<getCount();i++){
-    		if(i == position){
-    			getItem(i).setCheck(true);
-    		}else{
-    			getItem(i).setCheck(false);
-    		}
-    	}
-    	notifyDataSetChanged();
+
+        try {
+            for(int i=0; i<getCount();i++){
+                if(i == position){
+                    getItem(i).setCheck(true);
+                }else{
+                    getItem(i).setCheck(false);
+                }
+            }
+            notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
   
     @Override
     public OptionsModel getItem(int position) {
-        if(position < 0 || position >= list.size()) {
-            return null;
+        try {
+            if(position < 0 || position >= list.size()) {
+                return null;
+            }
+            return list.get(position);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return list.get(position);
+        return null;
     }
 
     @Override

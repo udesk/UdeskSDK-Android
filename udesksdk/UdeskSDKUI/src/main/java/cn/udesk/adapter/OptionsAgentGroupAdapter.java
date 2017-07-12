@@ -29,17 +29,26 @@ public class OptionsAgentGroupAdapter extends BaseAdapter {
     }
 
     public void setList(List<AgentGroupNode> items) {
-        list.clear();
-        list.addAll(items);
-        notifyDataSetChanged();
+        try {
+            list.clear();
+            list.addAll(items);
+            notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public AgentGroupNode getItem(int position) {
-        if(position < 0 || position >= list.size()) {
-            return null;
+        try {
+            if(position < 0 || position >= list.size()) {
+                return null;
+            }
+            return list.get(position);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return list.get(position);
+        return null;
     }
 
     @Override
@@ -49,10 +58,14 @@ public class OptionsAgentGroupAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_layout_optionagentgroup_item, null);
+        try {
+            if(convertView == null) {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_layout_optionagentgroup_item, null);
+            }
+            ((TextView)convertView).setText(list.get(position).getItem_name());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        ((TextView)convertView).setText(list.get(position).getItem_name());
         return convertView;
     }
 
