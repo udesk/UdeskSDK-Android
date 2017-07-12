@@ -64,8 +64,12 @@ public class UdeskSurvyDialogActivity extends Activity implements OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
-        checkOptions = adapter.getItem(position);
-        adapter.updateCheckOptions(position);
+        try {
+            checkOptions = adapter.getItem(position);
+            adapter.updateCheckOptions(position);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

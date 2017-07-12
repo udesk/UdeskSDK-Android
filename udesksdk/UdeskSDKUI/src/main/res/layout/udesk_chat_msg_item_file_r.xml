@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingRight="@dimen/udesk_chat_head_margin_left_or_right"
+    android:paddingTop="@dimen/udesk_5">
+
+    <TextView
+        android:id="@+id/udesk_tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/udesk_5"
+        android:layout_marginTop="@dimen/udesk_5"
+        android:gravity="center"
+        android:textColor="@color/udesk_color_im_time_text1"
+        android:textSize="@dimen/udesk_sp14" />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/udesk_iv_head"
+        android:layout_width="@dimen/udesk_chat_head"
+        android:layout_height="@dimen/udesk_chat_head"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/udesk_tv_time"
+        android:layout_marginTop="@dimen/udesk_chat_head_margin"
+        fresco:actualImageScaleType="centerCrop"
+        fresco:roundAsCircle="true"
+        fresco:roundingBorderColor="@color/udesk_color_line2"
+        fresco:roundingBorderWidth="1dp"
+        fresco:placeholderImage="@drawable/udesk_im_default_user_avatar"
+        />
+
+    <TextView
+        android:id="@+id/udesk_nick_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <TableRow
+        android:id="@+id/udesk_rl_body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/udesk_iv_head"
+        android:layout_below="@id/udesk_tv_time"
+        android:layout_marginLeft="@dimen/udesk_chat_context_margin_other_derction"
+        android:layout_toLeftOf="@id/udesk_iv_head">
+
+        <ImageView
+            android:id="@+id/udesk_iv_status"
+            android:layout_width="@dimen/udesk_chat_msg_send_fail_pic"
+            android:layout_height="@dimen/udesk_chat_msg_send_fail_pic"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/udesk_im_retry"
+            android:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/udesk_im_wait"
+            android:layout_width="@dimen/udesk_chat_msg_send_fail_pic"
+            android:layout_height="@dimen/udesk_chat_msg_send_fail_pic"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:indeterminateDrawable="@drawable/udesk_anim_progress"
+            android:scaleType="centerInside"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/udesk_file_view"
+            android:layout_width="@dimen/udesk_190"
+            android:layout_height="@dimen/udesk_95"
+            android:layout_marginBottom="@dimen/udesk_chat_head_margin"
+            android:layout_marginLeft="@dimen/udesk_chat_head_margin"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="@dimen/udesk_chat_head_margin"
+            android:background="#f2f2f2"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/udesk_file_name"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/udesk_40"
+                android:layout_marginLeft="@dimen/udesk_20"
+                android:layout_marginRight="@dimen/udesk_20"
+                android:ellipsize="middle"
+                android:gravity="left|center"
+                android:singleLine="true"
+                android:textColor="@color/udesk_edit_input_msg_cololr1"
+                android:textSize="@dimen/udesk_sp16" />
+
+            <ProgressBar
+                android:id="@+id/udesk_progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/udesk_5"
+                android:layout_marginBottom="@dimen/udesk_5"
+                android:layout_marginLeft="@dimen/udesk_20"
+                android:layout_marginRight="@dimen/udesk_20"
+                android:layout_marginTop="@dimen/udesk_5"
+                android:indeterminate="false"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/progress_drawable" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/udesk_40"
+                >
+
+                <TextView
+                    android:id="@+id/udesk_file_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="@dimen/udesk_20"
+                    android:gravity="left|center"
+                    android:textColor="@color/udesk_edit_input_hint_msg_cololr1"
+                    android:textSize="@dimen/udesk_sp16" />
+
+                <TextView
+                    android:id="@+id/udesk_file_operater"
+                    android:layout_width="@dimen/udesk_80"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center"
+                    android:textColor="@color/udesk_edit_input_hint_msg_cololr1"
+                    android:textSize="@dimen/udesk_sp16" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <!--<TextView-->
+        <!--android:id="@+id/udesk_tv_msg"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="@dimen/udesk_chat_head_margin"-->
+        <!--android:layout_marginLeft="@dimen/udesk_chat_head_margin"-->
+        <!--android:layout_marginRight="6dp"-->
+        <!--android:layout_marginTop="@dimen/udesk_chat_head_margin"-->
+        <!--android:lineSpacingExtra="3dip"-->
+        <!--android:autoLink="all"-->
+        <!--android:background="@drawable/udesk_im_item_bg_right"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:textColor="@color/udesk_color_im_text_right1"-->
+        <!--android:textColorLink="@color/udesk_color_im_text_right1"-->
+        <!--android:textSize="@dimen/udesk_sp16" />-->
+    </TableRow>
+
+</RelativeLayout>

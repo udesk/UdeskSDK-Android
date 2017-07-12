@@ -20,29 +20,35 @@ public class ActionMsgReceive implements PacketExtensionProvider {
     @Override
     public PacketExtension parseExtension(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
         ActionMsgXmpp actionMsgXmpp = null;
-        boolean stop = false;
-        String xmlName = null;
-        int evtType;
-        while (!stop){
-            evtType = parser.getEventType();
-            xmlName = parser.getName();
-            switch (evtType){
-                case XmlPullParser.START_TAG:
-                    if ("action".equals(xmlName)){
-                        String type  = parser.getAttributeValue("", "type");
-                        String actionText = parser.nextText();
-                        actionMsgXmpp = new ActionMsgXmpp();
-                        actionMsgXmpp.setType(type);
-                        actionMsgXmpp.setActionText(actionText);
-                    }
-                    break;
-                case XmlPullParser.END_TAG:
-                    if(xmlName.equals("action")){
-                        stop = true;
-                    }
-                    break;
-            }
+        try {
+            boolean stop = false;
+            String xmlName = null;
+            int evtType;
+            while (!stop){
+                evtType = parser.getEventType();
+                xmlName = parser.getName();
+                switch (evtType){
+                    case XmlPullParser.START_TAG:
+                        if ("action".equals(xmlName)){
+                            String type  = parser.getAttributeValue("", "type");
+                            String actionText = parser.nextText();
+                            actionMsgXmpp = new ActionMsgXmpp();
+                            actionMsgXmpp.setType(type);
+                            actionMsgXmpp.setActionText(actionText);
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        if(xmlName.equals("action")){
+                            stop = true;
+                        }
+                        break;
+                }
 
+            }
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return actionMsgXmpp;

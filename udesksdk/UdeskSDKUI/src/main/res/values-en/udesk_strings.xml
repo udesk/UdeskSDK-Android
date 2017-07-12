@@ -46,10 +46,10 @@
 
 
     <string name="udesk_options_agentgroup">Please choose agent group</string>
-
+    <string name="file_denied">Refused storage authrity, can not tak a file </string>
     <string name="aduido_denied">Refused voice record authority, can not take a voice record</string>
     <string name="camera_denied">Refused photo authrity, can not tak a photo </string>
-    <string name="photo_denied">Refused authority of getting photo album, can not get your photos</string>
+    <string name="photo_denied">Refused storage authrity, can not get your photos</string>
     <string name="add_bolcked_tips">Sorry, you are in blacklist</string>
     <string name="udesk_agent_connecting">Aagent connecting&#8230;</string>
     <string name="udesk_agent_inti">Aagent connecting,please wait&#8230;</string>
@@ -71,6 +71,16 @@
     <string name="udesk_service_line"> Customer service line</string>
     <string name="udesk_service_offline"> Customer service offline</string>
     <string name="udesk_upload_img_error">Failed to upload pictures, please try again</string>
+    <string name="udesk_customer_leavemsg">Customer leaving a message</string>
+    <string name="udesk_offline_reply_msg">Offline message reply</string>
+    <string name="udesk_file_to_large">The file is too large to send</string>
+    <string name="udesk_gps_tips">Currently in a non Wi-Fi environment, sending a file consumes a certain amount of traffic. Do you want to continue?</string>
+    <string name="udesk_gps_downfile_tips">Currently in a non Wi-Fi environment, download a file consumes a certain amount of traffic. Do you want to continue?</string>
+    <string name="udesk_has_send">has been sent</string>
+    <string name="udesk_has_downed">downloaded</string>
+    <string name="udesk_has_download">download</string>
+    <string name="udesk_has_uncomplete_tip">Download first, then click</string>
+    <string name="udesk_download_failure">Download failed. Please re Download</string>
+    <string name="udesk_no_app_handle">The application could not be found to execute the file</string>
     <string name="udesk_no_sdktoken">Sdktoken is empty. Please import a valid value</string>
-
 </resources>

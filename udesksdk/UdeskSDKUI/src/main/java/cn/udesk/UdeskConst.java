@@ -63,6 +63,9 @@ public class UdeskConst {
         public static final int TYPE_REDIRECT = 3;
         public static final int TYPE_RICH = 4;
         public static final int TYPE_STRUCT = 5;
+        public static final int TYPE_LEAVEMSG = 6;
+        public static final int TYPE_EVENT = 7;
+        public static final int TYPE_VIDEO = 8;
     }
 
     public static int parseTypeForMessage(String type) {
@@ -78,6 +81,12 @@ public class UdeskConst {
             return ChatMsgTypeInt.TYPE_RICH;
         }else if("struct".equalsIgnoreCase(type)){
             return ChatMsgTypeInt.TYPE_STRUCT;
+        }else if ("leavemsg".equalsIgnoreCase(type)){
+            return ChatMsgTypeInt.TYPE_LEAVEMSG;
+        }else if ("udeskevent".equalsIgnoreCase(type)){
+            return ChatMsgTypeInt.TYPE_EVENT;
+        }else if ("video".equalsIgnoreCase(type) || "file".equalsIgnoreCase(type)){
+            return ChatMsgTypeInt.TYPE_VIDEO;
         }
         return ChatMsgTypeInt.TYPE_TEXT;
     }
@@ -89,6 +98,11 @@ public class UdeskConst {
         public static final String TYPE_TEXT = "message";
         public static final String TYPE_REDIRECT = "redirect";
         public static final String TYPE_STRUCT = "struct";
+        public static final String TYPE_LEAVEMSG = "leavemsg";
+        public static final String TYPE_EVENT = "udeskevent";
+        public static final String TYPE_VIDEO = "video";
+        public static final String TYPE_File = "file";
+
     }
 
     public static class PlayFlag {
@@ -122,5 +136,10 @@ public class UdeskConst {
         public static final String sdkCallBack = "sdk_callback";
 
     }
+
+    public static final String FileSize = "fileSize";
+    public static final String FileDownIsSuccess = "filedownissuccess";
+
+
 
 }

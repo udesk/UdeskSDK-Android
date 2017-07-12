@@ -37,9 +37,10 @@
     <string name="udesk_has_wrong_net">网络出错了,请检查网络设置!</string>
     <string name="udesk_options_agentgroup">请选择客服组</string>
 
+    <string name="file_denied">拒绝了存储卡读取的权限，无法发送文件</string>
     <string name="aduido_denied">拒绝了录音权限，无法录音</string>
     <string name="camera_denied">拒绝了拍照权限，无法拍照</string>
-    <string name="photo_denied">拒绝了获取相册权限，无法获取图片</string>
+    <string name="photo_denied">拒绝了存储卡读取权限，无法获取图片</string>
     <string name="add_bolcked_tips">抱歉，你已经被加入了黑名单</string>
     <string name="udesk_agent_connecting">客服连接中&#8230;</string>
     <string name="udesk_agent_inti">客服连接中,请稍后&#8230;</string>
@@ -63,6 +64,18 @@
     <string name="udesk_service_offline"> 客服离线了</string>
     <string name="udesk_api_error">出错了，请稍后联系客服</string>
     <string name="udesk_upload_img_error">上传图片失败，请重试</string>
+    <string name="udesk_customer_leavemsg">客户留言</string>
+    <string name="udesk_offline_reply_msg">留言工单离线回复</string>
+    <string name="udesk_file_to_large">文件过大无法发送</string>
+    <string name="udesk_gps_tips">当前在非Wi-Fi环境，发送文件将消耗一定流量，是否继续？</string>
+    <string name="udesk_gps_downfile_tips">当前在非Wi-Fi环境，下载文件将消耗一定流量，是否继续？</string>
+    <string name="udesk_has_send">已发送</string>
+    <string name="udesk_has_downed">已下载</string>
+    <string name="udesk_has_download">下载</string>
+    <string name="udesk_download_failure">下载失败,请重新下载</string>
+    <string name="udesk_has_uncomplete_tip">先下载完成后，在点击</string>
+    <string name="udesk_no_app_handle">无法找到应用程序以执行该文件</string>
     <string name="udesk_no_sdktoken">sdktoken为空,请传入合法的值</string>
+
 
 </resources>

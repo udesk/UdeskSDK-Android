@@ -4,6 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:paddingLeft="@dimen/udesk_chat_head_margin_left_or_right"
     android:paddingTop="@dimen/udesk_5">
 
     <TextView
@@ -17,18 +18,17 @@
         android:textColor="@color/udesk_color_im_time_text1"
         android:textSize="@dimen/udesk_sp14" />
 
-
     <TextView
-        android:id="@+id/udesk_redirect_msg"
-        android:layout_width="fill_parent"
+        android:id="@+id/udesk_event"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/udesk_tv_time"
+        android:layout_below="@id/udesk_tv_time"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/udesk_5"
-        android:layout_marginTop="@dimen/udesk_5"
+        android:background="@drawable/udesk_event_bg"
         android:gravity="center"
-        android:textColor="@color/udesk_color_im_tip_text1"
-        android:textSize="@dimen/udesk_sp16" />
+        android:padding="@dimen/udesk_5"
+        android:textColor="#999999"
+        android:textSize="@dimen/udesk_sp14" />
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/udesk_iv_head"

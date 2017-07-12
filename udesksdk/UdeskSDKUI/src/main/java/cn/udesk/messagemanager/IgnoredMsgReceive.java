@@ -29,7 +29,6 @@ public class IgnoredMsgReceive implements PacketExtensionProvider {
             switch (evtType){
                 case XmlPullParser.START_TAG:
                     if ("sdk_version".equals(xmlName)){
-//                        String type  = parser.getAttributeValue("", "type");
                         String actionText = parser.nextText();
                         ignoredMsg = new IgnoredMsgXmpp();
                         ignoredMsg.setSdkversion(actionText);

@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import cn.udesk.R;
+import cn.udesk.UdeskUtil;
 
 
 public class UDPullGetMoreListView extends ListView implements OnScrollListener {
@@ -95,6 +96,17 @@ public class UDPullGetMoreListView extends ListView implements OnScrollListener 
 
 
     public void onScrollStateChanged(AbsListView arg0, int arg1) {
+
+        switch(arg1){
+            case AbsListView.OnScrollListener.SCROLL_STATE_IDLE://空闲状态
+                UdeskUtil.imageResume();
+                break;
+            case AbsListView.OnScrollListener.SCROLL_STATE_FLING://滚动状态
+                UdeskUtil.imagePause();
+                break;
+            case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL://触摸后滚动
+                break;
+        }
     }
 
 
@@ -268,6 +280,8 @@ public class UDPullGetMoreListView extends ListView implements OnScrollListener 
             e.printStackTrace();
         }
     }
+
+
 
 
     public interface OnRefreshListener {

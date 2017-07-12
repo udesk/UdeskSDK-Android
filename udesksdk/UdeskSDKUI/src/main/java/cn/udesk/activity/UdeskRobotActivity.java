@@ -30,31 +30,39 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
 	}
 
 	private void initData() {
-		Intent intent = getIntent();
-		if(intent != null){
-			h5Url = intent.getStringExtra(UdeskConst.UDESKHTMLURL);
-			tranfer = intent.getStringExtra(UdeskConst.UDESKTRANSFER);
-			isTranferByImGroup = intent.getBooleanExtra(UdeskConst.UDESKISTRANFERSESSION,true);
+		try {
+			Intent intent = getIntent();
+			if(intent != null){
+                h5Url = intent.getStringExtra(UdeskConst.UDESKHTMLURL);
+                tranfer = intent.getStringExtra(UdeskConst.UDESKTRANSFER);
+                isTranferByImGroup = intent.getBooleanExtra(UdeskConst.UDESKISTRANFERSESSION,true);
+            }
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
+
 	}
 
 	private void loadingView() {
-		settingTitlebar(tranfer);
-		if (!TextUtils.isEmpty(h5Url)) {
-			String url = UdeskHttpFacade.getInstance().buildRobotUrlWithH5(
-					this, UdeskSDKManager.getInstance().getAppkey(this),
-					h5Url,
-					UdeskSDKManager.getInstance().getSdkToken(this));
-			if (!UdeskUtil.isZh(this)){
-				url = url + "&language=en-us" ;
-			}
-			if(!TextUtils.isEmpty( UdeskSDKManager.getInstance().getAppId(this))){
-				url = url + "&app_id="+UdeskSDKManager.getInstance().getAppId(this) ;
-			}
-			mwebView.loadUrl(url);
-		} else {
-			finish();
+		try {
+			settingTitlebar(tranfer);
+			if (!TextUtils.isEmpty(h5Url)) {
+                String url = UdeskHttpFacade.getInstance().buildRobotUrlWithH5(
+                        this, UdeskSDKManager.getInstance().getAppkey(this),
+                        h5Url,
+                        UdeskSDKManager.getInstance().getSdkToken(this));
+                if (!UdeskUtil.isZh(this)){
+                    url = url + "&language=en-us" ;
+                }
+                if(!TextUtils.isEmpty( UdeskSDKManager.getInstance().getAppId(this))){
+                    url = url + "&app_id="+UdeskSDKManager.getInstance().getAppId(this) ;
+                }
+                mwebView.loadUrl(url);
+            } else {
+                finish();
+            }
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -64,54 +72,62 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
 	 * titlebar 的设置
 	 */
 	private void settingTitlebar(String tranfer) {
-		mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
-		if (mTitlebar != null) {
-			UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId,mTitlebar.getLeftTextView(),mTitlebar.getRightTextView());
-			UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId ,mTitlebar.getRootView());
-			if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
-				mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
-			}
-			mTitlebar
-					.setLeftTextSequence(getString(R.string.udesk_robot_title));
-			mTitlebar.setLeftLinearVis(View.VISIBLE);
-			mTitlebar.setLeftViewClick(new OnClickListener() {
+		try {
+			mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
+			if (mTitlebar != null) {
+                UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId,mTitlebar.getLeftTextView(),mTitlebar.getRightTextView());
+                UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId ,mTitlebar.getRootView());
+                if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
+                    mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
+                }
+                mTitlebar
+                        .setLeftTextSequence(getString(R.string.udesk_robot_title));
+                mTitlebar.setLeftLinearVis(View.VISIBLE);
+                mTitlebar.setLeftViewClick(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					finish();
+                    @Override
+                    public void onClick(View v) {
+                        finish();
 
-				}
-			});
+                    }
+                });
 
-			settingTitleBarRight(tranfer);
+                settingTitleBarRight(tranfer);
 
+            }
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	//根据传入的tranfer 控制右侧是否显示转人工
 	private void settingTitleBarRight(String tranfer) {
-		if (tranfer != null && tranfer.trim().equals("true")) {
-			mTitlebar.setRightTextVis(View.VISIBLE);
-			mTitlebar
-					.setRightTextSequence(getString(R.string.udesk_transfer_persion));
-			mTitlebar.setudeskTransferImgVis(View.VISIBLE);
-			mTitlebar.setRightViewClick(new OnClickListener() {
+		try {
+			if (tranfer != null && tranfer.trim().equals("true")) {
+                mTitlebar.setRightTextVis(View.VISIBLE);
+                mTitlebar
+                        .setRightTextSequence(getString(R.string.udesk_transfer_persion));
+                mTitlebar.setudeskTransferImgVis(View.VISIBLE);
+                mTitlebar.setRightViewClick(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					if (isTranferByImGroup){
-						UdeskSDKManager.getInstance().showConversationByImGroup(UdeskRobotActivity.this);
-					}else{
-						Intent intent = new Intent(UdeskRobotActivity.this, UdeskChatActivity.class);
-						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-						UdeskRobotActivity.this.startActivity(intent);
-					}
+                    @Override
+                    public void onClick(View v) {
+                        if (isTranferByImGroup){
+                            UdeskSDKManager.getInstance().showConversationByImGroup(UdeskRobotActivity.this);
+                        }else{
+                            Intent intent = new Intent(UdeskRobotActivity.this, UdeskChatActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            UdeskRobotActivity.this.startActivity(intent);
+                        }
 
-				}
-			});
-		} else {
-			mTitlebar.setRightTextVis(View.GONE);
-			mTitlebar.setudeskTransferImgVis(View.GONE);
+                    }
+                });
+            } else {
+                mTitlebar.setRightTextVis(View.GONE);
+                mTitlebar.setudeskTransferImgVis(View.GONE);
+            }
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

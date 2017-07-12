@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/tools"
     android:id="@+id/udesk_panel_zoom_imageview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/udesk_black" >
+    android:background="@color/udesk_black">
 
     <Button
         android:id="@+id/udesk_zoom_save"
@@ -11,17 +12,19 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:text="@string/udesk_save"
-        android:padding="@dimen/udesk_20"
-        android:textColor="@android:color/white"
         android:background="@null"
+        android:padding="@dimen/udesk_20"
+        android:text="@string/udesk_save"
+        android:textColor="@android:color/white"
         android:textSize="@dimen/udesk_sp16" />
 
-    <cn.udesk.widget.UdeskZoomImageView
+
+    <me.relex.photodraweeview.PhotoDraweeView
         android:id="@+id/udesk_zoom_imageview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/udesk_zoom_save"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        fresco:actualImageScaleType="centerCrop" />
 
 </RelativeLayout>

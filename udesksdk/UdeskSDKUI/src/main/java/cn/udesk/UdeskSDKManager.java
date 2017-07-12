@@ -2,12 +2,18 @@ package cn.udesk;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
+import com.facebook.cache.disk.DiskCacheConfig;
+import com.facebook.common.internal.Supplier;
+import com.facebook.common.util.ByteConstants;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.cache.MemoryCacheParams;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.tencent.bugly.crashreport.CrashReport;
-
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,21 +32,17 @@ import cn.udesk.messagemanager.UdeskMessageManager;
 import cn.udesk.model.MsgNotice;
 import cn.udesk.model.SDKIMSetting;
 import cn.udesk.model.UdeskCommodityItem;
-import cn.udesk.widget.UdeskDialog;
-import rx.Subscriber;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskCoreConst;
 import udesk.core.UdeskHttpFacade;
 import udesk.core.model.MessageInfo;
-
-import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
 
 public class UdeskSDKManager {
 
     private static UdeskSDKManager instance = new UdeskSDKManager();
 
-    private UdeskDialog dialog;
+//    private UdeskDialog dialog;
 
     //文本消息中的链接消息的点击事件的拦截回调。 包含表情的不会拦截回调。
     private ITxtMessageWebonCliclk txtMessageClick;
@@ -151,7 +153,7 @@ public class UdeskSDKManager {
         UdeskBaseInfo.domain = domain;
         UdeskBaseInfo.App_Key = appkey;
         UdeskBaseInfo.App_Id = appid;
-        if (UdeskConfig.isUseShare){
+        if (UdeskConfig.isUseShare) {
             PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                     UdeskConst.SharePreParams.Udesk_Domain, domain);
             PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
@@ -159,7 +161,7 @@ public class UdeskSDKManager {
             PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                     UdeskConst.SharePreParams.Udesk_App_Id, appid);
         }
-        UdeskUtil.initImageLoaderConfig(context);
+        init(context);
     }
 
     /**
@@ -189,8 +191,8 @@ public class UdeskSDKManager {
      * @param roplist   包含自定义的列表信息
      */
     public void setUserInfo(final Context context, String token, Map<String, String> info, Map<String, String> textField, Map<String, String> roplist) {
-        if (TextUtils.isEmpty(token)){
-            Toast.makeText(context.getApplicationContext(),context.getString(R.string.udesk_no_sdktoken),Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(token)) {
+            Toast.makeText(context.getApplicationContext(), context.getString(R.string.udesk_no_sdktoken), Toast.LENGTH_SHORT).show();
             return;
         }
         String cacheToken = getSdkToken(context);
@@ -203,6 +205,7 @@ public class UdeskSDKManager {
                 setSdkPushStatus(getDomain(context), getAppkey(context), UdeskBaseInfo.sdkToken,
                         UdeskConfig.UdeskPushFlag.OFF, UdeskBaseInfo.registerId, getAppId(context));
             }
+            disConnectXmpp();
         }
         UdeskBaseInfo.sdkToken = stringFilter(token);
         initDB(context, UdeskBaseInfo.sdkToken);
@@ -216,6 +219,7 @@ public class UdeskSDKManager {
         UdeskBaseInfo.textField = textField;
         UdeskBaseInfo.roplist = roplist;
     }
+
     //过滤掉字符串中的特殊字符
     private String stringFilter(String str) {
         String regEx = "[/=]";
@@ -477,22 +481,7 @@ public class UdeskSDKManager {
      * 断开xmpp连接
      */
     public void disConnectXmpp() {
-        UdeskMessageManager.getInstance().cancelXmppConnect().subscribe(new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-
-            }
-        });
+        UdeskMessageManager.getInstance().cancleXmpp();
     }
 
     /**
@@ -510,42 +499,42 @@ public class UdeskSDKManager {
         if (!TextUtils.isEmpty(UdeskBaseInfo.sdkToken)) {
             return UdeskBaseInfo.sdkToken;
         }
-        if (UdeskConfig.isUseShare){
+        if (UdeskConfig.isUseShare) {
             return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_SdkToken);
-        }else{
+        } else {
             return "";
         }
     }
 
-    public String getDomain(Context context){
+    public String getDomain(Context context) {
         if (!TextUtils.isEmpty(UdeskBaseInfo.domain)) {
             return UdeskBaseInfo.domain;
         }
-        if (UdeskConfig.isUseShare){
+        if (UdeskConfig.isUseShare) {
             return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_Domain);
-        }else{
+        } else {
             return "";
         }
     }
 
-    public String getAppkey(Context context){
+    public String getAppkey(Context context) {
         if (!TextUtils.isEmpty(UdeskBaseInfo.App_Key)) {
             return UdeskBaseInfo.App_Key;
         }
-        if (UdeskConfig.isUseShare){
+        if (UdeskConfig.isUseShare) {
             return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Key);
-        }else{
+        } else {
             return "";
         }
     }
 
-    public String getAppId(Context context){
+    public String getAppId(Context context) {
         if (!TextUtils.isEmpty(UdeskBaseInfo.App_Id)) {
             return UdeskBaseInfo.App_Id;
         }
-        if (UdeskConfig.isUseShare){
+        if (UdeskConfig.isUseShare) {
             return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Id);
-        }else{
+        } else {
             return "";
         }
     }
@@ -562,21 +551,21 @@ public class UdeskSDKManager {
      */
     private void getSDKImSetting(final Context context) {
         try {
-            showLoading(context);
+//            showLoading(context);
             initCrashReport(context);
             UdeskHttpFacade.getInstance().getIMSettings(getDomain(context), getAppkey(context), UdeskBaseInfo.sdkToken,
                     getAppId(context), new UdeskCallBack() {
-                @Override
-                public void onSuccess(String message) {
-                    imSetting = JsonUtils.parserIMSettingJson(message);
-                    switchBySetting(context, imSetting);
-                }
+                        @Override
+                        public void onSuccess(String message) {
+                            imSetting = JsonUtils.parserIMSettingJson(message);
+                            switchBySetting(context, imSetting);
+                        }
 
-                @Override
-                public void onFail(String message) {
-                    switchBySetting(context, null);
-                }
-            });
+                        @Override
+                        public void onFail(String message) {
+                            switchBySetting(context, null);
+                        }
+                    });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -592,7 +581,7 @@ public class UdeskSDKManager {
     private void switchBySetting(Context context, SDKIMSetting imSetting) {
         if (imSetting != null) {
             if (imSetting.getIn_session()) {
-                dismiss();
+//                dismiss();
                 toLanuchChatAcitvity(context);
                 return;
             }
@@ -600,12 +589,12 @@ public class UdeskSDKManager {
                 showRobotByConfigSetting(context, imSetting);
                 return;
             }
-            dismiss();
+//            dismiss();
             showConversationByImGroup(context);
             return;
 
         } else {
-            dismiss();
+//            dismiss();
             toLanuchChatAcitvity(context);
         }
 
@@ -626,7 +615,7 @@ public class UdeskSDKManager {
 
                         @Override
                         public void onSuccess(String string) {
-                            dismiss();
+//                            dismiss();
                             if (!TextUtils.isEmpty(imSetting.getRobot())) {
                                 toLanuchRobotAcitivty(context, imSetting.getRobot(), imSetting.getEnable_agent(), imSetting.getEnable_im_group());
                             } else {
@@ -636,7 +625,7 @@ public class UdeskSDKManager {
 
                         @Override
                         public void onFail(String string) {
-                            dismiss();
+//                            dismiss();
                             showConversationByImGroup(context);
                         }
                     });
@@ -655,25 +644,25 @@ public class UdeskSDKManager {
         }
     }
 
-    private void showLoading(Context context) {
-        try {
-            dialog = new UdeskDialog(context, R.style.udesk_dialog);
-            dialog.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//    private void showLoading(Context context) {
+//        try {
+//            dialog = new UdeskDialog(context, R.style.udesk_dialog);
+//            dialog.show();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
-    }
-
-    private void dismiss() {
-        try {
-            if (dialog != null) {
-                dialog.dismiss();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void dismiss() {
+//        try {
+//            if (dialog != null) {
+//                dialog.dismiss();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void lanuchChatByConfirmId(Context context, String groupId, String agentId) {
         Intent intent = new Intent(context, UdeskChatActivity.class);
@@ -693,6 +682,81 @@ public class UdeskSDKManager {
         UdeskBaseInfo.updateTextField = null;
         UdeskBaseInfo.roplist = null;
         imSetting = null;
+    }
+
+//    public void showOnlyRobot(final Context context) {
+//
+//        showLoading(context);
+//        UdeskHttpFacade.getInstance().setUserInfo(context, getDomain(context),
+//                getAppkey(context), getSdkToken(context),
+//                UdeskBaseInfo.userinfo, UdeskBaseInfo.textField,
+//                UdeskBaseInfo.roplist, getAppId(context), new UdeskCallBack() {
+//
+//                    @Override
+//                    public void onSuccess(String string) {
+//                        String url = "";
+//                        try {
+//                            JSONObject resultJson = new JSONObject(string);
+//                            if (resultJson.has("robot")) {
+//                                String robotString = resultJson.getString("robot");
+//                                if (!TextUtils.isEmpty(robotString)) {
+//                                    JSONObject robotJson = new JSONObject(robotString);
+//
+//                                    if (robotJson.has("h5_url")) {
+//                                        url = robotJson.getString("h5_url");
+//                                    }
+//                                }
+//                            }
+//                        } catch (JSONException e) {
+//                        }
+//                        if (!TextUtils.isEmpty(url)) {
+//                            toLanuchRobotAcitivty(context, url, "false", false);
+//                        } else {
+//                            UdeskUtils.showToast(context, context.getString(R.string.udesk_has_not_open_robot));
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFail(String string) {
+//                        UdeskUtils.showToast(context, string);
+//                    }
+//                });
+//    }
+
+    public void init(final Context context) {
+        final int MAX_HEAP_SIZE = (int) Runtime.getRuntime().maxMemory();
+        final int MAX_DISK_CACHE_SIZE = 300 * ByteConstants.MB;
+        final int MAX_MEMORY_CACHE_SIZE = MAX_HEAP_SIZE / 3;
+        final MemoryCacheParams bitmapCacheParams = new MemoryCacheParams(
+                MAX_MEMORY_CACHE_SIZE,
+                Integer.MAX_VALUE,
+                MAX_MEMORY_CACHE_SIZE,
+                Integer.MAX_VALUE,
+                Integer.MAX_VALUE);
+
+        DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(context)
+                .setMaxCacheSize(MAX_DISK_CACHE_SIZE)//最大缓存
+                .setBaseDirectoryName("udesk")//子目录
+                .setBaseDirectoryPathSupplier(new Supplier<File>() {
+                    @Override
+                    public File get() {
+                        return UdeskUtil.getExternalCacheDir(context);
+                    }
+                })
+                .build();
+        ImagePipelineConfig config = ImagePipelineConfig.newBuilder(context)
+                .setBitmapMemoryCacheParamsSupplier(
+                        new Supplier<MemoryCacheParams>() {
+                            public MemoryCacheParams get() {
+                                return bitmapCacheParams;
+                            }
+                        })
+                .setMainDiskCacheConfig(diskCacheConfig)
+                .setDownsampleEnabled(true)
+                .setBitmapsConfig(Bitmap.Config.RGB_565)
+                .build();
+
+        Fresco.initialize(context, config);
     }
 
 
