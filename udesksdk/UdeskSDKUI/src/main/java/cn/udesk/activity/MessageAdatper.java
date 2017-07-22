@@ -476,7 +476,7 @@ public class MessageAdatper extends BaseAdapter {
                     case MSG_FILE_R:
                         this.isLeft = false;
                         if (!TextUtils.isEmpty(UdeskBaseInfo.customerUrl)) {
-                            UdeskUtil.loadNoChangeView(ivHeader, Uri.parse(UdeskBaseInfo.customerUrl));
+                            UdeskUtil.loadHeadView(mContext,ivHeader, Uri.parse(UdeskBaseInfo.customerUrl));
                         }
                         break;
 
@@ -488,7 +488,7 @@ public class MessageAdatper extends BaseAdapter {
                     case MSG_FILE_L:
                         this.isLeft = true;
                         if (message.getAgentUrl() != null && !TextUtils.isEmpty(message.getAgentUrl().trim())) {
-                            UdeskUtil.loadNoChangeView(ivHeader, Uri.parse(message.getAgentUrl()));
+                            UdeskUtil.loadHeadView(mContext,ivHeader, Uri.parse(message.getAgentUrl()));
                         }
                         agentnickName.setText(message.getNickName());
                         break;
@@ -496,7 +496,7 @@ public class MessageAdatper extends BaseAdapter {
                         this.isLeft = true;
                         if (message.getUser_avatar() != null && !TextUtils.isEmpty(message.getUser_avatar().trim())) {
                             ivHeader.setImageResource(R.drawable.udesk_im_default_agent_avatar);
-                            UdeskUtil.loadNoChangeView(ivHeader, Uri.parse(message.getUser_avatar()));
+                            UdeskUtil.loadHeadView(mContext,ivHeader, Uri.parse(message.getUser_avatar()));
                         }
                         agentnickName.setText(message.getReplyUser());
                         break;
@@ -566,7 +566,11 @@ public class MessageAdatper extends BaseAdapter {
         void bind(Context context) {
             try {
                 CharSequence charSequence = Html.fromHtml(message.getMsgContent());
-                rich_tvmsg.setText(charSequence);
+                String msg = charSequence.toString();
+                if (msg.endsWith("\n\n")) {
+                    msg = msg.substring(0, msg.length() - 2);
+                }
+                rich_tvmsg.setText(msg);
                 rich_tvmsg.setMovementMethod(LinkMovementMethod.getInstance());
                 CharSequence text = rich_tvmsg.getText();
                 if (text instanceof Spannable) {

@@ -83,4 +83,5 @@
     <string name="udesk_download_failure">Download failed. Please re Download</string>
     <string name="udesk_no_app_handle">The application could not be found to execute the file</string>
     <string name="udesk_no_sdktoken">Sdktoken is empty. Please import a valid value</string>
+    <string name="udesk_close_chart">Chat end</string>
 </resources>
