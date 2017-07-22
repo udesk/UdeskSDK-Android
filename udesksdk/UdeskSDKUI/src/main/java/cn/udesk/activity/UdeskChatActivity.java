@@ -2086,7 +2086,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                     @Override
                     public void run() {
                         setTitlebar(getResources().getString(
-                                R.string.udesk_label_customer_offline), "off");
+                                R.string.udesk_close_chart), "off");
                     }
                 });
             }

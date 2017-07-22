@@ -110,14 +110,15 @@
     <orderEntry type="library" exported="" scope="TEST" name="junit-4.12" level="project" />
     <orderEntry type="library" exported="" name="photodraweeview-1.1.2" level="project" />
     <orderEntry type="module" module-name="UdeskSDKUI" exported="" />
-    <orderEntry type="library" exported="" name="happy-dns-0.2.11" level="project" />
     <orderEntry type="library" exported="" name="udesk-asmack-8-4.0.6" level="project" />
     <orderEntry type="library" exported="" name="bugly_crash_release_2.1" level="project" />
+    <orderEntry type="library" exported="" name="udesk_sdk_3.7.1" level="project" />
+    <orderEntry type="library" exported="" name="happy-dns-0.2.13" level="project" />
     <orderEntry type="library" exported="" name="udesk_sdk_3.7.0" level="project" />
-    <orderEntry type="library" exported="" name="qiniu-android-sdk-7.3.6" level="project" />
     <orderEntry type="library" exported="" name="okio-1.13.0" level="project" />
+    <orderEntry type="library" exported="" name="qiniu-android-sdk-7.3.8" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-24.0.0" level="project" />
-    <orderEntry type="library" exported="" name="okhttp-3.8.0" level="project" />
     <orderEntry type="library" exported="" name="bolts-tasks-1.4.0" level="project" />
+    <orderEntry type="library" exported="" name="okhttp-3.8.1" level="project" />
   </component>
 </module>

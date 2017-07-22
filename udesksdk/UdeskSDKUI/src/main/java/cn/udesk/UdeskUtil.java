@@ -30,6 +30,10 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
@@ -738,7 +742,24 @@ public class UdeskUtil {
         simpleDraweeView.setController(controller);
     }
 
+    public static void loadHeadView(Context context,SimpleDraweeView simpleDraweeView, Uri httpUri) {
+        //初始化圆角圆形参数对象
+        RoundingParams rp = new RoundingParams();
+        //设置图像是否为圆形
+        rp.setRoundAsCircle(true);
 
+        final GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(context.getResources())
+                .setRoundingParams(rp)
+                .build();
+
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setUri(httpUri)
+                .setTapToRetryEnabled(true)
+                .setOldController(simpleDraweeView.getController())
+                .build();
+        simpleDraweeView.setHierarchy(hierarchy);
+        simpleDraweeView.setController(controller);
+    }
 
     public static int getRatioSize(int bitWidth, int bitHeight, int imageHeight, int imageWidth) {
 

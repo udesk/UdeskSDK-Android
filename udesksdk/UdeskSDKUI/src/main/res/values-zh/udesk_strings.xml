@@ -72,4 +72,5 @@
     <string name="udesk_download_failure">下载失败,请重新下载</string>
     <string name="udesk_no_app_handle">无法找到应用程序以执行该文件</string>
     <string name="udesk_no_sdktoken">sdktoken为空,请传入合法的值</string>
+    <string name="udesk_close_chart">会话已结束</string>
 </resources>
