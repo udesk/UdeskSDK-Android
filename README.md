@@ -916,11 +916,20 @@ RedirectViewHolder  显示转移提示语信息；
 -keep class org.xmlpull.** {*;} 
 -dontwarn org.xbill.**
 -keep class org.xbill.** {*;} 
-//Android M 权限
--keep class rx.** {*;} 
--keep class com.tbruyelle.rxpermissions.** {*;}
- 
+
+//freso
+-keep class com.facebook.** {*; }  
+-keep class com.facebook.imagepipeline.** {*; } 
+-keep class com.facebook.animated.gif.** {*; }  
+-keep class com.facebook.drawee.** {*; }  
+-keep class com.facebook.drawee.backends.pipeline.** {*; }  
+-keep class com.facebook.imagepipeline.** {*; }  
+-keep class bolts.** {*; }  
+-keep class me.relex.photodraweeview.** {*; }  
+
+
+
  //其它
 -keep class com.tencent.bugly.** {*; } 
--keep class de.hdodenhof.circleimageview.** {*;}
+
 ```
