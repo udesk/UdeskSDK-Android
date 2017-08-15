@@ -83,7 +83,7 @@
 ## 一、SDK工作流程图
 Udesk-SDK的工作流程如下图所示。
 
-![alt text](indeximg/andriod-new-liuchen.png)
+![alt text](indeximg/android-new-liuchen.png)
 ## 二、下载和集成SDK
 
 #### 2.1下载Udesk SDK
