@@ -568,9 +568,9 @@ public class MessageAdatper extends BaseAdapter {
                 CharSequence charSequence = Html.fromHtml(message.getMsgContent());
                 String msg = charSequence.toString();
                 if (msg.endsWith("\n\n")) {
-                    msg = msg.substring(0, msg.length() - 2);
+                     charSequence = charSequence.subSequence(0, charSequence.length() - 2);
                 }
-                rich_tvmsg.setText(msg);
+                rich_tvmsg.setText(charSequence);
                 rich_tvmsg.setMovementMethod(LinkMovementMethod.getInstance());
                 CharSequence text = rich_tvmsg.getText();
                 if (text instanceof Spannable) {
