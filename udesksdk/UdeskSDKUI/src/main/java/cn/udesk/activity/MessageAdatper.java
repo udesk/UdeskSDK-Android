@@ -665,22 +665,22 @@ public class MessageAdatper extends BaseAdapter {
                             (int) tvMsg.getTextSize()));
                 } else {
                     tvMsg.setText(message.getMsgContent());
-                    tvMsg.setMovementMethod(LinkMovementMethod.getInstance());
-                    CharSequence text = tvMsg.getText();
-                    if (text instanceof Spannable) {
-                        int end = text.length();
-                        Spannable sp = (Spannable) tvMsg.getText();
-                        URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
-                        SpannableStringBuilder style = new SpannableStringBuilder(text);
-                        style.clearSpans();// should clear old spans
-                        for (URLSpan url : urls) {
-                            TxtURLSpan txtURLSpan = new TxtURLSpan(url.getURL());
-                            style.setSpan(txtURLSpan, sp.getSpanStart(url),
-                                    sp.getSpanEnd(url),
-                                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                        }
-                        tvMsg.setText(style);
-                    }
+//                    tvMsg.setMovementMethod(LinkMovementMethod.getInstance());
+//                    CharSequence text = tvMsg.getText();
+//                    if (text instanceof Spannable) {
+//                        int end = text.length();
+//                        Spannable sp = (Spannable) tvMsg.getText();
+//                        URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
+//                        SpannableStringBuilder style = new SpannableStringBuilder(text);
+//                        style.clearSpans();// should clear old spans
+//                        for (URLSpan url : urls) {
+//                            TxtURLSpan txtURLSpan = new TxtURLSpan(url.getURL());
+//                            style.setSpan(txtURLSpan, sp.getSpanStart(url),
+//                                    sp.getSpanEnd(url),
+//                                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+//                        }
+//                        tvMsg.setText(style);
+//                    }
                 }
 
 
