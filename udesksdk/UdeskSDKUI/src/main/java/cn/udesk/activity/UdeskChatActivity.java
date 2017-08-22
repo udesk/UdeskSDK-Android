@@ -116,6 +116,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     private AgentInfo mAgentInfo;  // 保存客服信息的实例
     private MessageInfo redirectMsg;
     private Uri photoUri;
+    private File cameraFile;
 
     private String groupId = "";
     private String agentId = "";
@@ -901,7 +902,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         mPresenter.sendBitmapMessage((Bitmap) data.getParcelableExtra("data"));
                     }
                     if (mPresenter != null && photoUri != null && photoUri.getPath() != null) {
-                        mPresenter.sendBitmapMessage(UdeskUtil.parseOwnUri(photoUri, UdeskChatActivity.this));
+                        mPresenter.sendBitmapMessage(UdeskUtil.parseOwnUri(photoUri, UdeskChatActivity.this,cameraFile));
                     }
 
                 }
@@ -1077,7 +1078,8 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     private void takePhoto() {
         try {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            photoUri = UdeskUtil.getOutputMediaFileUri(UdeskChatActivity.this);
+            cameraFile = UdeskUtil.cameaFile(UdeskChatActivity.this);
+            photoUri = UdeskUtil.getOutputMediaFileUri(UdeskChatActivity.this,cameraFile);
             if (Build.VERSION.SDK_INT >= 24) {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             }

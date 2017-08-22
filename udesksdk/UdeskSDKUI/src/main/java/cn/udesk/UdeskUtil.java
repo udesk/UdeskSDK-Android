@@ -84,14 +84,25 @@ public class UdeskUtil {
 
     }
 
-    public static Uri getOutputMediaFileUri(Context context) {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+    public static File cameaFile(Context context) {
+        try {
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            return getOutputMediaFile(context, "IMG_" + timeStamp + ".jpg");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+    public static Uri getOutputMediaFileUri(Context context, File cameaFile) {
         try {
             if (Build.VERSION.SDK_INT >= 24) {
-                return UdeskFileProvider.getUriForFile(context, getFileProviderName(context), getOutputMediaFile(context, "IMG_" + timeStamp + ".jpg"));
+                return UdeskFileProvider.getUriForFile(context, getFileProviderName(context), cameaFile);
             } else {
-                if (getOutputMediaFile(context, "IMG_" + timeStamp + ".jpg") != null) {
-                    return Uri.fromFile(getOutputMediaFile(context, "IMG_" + timeStamp + ".jpg"));
+                if (cameaFile != null) {
+                    return Uri.fromFile(cameaFile);
                 } else {
                     return null;
                 }
@@ -112,11 +123,15 @@ public class UdeskUtil {
      * @param uri
      * @return
      */
-    public static String parseOwnUri(Uri uri, Context context) {
+    public static String parseOwnUri(Uri uri, Context context,File cameraFile) {
         if (uri == null) return "";
         String path;
         if (TextUtils.equals(uri.getAuthority(), getFileProviderName(context))) {
-            path = new File(Environment.getExternalStorageDirectory(), uri.getPath().replace("my_external/", "")).getAbsolutePath();
+            if (cameraFile != null){
+                return  cameraFile.getAbsolutePath();
+            }else{
+                path = new File(Environment.getExternalStorageDirectory(), uri.getPath().replace("my_external/", "")).getAbsolutePath();
+            }
         } else {
             path = uri.getEncodedPath();
         }
@@ -356,8 +371,6 @@ public class UdeskUtil {
         }
         return builder.toString();
     }
-
-
 
 
     public static int getDisplayWidthPixels(Activity activity) {
@@ -660,7 +673,7 @@ public class UdeskUtil {
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(loackUri)
                 .setRotationOptions(RotationOptions.autoRotate())
                 .setLocalThumbnailPreviewsEnabled(true)
-                .setResizeOptions(new ResizeOptions(dip2px(context,140), dip2px(context,220)))
+                .setResizeOptions(new ResizeOptions(dip2px(context, 140), dip2px(context, 220)))
                 .build();
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setImageRequest(request)
@@ -676,8 +689,8 @@ public class UdeskUtil {
                         ViewGroup.LayoutParams layoutParams = draweeView.getLayoutParams();
                         int width = reqWidth;
                         int height = reqHeight;
-                        int imgWidth = dip2px(context,140) ;
-                        int imgHight = dip2px(context,220);
+                        int imgWidth = dip2px(context, 140);
+                        int imgHight = dip2px(context, 220);
                         int bitScalew = getRatioSize(width, height, imgHight, imgWidth);
                         layoutParams.height = height / bitScalew;
                         layoutParams.width = width / bitScalew;
@@ -700,8 +713,8 @@ public class UdeskUtil {
                 }
                 int height = imageInfo.getHeight();
                 int width = imageInfo.getWidth();
-                int imgWidth = dip2px(context,140) ;
-                int imgHight = dip2px(context,220);
+                int imgWidth = dip2px(context, 140);
+                int imgHight = dip2px(context, 220);
                 int bitScalew = getRatioSize(width, height, imgHight, imgWidth);
                 layoutParams.height = height / bitScalew;
                 layoutParams.width = width / bitScalew;
@@ -721,7 +734,7 @@ public class UdeskUtil {
         };
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(httpUri).
                 setProgressiveRenderingEnabled(true).
-                setResizeOptions(new ResizeOptions(dip2px(context,140), dip2px(context,220))).
+                setResizeOptions(new ResizeOptions(dip2px(context, 140), dip2px(context, 220))).
                 setRotationOptions(RotationOptions.disableRotation()).build();
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setImageRequest(request)
@@ -742,7 +755,7 @@ public class UdeskUtil {
         simpleDraweeView.setController(controller);
     }
 
-    public static void loadHeadView(Context context,SimpleDraweeView simpleDraweeView, Uri httpUri) {
+    public static void loadHeadView(Context context, SimpleDraweeView simpleDraweeView, Uri httpUri) {
         //初始化圆角圆形参数对象
         RoundingParams rp = new RoundingParams();
         //设置图像是否为圆形
