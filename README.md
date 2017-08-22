@@ -29,14 +29,6 @@
       UdeskSDKManager.getInstance().entryChat(context);
       
 ``` 
-
-  四. 如果应用内切换用户
-``` java
-     1调用
-      UdeskSDKManager.getInstance().logoutUdesk;
-     之后重复对应的 二和三步骤
-      
-``` 
       
   更多功参考demo。
   
