@@ -681,11 +681,11 @@ protected void goToForm() {
 }
 ```
 
-# 六、自定义UI
+# 六、自定义UI和配置设置
 
 UdeskConfig这个类提供了一些颜色的资源的配置
 ```java
- // 标题栏TitleBar的背景色  通过颜色设置
+   // 标题栏TitleBar的背景色  通过颜色设置
     public static int udeskTitlebarBgResId = DEFAULT;
 
     // 标题栏TitleBar，左右两侧文字的颜色
@@ -720,6 +720,21 @@ UdeskConfig这个类提供了一些颜色的资源的配置
 
     //    商品咨询页面中，发送链接的字样颜色
     public static int udeskCommityLinkColorResId = DEFAULT;
+
+    //配置 是否使用推送服务  true 表示使用  false表示不使用
+    public  static  boolean isUserSDkPush = true;
+
+    //配置放弃排队的策略
+    public  static  String  UdeskQuenuMode = UdeskQuenuFlag.Mark;
+
+    //配置开启留言时的    留言表单留言提示语
+    public  static  String  UdeskLeavingMsg = "";
+
+    //配置是否把domain 和 appid 和 appkey 和 sdktoken 存在sharePrefence中， ftrue保存，false 不存
+    public  static  boolean  isUseShare = true;
+
+    //是否使用录音功能  true表示使用 false表示不使用
+    public  static  boolean  isUseVoice = true;
 ```
 参照udeskNewDemo 提供的例子进行配置
 ```java
