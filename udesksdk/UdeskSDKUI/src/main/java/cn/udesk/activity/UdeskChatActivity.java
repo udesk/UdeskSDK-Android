@@ -1177,7 +1177,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         positiveLabel, negativeLabel, content,
                         new OnPopConfirmClick() {
                             public void onPositiveClick() {
-                                if (isupload && TextUtils.isEmpty(path)) {
+                                if (isupload && !TextUtils.isEmpty(path)) {
                                     sendFile(path);
                                 }
                                 if (!isupload && info != null && mPresenter != null) {
