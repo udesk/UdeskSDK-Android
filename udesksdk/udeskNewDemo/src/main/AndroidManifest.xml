@@ -124,6 +124,16 @@
             android:name="udesk.sdk.demo.activity.UpdateUserInfoActivity"
             android:configChanges="screenSize|orientation|uiMode|keyboardHidden"></activity>
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/test_paths" />
+        </provider>
+
 
     </application>
 

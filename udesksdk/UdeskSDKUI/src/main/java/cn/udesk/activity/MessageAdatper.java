@@ -1,13 +1,16 @@
 package cn.udesk.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -15,7 +18,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
-import android.util.Log;
+import android.text.util.Linkify;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +51,9 @@ import cn.udesk.model.StructModel;
 import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.provider.UdeskFileProvider;
 import udesk.core.model.MessageInfo;
+
+import static android.util.Patterns.PHONE;
+import static android.util.Patterns.WEB_URL;
 
 public class MessageAdatper extends BaseAdapter {
     private static final int[] layoutRes = {
@@ -476,7 +482,7 @@ public class MessageAdatper extends BaseAdapter {
                     case MSG_FILE_R:
                         this.isLeft = false;
                         if (!TextUtils.isEmpty(UdeskBaseInfo.customerUrl)) {
-                            UdeskUtil.loadHeadView(mContext,ivHeader, Uri.parse(UdeskBaseInfo.customerUrl));
+                            UdeskUtil.loadHeadView(mContext, ivHeader, Uri.parse(UdeskBaseInfo.customerUrl));
                         }
                         break;
 
@@ -488,7 +494,7 @@ public class MessageAdatper extends BaseAdapter {
                     case MSG_FILE_L:
                         this.isLeft = true;
                         if (message.getAgentUrl() != null && !TextUtils.isEmpty(message.getAgentUrl().trim())) {
-                            UdeskUtil.loadHeadView(mContext,ivHeader, Uri.parse(message.getAgentUrl()));
+                            UdeskUtil.loadHeadView(mContext, ivHeader, Uri.parse(message.getAgentUrl()));
                         }
                         agentnickName.setText(message.getNickName());
                         break;
@@ -496,7 +502,7 @@ public class MessageAdatper extends BaseAdapter {
                         this.isLeft = true;
                         if (message.getUser_avatar() != null && !TextUtils.isEmpty(message.getUser_avatar().trim())) {
                             ivHeader.setImageResource(R.drawable.udesk_im_default_agent_avatar);
-                            UdeskUtil.loadHeadView(mContext,ivHeader, Uri.parse(message.getUser_avatar()));
+                            UdeskUtil.loadHeadView(mContext, ivHeader, Uri.parse(message.getUser_avatar()));
                         }
                         agentnickName.setText(message.getReplyUser());
                         break;
@@ -568,17 +574,20 @@ public class MessageAdatper extends BaseAdapter {
                 CharSequence charSequence = Html.fromHtml(message.getMsgContent());
                 String msg = charSequence.toString();
                 if (msg.endsWith("\n\n")) {
-                    msg = msg.substring(0, msg.length() - 2);
+                    charSequence = charSequence.subSequence(0, charSequence.length() - 2);
+                    rich_tvmsg.setText(charSequence);
+                } else {
+                    rich_tvmsg.setText(charSequence);
                 }
-                rich_tvmsg.setText(msg);
-                rich_tvmsg.setMovementMethod(LinkMovementMethod.getInstance());
+                Linkify.addLinks(rich_tvmsg, WEB_URL, null);
+                Linkify.addLinks(rich_tvmsg, PHONE, null);
                 CharSequence text = rich_tvmsg.getText();
                 if (text instanceof Spannable) {
                     int end = text.length();
                     Spannable sp = (Spannable) rich_tvmsg.getText();
                     URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
                     SpannableStringBuilder style = new SpannableStringBuilder(text);
-                    style.clearSpans();// should clear old spans
+                    style.clearSpans();
                     for (URLSpan url : urls) {
                         MyURLSpan myURLSpan = new MyURLSpan(url.getURL());
                         style.setSpan(myURLSpan, sp.getSpanStart(url),
@@ -611,9 +620,18 @@ public class MessageAdatper extends BaseAdapter {
         @Override
         public void onClick(View widget) {
             try {
-                Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
-                intent.putExtra(UdeskConst.WELCOME_URL, mUrl);
-                mContext.startActivity(intent);
+                if (WEB_URL.matcher(mUrl).find()) {
+                    Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
+                    intent.putExtra(UdeskConst.WELCOME_URL, mUrl);
+                    mContext.startActivity(intent);
+                } else if (PHONE.matcher(mUrl).find()) {
+                    String phone = mUrl.toLowerCase();
+                    if (!phone.startsWith("tel:")) {
+                        phone = "tel:" + mUrl;
+                    }
+                    ((UdeskChatActivity) mContext).callphone(phone);
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             } catch (OutOfMemoryError error) {
