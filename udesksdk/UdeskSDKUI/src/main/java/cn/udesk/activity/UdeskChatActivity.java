@@ -9,6 +9,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,6 +21,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -404,7 +406,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
                         }
                         activity.setTitlebar(activity.bolckedNotice, "off");
-                        activity.toBolckedView();
+//                        activity.toBolckedView();
                         break;
                     case MessageWhat.Has_Survey:
                         UdeskUtils.showToast(activity, activity.getResources()
@@ -832,6 +834,38 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
     }
 
+    public void callphone(final String mobile) {
+        try {
+            if (Build.VERSION.SDK_INT < 23) {
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(mobile));
+                UdeskChatActivity.this.startActivity(intent);
+            } else {
+                XPermissionUtils.requestPermissions(UdeskChatActivity.this, RequestCode.CallPhone,
+                        new String[]{Manifest.permission.CALL_PHONE},
+                        new XPermissionUtils.OnPermissionListener() {
+                            @Override
+                            public void onPermissionGranted() {
+                                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(mobile));
+                                if (ActivityCompat.checkSelfPermission(UdeskChatActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                    return;
+                                }
+                                UdeskChatActivity.this.startActivity(intent);
+                            }
+
+                            @Override
+                            public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
+                                Toast.makeText(UdeskChatActivity.this,
+                                        getResources().getString(R.string.call_denied),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     // 长按录音
     @Override
     public boolean onLongClick(View v) {
@@ -902,7 +936,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         mPresenter.sendBitmapMessage((Bitmap) data.getParcelableExtra("data"));
                     }
                     if (mPresenter != null && photoUri != null && photoUri.getPath() != null) {
-                        mPresenter.sendBitmapMessage(UdeskUtil.parseOwnUri(photoUri, UdeskChatActivity.this,cameraFile));
+                        mPresenter.sendBitmapMessage(UdeskUtil.parseOwnUri(photoUri, UdeskChatActivity.this, cameraFile));
                     }
 
                 }
@@ -1079,7 +1113,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         try {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             cameraFile = UdeskUtil.cameaFile(UdeskChatActivity.this);
-            photoUri = UdeskUtil.getOutputMediaFileUri(UdeskChatActivity.this,cameraFile);
+            photoUri = UdeskUtil.getOutputMediaFileUri(UdeskChatActivity.this, cameraFile);
             if (Build.VERSION.SDK_INT >= 24) {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             }
@@ -1177,7 +1211,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         positiveLabel, negativeLabel, content,
                         new OnPopConfirmClick() {
                             public void onPositiveClick() {
-                                if (isupload && TextUtils.isEmpty(path)) {
+                                if (isupload && !TextUtils.isEmpty(path)) {
                                     sendFile(path);
                                 }
                                 if (!isupload && info != null && mPresenter != null) {
@@ -1360,9 +1394,13 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         try {
             boolean isOpen = true;
             SDKIMSetting imsetting = UdeskSDKManager.getInstance().getImSetting();
+            //是否弹出表单： 如果获取到管理员的配置，使用管理员的配置。没获取到则使用配置中默认设置
             if (imsetting != null) {
                 isOpen = imsetting.getEnable_web_im_feedback();
+            } else {
+                isOpen = UdeskConfig.isUserForm;
             }
+            //如果客户设置了回调处理留言系统，一定设置true
             if (UdeskSDKManager.getInstance().getFormCallBak() != null) {
                 isOpen = true;
             }
@@ -1373,16 +1411,23 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
             String negativeLabel = this.getString(R.string.udesk_cancel);
             String title = "";
             if (isOpen) {
+                //表单留言的文案,如果客户设置了，则使用客户的设置文案。否则用默认的文案
                 if (!TextUtils.isEmpty(UdeskConfig.UdeskLeavingMsg)) {
                     title = UdeskConfig.UdeskLeavingMsg;
                 } else {
                     title = this.getString(R.string.udesk_msg_offline_to_form);
                 }
             } else {
-                if (!TextUtils.isEmpty(imsetting.getNo_reply_hint())) {
+                //关闭留言的文案,如果获取到后台的设置，则使用后台的设置，没获取的后台的，本地客户设置了，则使用客户的设置文案。否则用默认的文案
+                if (imsetting != null && !TextUtils.isEmpty(imsetting.getNo_reply_hint())) {
                     title = imsetting.getNo_reply_hint();
                 } else {
-                    title = this.getString(R.string.udesk_msg_busy_default_to_form);
+                    if (!TextUtils.isEmpty(UdeskConfig.UdeskLeavingMsg)) {
+                        title = UdeskConfig.UdeskLeavingMsg;
+                    } else {
+                        title = this.getString(R.string.udesk_msg_busy_default_to_form);
+                    }
+
                 }
             }
             if (mAgentInfo != null && mAgentInfo.getAgentCode() == UdeskConst.AgentReponseCode.WaitAgent) {
@@ -1425,6 +1470,9 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                 return;
             }
             if (UdeskSDKManager.getInstance().getImSetting() != null && !UdeskSDKManager.getInstance().getImSetting().getEnable_web_im_feedback()) {
+                return;
+            }
+            if (!UdeskConfig.isUserForm) {
                 return;
             }
             UdeskSDKManager.getInstance().goToForm(UdeskChatActivity.this);
@@ -1622,10 +1670,10 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     public void refreshInputEmjio(String s) {
         try {
             if (UDEmojiAdapter.replaceEmoji(this, s,
-                    (int) mInputEditView.getTextSize()) != null){
+                    (int) mInputEditView.getTextSize()) != null) {
                 mInputEditView.setText(UDEmojiAdapter.replaceEmoji(this, s,
                         (int) mInputEditView.getTextSize()));
-            }else{
+            } else {
                 mInputEditView.setText(s);
             }
 

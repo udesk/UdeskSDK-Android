@@ -59,6 +59,9 @@ public class UdeskConfig {
     //是否使用录音功能  true表示使用 false表示不使用
     public  static  boolean  isUseVoice = true;
 
+    //在没有请求到管理员在后端对sdk使用配置下，在默认的情况下，是否需要表单留言，true需要， false 不需要
+     public  static  boolean  isUserForm= true;
+
     //mode: mark (默认,标记放弃)/ cannel_mark(取消标记) / force_quit(强制立即放弃)
     public static  class  UdeskQuenuFlag{
         public static final String Mark ="mark";
