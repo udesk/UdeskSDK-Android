@@ -156,6 +156,8 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     private boolean isLeavingmsg = false;
     private boolean isPermmitSurvy = true;
 
+    private boolean isWait = false;
+
     public static class MessageWhat {
         public static final int loadHistoryDBMsg = 1;
         public static final int NoAgent = 2;
@@ -250,6 +252,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         }
                         break;
                     case MessageWhat.NoAgent:
+                        activity.isWait = false;
                         if (activity.isleaveMessageTypeMsg()) {
                             activity.setUdeskImContainerVis(View.GONE);
                             activity.setTitlebar(activity.getString(R.string.udesk_ok), "off");
@@ -260,6 +263,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         }
                         break;
                     case MessageWhat.HasAgent:
+                        activity.isWait = false;
                         activity.setUdeskImContainerVis(View.VISIBLE);
                         activity.mAgentInfo = (AgentInfo) msg.obj;
                         activity.currentStatusIsOnline = true;
@@ -269,6 +273,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         }
                         break;
                     case MessageWhat.WaitAgent:
+                        activity.isWait = true;
                         activity.mAgentInfo = (AgentInfo) msg.obj;
                         activity.setTitlebar(activity.mAgentInfo.getMessage(), "off");
                         this.postDelayed(activity.myRunnable, activity.QUEUE_RETEY_TIME);
@@ -376,6 +381,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                     case MessageWhat.IM_STATUS:
                         String imStatus = (String) msg.obj;
                         if (imStatus.equals("off")) {
+                            activity.isWait = false;
                             activity.isInitComplete = true;
                             if (activity.isleaveMessageTypeMsg()) {
                                 activity.setUdeskImContainerVis(View.GONE);
@@ -1342,6 +1348,11 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                 isInitComplete = false;
                 isOverConversation = false;
                 mPresenter.createIMCustomerInfo();
+                return false;
+            }
+
+            if(isWait){
+                confirmToForm();
                 return false;
             }
 
