@@ -1351,7 +1351,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                 return false;
             }
 
-            if(isWait){
+            if (isWait) {
                 confirmToForm();
                 return false;
             }
@@ -1451,16 +1451,19 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                 return;
             }
             if (!formWindow.isShowing()) {
+                final String finalPositiveLabel = positiveLabel;
                 formWindow.show(this, this.getWindow().getDecorView(),
-                        positiveLabel, negativeLabel, title,
+                        finalPositiveLabel, negativeLabel, title,
                         new OnPopConfirmClick() {
                             public void onPositiveClick() {
-                                goToForm();
-                                if (mPresenter != null) {
-                                    mPresenter.quitQuenu();
+                                dismissFormWindow();
+                                if (finalPositiveLabel.equals(UdeskChatActivity.this.getString(R.string.udesk_ok))) {
+                                    goToForm();
+                                    if (mPresenter != null) {
+                                        mPresenter.quitQuenu();
+                                    }
                                 }
                             }
-
                             @Override
                             public void onNegativeClick() {
                             }
@@ -1475,15 +1478,11 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     //启动留言界面
     protected void goToForm() {
         try {
-            dismissFormWindow();
             if (UdeskSDKManager.getInstance().getFormCallBak() != null) {
                 UdeskSDKManager.getInstance().getFormCallBak().toLuachForm(UdeskChatActivity.this);
                 return;
             }
             if (UdeskSDKManager.getInstance().getImSetting() != null && !UdeskSDKManager.getInstance().getImSetting().getEnable_web_im_feedback()) {
-                return;
-            }
-            if (!UdeskConfig.isUserForm) {
                 return;
             }
             UdeskSDKManager.getInstance().goToForm(UdeskChatActivity.this);
