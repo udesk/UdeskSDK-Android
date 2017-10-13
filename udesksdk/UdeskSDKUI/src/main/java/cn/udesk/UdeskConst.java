@@ -66,6 +66,7 @@ public class UdeskConst {
         public static final int TYPE_LEAVEMSG = 6;
         public static final int TYPE_EVENT = 7;
         public static final int TYPE_VIDEO = 8;
+        public static final int TYPE_LOCATION = 9;
     }
 
     public static int parseTypeForMessage(String type) {
@@ -87,6 +88,8 @@ public class UdeskConst {
             return ChatMsgTypeInt.TYPE_EVENT;
         }else if ("video".equalsIgnoreCase(type) || "file".equalsIgnoreCase(type)){
             return ChatMsgTypeInt.TYPE_VIDEO;
+        }else if ("location".equalsIgnoreCase(type)){
+            return ChatMsgTypeInt.TYPE_LOCATION;
         }
         return ChatMsgTypeInt.TYPE_TEXT;
     }
@@ -102,6 +105,7 @@ public class UdeskConst {
         public static final String TYPE_EVENT = "udeskevent";
         public static final String TYPE_VIDEO = "video";
         public static final String TYPE_File = "file";
+        public static final String TYPE_Location = "location";
 
     }
 

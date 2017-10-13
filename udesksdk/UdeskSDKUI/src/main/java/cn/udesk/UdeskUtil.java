@@ -30,7 +30,6 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
-import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.generic.RoundingParams;
@@ -84,7 +83,6 @@ public class UdeskUtil {
 
     }
 
-
     public static File cameaFile(Context context) {
         try {
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -112,7 +110,6 @@ public class UdeskUtil {
         }
 
     }
-
     public final static String getFileProviderName(Context context) {
         return context.getPackageName() + ".fileprovider";
     }
@@ -371,6 +368,8 @@ public class UdeskUtil {
         }
         return builder.toString();
     }
+
+
 
 
     public static int getDisplayWidthPixels(Activity activity) {
@@ -669,11 +668,30 @@ public class UdeskUtil {
         mPhotoDraweeView.setController(controller.build());
     }
 
+    public static void loadHeadView(Context context,SimpleDraweeView simpleDraweeView, Uri httpUri) {
+        //初始化圆角圆形参数对象
+        RoundingParams rp = new RoundingParams();
+        //设置图像是否为圆形
+        rp.setRoundAsCircle(true);
+
+        final GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(context.getResources())
+                .setRoundingParams(rp)
+                .build();
+
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setUri(httpUri)
+                .setTapToRetryEnabled(true)
+                .setOldController(simpleDraweeView.getController())
+                .build();
+        simpleDraweeView.setHierarchy(hierarchy);
+        simpleDraweeView.setController(controller);
+    }
+
     public static void loadFileFromSdcard(final Context context, final SimpleDraweeView draweeView, Uri loackUri, final int reqWidth, final int reqHeight) {
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(loackUri)
                 .setRotationOptions(RotationOptions.autoRotate())
                 .setLocalThumbnailPreviewsEnabled(true)
-                .setResizeOptions(new ResizeOptions(dip2px(context, 140), dip2px(context, 220)))
+                .setResizeOptions(new ResizeOptions(dip2px(context,140), dip2px(context,220)))
                 .build();
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setImageRequest(request)
@@ -689,8 +707,8 @@ public class UdeskUtil {
                         ViewGroup.LayoutParams layoutParams = draweeView.getLayoutParams();
                         int width = reqWidth;
                         int height = reqHeight;
-                        int imgWidth = dip2px(context, 140);
-                        int imgHight = dip2px(context, 220);
+                        int imgWidth = dip2px(context,140) ;
+                        int imgHight = dip2px(context,220);
                         int bitScalew = getRatioSize(width, height, imgHight, imgWidth);
                         layoutParams.height = height / bitScalew;
                         layoutParams.width = width / bitScalew;
@@ -713,8 +731,8 @@ public class UdeskUtil {
                 }
                 int height = imageInfo.getHeight();
                 int width = imageInfo.getWidth();
-                int imgWidth = dip2px(context, 140);
-                int imgHight = dip2px(context, 220);
+                int imgWidth = dip2px(context,140) ;
+                int imgHight = dip2px(context,220);
                 int bitScalew = getRatioSize(width, height, imgHight, imgWidth);
                 layoutParams.height = height / bitScalew;
                 layoutParams.width = width / bitScalew;
@@ -734,7 +752,7 @@ public class UdeskUtil {
         };
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(httpUri).
                 setProgressiveRenderingEnabled(true).
-                setResizeOptions(new ResizeOptions(dip2px(context, 140), dip2px(context, 220))).
+                setResizeOptions(new ResizeOptions(dip2px(context,140), dip2px(context,220))).
                 setRotationOptions(RotationOptions.disableRotation()).build();
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setImageRequest(request)
@@ -755,24 +773,7 @@ public class UdeskUtil {
         simpleDraweeView.setController(controller);
     }
 
-    public static void loadHeadView(Context context, SimpleDraweeView simpleDraweeView, Uri httpUri) {
-        //初始化圆角圆形参数对象
-        RoundingParams rp = new RoundingParams();
-        //设置图像是否为圆形
-        rp.setRoundAsCircle(true);
 
-        final GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(context.getResources())
-                .setRoundingParams(rp)
-                .build();
-
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setUri(httpUri)
-                .setTapToRetryEnabled(true)
-                .setOldController(simpleDraweeView.getController())
-                .build();
-        simpleDraweeView.setHierarchy(hierarchy);
-        simpleDraweeView.setController(controller);
-    }
 
     public static int getRatioSize(int bitWidth, int bitHeight, int imageHeight, int imageWidth) {
 

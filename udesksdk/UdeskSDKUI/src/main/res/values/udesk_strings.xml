@@ -79,4 +79,6 @@
     <string name="udesk_no_sdktoken">sdktoken为空,请传入合法的值</string>
     <string name="udesk_close_chart">会话已结束</string>
 
+
+
 </resources>

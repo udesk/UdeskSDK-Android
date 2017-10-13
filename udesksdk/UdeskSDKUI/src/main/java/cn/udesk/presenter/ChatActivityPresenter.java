@@ -105,6 +105,7 @@ public class ChatActivityPresenter {
         InvokeEventContainer.getInstance().event_OncreateCustomer.unBind(this);
         InvokeEventContainer.getInstance().event_OnIsBolcked.unBind(this);
         UdeskMessageManager.getInstance().event_OnTicketReplayNotice.unBind(this);
+        mChatView = null;
     }
 
     /**
@@ -202,7 +203,7 @@ public class ChatActivityPresenter {
             if (result.equals("failure")) {
                 mChatView.showFailToast(string);
             } else if (result.equals("succes")) {
-
+                //创建用户成功连接xmpp服务器
                 if (isJsonStr) {
                     JsonUtils.parserCustomersJson(string);
                     updateUserInfo(UdeskBaseInfo.customerId);
@@ -248,19 +249,18 @@ public class ChatActivityPresenter {
 
                         @Override
                         public void onSuccess(String message) {
-                            UdeskMessageManager.getInstance().connection();
                             AgentInfo agentInfo = JsonUtils.parseAgentResult(message);
                             if (agentInfo.getAgentCode() == 2000) {
                                 getIMStatus(agentInfo);
                             } else {
                                 mChatView.dealAgentInfo(agentInfo);
                             }
+                            UdeskMessageManager.getInstance().connection();
                         }
 
                         @Override
                         public void onFail(String message) {
                             // 失败给出错误提示 结束流程
-                            UdeskMessageManager.getInstance().connection();
                             mChatView.showFailToast(message);
                         }
                     });
@@ -719,6 +719,27 @@ public class ChatActivityPresenter {
         }
     }
 
+    public void sendLocationMessage(double lat,double longitude,String localvalue,String bitmapDir){
+        StringBuilder builder = new StringBuilder();
+        builder.append(lat).append(";").append(longitude).append(";").append("16;").append(localvalue);
+        try {
+            MessageInfo msg = buildSendMessage(
+                    UdeskConst.ChatMsgTypeString.TYPE_Location,
+                    System.currentTimeMillis(), builder.toString(), bitmapDir);
+            saveMessage(msg);
+            mChatView.addMessage(msg);
+            UdeskMessageManager.getInstance().sendMessage(msg.getMsgtype(),
+                    msg.getMsgContent(), msg.getMsgId(),
+                    mChatView.getAgentInfo().getAgentJid(), msg.getDuration(), mChatView.getAgentInfo().getIm_sub_session_id());
+            UdeskDBManager.getInstance().addSendingMsg(msg.getMsgId(),
+                    UdeskConst.SendFlag.RESULT_SEND, System.currentTimeMillis());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
     // 发送录音信息
     public void sendRecordAudioMsg(String audiopath, long duration) {
         try {
@@ -1098,10 +1119,14 @@ public class ChatActivityPresenter {
 
     }
 
-    //上传文件
+    //上传图片文件
     private void upLoadFile(String filePath, MessageInfo message) {
         try {
-            Configuration config = new Configuration.Builder().useHttps(true).build();
+            Configuration config = new Configuration.Builder()
+                    .chunkSize(1024 * 1024)
+                    .putThreshhold(1024 * 1024)
+                    .connectTimeout(5)
+                    .build();
             // 实例化一个上传的实例
             UploadManager uploadManager = new UploadManager(config);
             if (mMyUpCompletionHandler == null) {
@@ -1226,7 +1251,7 @@ public class ChatActivityPresenter {
         @Override
         public void run() {
             try {
-                if (mChatView.getHandler() != null) {
+                if (mChatView != null && mChatView.getHandler() != null) {
                     updateSendFailedFlag();
                     retrySendMsg();
                     mChatView.getHandler().postDelayed(this, 5000);
@@ -1277,7 +1302,7 @@ public class ChatActivityPresenter {
     //点击失败按钮 重试发送消息
     public void startRetryMsg(MessageInfo message) {
         try {
-            if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_TEXT)) {
+            if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_TEXT) || message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_Location)) {
                 UdeskMessageManager.getInstance().sendMessage(message.getMsgtype(),
                         message.getMsgContent(), message.getMsgId(),
                         mChatView.getAgentInfo().getAgentJid(), message.getDuration(), mChatView.getAgentInfo().getIm_sub_session_id());

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/udesk_init_key_bg"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="200dp"
+        android:background="@drawable/login_linearlayout_bg"
+        android:orientation="horizontal">
+
+
+        <EditText
+            android:id="@+id/udesk_domain"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="域名"
+            android:paddingLeft="12dp"
+            android:singleLine="true"
+            android:textColor="@color/android:white"
+            android:textColorHint="@color/android:white"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/login_linearlayout_bg"
+        android:orientation="horizontal">
+
+
+        <EditText
+            android:id="@+id/udesk_appkey"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="app key"
+            android:paddingLeft="12dp"
+            android:singleLine="true"
+            android:textColor="@color/android:white"
+            android:textColorHint="@color/android:white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/login_linearlayout_bg"
+        android:orientation="horizontal">
+
+
+        <EditText
+            android:id="@+id/appid"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="app id"
+            android:paddingLeft="12dp"
+            android:singleLine="true"
+            android:textColor="@color/android:white"
+            android:textColorHint="@color/android:white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/udesk_start"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/udesk_btn_bg"
+        android:gravity="center"
+        android:text="使用发送位置功能进入会话"
+        android:textColor="@color/android:white"
+        android:textSize="17sp" />
+
+
+
+</LinearLayout>

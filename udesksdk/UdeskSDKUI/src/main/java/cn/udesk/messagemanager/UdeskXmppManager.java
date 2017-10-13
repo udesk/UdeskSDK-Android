@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import java.util.UUID;
 
 import cn.udesk.config.UdeskBaseInfo;
+import cn.udesk.config.UdeskConfig;
 import udesk.core.UdeskCoreConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.xmpp.XmppInfo;
@@ -255,6 +256,9 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
             xmppMsg.setPacketID(msgId);
             JSONObject json = new JSONObject();
             json.put("type", type);
+            if (type.equals("location")){
+                json.put("map_type", UdeskConfig.useMapType);
+            }
             JSONObject data = new JSONObject();
             data.put("content", text);
             data.put("duration", duration);

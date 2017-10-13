@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingRight="@dimen/udesk_chat_head_margin_left_or_right"
+    android:paddingTop="@dimen/udesk_5">
+
+    <TextView
+        android:id="@+id/udesk_tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/udesk_5"
+        android:layout_marginTop="@dimen/udesk_5"
+        android:gravity="center"
+        android:textColor="@color/udesk_color_im_time_text1"
+        android:textSize="@dimen/udesk_sp14" />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/udesk_iv_head"
+        android:layout_width="@dimen/udesk_chat_head"
+        android:layout_height="@dimen/udesk_chat_head"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/udesk_tv_time"
+        android:layout_marginTop="@dimen/udesk_chat_head_margin"
+        fresco:actualImageScaleType="centerCrop"
+        fresco:placeholderImage="@drawable/udesk_im_default_user_avatar"
+        fresco:roundAsCircle="true"
+        fresco:roundingBorderColor="@color/udesk_color_line2"
+        fresco:roundingBorderWidth="1dp" />
+
+    <TextView
+        android:id="@+id/udesk_nick_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <TableRow
+        android:id="@+id/udesk_rl_body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/udesk_iv_head"
+        android:layout_below="@id/udesk_tv_time"
+        android:layout_marginLeft="@dimen/udesk_chat_context_margin_other_derction"
+        android:layout_toLeftOf="@id/udesk_iv_head"
+        android:minHeight="45dip"
+        android:minWidth="45dip">
+
+        <ImageView
+            android:id="@+id/udesk_iv_status"
+            android:layout_width="@dimen/udesk_chat_msg_send_fail_pic"
+            android:layout_height="@dimen/udesk_chat_msg_send_fail_pic"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/udesk_im_retry"
+            android:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/udesk_im_wait"
+            android:layout_width="@dimen/udesk_chat_msg_send_fail_pic"
+            android:layout_height="@dimen/udesk_chat_msg_send_fail_pic"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:indeterminateDrawable="@drawable/udesk_anim_progress"
+            android:scaleType="centerInside"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/udesk_im_img_item_content"
+            android:layout_width="@dimen/udesk_220"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/udesk_chat_head_margin"
+            android:layout_marginRight="@dimen/udesk_chat_head_margin"
+            android:background="#F0F1F5"
+            >
+
+            <TextView
+
+                android:id="@+id/postion_value"
+                android:layout_width="@dimen/udesk_200"
+                android:layout_height="@dimen/udesk_40"
+                android:ellipsize="end"
+                android:gravity="left|center"
+                android:paddingLeft="@dimen/udesk_10"
+                android:paddingRight="@dimen/udesk_10"
+                android:singleLine="true"
+                android:textColor="@color/udesk_edit_input_msg_cololr1"
+                android:textSize="@dimen/udesk_sp16" />
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:layout_below="@+id/postion_value"
+                android:id="@+id/udesk_location_image"
+                android:layout_width="@dimen/udesk_220"
+                android:layout_height="@dimen/udesk_140"
+                fresco:actualImageScaleType="centerCrop"
+                fresco:failureImage="@drawable/udesk_defualt_failure"
+                fresco:failureImageScaleType="centerCrop"
+                fresco:placeholderImage="@drawable/udesk_defalut_image_loading"
+                fresco:placeholderImageScaleType="centerCrop"
+               />
+        </RelativeLayout>
+    </TableRow>
+
+</RelativeLayout>
