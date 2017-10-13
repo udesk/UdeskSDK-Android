@@ -35,6 +35,115 @@
  
 ------
 
+
+### SDK中较常见配置项说明
+------
+
+ 一. IM中聊天功能选项的使用的配置开关说明:
+ 
+     配置开关在UdeskConfig类中：
+	 
+    //配置 是否使用推送服务  true 表示使用  false表示不使用
+    public static boolean isUserSDkPush = true;
+
+    //配置放弃排队的策略
+    public static String UdeskQuenuMode = UdeskQuenuFlag.Mark;
+
+    //配置开启留言时的    留言表单留言提示语
+    public static String UdeskLeavingMsg = "";
+
+    //配置是否把domain 和 appid 和 appkey 和 sdktoken 存在sharePrefence中， true保存，false 不存
+    public static boolean isUseShare = true;
+
+    //是否使用录音功能  true表示使用 false表示不使用
+    public static boolean isUseVoice = true;
+
+    //是否使用发送图片的功能  true表示使用 false表示不使用
+    public static boolean isUsephoto = true;
+
+    //是否使用拍照的功能  true表示使用 false表示不使用
+    public static boolean isUsecamera = true;
+
+    //是否使用上传MP4视频文件功能  true表示使用 false表示不使用
+    public static boolean isUsefile = true;
+
+    //是否使用发送位置功能  true表示使用 false表示不使用
+    public static boolean isUseMap = false;
+
+    //配置接入使用的地图类型
+    public static String useMapType = UdeskMapType.Other;
+	 
+ 二. IM中聊天功能 如果场景需要进入会话界面,先配置一条消息发送给客服可以如下:
+      每次进入会话界面前，调用如下方法传值：
+      UdeskSDKManager.getInstance().setFirstMessage();
+	
+ 三. IM中聊天功能 集成发送地理位置的信息说明:
+     
+	 android 接入的第三方选择性比较多等原因，没有直接在SDK中内嵌地图SDK，由客户根据实际需要选择是否集成发送地理位置信息。
+	 提供集成地图的demo例子有：百度地图（见baidumapdemo 这个module），高德地图（gaodemapdemo）腾讯地图（tenxunmapdemo）
+	 
+	 集成发送地理位置信息步骤：
+	 1.初始配置 
+	 UdeskConfig.isUseMap = true;
+	 百度地图设置
+     UdeskConfig.useMapType = UdeskConfig.UdeskMapType.BaiDu; 
+	 高德地图设置
+	 UdeskConfig.useMapType = UdeskConfig.UdeskMapType.GaoDe;
+	 腾讯地图设置
+	 UdeskConfig.useMapType = UdeskConfig.UdeskMapType.Tencent;
+	 其它地图设置
+	 UdeskConfig.useMapType = UdeskConfig.UdeskMapType.Other;
+	 
+	 2.设置地理位置点击事件的回调：
+	 UdeskSDKManager.getInstance().setLocationMessageClickCallBack(new UdeskSDKManager.ILocationMessageClickCallBack() {
+                        @Override
+                        public void luanchMap(Context context, double latitude, double longitude, String selctLoactionValue) {
+                        
+                        }
+                    });
+	  说明：回调返回发送地理位置信息的经纬度和选择的位置信息， 由客户根据需要实现对应的跳转界面。
+	  
+	  3.需要设置选择地图位置的activity，供UdeskSDK，点击发送地理位置时调用
+	  举例是：LocationActivity，以下用LocationActivity进行说明:
+	  UdeskSDKManager.getInstance().setCls(LocationActivity.class);
+	  
+	  说明：UdeskChatActivity是通过startActivityForResult方式进入LocationActivity,在之后选择相应信息回传到UdeskChatActivity，是通过Intent方式。
+	        对intent.putExtra中的name做了约定，的遵守才能有效显示地理位置信息。
+			
+		具体约定：	
+	   public static class UdeskMapIntentName {
+          //选中的位置
+          public static final String Position = "udesk_position";
+
+          //选中位置周边位置的截图存储的本地路径
+          public static final String BitmapDIR = "udesk_bitmap_dir";
+
+          //选中位置的纬度
+          public static final String Latitude = "udesk_latitude";
+
+          //选中位置的经度
+          public static final String Longitude = "udesk_longitude";
+       }
+	   
+	   具体的例子如deom提供的代码片段
+	      mMap.getScreenShot(new TencentMap.OnScreenShotListener() {
+                    @Override
+                    public void onMapScreenShot(Bitmap bitmap) {
+                        saveBitmap(bitmap);
+                        Intent intent = new Intent();
+                        intent.putExtra(UdeskConfig.UdeskMapIntentName.Position, mPoiItem.title);
+                        intent.putExtra(UdeskConfig.UdeskMapIntentName.Latitude, (double) mPoiItem.location.lat);
+                        intent.putExtra(UdeskConfig.UdeskMapIntentName.Longitude, (double) mPoiItem.location.lng);
+                        intent.putExtra(UdeskConfig.UdeskMapIntentName.BitmapDIR, bitmapdir);
+                        setResult(RESULT_OK, intent);
+                        LocationActivity.this.finish();
+                    }
+                });
+
+
+
+------
+
 ### 常见问题
 ------
 ``` java
