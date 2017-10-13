@@ -125,15 +125,15 @@ public class UdeskBaseWebViewActivity extends Activity {
                     super.onPageFinished(view, url);
                 }
 
-//                @Override
-//                public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-//
-//                }
+                @Override
+                public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 
-//                @Override
-//                public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-//                    handler.proceed();
-//                }
+                }
+
+                @Override
+                public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                    handler.proceed();
+                }
 
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {

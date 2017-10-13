@@ -225,7 +225,6 @@ public class UdeskMessageManager {
 
     public void cancleXmpp() {
         try {
-            Log.i("xxx","UdeskMessageManager cancleXmpp");
             ensureMessageExecutor();
             messageExecutor.submit(new Runnable() {
                 @Override

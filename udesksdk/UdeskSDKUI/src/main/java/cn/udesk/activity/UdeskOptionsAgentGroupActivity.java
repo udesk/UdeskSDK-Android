@@ -119,9 +119,10 @@ public class UdeskOptionsAgentGroupActivity extends Activity implements AdapterV
     //进入会话界面
     private void luanchChat() {
         try {
-            Intent intent = new Intent(UdeskOptionsAgentGroupActivity.this, UdeskChatActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            UdeskOptionsAgentGroupActivity.this.startActivity(intent);
+//            Intent intent = new Intent(UdeskOptionsAgentGroupActivity.this, UdeskChatActivity.class);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            UdeskOptionsAgentGroupActivity.this.startActivity(intent);
+            UdeskSDKManager.getInstance().toLanuchChatAcitvity(UdeskOptionsAgentGroupActivity.this);
             finish();
         } catch (Exception e) {
             e.printStackTrace();

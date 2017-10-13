@@ -46,8 +46,8 @@
 
 
     <string name="udesk_options_agentgroup">Please choose agent group</string>
-    <string name="call_denied">Refused call authrity, can not tak a call</string>
     <string name="file_denied">Refused storage authrity, can not tak a file </string>
+    <string name="call_denied">Refused call authrity, can not tak a call</string>
     <string name="aduido_denied">Refused voice record authority, can not take a voice record</string>
     <string name="camera_denied">Refused photo authrity, can not tak a photo </string>
     <string name="photo_denied">Refused storage authrity, can not get your photos</string>

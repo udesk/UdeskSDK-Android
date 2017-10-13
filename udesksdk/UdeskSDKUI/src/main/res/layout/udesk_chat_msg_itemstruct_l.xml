@@ -46,6 +46,7 @@
 
     <LinearLayout
         android:id="@+id/udesk_rl_body"
+        android:layout_marginLeft="6dp"
         android:layout_width="@dimen/udesk_240"
         android:layout_height="wrap_content"
         android:layout_below="@id/udesk_nick_name"

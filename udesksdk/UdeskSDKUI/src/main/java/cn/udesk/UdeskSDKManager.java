@@ -1,5 +1,6 @@
 package cn.udesk;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,6 +14,10 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.cache.MemoryCacheParams;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.tencent.bugly.crashreport.CrashReport;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -36,13 +41,12 @@ import udesk.core.UdeskCallBack;
 import udesk.core.UdeskCoreConst;
 import udesk.core.UdeskHttpFacade;
 import udesk.core.model.MessageInfo;
+import udesk.core.utils.UdeskUtils;
 
 
 public class UdeskSDKManager {
 
     private static UdeskSDKManager instance = new UdeskSDKManager();
-
-//    private UdeskDialog dialog;
 
     //文本消息中的链接消息的点击事件的拦截回调。 包含表情的不会拦截回调。
     private ITxtMessageWebonCliclk txtMessageClick;
@@ -52,14 +56,49 @@ public class UdeskSDKManager {
 
     private IUdeskStructMessageCallBack structMessageCallBack;
 
+    private ILocationMessageClickCallBack locationMessageClickCallBack;
+
     //多应用 配置选项mode
     private SDKIMSetting imSetting;
+
+    //缓存设置的指定组，每次进入都必须重新指定
+    private String groupId = "";
+
+    //传入打开的地图的activity
+    //由于不知道客户使用什么地图，故采用回调的方式，有客户实现发送位置的页面 并传入
+    private Class<?> cls;
+
+
+    //客户如果需要 带入一条消息  会话一分配就发送给客服，可以设置
+    private String firstMessage;
 
     private UdeskSDKManager() {
     }
 
     public static UdeskSDKManager getInstance() {
         return instance;
+    }
+
+    public Class<?> getCls() {
+        return cls;
+    }
+
+    public void setCls(Class<?> cls) {
+        this.cls = cls;
+    }
+
+
+    //点击地理位置信息的回调接口
+    public interface ILocationMessageClickCallBack {
+        void luanchMap(Context context, double latitude, double longitude, String selctLoactionValue);
+    }
+
+    public ILocationMessageClickCallBack getLocationMessageClickCallBack() {
+        return locationMessageClickCallBack;
+    }
+
+    public void setLocationMessageClickCallBack(ILocationMessageClickCallBack locationMessageClickCallBack) {
+        this.locationMessageClickCallBack = locationMessageClickCallBack;
     }
 
     /**
@@ -129,6 +168,7 @@ public class UdeskSDKManager {
 
     private IOnlineMessageCallBack onlineMessage;
 
+    //监听在线消息的回调接口
     public interface IOnlineMessageCallBack {
         void onlineMessageReceive(MsgNotice msgNotice);
     }
@@ -139,6 +179,14 @@ public class UdeskSDKManager {
 
     public void setOnlineMessage(IOnlineMessageCallBack onlineMessage) {
         this.onlineMessage = onlineMessage;
+    }
+
+    public String getFirstMessage() {
+        return firstMessage;
+    }
+
+    public void setFirstMessage(String firstMessage) {
+        this.firstMessage = firstMessage;
     }
 
     /**
@@ -244,8 +292,12 @@ public class UdeskSDKManager {
      */
     public void toLanuchChatAcitvity(Context context) {
         Intent intent = new Intent(context, UdeskChatActivity.class);
+        if (TextUtils.isEmpty(groupId)) {
+            intent.putExtra(UdeskConst.UDESKGROUPID, groupId);
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+        groupId = "";
     }
 
     /**
@@ -664,6 +716,12 @@ public class UdeskSDKManager {
 //        }
 //    }
 
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+
     private void lanuchChatByConfirmId(Context context, String groupId, String agentId) {
         Intent intent = new Intent(context, UdeskChatActivity.class);
         intent.putExtra(UdeskConst.UDESKGROUPID, groupId);
@@ -684,44 +742,43 @@ public class UdeskSDKManager {
         imSetting = null;
     }
 
-//    public void showOnlyRobot(final Context context) {
-//
-//        showLoading(context);
-//        UdeskHttpFacade.getInstance().setUserInfo(context, getDomain(context),
-//                getAppkey(context), getSdkToken(context),
-//                UdeskBaseInfo.userinfo, UdeskBaseInfo.textField,
-//                UdeskBaseInfo.roplist, getAppId(context), new UdeskCallBack() {
-//
-//                    @Override
-//                    public void onSuccess(String string) {
-//                        String url = "";
-//                        try {
-//                            JSONObject resultJson = new JSONObject(string);
-//                            if (resultJson.has("robot")) {
-//                                String robotString = resultJson.getString("robot");
-//                                if (!TextUtils.isEmpty(robotString)) {
-//                                    JSONObject robotJson = new JSONObject(robotString);
-//
-//                                    if (robotJson.has("h5_url")) {
-//                                        url = robotJson.getString("h5_url");
-//                                    }
-//                                }
-//                            }
-//                        } catch (JSONException e) {
-//                        }
-//                        if (!TextUtils.isEmpty(url)) {
-//                            toLanuchRobotAcitivty(context, url, "false", false);
-//                        } else {
-//                            UdeskUtils.showToast(context, context.getString(R.string.udesk_has_not_open_robot));
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFail(String string) {
-//                        UdeskUtils.showToast(context, string);
-//                    }
-//                });
-//    }
+    public void showOnlyRobot(final Context context) {
+
+        UdeskHttpFacade.getInstance().setUserInfo(context, getDomain(context),
+                getAppkey(context), getSdkToken(context),
+                UdeskBaseInfo.userinfo, UdeskBaseInfo.textField,
+                UdeskBaseInfo.roplist, getAppId(context), new UdeskCallBack() {
+
+                    @Override
+                    public void onSuccess(String string) {
+                        String url = "";
+                        try {
+                            JSONObject resultJson = new JSONObject(string);
+                            if (resultJson.has("robot")) {
+                                String robotString = resultJson.getString("robot");
+                                if (!TextUtils.isEmpty(robotString)) {
+                                    JSONObject robotJson = new JSONObject(robotString);
+
+                                    if (robotJson.has("h5_url")) {
+                                        url = robotJson.getString("h5_url");
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                        }
+                        if (!TextUtils.isEmpty(url)) {
+                            toLanuchRobotAcitivty(context, url, "false", false);
+                        } else {
+                            UdeskUtils.showToast(context, context.getString(R.string.udesk_has_not_open_robot));
+                        }
+                    }
+
+                    @Override
+                    public void onFail(String string) {
+                        UdeskUtils.showToast(context, string);
+                    }
+                });
+    }
 
     public void init(final Context context) {
         try {
@@ -763,6 +820,4 @@ public class UdeskSDKManager {
             Fresco.initialize(context);
         }
     }
-
-
 }

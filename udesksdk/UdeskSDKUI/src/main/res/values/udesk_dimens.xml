@@ -41,6 +41,7 @@
     <dimen name="udesk_140">140dip</dimen>
     <dimen name="udesk_160">160dip</dimen>
     <dimen name="udesk_190">190dip</dimen>
+    <dimen name="udesk_200">200dip</dimen>
     <dimen name="udesk_220">220dip</dimen>
     <dimen name="udesk_240">240dip</dimen>
     <dimen name="udesk_300">300dip</dimen>
