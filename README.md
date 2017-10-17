@@ -75,7 +75,7 @@
 	 
  二. IM中聊天功能 如果场景需要进入会话界面,先配置一条消息发送给客服可以如下:
       每次进入会话界面前，调用如下方法传值：
-      UdeskSDKManager.getInstance().setFirstMessage();
+      UdeskSDKManager.getInstance().setFirstMessage(String message);
 	
  三. IM中聊天功能 集成发送地理位置的信息说明:
      
