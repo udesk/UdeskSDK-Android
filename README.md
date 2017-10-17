@@ -1,4 +1,4 @@
-# UdeskSDK Android 3.5+ 开发者文档
+# UdeskSDK Android 3.8.0+ 开发者文档
 
 ### 快速接入
 ------
