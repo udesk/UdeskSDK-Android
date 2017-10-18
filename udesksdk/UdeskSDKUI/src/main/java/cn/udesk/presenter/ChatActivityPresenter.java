@@ -256,11 +256,9 @@ public class ChatActivityPresenter {
                                 mChatView.dealAgentInfo(agentInfo);
                             }
                             if (!UdeskMessageManager.getInstance().isConnection()) {
-                                Log.i("xxx","111111");
                                 UdeskMessageManager.getInstance().connection();
                             } else {
                                 if (!isWait) {
-                                    Log.i("xxx","2222222222222");
                                     UdeskMessageManager.getInstance().connection();
                                 }
                             }
