@@ -1292,7 +1292,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         @Override
         public void run() {
             if (mPresenter != null) {
-                mPresenter.getAgentInfo();
+                mPresenter.getAgentInfo(true);
             }
         }
     };

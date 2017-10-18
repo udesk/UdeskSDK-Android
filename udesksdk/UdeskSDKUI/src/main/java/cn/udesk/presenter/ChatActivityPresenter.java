@@ -208,7 +208,7 @@ public class ChatActivityPresenter {
                     JsonUtils.parserCustomersJson(string);
                     updateUserInfo(UdeskBaseInfo.customerId);
                 }
-                getAgentInfo();
+                getAgentInfo(false);
                 //拉取工单回复的消息
                 getTicketReplies(UdeskBaseInfo.customerId, 1, UdeskConst.UDESK_HISTORY_COUNT, "");
             }
@@ -237,7 +237,7 @@ public class ChatActivityPresenter {
     }
 
     //请求分配客服信息
-    public void getAgentInfo() {
+    public void getAgentInfo(final boolean isWait) {
         try {
             UdeskHttpFacade.getInstance().getAgentInfo(
                     UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
@@ -255,7 +255,15 @@ public class ChatActivityPresenter {
                             } else {
                                 mChatView.dealAgentInfo(agentInfo);
                             }
-                            UdeskMessageManager.getInstance().connection();
+                            if (!UdeskMessageManager.getInstance().isConnection()) {
+                                Log.i("xxx","111111");
+                                UdeskMessageManager.getInstance().connection();
+                            } else {
+                                if (!isWait) {
+                                    Log.i("xxx","2222222222222");
+                                    UdeskMessageManager.getInstance().connection();
+                                }
+                            }
                         }
 
                         @Override
