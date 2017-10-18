@@ -52,7 +52,6 @@ public class UdeskMessageManager {
 
     public void connection() {
         try {
-            Log.i("xxx","connection cancleXmpp");
             ensureMessageExecutor();
             messageExecutor.submit(new Runnable() {
                 @Override
@@ -239,4 +238,11 @@ public class UdeskMessageManager {
         }
     }
 
+
+    public boolean isConnection(){
+        if (mUdeskXmppManager != null){
+            return  mUdeskXmppManager.isConnection();
+        }
+        return  false;
+    }
 }

@@ -413,7 +413,6 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
      */
     public boolean cancel() {
         try {
-            Log.i("xxx", "cancel xmpp");
             if (xmppConnection != null) {
                 xmppConnection.removePacketListener(UdeskXmppManager.this);
                 xmppConnection.removeConnectionListener(UdeskXmppManager.this);
