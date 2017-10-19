@@ -118,7 +118,6 @@
     <orderEntry type="library" exported="" name="udesk-asmack-8-4.0.6" level="project" />
     <orderEntry type="library" exported="" name="bugly_crash_release_2.1" level="project" />
     <orderEntry type="library" exported="" name="udesk_sdk_3.8.1" level="project" />
-    <orderEntry type="library" exported="" name="udesk_sdk_3.8.0" level="project" />
     <orderEntry type="library" exported="" name="happy-dns-0.2.13" level="project" />
     <orderEntry type="library" exported="" name="okio-1.13.0" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-24.0.0" level="project" />
