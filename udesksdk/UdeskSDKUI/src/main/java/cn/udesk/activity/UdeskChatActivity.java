@@ -157,6 +157,8 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     private boolean isPermmitSurvy = true;
     private boolean isWait = false;
 
+    private boolean isfirstWaitTips = true;
+
     public static class MessageWhat {
         public static final int loadHistoryDBMsg = 1;
         public static final int NoAgent = 2;
@@ -258,7 +260,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         } else {
                             activity.mAgentInfo = (AgentInfo) msg.obj;
                             activity.setTitlebar(activity.mAgentInfo.getMessage(), "off");
-                            activity.confirmToForm();
+                            activity.delayShowtips(this);
                         }
                         break;
                     case MessageWhat.HasAgent:
@@ -276,6 +278,10 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         activity.mAgentInfo = (AgentInfo) msg.obj;
                         activity.setTitlebar(activity.mAgentInfo.getMessage(), "off");
                         this.postDelayed(activity.myRunnable, activity.QUEUE_RETEY_TIME);
+                        if (activity.isfirstWaitTips) {
+                            activity.isfirstWaitTips = false;
+                            activity.delayShowtips(this);
+                        }
                         break;
                     case MessageWhat.refreshAdapter:
                         if (activity.mChatAdapter != null) {
@@ -402,7 +408,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                                     activity.currentStatusIsOnline = false;
                                     activity.isNeedStartExpandabLyout = true;
                                 }
-                                activity.confirmToForm();
+                                activity.delayShowtips(this);
                             }
                         }
                         break;
@@ -415,7 +421,13 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
                         }
                         activity.setTitlebar(activity.bolckedNotice, "off");
-                        activity.toBolckedView();
+                        this.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                activity.toBolckedView();
+                            }
+                        }, 1500);
+
                         break;
                     case MessageWhat.Has_Survey:
                         UdeskUtils.showToast(activity, activity.getResources()
@@ -1249,6 +1261,19 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         }
     }
 
+    //延期弹出提示框
+    private void delayShowtips(Handler handler) {
+        try {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    confirmToForm();
+                }
+            }, 500);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void toGpsNetView(final boolean isupload, final MessageInfo info, final String path) {
         try {

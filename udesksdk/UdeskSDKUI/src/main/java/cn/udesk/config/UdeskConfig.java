@@ -65,13 +65,12 @@ public class UdeskConfig {
     //是否使用拍照的功能  true表示使用 false表示不使用
     public static boolean isUsecamera = true;
 
-    //是否使用上传MP4视频文件功能  true表示使用 false表示不使用
+    //是否使用上传MP4视频功能  true表示使用 false表示不使用
     public static boolean isUsefile = true;
 
     //是否使用发送位置功能  true表示使用 false表示不使用
     public static boolean isUseMap = false;
 
-    //配置接入使用的地图类型
     public static String useMapType = UdeskMapType.Other;
 
     //在没有请求到管理员在后端对sdk使用配置下，在默认的情况下，是否需要表单留言，true需要， false 不需要

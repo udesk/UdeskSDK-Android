@@ -266,6 +266,7 @@ public class UdeskSDKManager {
         UdeskBaseInfo.userinfo.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, UdeskBaseInfo.sdkToken);
         UdeskBaseInfo.textField = textField;
         UdeskBaseInfo.roplist = roplist;
+        getSDKImSetting(context, false);
     }
 
     //过滤掉字符串中的特殊字符
@@ -282,7 +283,11 @@ public class UdeskSDKManager {
             showConversationByImGroup(context);
             return;
         }
-        getSDKImSetting(context);
+        if (imSetting != null) {
+            switchBySetting(context, imSetting);
+        } else {
+            getSDKImSetting(context, true);
+        }
     }
 
     /**
@@ -601,21 +606,24 @@ public class UdeskSDKManager {
      *
      * @param context
      */
-    private void getSDKImSetting(final Context context) {
+    private void getSDKImSetting(final Context context, final boolean isToLuanch) {
         try {
-//            showLoading(context);
             initCrashReport(context);
             UdeskHttpFacade.getInstance().getIMSettings(getDomain(context), getAppkey(context), UdeskBaseInfo.sdkToken,
                     getAppId(context), new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
                             imSetting = JsonUtils.parserIMSettingJson(message);
-                            switchBySetting(context, imSetting);
+                            if (isToLuanch) {
+                                switchBySetting(context, imSetting);
+                            }
                         }
 
                         @Override
                         public void onFail(String message) {
-                            switchBySetting(context, null);
+                            if (isToLuanch) {
+                                switchBySetting(context, null);
+                            }
                         }
                     });
         } catch (Exception e) {
@@ -633,7 +641,6 @@ public class UdeskSDKManager {
     private void switchBySetting(Context context, SDKIMSetting imSetting) {
         if (imSetting != null) {
             if (imSetting.getIn_session()) {
-//                dismiss();
                 toLanuchChatAcitvity(context);
                 return;
             }
@@ -641,12 +648,10 @@ public class UdeskSDKManager {
                 showRobotByConfigSetting(context, imSetting);
                 return;
             }
-//            dismiss();
             showConversationByImGroup(context);
             return;
 
         } else {
-//            dismiss();
             toLanuchChatAcitvity(context);
         }
 
@@ -667,7 +672,6 @@ public class UdeskSDKManager {
 
                         @Override
                         public void onSuccess(String string) {
-//                            dismiss();
                             if (!TextUtils.isEmpty(imSetting.getRobot())) {
                                 toLanuchRobotAcitivty(context, imSetting.getRobot(), imSetting.getEnable_agent(), imSetting.getEnable_im_group());
                             } else {
@@ -677,7 +681,6 @@ public class UdeskSDKManager {
 
                         @Override
                         public void onFail(String string) {
-//                            dismiss();
                             showConversationByImGroup(context);
                         }
                     });
@@ -695,26 +698,6 @@ public class UdeskSDKManager {
             e.printStackTrace();
         }
     }
-
-//    private void showLoading(Context context) {
-//        try {
-//            dialog = new UdeskDialog(context, R.style.udesk_dialog);
-//            dialog.show();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-
-//    private void dismiss() {
-//        try {
-//            if (dialog != null) {
-//                dialog.dismiss();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
 
     public void setGroupId(String groupId) {
