@@ -725,7 +725,7 @@ public class ChatActivityPresenter {
         }
     }
 
-    public void sendLocationMessage(double lat,double longitude,String localvalue,String bitmapDir){
+    public void sendLocationMessage(double lat, double longitude, String localvalue, String bitmapDir) {
         StringBuilder builder = new StringBuilder();
         builder.append(lat).append(";").append(longitude).append(";").append("16;").append(localvalue);
         try {
@@ -743,7 +743,6 @@ public class ChatActivityPresenter {
             e.printStackTrace();
         }
     }
-
 
 
     // 发送录音信息

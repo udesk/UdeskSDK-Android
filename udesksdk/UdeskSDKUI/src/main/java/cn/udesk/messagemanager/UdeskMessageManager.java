@@ -50,6 +50,13 @@ public class UdeskMessageManager {
         }
     }
 
+    public boolean isConnection(){
+        if (mUdeskXmppManager != null){
+            return  mUdeskXmppManager.isConnection();
+        }
+        return  false;
+    }
+
     public void connection() {
         try {
             ensureMessageExecutor();
@@ -238,11 +245,4 @@ public class UdeskMessageManager {
         }
     }
 
-
-    public boolean isConnection(){
-        if (mUdeskXmppManager != null){
-            return  mUdeskXmppManager.isConnection();
-        }
-        return  false;
-    }
 }
