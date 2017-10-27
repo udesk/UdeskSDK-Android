@@ -71,7 +71,7 @@ public class UdeskInitKeyActivity extends Activity {
                     /*  使用前需要设置的信息:
                         1 保存domain和key
                         2创建客户*/
-//                    UdeskCoreConst.HTTP="http://";
+                    UdeskCoreConst.HTTP="http://";
 //                    UdeskSDKManager.getInstance().setFormUrl("https://www.baidu.com/");
 //                    UdeskSDKManager.getInstance().setFormCallBak(new UdeskSDKManager.IUdeskFormCallBak() {
 //                        @Override
