@@ -82,7 +82,16 @@
 -keep class com.tencent.bugly.** {*; } 
 
 ```
-      
+  五：  如果需要设置咨询对象，参照如下设置：
+  ``` java
+      UdeskCommodityItem item = new UdeskCommodityItem();
+        item.setTitle("木林森男鞋新款2016夏季透气网鞋男士休闲鞋网面韩版懒人蹬潮鞋子");// 商品主标题
+        item.setSubTitle("¥ 99.00");//商品副标题
+        item.setThumbHttpUrl("https://img.alicdn.com/imgextra/i1/1728293990/TB2ngm0qFXXXXcOXXXXXXXXXXXX_!!1728293990.jpg_430x430q90.jpg");// 左侧图片
+        item.setCommodityUrl("https://detail.tmall.com/item.htm?spm=a1z10.3746-b.w4946-14396547293.1.4PUcgZ&id=529634221064&sku_properties=-1:-1");// 商品网络链接
+        UdeskSDKManager.getInstance().setCommodity(item);
+       在进入会话界面前调用 。
+  ```
   更多功参考demo。
   
  
