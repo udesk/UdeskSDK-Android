@@ -705,7 +705,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
             if (mPresenter != null) {
                 mPresenter.bindReqsurveyMsg();
             }
-            if (isOverConversation && !isSurvyOperate) {
+            if (isInitComplete && !currentStatusIsOnline && !isSurvyOperate) {
                 mPresenter.createIMCustomerInfo();
             }
             registerNetWorkReceiver();
@@ -2090,11 +2090,22 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         }
     }
 
-
     //发送广告的连接地址消息
     public void sentLink(String linkMsg) {
         if (mPresenter != null) {
-            mPresenter.sendTxtMessage(linkMsg);
+            if (currentStatusIsOnline) {
+                mPresenter.sendTxtMessage(linkMsg);
+            } else if (UdeskSDKManager.getInstance().getImSetting() != null &&
+                    UdeskSDKManager.getInstance().getImSetting().getLeave_message_type().equals("msg")) {
+                if (!isLeavingmsg) {
+                    mPresenter.addCustomerLeavMsg();
+                    isLeavingmsg = true;
+                }
+                mPresenter.sendLeaveMessage(linkMsg);
+            } else {
+                confirmToForm();
+            }
+
         }
 
     }
