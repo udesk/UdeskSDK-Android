@@ -706,6 +706,19 @@ public class ChatActivityPresenter {
         }
     }
 
+    public void sendLeaveMessage(String message) {
+        try {
+            MessageInfo msg = buildSendMessage(
+                    UdeskConst.ChatMsgTypeString.TYPE_LEAVEMSG,
+                    System.currentTimeMillis(), message, "");
+            saveMessage(msg);
+            mChatView.addMessage(msg);
+            putLeavesMsg(UdeskBaseInfo.customerId, message, msg.getMsgId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     //封装发送文本消息
     public void sendTxtMessage(String msgString) {
         try {
