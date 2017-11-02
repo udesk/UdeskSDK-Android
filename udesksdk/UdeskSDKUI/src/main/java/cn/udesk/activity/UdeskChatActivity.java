@@ -1203,9 +1203,8 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         try {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("*/");
-            Intent wrapperIntent = Intent.createChooser(intent, null);
-            startActivityForResult(wrapperIntent, SELECT_FILE_OPTION_REQUEST_CODE);
+            intent.setType("video/*");
+            startActivityForResult(intent, SELECT_FILE_OPTION_REQUEST_CODE);
         } catch (Exception e) {
             e.printStackTrace();
         } catch (OutOfMemoryError error) {
