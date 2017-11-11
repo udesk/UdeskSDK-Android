@@ -129,6 +129,8 @@ public class UdeskConst {
         public static String Udesk_Domain = "udesk_domain";
         public static String Udesk_App_Key = "udesk_app_key";
         public static String Udesk_App_Id = "udesk_app_id";
+        public static String Udesk_Group_Id = "udesk_group_id";
+        public static String Udesk_Agent_Id = "udesk_agent_id";
         public static final String Udesk_SdkToken = "udesk_sdktoken";
         public static final String Udesk_Push_RegisterId = "udesk_push_registerid";
     }
