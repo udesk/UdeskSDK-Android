@@ -51,6 +51,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.udesk.PreferenceHelper;
 import cn.udesk.R;
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
@@ -138,7 +139,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     private int pullRefreshModel = 2;
     private int pullEVentModel = 3;
     private long preMsgSendTime = 0; //记录发送预支消息间隔时间
-    private long QUEUE_RETEY_TIME = 5 * 1000; // 客服繁忙时  轮询的间隔时间
+    private long QUEUE_RETEY_TIME = 25 * 1000; // 客服繁忙时  轮询的间隔时间
 
     private final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 101;
     private final int SELECT_IMAGE_ACTIVITY_REQUEST_CODE = 102;
@@ -238,7 +239,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                                 msgs.add(UdeskBaseInfo.commodity);
                                 activity.hasAddCommodity = true;
                             }
-                            int selectIndex = activity.mChatAdapter.getCount();
+                            int selectIndex =msgs.size();
                             if (msg.arg1 == activity.pullEVentModel) {
                                 activity.mChatAdapter.listAddEventItems(msgs);
                             } else {
@@ -543,6 +544,10 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                 groupId = intent.getStringExtra(UdeskConst.UDESKGROUPID);
                 agentId = intent.getStringExtra(UdeskConst.UDESKAGENTID);
             }
+            PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                    UdeskConst.SharePreParams.Udesk_Group_Id, groupId);
+            PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                    UdeskConst.SharePreParams.Udesk_App_Key, agentId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1105,14 +1110,18 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                 mListView.setSelection(0);
             } else {
                 // 还有老数据
+                int pageNum = UdeskConst.UDESK_HISTORY_COUNT;
                 if (offset == -1) {
                     offset = historyCount - UdeskConst.UDESK_HISTORY_COUNT;
                 } else {
+                    if (offset - UdeskConst.UDESK_HISTORY_COUNT <0){
+                        pageNum = offset;
+                    }
                     offset = offset - UdeskConst.UDESK_HISTORY_COUNT;
                 }
                 offset = (offset < 0 ? 0 : offset);
                 List<MessageInfo> list = UdeskDBManager.getInstance().getMessages(
-                        offset, UdeskConst.UDESK_HISTORY_COUNT);
+                        offset, pageNum);
                 if (list != null) {
                     Message msg = Message.obtain();
                     msg.what = MessageWhat.loadHistoryDBMsg;
@@ -1203,7 +1212,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         try {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("video/*");
+            intent.setType("*/*");
             startActivityForResult(intent, SELECT_FILE_OPTION_REQUEST_CODE);
         } catch (Exception e) {
             e.printStackTrace();
@@ -1874,12 +1883,20 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
     @Override
     public String getAgentId() {
+        if (TextUtils.isEmpty(agentId)) {
+            return PreferenceHelper.readString(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                    UdeskConst.SharePreParams.Udesk_Agent_Id);
+        }
         return agentId;
     }
 
 
     @Override
     public String getGroupId() {
+        if (TextUtils.isEmpty(groupId)) {
+            return PreferenceHelper.readString(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                    UdeskConst.SharePreParams.Udesk_Group_Id);
+        }
         return groupId;
     }
 
@@ -2344,6 +2361,12 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     @Override
     protected void onDestroy() {
         try {
+            if (mPresenter != null) {
+                mPresenter.quitQuenu();
+                mPresenter.unBind();
+                mPresenter.removeCallBack();
+                mPresenter = null;
+            }
             if (mHandler != null && myRunnable != null) {
                 mHandler.removeCallbacks(myRunnable);
             }
@@ -2353,18 +2376,9 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                         UdeskSDKManager.getInstance().getAppkey(this), UdeskBaseInfo.sdkToken, UdeskConfig.UdeskPushFlag.ON,
                         UdeskSDKManager.getInstance().getRegisterId(UdeskChatActivity.this), UdeskSDKManager.getInstance().getAppId(this));
             }
-            if (mPresenter != null) {
-                mPresenter.quitQuenu();
-            }
             UdeskBaseInfo.isNeedMsgNotice = true;
-            hasSendCommodity = false;
             unRegister();
             UdeskHttpFacade.getInstance().cancel();
-            if (mPresenter != null) {
-                mPresenter.unBind();
-                mPresenter.removeCallBack();
-                mPresenter = null;
-            }
             InvokeEventContainer.getInstance().event_IsOver.unBind(this);
         } catch (Exception e) {
             e.printStackTrace();
