@@ -244,7 +244,7 @@ public class UdeskDBManager {
 	public List<MessageInfo> getMessages(int offset, int pageNum) {
 
 		String sql = "select * from " + UdeskDBHelper.UdeskMessage
-				+ " order by Time limit " + UdeskConst.UDESK_HISTORY_COUNT
+				+ " order by Time limit " + pageNum
 				+ " offset " + offset;
 
 		List<MessageInfo> list = new ArrayList<MessageInfo>();
