@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -97,10 +98,12 @@ public class UdeskOptionsAgentGroupActivity extends Activity implements AdapterV
                                     settingTitlebar();
                                     drawView(rootId);
                                 } else {
-                                    luanchChat();
+                                    Toast.makeText(UdeskOptionsAgentGroupActivity.this, UdeskOptionsAgentGroupActivity.this.getString(R.string.udesk_error), Toast.LENGTH_SHORT).show();
+                                    finish();
                                 }
                             } catch (Exception e) {
-                                luanchChat();
+                                Toast.makeText(UdeskOptionsAgentGroupActivity.this, UdeskOptionsAgentGroupActivity.this.getString(R.string.udesk_error), Toast.LENGTH_SHORT).show();
+                                finish();
                             }
 
                         }
@@ -108,7 +111,8 @@ public class UdeskOptionsAgentGroupActivity extends Activity implements AdapterV
                         @Override
                         public void onFail(String message) {
                             dismiss();
-                            luanchChat();
+                            Toast.makeText(UdeskOptionsAgentGroupActivity.this, UdeskOptionsAgentGroupActivity.this.getString(R.string.udesk_has_bad_net), Toast.LENGTH_SHORT).show();
+                            finish();
                         }
                     });
         } catch (Exception e) {
@@ -136,8 +140,8 @@ public class UdeskOptionsAgentGroupActivity extends Activity implements AdapterV
 
         try {
             if (mTitlebar != null) {
-                UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId,mTitlebar.getLeftTextView(),mTitlebar.getRightTextView());
-                UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId ,mTitlebar.getRootView());
+                UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId, mTitlebar.getLeftTextView(), mTitlebar.getRightTextView());
+                UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId, mTitlebar.getRootView());
                 if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
                     mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
                 }
