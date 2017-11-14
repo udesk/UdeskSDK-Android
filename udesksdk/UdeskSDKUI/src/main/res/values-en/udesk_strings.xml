@@ -43,7 +43,7 @@
 
     <string name="udesk_has_not_open_robot">You did not open intelligent robot service on your app</string>
     <string name="udesk_has_wrong_net">Network error, please checking you network setting!</string>
-
+    <string name="udesk_has_bad_net">Network is not good, please checking you network setting!</string>
 
     <string name="udesk_options_agentgroup">Please choose agent group</string>
     <string name="file_denied">Refused storage authrity, can not tak a file </string>
@@ -85,4 +85,6 @@
     <string name="udesk_no_app_handle">The application could not be found to execute the file</string>
     <string name="udesk_no_sdktoken">Sdktoken is empty. Please import a valid value</string>
     <string name="udesk_close_chart">Chat end</string>
+    <string name="udesk_api_error">Please contact customer service later</string>
+    <string name="udesk_error">Please try again later</string>
 </resources>

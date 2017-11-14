@@ -72,6 +72,8 @@ public class UdeskSDKManager {
     //客户如果需要 带入一条消息  会话一分配就发送给客服，可以设置
     private String firstMessage;
 
+    private int countSettingReq;
+
     private UdeskSDKManager() {
     }
 
@@ -201,6 +203,7 @@ public class UdeskSDKManager {
         UdeskBaseInfo.domain = domain;
         UdeskBaseInfo.App_Key = appkey;
         UdeskBaseInfo.App_Id = appid;
+        UdeskCoreConst.sdkversion = "3.8.2";
         if (UdeskConfig.isUseShare) {
             PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                     UdeskConst.SharePreParams.Udesk_Domain, domain);
@@ -266,7 +269,6 @@ public class UdeskSDKManager {
         UdeskBaseInfo.userinfo.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, UdeskBaseInfo.sdkToken);
         UdeskBaseInfo.textField = textField;
         UdeskBaseInfo.roplist = roplist;
-        getSDKImSetting(context, false);
     }
 
     //过滤掉字符串中的特殊字符
@@ -283,11 +285,8 @@ public class UdeskSDKManager {
             showConversationByImGroup(context);
             return;
         }
-        if (imSetting != null) {
-            switchBySetting(context, imSetting);
-        } else {
-            getSDKImSetting(context, true);
-        }
+        initCrashReport(context);
+        getSDKImSetting(context);
     }
 
     /**
@@ -606,23 +605,30 @@ public class UdeskSDKManager {
      *
      * @param context
      */
-    private void getSDKImSetting(final Context context, final boolean isToLuanch) {
+    private void getSDKImSetting(final Context context) {
         try {
-            initCrashReport(context);
+
             UdeskHttpFacade.getInstance().getIMSettings(getDomain(context), getAppkey(context), UdeskBaseInfo.sdkToken,
                     getAppId(context), new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
                             imSetting = JsonUtils.parserIMSettingJson(message);
-                            if (isToLuanch) {
-                                switchBySetting(context, imSetting);
-                            }
+                            switchBySetting(context, imSetting);
+                            countSettingReq = 0;
                         }
 
                         @Override
                         public void onFail(String message) {
-                            if (isToLuanch) {
-                                switchBySetting(context, null);
+                            if (countSettingReq >= 2) {
+                                countSettingReq = 0;
+                                if (imSetting != null) {
+                                    switchBySetting(context, imSetting);
+                                } else {
+                                    showConversationByImGroup(context);
+                                }
+                            } else {
+                                countSettingReq++;
+                                getSDKImSetting(context);
                             }
                         }
                     });
@@ -652,7 +658,8 @@ public class UdeskSDKManager {
             return;
 
         } else {
-            toLanuchChatAcitvity(context);
+            Toast.makeText(context, context.getString(R.string.udesk_has_bad_net), Toast.LENGTH_SHORT).show();
+            return;
         }
 
     }

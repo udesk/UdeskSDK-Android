@@ -35,6 +35,7 @@
     <string name="udesk_robot_title">智能机器人对话</string>
     <string name="udesk_has_not_open_robot">当前APP还没有开启智能机器人客服功能</string>
     <string name="udesk_has_wrong_net">网络出错了,请检查网络设置!</string>
+    <string name="udesk_has_bad_net">网络不好,请检查网络设置!</string>
     <string name="udesk_options_agentgroup">请选择客服组</string>
 
     <string name="file_denied">拒绝了存储卡读取的权限，无法发送文件</string>
@@ -63,7 +64,8 @@
     <string name="udesk_survey_error"> 抱歉，暂时无法使用!</string>
     <string name="udesk_service_line"> 客服上线了</string>
     <string name="udesk_service_offline"> 客服离线了</string>
-    <string name="udesk_api_error">出错了，请稍后联系客服</string>
+    <string name="udesk_api_error">出错了,请稍后联系客服</string>
+    <string name="udesk_error">请稍后请重试</string>
     <string name="udesk_upload_img_error">上传图片失败，请重试</string>
     <string name="udesk_customer_leavemsg">客户留言</string>
     <string name="udesk_offline_reply_msg">留言工单离线回复</string>
@@ -78,7 +80,6 @@
     <string name="udesk_no_app_handle">无法找到应用程序以执行该文件</string>
     <string name="udesk_no_sdktoken">sdktoken为空,请传入合法的值</string>
     <string name="udesk_close_chart">会话已结束</string>
-
 
 
 </resources>
