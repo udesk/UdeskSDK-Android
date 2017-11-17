@@ -445,7 +445,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
 
     @Override
     public void connectionClosed() {
-        reConnected();
+
     }
 
     @Override

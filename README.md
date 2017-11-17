@@ -92,6 +92,12 @@
         UdeskSDKManager.getInstance().setCommodity(item);
        在进入会话界面前调用 。
   ```
+  
+  六： 如果需要设置客户头像，参照如下：
+  ``` java
+     UdeskSDKManager.getInstance().setCustomerUrl(url);
+  ```
+  
   更多功参考demo。
   
  
