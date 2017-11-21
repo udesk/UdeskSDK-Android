@@ -157,8 +157,8 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     private boolean isLeavingmsg = false;
     private boolean isPermmitSurvy = true;
     private boolean isWait = false;
-
     private boolean isfirstWaitTips = true;
+    private boolean isDestroyed = false;
 
     public static class MessageWhat {
         public static final int loadHistoryDBMsg = 1;
@@ -239,7 +239,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                                 msgs.add(UdeskBaseInfo.commodity);
                                 activity.hasAddCommodity = true;
                             }
-                            int selectIndex =msgs.size();
+                            int selectIndex = msgs.size();
                             if (msg.arg1 == activity.pullEVentModel) {
                                 activity.mChatAdapter.listAddEventItems(msgs);
                             } else {
@@ -1114,7 +1114,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                 if (offset == -1) {
                     offset = historyCount - UdeskConst.UDESK_HISTORY_COUNT;
                 } else {
-                    if (offset - UdeskConst.UDESK_HISTORY_COUNT <0){
+                    if (offset - UdeskConst.UDESK_HISTORY_COUNT < 0) {
                         pageNum = offset;
                     }
                     offset = offset - UdeskConst.UDESK_HISTORY_COUNT;
@@ -2052,8 +2052,9 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                 mRecordFilePlay.recycleCallback();
                 mRecordFilePlay = null;
             }
-
-            mPlayCallback = null;
+            if (mPlayCallback != null) {
+                mPlayCallback = null;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2276,32 +2277,6 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         }
     }
 
-    @Override
-    protected void onPause() {
-
-        try {
-            if (mPresenter != null) {
-                mPresenter.unbindReqsurveyMsg();
-            }
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    UdeskDBManager.getInstance().updateAllMsgRead();
-                }
-            }).start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-
-        recycleVoiceRes();
-
-        super.onStop();
-    }
 
     @Override
     public void onBackPressed() {
@@ -2358,9 +2333,51 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         }
     }
 
+
+    @Override
+    protected void onPause() {
+        try {
+            if (mPresenter != null) {
+                mPresenter.unbindReqsurveyMsg();
+            }
+            if (isFinishing()) {
+                Log.i("xxx", "isFinishing");
+                cleanSource();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        super.onPause();
+    }
+
+
+    @Override
+    protected void onStop() {
+        recycleVoiceRes();
+        super.onStop();
+    }
+
     @Override
     protected void onDestroy() {
+        cleanSource();
+        super.onDestroy();
+
+    }
+
+    private void cleanSource() {
+        if (isDestroyed) {
+            return;
+        }
+        // 回收资源
+        isDestroyed = true;
         try {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    UdeskDBManager.getInstance().updateAllMsgRead();
+                }
+            }).start();
+            recycleVoiceRes();
             if (mPresenter != null) {
                 mPresenter.quitQuenu();
                 mPresenter.unBind();
@@ -2383,8 +2400,6 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
         } catch (Exception e) {
             e.printStackTrace();
         }
-        super.onDestroy();
-
     }
 
 }
