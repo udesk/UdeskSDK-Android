@@ -2341,7 +2341,6 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                 mPresenter.unbindReqsurveyMsg();
             }
             if (isFinishing()) {
-                Log.i("xxx", "isFinishing");
                 cleanSource();
             }
         } catch (Exception e) {
