@@ -137,8 +137,12 @@ public class UdeskBaseWebViewActivity extends Activity {
 
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
-                    view.loadUrl(url);
+                    if (url.contains("tel:")) {
+                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(url));
+                        startActivity(intent);
+                    } else {
+                        view.loadUrl(url);
+                    }
                     return true;
                 }
             });
