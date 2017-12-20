@@ -203,7 +203,7 @@ public class UdeskSDKManager {
         UdeskBaseInfo.domain = domain;
         UdeskBaseInfo.App_Key = appkey;
         UdeskBaseInfo.App_Id = appid;
-        UdeskCoreConst.sdkversion = "3.8.2";
+        UdeskCoreConst.sdkversion = "3.8.3";
         if (UdeskConfig.isUseShare) {
             PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                     UdeskConst.SharePreParams.Udesk_Domain, domain);
@@ -296,7 +296,7 @@ public class UdeskSDKManager {
      */
     public void toLanuchChatAcitvity(Context context) {
         Intent intent = new Intent(context, UdeskChatActivity.class);
-        if (TextUtils.isEmpty(groupId)) {
+        if (!TextUtils.isEmpty(groupId)) {
             intent.putExtra(UdeskConst.UDESKGROUPID, groupId);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
