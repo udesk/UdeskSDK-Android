@@ -50,7 +50,7 @@ public class UdeskSurvyDialogActivity extends Activity implements OnItemClickLis
                 desc.setText(surveyOptions.getDesc());
                 optionsListView.setAdapter(adapter);
                 optionsListView.setOnItemClickListener(this);
-                if (surveyOptions.getOptions().get(0) != null && surveyOptions.getOptions().size()> 0) {
+                if (surveyOptions.getOptions() != null && surveyOptions.getOptions().get(0) != null && surveyOptions.getOptions().size()> 0) {
                     checkOptions = surveyOptions.getOptions().get(0);
                 }
             }

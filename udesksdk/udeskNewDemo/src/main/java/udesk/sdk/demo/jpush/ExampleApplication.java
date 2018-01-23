@@ -1,6 +1,8 @@
 package udesk.sdk.demo.jpush;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import java.io.InputStream;
@@ -50,5 +52,12 @@ public class ExampleApplication extends Application {
 //        }
 //
 //    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(base);
+    }
+
 
 }

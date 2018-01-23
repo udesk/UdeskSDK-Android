@@ -27,8 +27,6 @@
         android:layout_marginTop="@dimen/udesk_chat_head_margin"
         fresco:actualImageScaleType="centerCrop"
         fresco:roundAsCircle="true"
-        fresco:roundingBorderColor="@color/udesk_color_line2"
-        fresco:roundingBorderWidth="1dp"
         fresco:placeholderImage="@drawable/udesk_im_default_user_avatar"
         />
 
@@ -83,14 +81,12 @@
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/udesk_im_image"
                 android:layout_width="@dimen/udesk_140"
-                android:layout_height="@dimen/udesk_220"
+                android:layout_height="@dimen/udesk_160"
                 fresco:actualImageScaleType="centerCrop"
                 fresco:failureImage="@drawable/udesk_defualt_failure"
                 fresco:failureImageScaleType="centerCrop"
                 fresco:placeholderImage="@drawable/udesk_defalut_image_loading"
                 fresco:placeholderImageScaleType="centerCrop"
-                fresco:roundingBorderWidth="2dp"
-                fresco:roundingBorderColor="#C3CDD4"
                 />
         </RelativeLayout>
     </TableRow>

@@ -141,7 +141,9 @@ public class UdeskOptionsAgentGroupActivity extends Activity implements AdapterV
         try {
             if (mTitlebar != null) {
                 UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId, mTitlebar.getLeftTextView(), mTitlebar.getRightTextView());
-                UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId, mTitlebar.getRootView());
+                if (mTitlebar.getRootView() != null) {
+                    UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId, mTitlebar.getRootView());
+                }
                 if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
                     mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
                 }

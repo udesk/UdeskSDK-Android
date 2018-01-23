@@ -1,4 +1,4 @@
-# UdeskSDK Android 3.8.0+ 开发者文档
+# UdeskSDK Android 3.9.0+ 开发者文档
 
 ### 快速接入
 ------
@@ -30,7 +30,7 @@
       
 ``` 
 
-  四. 加入混淆配置
+四. Proguard
   
 ``` java
 //udesk
@@ -49,6 +49,18 @@
 -keep class org.xmlpull.** {*;} 
 -dontwarn org.xbill.**
 -keep class org.xbill.** {*;} 
+
+//eventbus
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+ 
+# Only required if you use AsyncExecutor
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
 
 //freso
 -keep class com.facebook.** {*; }  
@@ -78,8 +90,11 @@
 -dontwarn com.facebook.infer.**
 
 
- //其它
+ //bugly
 -keep class com.tencent.bugly.** {*; } 
+
+ //agora
+-keep class io.agora.**{*;}
 
 ```
   五：  如果需要设置咨询对象，参照如下设置：
@@ -208,8 +223,10 @@
                     }
                 });
 
-
-
+四. IM 使用视频功能:
+    注意：需要使用视频功能，一定需要使用UdeskSDKUI IM中功能 ,但可以单独使用UdeskSDKUI功能  
+	在你的app中 在依赖udeskvideo 模块。
+    
 ------
 
 ### 常见问题
@@ -263,8 +280,12 @@ Udesk-SDK的工作流程如下图所示。
 
 | SDK 中的文件          | 说明                                       |
 | ----------------- | ---------------------------------------- |
-| udeskNewDemo 和  UdeskOldDemo     | UdeskSdk集成demo,UdeskSDKUI module使用的例子 |
-| UdeskSDKUI | UdeskSDK开源moudle                         |
+| udeskNewDemo      | UdeskSDKUI module使用的例子              |
+| gaodemapdemo      | gaodemapdemo 使用高德地图的例子          | 
+| tenxunmapdemo     | tenxunmapdemo 使用腾讯地图的例子         |
+| baidumapdemo      | baidumapdemo 使用百度地图的例子          |
+| UdeskSDKUI        | 核心IM功能                               |
+| udeskvideo        | 视频功能的模块                           |
 
 2.2.2导入集成
 
@@ -642,36 +663,6 @@ UdeskSDKManager.getInstance().disConnectXmpp();
 ```java
 UdeskSDKManager.getInstance().setQuitQuenuMode(quitmode);
 ```
-
-#### 4.15 Android M 权限处理
-
-Udesk SDK已经兼容Android M不需开发，兼容方法如下。
-
-采用开源库rxpermissions 依赖如下库compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'compile 'io.reactivex:rxjava:1.1.4'
-
-选取rxpermissions 原因是github上赞和使用最多，使用方便简单。举例拍照的运行代码:
-
-```java
-
-RxPermissions.getInstance(this)
-    .request(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    .subscribe(new Action1<Boolean>() {
-        @Override
-        public void call(Boolean aBoolean) {
-            if (aBoolean) {
-                takePhoto();
-                bottomoPannelBegginStatus();
-            } else {
-                Toast.makeText(UdeskChatActivity.this,
-                        getResources().getString(R.string.camera_denied),
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-    });  
-其它的动态权限可以看UdeskChatActivity代码。
-```
-
-
 
 
 # 五、SDK内部封装API
@@ -1084,55 +1075,4 @@ RedirectViewHolder  显示转移提示语信息；
   	"event": "close"
 }
 ```
-# 九、代码混淆
 
-``` java
-//udesk
--keep class udesk.** {*;} 
--keep class cn.udesk.**{*; } 
-//七牛
--keep class okhttp3.** {*;} 
--keep class okio.** {*;} 
--keep class com.qiniu.**{*;}
--keep class com.qiniu.**{public <init>();}
--ignorewarnings
-//smack
--keep class org.jxmpp.** {*;} 
--keep class de.measite.** {*;} 
--keep class org.jivesoftware.** {*;} 
--keep class org.xmlpull.** {*;} 
--dontwarn org.xbill.**
--keep class org.xbill.** {*;} 
-
-//freso
--keep class com.facebook.** {*; }  
--keep class com.facebook.imagepipeline.** {*; } 
--keep class com.facebook.animated.gif.** {*; }  
--keep class com.facebook.drawee.** {*; }  
--keep class com.facebook.drawee.backends.pipeline.** {*; }  
--keep class com.facebook.imagepipeline.** {*; }  
--keep class bolts.** {*; }  
--keep class me.relex.photodraweeview.** {*; }  
-
--keep,allowobfuscation @interface com.facebook.common.internal.DoNotStrip
--keep @com.facebook.common.internal.DoNotStrip class *
--keepclassmembers class * {
-    @com.facebook.common.internal.DoNotStrip *;
-}
-# Keep native methods
--keepclassmembers class * {
-    native <methods>;
-}
-
--dontwarn okio.**
--dontwarn com.squareup.okhttp.**
--dontwarn okhttp3.**
--dontwarn javax.annotation.**
--dontwarn com.android.volley.toolbox.**
--dontwarn com.facebook.infer.**
-
-
- //其它
--keep class com.tencent.bugly.** {*; } 
-
-```

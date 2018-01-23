@@ -36,6 +36,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Udesk_Theme" />
         <activity
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:name="cn.udesk.activity.UdeskChatActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:launchMode="singleTop"
@@ -63,6 +64,15 @@
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/Udesk_Theme" />
+
+        <receiver android:name="cn.udesk.receiver.UdeskVideoReceiver"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="com.udesk.video.event" />
+            </intent-filter>
+
+        </receiver>
 
         <provider
             android:name="cn.udesk.provider.UdeskFileProvider"

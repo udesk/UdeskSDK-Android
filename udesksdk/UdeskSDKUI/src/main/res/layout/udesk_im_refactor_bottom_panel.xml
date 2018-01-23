@@ -56,7 +56,7 @@
 
         <RelativeLayout
             android:id="@+id/udesk_bottom_show_emoji"
-            android:layout_width="50dp"
+            android:layout_width="45dp"
             android:layout_height="match_parent">
 
             <ImageView
@@ -68,7 +68,7 @@
 
         <RelativeLayout
             android:id="@+id/udesk_bottom_voice_rl"
-            android:layout_width="50dp"
+            android:layout_width="45dp"
             android:layout_height="match_parent">
 
             <ImageView
@@ -79,8 +79,20 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/udesk_bottom_videocall"
+            android:layout_width="45dp"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="24dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/udesk_selector_video_img" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/udesk_bottom_option_camera"
-            android:layout_width="50dp"
+            android:layout_width="45dp"
             android:layout_height="match_parent">
 
             <ImageView
@@ -92,7 +104,7 @@
 
         <RelativeLayout
             android:id="@+id/udesk_bottom_option_photo"
-            android:layout_width="50dp"
+            android:layout_width="45dp"
             android:layout_height="match_parent">
 
             <ImageView
@@ -104,7 +116,7 @@
 
         <RelativeLayout
             android:id="@+id/udesk_bottom_option_file"
-            android:layout_width="50dp"
+            android:layout_width="45dp"
             android:layout_height="match_parent">
 
             <ImageView
@@ -116,7 +128,7 @@
 
         <RelativeLayout
             android:id="@+id/udesk_bottom_survy_rl"
-            android:layout_width="50dp"
+            android:layout_width="45dp"
             android:layout_height="match_parent">
 
             <ImageView
@@ -128,7 +140,7 @@
 
         <RelativeLayout
             android:id="@+id/udesk_bottom_location_rl"
-            android:layout_width="50dp"
+            android:layout_width="45dp"
             android:layout_height="match_parent">
 
             <ImageView
@@ -137,6 +149,8 @@
                 android:layout_centerInParent="true"
                 android:src="@drawable/udesk_selector_location_img" />
         </RelativeLayout>
+
+
 
     </LinearLayout>
 

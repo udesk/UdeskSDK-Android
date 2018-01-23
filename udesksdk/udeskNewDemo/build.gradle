@@ -3,13 +3,13 @@ apply plugin: 'com.android.application'
 
 repositories {
     flatDir {
-        dirs 'libs'
+        dirs project(':UdeskSDKUI').file('libs')
     }
 }
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "udesk.sdk.demo"
@@ -17,6 +17,7 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
     }
 
@@ -37,8 +38,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:multidex:1.0.0'
     compile files('libs/jpush-android-2.2.0.jar')
     compile project(':UdeskSDKUI')
+    implementation project(':udeskvideo')
 }

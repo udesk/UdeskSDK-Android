@@ -160,7 +160,7 @@ public class AudioRecordingAacThread extends Thread implements VoiceRecord {
 	}
 
 	@Override
-	public long getMaxAmplitude() {
+	public synchronized long getMaxAmplitude() {
 		if (mState != null) {
 			int recordStatus = getMicMaxAmplitude(UdeskConst.recordStateNum);
 			mState.updateRecordState(recordStatus);
@@ -199,7 +199,7 @@ public class AudioRecordingAacThread extends Thread implements VoiceRecord {
 	}
 	
 	
-	public long getRecordAudioLength() {
+	public synchronized long getRecordAudioLength() {
 		if (TextUtils.isEmpty(fileNamePath)) {
 			return 0;
 		}

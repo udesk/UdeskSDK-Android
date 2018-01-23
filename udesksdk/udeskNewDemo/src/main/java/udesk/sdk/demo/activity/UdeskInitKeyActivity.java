@@ -27,11 +27,17 @@ public class UdeskInitKeyActivity extends Activity {
     //替换成你们注册生成的域名
     private String UDESK_DOMAIN = "udesksdk.udesk.cn";
     //替换成你们生成应用产生的appid
-    private String AppId = "6a424855941db2d1";
+    private String AppId = "cdc6da4fa97efc2c";
     // 替换成你们在后台生成的密钥
-    private String UDESK_SECRETKEY = "08919a2194e9844795c8f589854ad559";
+    private String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
 
-    
+
+//    private String AppId = "e6e262eacb0f583a";
+//
+//    private String UDESK_DOMAIN = "brazil.udesk.cn";
+//    //    替换成你们在后台生成的密钥
+//    private String UDESK_SECRETKEY = "97c3bb74c32efd0b335dc827640e05e2";
+
 
     private EditText mDomainEdit;
 
@@ -44,6 +50,7 @@ public class UdeskInitKeyActivity extends Activity {
     String domain = "";
     String appkey = "";
     String appid = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +61,11 @@ public class UdeskInitKeyActivity extends Activity {
         mKeyEdit = (EditText) findViewById(R.id.udesk_appkey);
         mAppidEdit = (EditText) findViewById(R.id.appid);
         startBtn = (Button) findViewById(R.id.udesk_start);
-        if (TextUtils.isEmpty(domain) || TextUtils.isEmpty(appkey) ||  TextUtils.isEmpty(appid)) {
+        if (TextUtils.isEmpty(domain) || TextUtils.isEmpty(appkey) || TextUtils.isEmpty(appid)) {
             mDomainEdit.setText(UDESK_DOMAIN);
             mKeyEdit.setText(UDESK_SECRETKEY);
             mAppidEdit.setText(AppId);
-        }else{
+        } else {
             mDomainEdit.setText(domain);
             mKeyEdit.setText(appkey);
             mAppidEdit.setText(appid);
@@ -71,7 +78,7 @@ public class UdeskInitKeyActivity extends Activity {
                     /*  使用前需要设置的信息:
                         1 保存domain和key
                         2创建客户*/
-                    UdeskCoreConst.HTTP="http://";
+                    UdeskCoreConst.HTTP = "http://";
 //                    UdeskSDKManager.getInstance().setFormUrl("https://www.baidu.com/");
 //                    UdeskSDKManager.getInstance().setFormCallBak(new UdeskSDKManager.IUdeskFormCallBak() {
 //                        @Override
@@ -79,7 +86,7 @@ public class UdeskInitKeyActivity extends Activity {
 //
 //                        }
 //                    });
-                    UdeskSDKManager.getInstance().initApiKey(getApplicationContext(), mDomainEdit.getText().toString(), mKeyEdit.getText().toString(),mAppidEdit.getText().toString());
+                    UdeskSDKManager.getInstance().initApiKey(getApplicationContext(), mDomainEdit.getText().toString(), mKeyEdit.getText().toString(), mAppidEdit.getText().toString());
                     String sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
                     if (TextUtils.isEmpty(sdkToken)) {
                         sdkToken = UUID.randomUUID().toString();
@@ -90,7 +97,7 @@ public class UdeskInitKeyActivity extends Activity {
                     UdeskSDKManager.getInstance().setUserInfo(
                             getApplicationContext(), sdkToken, info);
                     saveDoamiandKey();
-                    PreferenceHelper.write(getApplicationContext(),"init_base_name","sdktoken",  sdkToken);
+                    PreferenceHelper.write(getApplicationContext(), "init_base_name", "sdktoken", sdkToken);
                     Intent intent = new Intent();
                     intent.setClass(UdeskInitKeyActivity.this, UdeskUseGuideActivity.class);
                     startActivity(intent);
@@ -104,13 +111,13 @@ public class UdeskInitKeyActivity extends Activity {
     }
 
 
-    private void redDoaminAndKey(){
+    private void redDoaminAndKey() {
         domain = PreferenceHelper.readString(this, "init_base_name", "domain");
-        appkey =PreferenceHelper.readString(this, "init_base_name", "appkey");
-        appid =PreferenceHelper.readString(this, "init_base_name", "appid");
+        appkey = PreferenceHelper.readString(this, "init_base_name", "appkey");
+        appid = PreferenceHelper.readString(this, "init_base_name", "appid");
     }
 
-    private void saveDoamiandKey(){
+    private void saveDoamiandKey() {
         PreferenceHelper.write(this, "init_base_name",
                 "domain", mDomainEdit.getText().toString());
         PreferenceHelper.write(this, "init_base_name",

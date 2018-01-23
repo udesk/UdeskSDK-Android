@@ -18,65 +18,66 @@ import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskHttpFacade;
 
 public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
-	private String h5Url = null;
-	private String tranfer = null;
-	private boolean isTranferByImGroup = true;
+    private String h5Url = null;
+    private String tranfer = null;
+    private boolean isTranferByImGroup = true;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		initData();
-		loadingView();
-	}
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initData();
+        loadingView();
+    }
 
-	private void initData() {
-		try {
-			Intent intent = getIntent();
-			if(intent != null){
+    private void initData() {
+        try {
+            Intent intent = getIntent();
+            if (intent != null) {
                 h5Url = intent.getStringExtra(UdeskConst.UDESKHTMLURL);
                 tranfer = intent.getStringExtra(UdeskConst.UDESKTRANSFER);
-                isTranferByImGroup = intent.getBooleanExtra(UdeskConst.UDESKISTRANFERSESSION,true);
+                isTranferByImGroup = intent.getBooleanExtra(UdeskConst.UDESKISTRANFERSESSION, true);
             }
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	}
+    }
 
-	private void loadingView() {
-		try {
-			settingTitlebar(tranfer);
-			if (!TextUtils.isEmpty(h5Url)) {
+    private void loadingView() {
+        try {
+            settingTitlebar(tranfer);
+            if (!TextUtils.isEmpty(h5Url)) {
                 String url = UdeskHttpFacade.getInstance().buildRobotUrlWithH5(
                         this, UdeskSDKManager.getInstance().getAppkey(this),
                         h5Url,
                         UdeskSDKManager.getInstance().getSdkToken(this));
-                if (!UdeskUtil.isZh(this)){
-                    url = url + "&language=en-us" ;
+                if (!UdeskUtil.isZh(this)) {
+                    url = url + "&language=en-us";
                 }
-                if(!TextUtils.isEmpty( UdeskSDKManager.getInstance().getAppId(this))){
-                    url = url + "&app_id="+UdeskSDKManager.getInstance().getAppId(this) ;
+                if (!TextUtils.isEmpty(UdeskSDKManager.getInstance().getAppId(this))) {
+                    url = url + "&app_id=" + UdeskSDKManager.getInstance().getAppId(this);
                 }
                 mwebView.loadUrl(url);
             } else {
                 finish();
             }
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
-
-	/**
-	 * titlebar 的设置
-	 */
-	private void settingTitlebar(String tranfer) {
-		try {
-			mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
-			if (mTitlebar != null) {
-                UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId,mTitlebar.getLeftTextView(),mTitlebar.getRightTextView());
-                UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId ,mTitlebar.getRootView());
+    /**
+     * titlebar 的设置
+     */
+    private void settingTitlebar(String tranfer) {
+        try {
+            mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
+            if (mTitlebar != null) {
+                UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId, mTitlebar.getLeftTextView(), mTitlebar.getRightTextView());
+                if (mTitlebar.getRootView() != null) {
+                    UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId, mTitlebar.getRootView());
+                }
                 if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
                     mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
                 }
@@ -95,15 +96,15 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
                 settingTitleBarRight(tranfer);
 
             }
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	//根据传入的tranfer 控制右侧是否显示转人工
-	private void settingTitleBarRight(String tranfer) {
-		try {
-			if (tranfer != null && tranfer.trim().equals("true")) {
+    //根据传入的tranfer 控制右侧是否显示转人工
+    private void settingTitleBarRight(String tranfer) {
+        try {
+            if (tranfer != null && tranfer.trim().equals("true")) {
                 mTitlebar.setRightTextVis(View.VISIBLE);
                 mTitlebar
                         .setRightTextSequence(getString(R.string.udesk_transfer_persion));
@@ -112,9 +113,9 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
 
                     @Override
                     public void onClick(View v) {
-                        if (isTranferByImGroup){
+                        if (isTranferByImGroup) {
                             UdeskSDKManager.getInstance().showConversationByImGroup(UdeskRobotActivity.this);
-                        }else{
+                        } else {
                             Intent intent = new Intent(UdeskRobotActivity.this, UdeskChatActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             UdeskRobotActivity.this.startActivity(intent);
@@ -126,13 +127,13 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
                 mTitlebar.setRightTextVis(View.GONE);
                 mTitlebar.setudeskTransferImgVis(View.GONE);
             }
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

@@ -17,14 +17,11 @@ import android.widget.LinearLayout;
 import cn.udesk.R;
 import cn.udesk.widget.UdeskTitleBar;
 
-/**
- * Created by user on 2016/12/21.
- */
 
 public class UdeskBaseWebViewActivity extends Activity {
 
     protected WebView mwebView;
-    private LinearLayout linearLayout;
+    protected LinearLayout linearLayout;
     protected UdeskTitleBar mTitlebar;
     protected UdeskWebChromeClient udeskWebChromeClient;
 
@@ -66,7 +63,7 @@ public class UdeskBaseWebViewActivity extends Activity {
         }
     }
 
-    @SuppressLint("NewApi")
+    @SuppressLint({"NewApi", "SetJavaScriptEnabled"})
     private void settingWebView() {
 
         try {
@@ -92,13 +89,7 @@ public class UdeskBaseWebViewActivity extends Activity {
             //设置编码格式
             settings.setDefaultTextEncodingName("UTF-8");
             // 关于是否缩放
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                settings.setDisplayZoomControls(false);
-            }
-            /**
-             *  Webview在安卓5.0之前默认允许其加载混合网络协议内容
-             *  在安卓5.0之后，默认不允许加载http与https混合内容，需要设置webview允许其加载混合网络协议内容
-             */
+            settings.setDisplayZoomControls(false);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 
@@ -130,13 +121,14 @@ public class UdeskBaseWebViewActivity extends Activity {
 
                 }
 
-//                @Override
-//                public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-//                    handler.proceed();
-//                }
+                @Override
+                public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                    handler.proceed();
+                }
 
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
                     if (url.contains("tel:")) {
                         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(url));
                         startActivity(intent);

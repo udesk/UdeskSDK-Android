@@ -67,6 +67,7 @@ public class UdeskConst {
         public static final int TYPE_EVENT = 7;
         public static final int TYPE_VIDEO = 8;
         public static final int TYPE_LOCATION = 9;
+        public static final int TYPE_Video_Txt = 10;
     }
 
     public static int parseTypeForMessage(String type) {
@@ -80,16 +81,18 @@ public class UdeskConst {
             return ChatMsgTypeInt.TYPE_REDIRECT;
         } else if ("rich".equalsIgnoreCase(type)) {
             return ChatMsgTypeInt.TYPE_RICH;
-        }else if("struct".equalsIgnoreCase(type)){
+        } else if ("struct".equalsIgnoreCase(type)) {
             return ChatMsgTypeInt.TYPE_STRUCT;
-        }else if ("leavemsg".equalsIgnoreCase(type)){
+        } else if ("leavemsg".equalsIgnoreCase(type)) {
             return ChatMsgTypeInt.TYPE_LEAVEMSG;
-        }else if ("udeskevent".equalsIgnoreCase(type)){
+        } else if ("udeskevent".equalsIgnoreCase(type)) {
             return ChatMsgTypeInt.TYPE_EVENT;
-        }else if ("video".equalsIgnoreCase(type) || "file".equalsIgnoreCase(type)){
+        } else if ("video".equalsIgnoreCase(type) || "file".equalsIgnoreCase(type)) {
             return ChatMsgTypeInt.TYPE_VIDEO;
-        }else if ("location".equalsIgnoreCase(type)){
+        } else if ("location".equalsIgnoreCase(type)) {
             return ChatMsgTypeInt.TYPE_LOCATION;
+        } else if ("video_txt".equalsIgnoreCase(type)) {
+            return ChatMsgTypeInt.TYPE_Video_Txt;
         }
         return ChatMsgTypeInt.TYPE_TEXT;
     }
@@ -106,6 +109,7 @@ public class UdeskConst {
         public static final String TYPE_VIDEO = "video";
         public static final String TYPE_File = "file";
         public static final String TYPE_Location = "location";
+        public static final String TYPE_Video_Txt = "video_txt";
 
     }
 
@@ -145,7 +149,6 @@ public class UdeskConst {
 
     public static final String FileSize = "fileSize";
     public static final String FileDownIsSuccess = "filedownissuccess";
-
 
 
 }

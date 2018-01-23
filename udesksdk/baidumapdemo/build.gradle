@@ -1,8 +1,14 @@
 apply plugin: 'com.android.application'
 
+repositories {
+    flatDir {
+        dirs project(':UdeskSDKUI').file('libs')
+    }
+}
+
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "udesk.baidumapdemo"
