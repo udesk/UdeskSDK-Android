@@ -40,4 +40,6 @@ public interface IChatActivityView {
 	void changgeiSSurvyOperate();
 	void setIsPermmitSurvy( boolean isPermmitSurvy);
 
+	void initLoadData();
+
 }

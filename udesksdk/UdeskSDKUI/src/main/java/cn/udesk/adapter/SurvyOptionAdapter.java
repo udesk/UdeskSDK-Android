@@ -43,10 +43,12 @@ public class SurvyOptionAdapter extends BaseAdapter {
 
         try {
             for(int i=0; i<getCount();i++){
-                if(i == position){
-                    getItem(i).setCheck(true);
-                }else{
-                    getItem(i).setCheck(false);
+                if (getItem(i) != null){
+                    if(i == position){
+                        getItem(i).setCheck(true);
+                    }else{
+                        getItem(i).setCheck(false);
+                    }
                 }
             }
             notifyDataSetChanged();

@@ -35,13 +35,13 @@ public class UdeskZoomImageActivty extends Activity implements
 
         try {
             if (!Fresco.hasBeenInitialized()) {
-                UdeskSDKManager.getInstance().init(this);
+                UdeskSDKManager.getInstance().frescoInit(this);
             }
             setContentView(R.layout.udesk_zoom_imageview);
             zoomImageView = (PhotoDraweeView) findViewById(R.id.udesk_zoom_imageview);
             Bundle bundle = getIntent().getExtras();
             uri = bundle.getParcelable("image_path");
-            UdeskUtil.loadImage(zoomImageView, uri);
+            UdeskUtil.loadImage(getApplicationContext(),zoomImageView, uri);
             saveIdBtn = findViewById(R.id.udesk_zoom_save);
             saveIdBtn.setOnClickListener(this);
         } catch (Exception e) {
@@ -74,7 +74,7 @@ public class UdeskZoomImageActivty extends Activity implements
             return;
         }
         try {
-            File oldFile = UdeskUtil.getFileFromDiskCache(uri);
+            File oldFile = UdeskUtil.getFileFromDiskCache(UdeskZoomImageActivty.this.getApplicationContext(),uri);
             if (oldFile == null) {
                 String oldPath = uri.getPath();
                 oldFile = new File(oldPath);

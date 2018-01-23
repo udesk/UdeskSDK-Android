@@ -1,10 +1,10 @@
 package cn.udesk;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.cache.disk.DiskCacheConfig;
@@ -15,7 +15,6 @@ import com.facebook.imagepipeline.cache.MemoryCacheParams;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.tencent.bugly.crashreport.CrashReport;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -203,7 +202,6 @@ public class UdeskSDKManager {
         UdeskBaseInfo.domain = domain;
         UdeskBaseInfo.App_Key = appkey;
         UdeskBaseInfo.App_Id = appid;
-        UdeskCoreConst.sdkversion = "3.8.3";
         if (UdeskConfig.isUseShare) {
             PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                     UdeskConst.SharePreParams.Udesk_Domain, domain);
@@ -212,7 +210,7 @@ public class UdeskSDKManager {
             PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                     UdeskConst.SharePreParams.Udesk_App_Id, appid);
         }
-        init(context);
+        frescoInit(context);
     }
 
     /**
@@ -253,7 +251,7 @@ public class UdeskSDKManager {
         } else if ((cacheToken != null && !cacheToken.equals(token))) {
             // 一个应用内切换用户，的关闭上个用户的推送
             if (!TextUtils.isEmpty(UdeskBaseInfo.registerId) && UdeskConfig.isUserSDkPush) {
-                setSdkPushStatus(getDomain(context), getAppkey(context), UdeskBaseInfo.sdkToken,
+                setSdkPushStatus(getDomain(context), getAppkey(context), getSdkToken(context),
                         UdeskConfig.UdeskPushFlag.OFF, UdeskBaseInfo.registerId, getAppId(context));
             }
             disConnectXmpp();
@@ -578,6 +576,7 @@ public class UdeskSDKManager {
             return UdeskBaseInfo.App_Key;
         }
         if (UdeskConfig.isUseShare) {
+            Log.i("xxxxxx", "appkey =" + PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Key));
             return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Key);
         } else {
             return "";
@@ -607,8 +606,7 @@ public class UdeskSDKManager {
      */
     private void getSDKImSetting(final Context context) {
         try {
-
-            UdeskHttpFacade.getInstance().getIMSettings(getDomain(context), getAppkey(context), UdeskBaseInfo.sdkToken,
+            UdeskHttpFacade.getInstance().getIMSettings(getDomain(context), getAppkey(context), getSdkToken(context),
                     getAppId(context), new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
@@ -770,11 +768,11 @@ public class UdeskSDKManager {
                 });
     }
 
-    public void init(final Context context) {
+    public void frescoInit(final Context context) {
         try {
-            if (!Fresco.hasBeenInitialized()){
+            if (!Fresco.hasBeenInitialized()) {
                 final int MAX_HEAP_SIZE = (int) Runtime.getRuntime().maxMemory();
-                final int MAX_DISK_CACHE_SIZE = 300 * ByteConstants.MB;
+                final int MAX_DISK_CACHE_SIZE = 400 * ByteConstants.MB;
                 final int MAX_MEMORY_CACHE_SIZE = MAX_HEAP_SIZE / 3;
                 final MemoryCacheParams bitmapCacheParams = new MemoryCacheParams(
                         MAX_MEMORY_CACHE_SIZE,
@@ -785,7 +783,7 @@ public class UdeskSDKManager {
 
                 DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(context)
                         .setMaxCacheSize(MAX_DISK_CACHE_SIZE)//最大缓存
-                        .setBaseDirectoryName("udesk")//子目录
+                        .setBaseDirectoryName("udesk_im_sdk")//子目录
                         .setBaseDirectoryPathSupplier(new Supplier<File>() {
                             @Override
                             public File get() {
@@ -811,5 +809,16 @@ public class UdeskSDKManager {
             e.printStackTrace();
             Fresco.initialize(context);
         }
+    }
+
+    public final boolean isClassExists(String classFullName) {
+
+        try {
+            Class.forName(classFullName);
+            return true;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

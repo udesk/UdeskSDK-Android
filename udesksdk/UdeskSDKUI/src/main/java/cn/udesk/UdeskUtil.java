@@ -26,6 +26,7 @@ import android.view.WindowManager;
 import com.facebook.binaryresource.BinaryResource;
 import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.CacheKey;
+import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.controller.BaseControllerListener;
@@ -38,6 +39,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.common.RotationOptions;
+import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
@@ -55,6 +57,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,7 +68,7 @@ import me.relex.photodraweeview.PhotoDraweeView;
 import udesk.core.UdeskCoreConst;
 
 public class UdeskUtil {
-    public static final String ImgFolderName = "UDeskIMg";
+    public static final String ImgFolderName = "UDeskSdkIMg";
     public static final String AudioFolderName = "UDeskAudio";
 
 
@@ -633,24 +636,70 @@ public class UdeskUtil {
         return wh;
     }
 
-    public static File getFileFromDiskCache(Uri url) {
-        File localFile = null;
-        if (url != null) {
-            ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(url).build();
-            CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(imageRequest, new Object());
-            if (ImagePipelineFactory.getInstance().getMainFileCache().hasKey(cacheKey)) {
-                BinaryResource resource = ImagePipelineFactory.getInstance().getMainFileCache().getResource(cacheKey);
-                localFile = ((FileBinaryResource) resource).getFile();
-            } else if (ImagePipelineFactory.getInstance().getSmallImageFileCache().hasKey(cacheKey)) {
-                BinaryResource resource = ImagePipelineFactory.getInstance().getSmallImageFileCache().getResource(cacheKey);
-                localFile = ((FileBinaryResource) resource).getFile();
+    /**
+     * 图片是否已经存在了
+     */
+    public static boolean isCached(Context context, Uri uri) {
+        try {
+            ImagePipeline imagePipeline = Fresco.getImagePipeline();
+            DataSource<Boolean> dataSource = imagePipeline.isInDiskCache(uri);
+            if (dataSource == null) {
+                return false;
             }
+            ImageRequest imageRequest = ImageRequest.fromUri(uri);
+            CacheKey cacheKey = DefaultCacheKeyFactory.getInstance()
+                    .getEncodedCacheKey(imageRequest, context);
+            BinaryResource resource = ImagePipelineFactory.getInstance()
+                    .getMainFileCache().getResource(cacheKey);
+            return resource != null && dataSource.getResult() != null && dataSource.getResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return  false;
         }
-        return localFile;
     }
 
-    public static void loadImage(final PhotoDraweeView mPhotoDraweeView,
+    /**
+     * 本地缓存文件
+     */
+    public static File getFileFromDiskCache(Context context, Uri uri) {
+        try {
+            if (!isCached(context, uri))
+                return null;
+            ImageRequest imageRequest = ImageRequest.fromUri(uri);
+            CacheKey cacheKey = DefaultCacheKeyFactory.getInstance()
+                    .getEncodedCacheKey(imageRequest, context);
+            BinaryResource resource = ImagePipelineFactory.getInstance()
+                    .getMainFileCache().getResource(cacheKey);
+            File file = ((FileBinaryResource) resource).getFile();
+            return file;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+//    public static File getFileFromDiskCache(Uri url) {
+//        File localFile = null;
+//        if (url != null) {
+//            ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(url).build();
+//            CacheKey cacheKey = DefaultCacheKeyFactory.getInstance().getEncodedCacheKey(imageRequest, new Object());
+//            if (ImagePipelineFactory.getInstance().getMainFileCache().hasKey(cacheKey)) {
+//                BinaryResource resource = ImagePipelineFactory.getInstance().getMainFileCache().getResource(cacheKey);
+//                localFile = ((FileBinaryResource) resource).getFile();
+//            } else if (ImagePipelineFactory.getInstance().getSmallImageFileCache().hasKey(cacheKey)) {
+//                BinaryResource resource = ImagePipelineFactory.getInstance().getSmallImageFileCache().getResource(cacheKey);
+//                localFile = ((FileBinaryResource) resource).getFile();
+//            }
+//        }
+//        return localFile;
+//    }
+
+    public static void loadImage(Context context ,final PhotoDraweeView mPhotoDraweeView,
                                  Uri uri) {
+        File file = getFileFromDiskCache(context,uri);
+        if (file != null){
+            uri = Uri.fromFile(file);
+        }
         PipelineDraweeControllerBuilder controller = Fresco.newDraweeControllerBuilder();
         controller.setUri(uri);
         controller.setAutoPlayAnimations(true);
@@ -669,6 +718,10 @@ public class UdeskUtil {
     }
 
     public static void loadHeadView(Context context,SimpleDraweeView simpleDraweeView, Uri httpUri) {
+        File file = getFileFromDiskCache(context,httpUri);
+        if (file != null){
+            httpUri = Uri.fromFile(file);
+        }
         //初始化圆角圆形参数对象
         RoundingParams rp = new RoundingParams();
         //设置图像是否为圆形
@@ -709,9 +762,9 @@ public class UdeskUtil {
                         int height = reqHeight;
                         int imgWidth = dip2px(context,140) ;
                         int imgHight = dip2px(context,220);
-                        int bitScalew = getRatioSize(width, height, imgHight, imgWidth);
-                        layoutParams.height = height / bitScalew;
-                        layoutParams.width = width / bitScalew;
+                        double bitScalew = getRatioSize(width, height, imgHight, imgWidth);
+                        layoutParams.height = (int) (height / bitScalew);
+                        layoutParams.width = (int) (width / bitScalew);
                         draweeView.requestLayout();
                     }
                 })
@@ -721,7 +774,10 @@ public class UdeskUtil {
     }
 
     public static void loadImageView(final Context context, final SimpleDraweeView simpleDraweeView, Uri httpUri) {
-
+        File file = getFileFromDiskCache(context,httpUri);
+        if (file != null){
+            httpUri = Uri.fromFile(file);
+        }
         final ViewGroup.LayoutParams layoutParams = simpleDraweeView.getLayoutParams();
         ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
             @Override
@@ -733,9 +789,9 @@ public class UdeskUtil {
                 int width = imageInfo.getWidth();
                 int imgWidth = dip2px(context,140) ;
                 int imgHight = dip2px(context,220);
-                int bitScalew = getRatioSize(width, height, imgHight, imgWidth);
-                layoutParams.height = height / bitScalew;
-                layoutParams.width = width / bitScalew;
+                double bitScalew = getRatioSize(width, height, imgHight, imgWidth);
+                layoutParams.height = (int) (height / bitScalew);
+                layoutParams.width = (int) (width / bitScalew);
                 simpleDraweeView.setLayoutParams(layoutParams);
                 simpleDraweeView.invalidate();
             }
@@ -764,7 +820,11 @@ public class UdeskUtil {
         simpleDraweeView.setController(controller);
     }
 
-    public static void loadNoChangeView(SimpleDraweeView simpleDraweeView, Uri httpUri) {
+    public static void loadNoChangeView(Context context,SimpleDraweeView simpleDraweeView, Uri httpUri) {
+        File file = getFileFromDiskCache(context,httpUri);
+        if (file != null){
+            httpUri = Uri.fromFile(file);
+        }
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setUri(httpUri)
                 .setTapToRetryEnabled(true)
@@ -775,21 +835,21 @@ public class UdeskUtil {
 
 
 
-    public static int getRatioSize(int bitWidth, int bitHeight, int imageHeight, int imageWidth) {
+    public static double getRatioSize(int bitWidth, int bitHeight, int imageHeight, int imageWidth) {
 
         // 缩放比
-        int ratio = 1;
+        double ratio = 1.0;
         // 缩放比,由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
         if (bitWidth > bitHeight && bitWidth > imageWidth) {
             // 如果图片宽度比高度大,以宽度为基准
-            ratio = bitWidth / imageWidth;
+            ratio = (double) bitWidth / imageWidth;
         } else if (bitWidth < bitHeight && bitHeight > imageHeight) {
             // 如果图片高度比宽度大，以高度为基准
-            ratio = bitHeight / imageHeight;
+            ratio = (double) bitHeight / imageHeight;
         }
         // 最小比率为1
-        if (ratio <= 0)
-            ratio = 1;
+        if (ratio <= 1.0)
+            ratio = 1.0;
         return ratio;
     }
 
@@ -999,6 +1059,10 @@ public class UdeskUtil {
                 type = MIME_MapTable[i][1];
         }
         return type;
+    }
+
+    public static String getUUID(){
+        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
 

@@ -74,7 +74,7 @@ public class UdeskConfig {
     public static String useMapType = UdeskMapType.Other;
 
     //在没有请求到管理员在后端对sdk使用配置下，在默认的情况下，是否需要表单留言，true需要， false 不需要
-    public  static  boolean  isUserForm= false;
+    public static boolean isUserForm = false;
 
     //mode: mark (默认,标记放弃)/ cannel_mark(取消标记) / force_quit(强制立即放弃)
     public static class UdeskQuenuFlag {
@@ -115,4 +115,10 @@ public class UdeskConfig {
         //选中位置的经度
         public static final String Longitude = "udesk_longitude";
     }
+
+    //上传图片是否使用原图 还是缩率图  注意如果使用压缩策略 gif显示第一帧动态图
+    public static boolean isScaleImg = false;
+
+    //缩放图 设置宽高最大值，如果超出则压缩，否则不压缩
+    public static int ScaleMax = 1024;
 }

@@ -74,7 +74,7 @@
 
 
     <!-- IM界面，商品咨询中 缩略图的宽度和高度 -->
-    <dimen name="udesk_im_commondity_width_height">65dp</dimen>
+    <dimen name="udesk_im_commondity_width_height">50dp</dimen>
 
 
 

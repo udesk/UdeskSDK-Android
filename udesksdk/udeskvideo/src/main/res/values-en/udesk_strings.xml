@@ -1,0 +1,29 @@
+<resources>
+    <string name="rejept">Refuse</string>
+    <string name="answer">Pick up</string>
+    <string name="microphone">microphone</string>
+    <string name="camera">camera</string>
+    <string name="speaker">speaker</string>
+    <string name="putway">Put away</string>
+    <string name="invite_tips">Awaiting response....</string>
+    <!--"udesk_video_call_duration" = "Talk time：";-->
+
+    <!--//agent-->
+    <!--"udesk_video_call_agent_busy" = "Other user may be busy";-->
+    <!--"udesk_video_call_agent_decline" = "Call declined by user";-->
+    <!--"udesk_video_call_agent_cancel" = "Cancelled";-->
+    <!--"udesk_video_call_agent_not_answered" = "No response";-->
+
+    <!--//customer-->
+    <!--"udesk_video_call_customer_cancel" = ""Other user cancelled";-->
+    <!--"udesk_video_call_customer_decline" = "Declined";-->
+
+    <string name="udesk_video_start">Video Call</string>
+    <string name="udesk_video_cancle">Cancelled</string>
+    <string name="udesk_video_over">Duration</string>
+    <string name="udesk_video_reject">Declined</string>
+    <string name="udesk_video_timeout">busy</string>
+    <string name="udesk_video_not_loggin">the agent has not logged in the video</string>
+
+
+</resources>

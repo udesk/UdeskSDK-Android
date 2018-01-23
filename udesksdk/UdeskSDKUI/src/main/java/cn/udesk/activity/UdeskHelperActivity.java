@@ -114,7 +114,9 @@ public class UdeskHelperActivity extends Activity implements OnClickListener, Ad
                     mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
                 }
                UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId,mTitlebar.getLeftTextView(),mTitlebar.getRightTextView());
-               UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId ,mTitlebar.getRootView());
+                if (mTitlebar.getRootView() != null){
+                    UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId ,mTitlebar.getRootView());
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

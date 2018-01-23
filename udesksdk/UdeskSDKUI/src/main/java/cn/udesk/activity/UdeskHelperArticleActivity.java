@@ -90,17 +90,19 @@ public class UdeskHelperArticleActivity extends Activity {
                         udeskLoading.setVisibility(View.GONE);
                         try{
                             UDHelperArticleContentItem item = JsonUtils.parseArticleContentItem(message);
-                            udeskSubject.setText(item.subject);
-                            String htmlData = item.content;
-                            htmlData = htmlData.replaceAll("&amp;", "&");
-                            htmlData = htmlData.replaceAll("quot;", "\"");
-                            htmlData = htmlData.replaceAll("lt;", "<");
-                            htmlData = htmlData.replaceAll("gt;", ">");
-                            WebSettings webSettings= udeskWebView.getSettings();
-                            webSettings.setJavaScriptEnabled(true);
-                            webSettings.setBlockNetworkImage(false);
-                            webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-                            udeskWebView.loadDataWithBaseURL(null, htmlData, "text/html", "utf-8", null);
+							if (item != null){
+								udeskSubject.setText(item.subject);
+								String htmlData = item.content;
+								htmlData = htmlData.replaceAll("&amp;", "&");
+								htmlData = htmlData.replaceAll("quot;", "\"");
+								htmlData = htmlData.replaceAll("lt;", "<");
+								htmlData = htmlData.replaceAll("gt;", ">");
+								WebSettings webSettings= udeskWebView.getSettings();
+								webSettings.setJavaScriptEnabled(true);
+								webSettings.setBlockNetworkImage(false);
+								webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+								udeskWebView.loadDataWithBaseURL(null, htmlData, "text/html", "utf-8", null);
+							}
                         }catch (Exception e){
                             e.printStackTrace();
                         }

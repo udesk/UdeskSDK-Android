@@ -28,8 +28,7 @@
         fresco:actualImageScaleType="centerCrop"
         fresco:placeholderImage="@drawable/udesk_im_default_user_avatar"
         fresco:roundAsCircle="true"
-        fresco:roundingBorderColor="@color/udesk_color_line2"
-        fresco:roundingBorderWidth="1dp" />
+      />
 
     <TextView
         android:id="@+id/udesk_nick_name"

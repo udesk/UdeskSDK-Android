@@ -38,8 +38,7 @@
         android:visibility="gone"
         fresco:actualImageScaleType="centerCrop"
         fresco:roundAsCircle="true"
-        fresco:roundingBorderColor="@color/udesk_color_line2"
-        fresco:roundingBorderWidth="1dp" />
+     />
 
     <TextView
         android:id="@+id/udesk_nick_name"

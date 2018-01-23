@@ -28,8 +28,6 @@
         android:layout_marginTop="@dimen/udesk_chat_head_margin"
         fresco:actualImageScaleType="centerCrop"
         fresco:roundAsCircle="true"
-        fresco:roundingBorderColor="@color/udesk_color_line2"
-        fresco:roundingBorderWidth="1dp"
         fresco:placeholderImage="@drawable/udesk_im_default_user_avatar"
         />
 

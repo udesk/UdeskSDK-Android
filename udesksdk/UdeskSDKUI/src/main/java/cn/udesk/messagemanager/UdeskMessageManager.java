@@ -11,6 +11,7 @@ import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.model.MsgNotice;
+import udesk.core.UdeskCoreConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.event.ReflectInvokeMethod;
 import udesk.core.model.MessageInfo;
@@ -22,7 +23,7 @@ public class UdeskMessageManager {
     private UdeskXmppManager mUdeskXmppManager;
     private ExecutorService messageExecutor;
     public ReflectInvokeMethod event_OnNewMessage = new ReflectInvokeMethod(new Class<?>[]{Message.class, String.class,
-            String.class, String.class, String.class, Long.class, String.class});
+            String.class, String.class, String.class, Long.class, String.class, String.class, Integer.class});
     public ReflectInvokeMethod eventui_OnMessageReceived = new ReflectInvokeMethod(new Class<?>[]{String.class});
     public ReflectInvokeMethod eventui_OnNewMessage = new ReflectInvokeMethod(new Class<?>[]{MessageInfo.class});
     public ReflectInvokeMethod eventui_OnNewPresence = new ReflectInvokeMethod(new Class<?>[]{String.class, Integer.class});
@@ -50,11 +51,11 @@ public class UdeskMessageManager {
         }
     }
 
-    public boolean isConnection(){
-        if (mUdeskXmppManager != null){
-            return  mUdeskXmppManager.isConnection();
+    public boolean isConnection() {
+        if (mUdeskXmppManager != null) {
+            return mUdeskXmppManager.isConnection();
         }
-        return  false;
+        return false;
     }
 
     public void connection() {
@@ -74,9 +75,12 @@ public class UdeskMessageManager {
         }
     }
 
+    public void sendVCCallMessage(String type, String to, String text) {
+        mUdeskXmppManager.sendVCCallMessage(type, to, text);
+    }
 
-    public void sendMessage(String type, String text, String msgId, String to, long duration, String subsessionId) {
-        mUdeskXmppManager.sendMessage(type, text, msgId, to, duration, subsessionId);
+    public void sendMessage(String type, String text, String msgId, String to, long duration, String subsessionId, boolean noNeedSave, int seqNum) {
+        mUdeskXmppManager.sendMessage(type, text, msgId, to, duration, subsessionId, noNeedSave, seqNum);
     }
 
     public void sendComodityMessage(String text, String to) {
@@ -114,7 +118,7 @@ public class UdeskMessageManager {
 
 
     public void onNewMessage(final Message message, String agentJid, final String type, final String msgId, final String content,
-                             final Long duration, final String send_status) {
+                             final Long duration, final String send_status, String imsessionId, Integer seqNum) {
         try {
             String jid[] = agentJid.split("/");
             MessageInfo msginfo = null;
@@ -127,26 +131,30 @@ public class UdeskMessageManager {
                         agentName = urlAndNick[1];
                     }
                     String buildrollBackMsg = "客服" + agentName + "撤回一条消息";
-                    msginfo = buildReceiveMessage(jid[0], UdeskConst.ChatMsgTypeString.TYPE_EVENT, msgId, buildrollBackMsg, duration, send_status);
+                    msginfo = buildReceiveMessage(jid[0], UdeskConst.ChatMsgTypeString.TYPE_EVENT, msgId, buildrollBackMsg, duration, send_status, imsessionId, seqNum);
                 }
             } else {
-                msginfo = buildReceiveMessage(jid[0], type, msgId, content, duration, send_status);  //消息在本地数据库存在，则结束后续流程
+                //消息在本地数据库存在，则结束后续流程
                 if (UdeskDBManager.getInstance().hasReceviedMsg(msgId)) {
                     return;
                 }
-
+                msginfo = buildReceiveMessage(jid[0], type, msgId, content, duration, send_status, imsessionId, seqNum);
             }
-            if (!type.equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT)) {
+
+            if (type.equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT) || type.equals(UdeskConst.ChatMsgTypeString.TYPE_STRUCT)) {
+                if (mUdeskXmppManager != null) {
+                    mUdeskXmppManager.sendReceivedMsg(message);
+                }
+            } else {
                 boolean isSaveSuccess = UdeskDBManager.getInstance().addMessageInfo(msginfo);
                 if (isSaveSuccess) {
                     if (mUdeskXmppManager != null) {
                         mUdeskXmppManager.sendReceivedMsg(message);
                     }
                 }
-            } else {
-                if (mUdeskXmppManager != null) {
-                    mUdeskXmppManager.sendReceivedMsg(message);
-                }
+            }
+            if (UdeskCoreConst.isDebug && msginfo != null) {
+                Log.i("newMessage", msginfo.toString());
             }
             eventui_OnNewMessage.invoke(msginfo);
             if (type.equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT)) {
@@ -166,7 +174,7 @@ public class UdeskMessageManager {
     }
 
     public MessageInfo buildReceiveMessage(String agentJid, String msgType, String msgId,
-                                           String content, long duration, String send_status) {
+                                           String content, long duration, String send_status, String imsessionId, Integer seqNum) {
         MessageInfo msg = new MessageInfo();
         msg.setMsgtype(msgType);
         msg.setTime(System.currentTimeMillis());
@@ -180,6 +188,8 @@ public class UdeskMessageManager {
         msg.setDuration(duration);
         msg.setmAgentJid(agentJid);
         msg.setSend_status(send_status);
+        msg.setSubsessionid(imsessionId);
+        msg.setSeqNum(seqNum);
         return msg;
     }
 
@@ -244,5 +254,6 @@ public class UdeskMessageManager {
             e.printStackTrace();
         }
     }
+
 
 }

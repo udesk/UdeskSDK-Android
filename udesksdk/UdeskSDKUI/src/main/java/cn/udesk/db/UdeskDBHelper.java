@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class UdeskDBHelper extends SQLiteOpenHelper {
 
 	public static String DATABASE_NAME = "udesk_sdk";
-	public final static int DATABASE_VERSION = 3;
+	public final static int DATABASE_VERSION = 4;
 
 	
 	public static String UdeskMessage = "udeskMessageInfo";
@@ -15,6 +15,8 @@ public class UdeskDBHelper extends SQLiteOpenHelper {
 	public static String UdeskSendIngMsgs = "udesksendIngMsgs";
 
 	public static String UdeskAgentMsg = "udeskAgentMsg";
+
+	public static String SubSessionId = "sub_sessionid";
 
 	public UdeskDBHelper(Context context, String sdktoken) {
 		super(context, DATABASE_NAME + sdktoken, null, DATABASE_VERSION);
@@ -28,8 +30,9 @@ public class UdeskDBHelper extends SQLiteOpenHelper {
 				+ "(MsgID TEXT primary key,Time BIGINT,MsgContent TEXT,"
 				+ "MsgType TEXT, ReadFlag INTEGER,SendFlag INTEGER,"
 				+ "PlayedFlag INTEGER,Direction INTEGER,LocalPath Text,"
-				+ "Duration INTEGER,AgentJid TEXT,created_at TEXT,"
-				+ "updated_at TEXT,reply_user TEXT,reply_userurl TEXT)");
+				+ "Duration INTEGER,Receive_AgentJid TEXT,created_at TEXT,"
+				+ "updated_at TEXT,reply_user TEXT,reply_userurl TEXT,"
+                + "subsessionid TEXT,seqNum INTEGER)");
 	
 
 		db.execSQL("CREATE TABLE IF NOT EXISTS "
@@ -38,7 +41,10 @@ public class UdeskDBHelper extends SQLiteOpenHelper {
 
 		db.execSQL("CREATE TABLE IF NOT EXISTS "
 				+ UdeskAgentMsg
-				+ "( AgentJid TEXT, HeadUrl TEXT, AgentNick TEXT, primary key(AgentJid))");
+				+ "( Receive_AgentJid TEXT, HeadUrl TEXT, AgentNick TEXT, primary key(Receive_AgentJid))");
+
+		db.execSQL("CREATE TABLE IF NOT EXISTS " + SubSessionId
+				+ "( SUBID TEXT primary key, SEQNUM INTEGER)");
 	}
 
 	@Override
@@ -61,16 +67,23 @@ public class UdeskDBHelper extends SQLiteOpenHelper {
 	private void upgradeDB(SQLiteDatabase db, int oldVersion, int newVersion) {
 		switch (oldVersion) {
 			case 1:
-				db.execSQL("ALTER TABLE UdeskMessage ADD COLUMN  AgentJid TEXT ");
+				db.execSQL("ALTER TABLE UdeskMessage ADD COLUMN  Receive_AgentJid TEXT ");
 				db.execSQL("CREATE TABLE IF NOT EXISTS "
 						+ UdeskAgentMsg
-						+ "( AgentJid TEXT, HeadUrl TEXT, AgentNick TEXT, primary key(AgentJid))");
+						+ "( Receive_AgentJid TEXT, HeadUrl TEXT, AgentNick TEXT, primary key(Receive_AgentJid))");
 				break;
 			case 2:
 				db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN created_at TEXT");
 				db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN updated_at TEXT");
 				db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN reply_user TEXT");
 				db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN reply_userurl TEXT");
+
+				break;
+			case 3:
+				db.execSQL("CREATE TABLE IF NOT EXISTS " + SubSessionId
+						+ "( SUBID TEXT primary key, SEQNUM INTEGER)");
+                db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN subsessionid TEXT");
+                db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN seqNum INTEGER");
 				break;
 			default:
 				break;

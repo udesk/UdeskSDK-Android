@@ -46,7 +46,10 @@ public class UdeskWebViewUrlAcivity extends UdeskBaseWebViewActivity {
 
         try {
             UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId, mTitlebar.getLeftTextView(), mTitlebar.getRightTextView());
-            UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId, mTitlebar.getRootView());
+
+            if (mTitlebar.getRootView() != null){
+                UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId, mTitlebar.getRootView());
+            }
             if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
                 mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
             }
