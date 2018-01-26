@@ -120,6 +120,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
 
     private String groupId = "";
     private String agentId = "";
+    private boolean imSessionClosed = false;
     private String isbolcked = "";
     private String bolckedNotice = "";
 
@@ -553,10 +554,21 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                 groupId = intent.getStringExtra(UdeskConst.UDESKGROUPID);
                 agentId = intent.getStringExtra(UdeskConst.UDESKAGENTID);
             }
-            if (!TextUtils.isEmpty(groupId)) {
-                PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-                        UdeskConst.SharePreParams.Udesk_Group_Id, groupId);
+
+            if (UdeskSDKManager.getInstance().getImSetting() != null && UdeskSDKManager.getInstance().getImSetting().getIn_session()){
+                imSessionClosed = UdeskSDKManager.getInstance().getImSetting().getIn_session();
             }
+
+            if (!imSessionClosed) {
+                if (!TextUtils.isEmpty(groupId)) {
+                    PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                            UdeskConst.SharePreParams.Udesk_Group_Id, groupId);
+                } else {
+                    PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                            UdeskConst.SharePreParams.Udesk_Group_Id, "");
+                }
+            }
+
             PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                     UdeskConst.SharePreParams.Udesk_Agent_Id, agentId);
         } catch (Exception e) {
