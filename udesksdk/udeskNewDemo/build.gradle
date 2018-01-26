@@ -41,5 +41,4 @@ dependencies {
     compile 'com.android.support:multidex:1.0.0'
     compile files('libs/jpush-android-2.2.0.jar')
     compile project(':UdeskSDKUI')
-    implementation project(':udeskvideo')
 }
