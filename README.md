@@ -1,6 +1,15 @@
 # UdeskSDK Android 3.9.0+ 开发者文档
 
 ### 快速接入
+注意导入包UdeskSDKUI后 在你apply plugin: 'com.android.application'的build.gradle文件里加入
+ ``` java
+repositories {
+    flatDir {
+        dirs project(':UdeskSDKUI').file('libs')
+    }
+}
+ ```
+ 
 ------
    一.初始管理员后台创建应用是生成的对应app key 和 app id
    
