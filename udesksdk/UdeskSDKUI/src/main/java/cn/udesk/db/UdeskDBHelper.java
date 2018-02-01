@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class UdeskDBHelper extends SQLiteOpenHelper {
 
     public static String DATABASE_NAME = "udesk_sdk";
-    public final static int DATABASE_VERSION = 4;
+    public final static int DATABASE_VERSION = 5;
 
 
     public static String UdeskMessage = "udeskMessageInfo";
