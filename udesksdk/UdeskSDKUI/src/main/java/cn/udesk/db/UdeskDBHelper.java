@@ -6,89 +6,99 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class UdeskDBHelper extends SQLiteOpenHelper {
 
-	public static String DATABASE_NAME = "udesk_sdk";
-	public final static int DATABASE_VERSION = 4;
+    public static String DATABASE_NAME = "udesk_sdk";
+    public final static int DATABASE_VERSION = 5;
 
-	
-	public static String UdeskMessage = "udeskMessageInfo";
 
-	public static String UdeskSendIngMsgs = "udesksendIngMsgs";
+    public static String UdeskMessage = "udeskMessageInfo";
 
-	public static String UdeskAgentMsg = "udeskAgentMsg";
+    public static String UdeskSendIngMsgs = "udesksendIngMsgs";
 
-	public static String SubSessionId = "sub_sessionid";
+    public static String UdeskAgentMsg = "udeskAgentMsg";
 
-	public UdeskDBHelper(Context context, String sdktoken) {
-		super(context, DATABASE_NAME + sdktoken, null, DATABASE_VERSION);
-	}
+    public static String SubSessionId = "sub_sessionid";
 
-	@Override
-	public void onCreate(SQLiteDatabase db) {
+    public UdeskDBHelper(Context context, String sdktoken) {
+        super(context, DATABASE_NAME + sdktoken, null, DATABASE_VERSION);
+    }
 
-		db.execSQL("CREATE TABLE IF NOT EXISTS "
-				+ UdeskMessage
-				+ "(MsgID TEXT primary key,Time BIGINT,MsgContent TEXT,"
-				+ "MsgType TEXT, ReadFlag INTEGER,SendFlag INTEGER,"
-				+ "PlayedFlag INTEGER,Direction INTEGER,LocalPath Text,"
-				+ "Duration INTEGER,Receive_AgentJid TEXT,created_at TEXT,"
-				+ "updated_at TEXT,reply_user TEXT,reply_userurl TEXT,"
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS "
+                + UdeskMessage
+                + "(MsgID TEXT primary key,Time BIGINT,MsgContent TEXT,"
+                + "MsgType TEXT, ReadFlag INTEGER,SendFlag INTEGER,"
+                + "PlayedFlag INTEGER,Direction INTEGER,LocalPath Text,"
+                + "Duration INTEGER,Receive_AgentJid TEXT,created_at TEXT,"
+                + "updated_at TEXT,reply_user TEXT,reply_userurl TEXT,"
                 + "subsessionid TEXT,seqNum INTEGER)");
-	
 
-		db.execSQL("CREATE TABLE IF NOT EXISTS "
-				+ UdeskSendIngMsgs
-				+ "( MsgID TEXT, SendFlag INTEGER, Time BIGINT, primary key(MsgID))");
 
-		db.execSQL("CREATE TABLE IF NOT EXISTS "
-				+ UdeskAgentMsg
-				+ "( Receive_AgentJid TEXT, HeadUrl TEXT, AgentNick TEXT, primary key(Receive_AgentJid))");
+        db.execSQL("CREATE TABLE IF NOT EXISTS "
+                + UdeskSendIngMsgs
+                + "( MsgID TEXT, SendFlag INTEGER, Time BIGINT, primary key(MsgID))");
 
-		db.execSQL("CREATE TABLE IF NOT EXISTS " + SubSessionId
-				+ "( SUBID TEXT primary key, SEQNUM INTEGER)");
-	}
+        db.execSQL("CREATE TABLE IF NOT EXISTS "
+                + UdeskAgentMsg
+                + "( Receive_AgentJid TEXT, HeadUrl TEXT, AgentNick TEXT, primary key(Receive_AgentJid))");
 
-	@Override
-	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		db.beginTransaction();
-		try {
-			while (oldVersion < newVersion) {
-				upgradeDB(db, oldVersion, newVersion);
-				oldVersion++;
-			}
-			db.setTransactionSuccessful();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			db.endTransaction();
-		}
-	}
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + SubSessionId
+                + "( SUBID TEXT primary key, SEQNUM INTEGER)");
+    }
 
-	//增加agentJid字段
-	private void upgradeDB(SQLiteDatabase db, int oldVersion, int newVersion) {
-		switch (oldVersion) {
-			case 1:
-				db.execSQL("ALTER TABLE UdeskMessage ADD COLUMN  Receive_AgentJid TEXT ");
-				db.execSQL("CREATE TABLE IF NOT EXISTS "
-						+ UdeskAgentMsg
-						+ "( Receive_AgentJid TEXT, HeadUrl TEXT, AgentNick TEXT, primary key(Receive_AgentJid))");
-				break;
-			case 2:
-				db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN created_at TEXT");
-				db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN updated_at TEXT");
-				db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN reply_user TEXT");
-				db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN reply_userurl TEXT");
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.beginTransaction();
+        try {
 
-				break;
-			case 3:
-				db.execSQL("CREATE TABLE IF NOT EXISTS " + SubSessionId
-						+ "( SUBID TEXT primary key, SEQNUM INTEGER)");
-                db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN subsessionid TEXT");
-                db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN seqNum INTEGER");
-				break;
-			default:
-				break;
-		}
-	}
+            db.execSQL("DROP TABLE IF EXISTS udeskMessageInfo");
+            db.execSQL("DROP TABLE IF EXISTS udesksendIngMsgs");
+            db.execSQL("DROP TABLE IF EXISTS udeskAgentMsg");
+            db.execSQL("DROP TABLE IF EXISTS sub_sessionid");
+            onUpgradeDB(db);
+
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+
+    public void onUpgradeDB(SQLiteDatabase db) {
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS "
+                + UdeskSendIngMsgs
+                + "( MsgID TEXT, SendFlag INTEGER, Time BIGINT, primary key(MsgID))");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS "
+                + UdeskAgentMsg
+                + "( Receive_AgentJid TEXT, HeadUrl TEXT, AgentNick TEXT, primary key(Receive_AgentJid))");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + SubSessionId
+                + "( SUBID TEXT primary key, SEQNUM INTEGER)");
+
+
+        String tempMessageInfo = "TempMessageInfo";
+        db.execSQL("CREATE TABLE IF NOT EXISTS "
+                + tempMessageInfo
+                + "(MsgID TEXT primary key,Time BIGINT,MsgContent TEXT,"
+                + "MsgType TEXT, ReadFlag INTEGER,SendFlag INTEGER,"
+                + "PlayedFlag INTEGER,Direction INTEGER,LocalPath Text,"
+                + "Duration INTEGER,Receive_AgentJid TEXT,created_at TEXT,"
+                + "updated_at TEXT,reply_user TEXT,reply_userurl TEXT,"
+                + "subsessionid TEXT,seqNum INTEGER)");
+
+        db.execSQL(" INSERT INTO TempMessageInfo "
+                + "(MsgID,Time,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,Direction,LocalPath,Duration) "
+                + "SELECT MsgID,Time,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,Direction,LocalPath,Duration "
+                + " FROM udeskMessageInfo ");
+
+        db.execSQL("DROP TABLE udeskMessageInfo");
+        db.execSQL("ALTER TABLE TempMessageInfo RENAME TO udeskMessageInfo");
+    }
 
 
 }
