@@ -12,6 +12,7 @@ import java.util.List;
 
 import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
+import cn.udesk.UdeskUtil;
 import udesk.core.model.AgentInfo;
 import udesk.core.model.MessageInfo;
 
@@ -331,12 +332,12 @@ public class UdeskDBManager {
                 int direction = cursor.getInt(7);
                 String localPath = cursor.getString(8);
                 long duration = cursor.getLong(9);
-                String agentJid = cursor.getString(10);
-                String createdTime = cursor.getString(11);
-                String updatedTime = cursor.getString(12);
-                String replyUser = cursor.getString(13);
-                String reply_userurl = cursor.getString(14);
-                String subSeessionId = cursor.getString(15);
+                String agentJid = UdeskUtil.objectToString(cursor.getString(10));
+                String createdTime = UdeskUtil.objectToString(cursor.getString(11));
+                String updatedTime = UdeskUtil.objectToString(cursor.getString(12));
+                String replyUser = UdeskUtil.objectToString(cursor.getString(13));
+                String reply_userurl = UdeskUtil.objectToString(cursor.getString(14));
+                String subSeessionId = UdeskUtil.objectToString(cursor.getString(15));
                 int seqNum = cursor.getInt(16);
 
                 if (sendFlag == UdeskConst.SendFlag.RESULT_SEND) {
@@ -403,10 +404,10 @@ public class UdeskDBManager {
                 int direction = cursor.getInt(7);
                 String localPath = cursor.getString(8);
                 long duration = cursor.getLong(9);
-                String agentJid = cursor.getString(10);
-                String replyUser = cursor.getString(13);
-                String reply_userurl = cursor.getString(14);
-                String subSeessionId = cursor.getString(15);
+                String agentJid =UdeskUtil.objectToString(cursor.getString(10));
+                String replyUser = UdeskUtil.objectToString(cursor.getString(13));
+                String reply_userurl = UdeskUtil.objectToString(cursor.getString(14));
+                String subSeessionId = UdeskUtil.objectToString(cursor.getString(15));
                 int seqNum = cursor.getInt(16);
                 msgInfo = new MessageInfo(time, msgId, msgtype,
                         msgContent, readFlag, sendFlag, playFlag, direction,
@@ -473,10 +474,10 @@ public class UdeskDBManager {
                 int direction = cursor.getInt(7);
                 String localPath = cursor.getString(8);
                 long duration = cursor.getLong(9);
-                String agentJid = cursor.getString(10);
-                String replyUser = cursor.getString(13);
-                String reply_userurl = cursor.getString(14);
-                String subSeessionId = cursor.getString(15);
+                String agentJid = UdeskUtil.objectToString(cursor.getString(10));
+                String replyUser = UdeskUtil.objectToString(cursor.getString(13));
+                String reply_userurl = UdeskUtil.objectToString(cursor.getString(14));
+                String subSeessionId = UdeskUtil.objectToString(cursor.getString(15));
                 int seqNum = cursor.getInt(16);
                 msgInfo = new MessageInfo(time, msgId, msgtype,
                         msgContent, readFlag, sendFlag, playFlag, direction,
