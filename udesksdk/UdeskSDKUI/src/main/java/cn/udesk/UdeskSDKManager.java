@@ -202,7 +202,6 @@ public class UdeskSDKManager {
         UdeskBaseInfo.domain = domain;
         UdeskBaseInfo.App_Key = appkey;
         UdeskBaseInfo.App_Id = appid;
-        UdeskCoreConst.sdkversion = "3.9.1";
         if (UdeskConfig.isUseShare) {
             PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                     UdeskConst.SharePreParams.Udesk_Domain, domain);
