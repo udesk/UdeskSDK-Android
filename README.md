@@ -36,6 +36,7 @@ repositories {
 ``` java
     
       UdeskSDKManager.getInstance().entryChat(context);
+	  注意：只有通过这个方法进入会话,管理员在后台配置的选项才会生效, 其它方式进入会话,配置不会生效。 
       
 ``` 
 
@@ -164,6 +165,9 @@ repositories {
 
     //配置接入使用的地图类型
     public static String useMapType = UdeskMapType.Other;
+	
+	//在没有请求到管理员在后端对sdk使用配置下，在默认的情况下，是否需要表单留言，true需要， false 不需要
+    public static boolean isUserForm = false;
 	 
  二. IM中聊天功能 如果场景需要进入会话界面,先配置一条消息发送给客服可以如下:
       每次进入会话界面前，调用如下方法传值：

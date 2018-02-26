@@ -840,7 +840,7 @@ public class UdeskUtil {
         // 缩放比
         double ratio = 1.0;
         // 缩放比,由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
-        if (bitWidth > bitHeight && bitWidth > imageWidth) {
+        if (bitWidth >= bitHeight && bitWidth > imageWidth) {
             // 如果图片宽度比高度大,以宽度为基准
             ratio = (double) bitWidth / imageWidth;
         } else if (bitWidth < bitHeight && bitHeight > imageHeight) {
