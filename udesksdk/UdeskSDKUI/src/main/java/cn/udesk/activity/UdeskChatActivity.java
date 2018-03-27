@@ -555,7 +555,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
                 agentId = intent.getStringExtra(UdeskConst.UDESKAGENTID);
             }
 
-            if (UdeskSDKManager.getInstance().getImSetting() != null && UdeskSDKManager.getInstance().getImSetting().getIn_session()){
+            if (UdeskSDKManager.getInstance().getImSetting() != null && UdeskSDKManager.getInstance().getImSetting().getIn_session()) {
                 imSessionClosed = UdeskSDKManager.getInstance().getImSetting().getIn_session();
             }
 
@@ -676,10 +676,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
             }
             btnVideoCall = findViewById(R.id.udesk_bottom_videocall);
             btnVideoCall.setOnClickListener(this);
-            if (UdeskSDKManager.getInstance().isClassExists("udesk.udeskvideo.UdeskVideoActivity")
-                    && UdeskSDKManager.getInstance().getImSetting() != null
-                    && UdeskSDKManager.getInstance().getImSetting().getVcall()
-                    && UdeskSDKManager.getInstance().getImSetting().getSdk_vcall()) {
+            if (isOpenVideo()) {
                 btnVideoCall.setVisibility(View.VISIBLE);
             } else {
                 btnVideoCall.setVisibility(View.GONE);
@@ -708,6 +705,13 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
             e.printStackTrace();
         }
 
+    }
+
+    private boolean isOpenVideo() {
+        return UdeskSDKManager.getInstance().getImSetting() != null
+                && UdeskSDKManager.getInstance().getImSetting().getVcall()
+                && UdeskSDKManager.getInstance().getImSetting().getSdk_vcall()
+                && UdeskSDKManager.getInstance().isClassExists("udesk.udeskvideo.UdeskVideoActivity");
     }
 
     private void setListView() {
@@ -2446,10 +2450,7 @@ public class UdeskChatActivity extends Activity implements IChatActivityView,
     public void sendVideoMessage() {
 
         SDKIMSetting sdkimSetting = UdeskSDKManager.getInstance().getImSetting();
-        if (sdkimSetting != null && mAgentInfo != null
-                && UdeskSDKManager.getInstance().isClassExists("udesk.udeskvideo.UdeskVideoActivity")
-                && UdeskSDKManager.getInstance().getImSetting().getVcall()
-                && UdeskSDKManager.getInstance().getImSetting().getSdk_vcall()) {
+        if (sdkimSetting != null && mAgentInfo != null && isOpenVideo()) {
             //分配到客服后。建立websocket连接
             String domain = UdeskSDKManager.getInstance().getDomain(getApplicationContext());
             String[] domains = domain.split("\\.");
