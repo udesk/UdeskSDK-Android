@@ -2,7 +2,6 @@ package udesk.udesksocket;
 
 import okhttp3.Response;
 import udesk.udesksocket.mode.event.EvtInvite;
-import udesk.udesksocket.mode.invite.GetChannelTokenRep;
 
 /**
  * websoket消息的回家

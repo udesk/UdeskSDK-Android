@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/udesk_70"
+    android:layout_height="@dimen/udesk_60"
+    android:paddingLeft="@dimen/udesk_5"
+    android:paddingRight="@dimen/udesk_5"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/udesk_iv_picture"
+        android:layout_width="@dimen/udesk_60"
+        android:layout_height="@dimen/udesk_60"
+        fresco:actualImageScaleType="fitXY"
+        fresco:placeholderImage="@drawable/udesk_image_placeholder"
+        />
+
+    <View
+        android:id="@+id/udesk_v_selector"
+        android:layout_width="@dimen/udesk_60"
+        android:layout_height="@dimen/udesk_60"
+        android:background="@drawable/udesk_bg_selected_frame_photos"
+        android:visibility="gone" />
+
+
+    <TextView
+        android:id="@+id/udesk_duration"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/udesk_photo_time_bg"
+        android:drawableLeft="@drawable/udesk_video_icon"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dp"
+        android:paddingTop="8dp"
+        android:textColor="@color/udesk_color_bg_white"
+        android:textSize="@dimen/udesk_sp12"
+        android:visibility="visible" />
+
+</RelativeLayout>

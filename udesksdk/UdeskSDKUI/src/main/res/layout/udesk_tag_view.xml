@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_tag_text"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/udesk_30"
+    android:layout_margin="@dimen/udesk_7"
+    android:ellipsize="end"
+    android:gravity="center"
+    android:singleLine="true"
+    android:textColor="@color/udesk_color_666666"
+    android:textSize="@dimen/udesk_sp12" />
+
+

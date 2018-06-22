@@ -11,9 +11,10 @@
     <string name="udesk_unread_msgcount">获取未读消息数量</string>
     <string name="udesk_update_userinfo">更新客户信息</string>
     <string name="udesk_update_uitemplemt">更换UI模板</string>
-    <string name="udesk_conversion_bysetting_menu">咨询菜单</string>
     <string name="udesk_send_commodity_link">发送商品链接</string>
     <string name="udesk_setting_push">推送消息设置</string>
+    <string name="udesk_setting_en">设置英文</string>
+    <string name="udesk_setting_navation">添加导航栏</string>
 
     <string name="udesk_update_nick_name">姓名</string>
     <string name="udesk_update_hint_nick_name">请输入客户姓名</string>
@@ -26,4 +27,6 @@
 
     <string name="udesk_update_des">描述</string>
     <string name="udesk_update_hint_des">请输入描述内容</string>
+
+
 </resources>

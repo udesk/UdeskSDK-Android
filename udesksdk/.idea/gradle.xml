@@ -9,9 +9,6 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/UdeskSDKUI" />
-            <option value="$PROJECT_DIR$/baidumapdemo" />
-            <option value="$PROJECT_DIR$/gaodemapdemo" />
-            <option value="$PROJECT_DIR$/tenxunmapdemo" />
             <option value="$PROJECT_DIR$/udeskNewDemo" />
             <option value="$PROJECT_DIR$/udeskvideo" />
           </set>

@@ -60,7 +60,7 @@
             android:layout_width="17dp"
             android:layout_height="17dp"
             android:layout_marginLeft="24dp"
-            android:background="@drawable/often_messages_selector"
+            android:background="@drawable/udesk_checkbox_selector"
             android:button="@null"
             android:clickable="false"
             android:gravity="center" />
@@ -90,7 +90,7 @@
             android:layout_width="17dp"
             android:layout_height="17dp"
             android:layout_marginLeft="24dp"
-            android:background="@drawable/often_messages_selector"
+            android:background="@drawable/udesk_checkbox_selector"
             android:button="@null"
             android:clickable="false"
             android:gravity="center" />

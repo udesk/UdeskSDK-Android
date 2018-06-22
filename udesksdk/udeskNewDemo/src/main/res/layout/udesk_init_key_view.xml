@@ -10,7 +10,7 @@
         android:layout_height="50dp"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
-        android:layout_marginTop="254dp"
+        android:layout_marginTop="250dp"
         android:background="@drawable/login_linearlayout_bg"
         android:orientation="horizontal">
 
@@ -84,12 +84,13 @@
         android:layout_height="50dp"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
-        android:layout_marginTop="65dp"
+        android:layout_marginTop="25dp"
         android:background="@drawable/udesk_btn_bg"
         android:gravity="center"
         android:text="开启"
         android:textColor="@color/android:white"
         android:textSize="17sp" />
+
 
 
 </LinearLayout>

@@ -8,8 +8,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.model.AgentGroupNode;
@@ -18,11 +16,12 @@ import cn.udesk.model.OptionsModel;
 import cn.udesk.model.SDKIMSetting;
 import cn.udesk.model.StructModel;
 import cn.udesk.model.SurveyOptionsModel;
+import cn.udesk.model.Tag;
 import cn.udesk.model.TicketReplieMode;
 import udesk.core.model.AgentInfo;
-import udesk.core.model.MessageInfo;
 import udesk.core.model.UDHelperArticleContentItem;
 import udesk.core.model.UDHelperItem;
+import udesk.core.utils.UdeskUtils;
 
 public class JsonUtils {
 
@@ -114,9 +113,8 @@ public class JsonUtils {
                     agentInfo.setMessage(json.getString("message"));
                 }
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            agentInfo.setMessage("当前没有客服在线");
         }
         return agentInfo;
 
@@ -129,30 +127,79 @@ public class JsonUtils {
         if (TextUtils.isEmpty(response)) {
             return optionsMode;
         }
-
         try {
             JSONObject json = new JSONObject(response);
             JSONObject result = json.getJSONObject("result");
+            if (result.has("enabled")) {
+                optionsMode.setEnabled(result.opt("enabled"));
+            }
+            if (result.has("remark_enabled")) {
+                optionsMode.setEnabled(result.opt("remark_enabled"));
+            }
+            if (result.has("remark")) {
+                optionsMode.setRemark(result.opt("remark"));
+            }
+            if (result.has("name")) {
+                optionsMode.setName(result.opt("name"));
+            }
             if (result.has("title")) {
-                optionsMode.setTitle(result.getString("title"));
+                optionsMode.setTitle(result.opt("title"));
             }
             if (result.has("desc")) {
-                optionsMode.setDesc(result.getString("desc"));
+                optionsMode.setDesc(result.opt("desc"));
             }
-            if (result.has("options")) {
+            if (result.has("show_type")) {
+                optionsMode.setType(result.opt("show_type"));
+            }
 
-                List<OptionsModel> options = new ArrayList<OptionsModel>();
-                JSONArray optionsArray = result.optJSONArray("options");
-                if (optionsArray != null && optionsArray.length() > 0) {
-                    for (int i = 0; i < optionsArray.length(); i++) {
-                        JSONObject data = optionsArray.optJSONObject(i);
-                        OptionsModel optionItem = new OptionsModel();
-                        optionItem.setId(data.optString("id"));
-                        optionItem.setText(data.getString("text"));
-                        options.add(optionItem);
-                    }
+            JSONObject contextObject = null;
+            if (result.has("text")) {
+                contextObject = result.getJSONObject("text");
+            } else if (result.has("expression")) {
+                contextObject = result.getJSONObject("expression");
+            } else if (result.has("star")) {
+                contextObject = result.getJSONObject("star");
+            }
+
+            if (contextObject != null) {
+
+                if (contextObject.has("default_option_id")) {
+                    optionsMode.setDefault_option_id(contextObject.opt("default_option_id"));
                 }
-                optionsMode.setOptions(options);
+                if (contextObject.has("options")) {
+                    List<OptionsModel> options = new ArrayList<OptionsModel>();
+                    JSONArray optionsArray = contextObject.optJSONArray("options");
+                    if (optionsArray != null && optionsArray.length() > 0) {
+                        for (int i = 0; i < optionsArray.length(); i++) {
+                            JSONObject data = optionsArray.optJSONObject(i);
+                            OptionsModel optionItem = new OptionsModel();
+                            optionItem.setId(data.opt("id"));
+                            optionItem.setEnabled(data.opt("enabled"));
+                            if (!optionItem.getEnabled() && optionsMode.getType().equals("text")) {
+                                continue;
+                            }
+                            optionItem.setText(data.opt("text"));
+                            optionItem.setDesc(data.opt("desc"));
+                            optionItem.setRemark_option(data.opt("remark_option"));
+
+                            if (data.has("tags")) {
+                                List<Tag> tags = new ArrayList<Tag>();
+                                String tagStirng = UdeskUtil.objectToString(data.opt("tags"));
+                                if (!TextUtils.isEmpty(tagStirng)) {
+                                    String[] tagsArray = tagStirng.split(",");
+                                    for (int k = 0; k < tagsArray.length; k++) {
+                                        Tag tag = new Tag();
+                                        tag.setText(tagsArray[k]);
+                                        tags.add(tag);
+                                    }
+                                }
+                                optionItem.setTags(tags);
+                            }
+                            options.add(optionItem);
+                        }
+                    }
+                    optionsMode.setOptions(options);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -167,7 +214,7 @@ public class JsonUtils {
 
         List<AgentGroupNode> groupsModel = null;
         if (TextUtils.isEmpty(response)) {
-            return groupsModel;
+            return null;
         }
 
         try {
@@ -198,18 +245,18 @@ public class JsonUtils {
     }
 
 
-    public static void parserCustomersJson(String jsonString) {
+    public static String  parserCustomers(JSONObject resultJson ) {
         try {
-            JSONObject resultJson = new JSONObject(jsonString);
             if (resultJson.has("customer")) {
                 JSONObject customerJson = resultJson.getJSONObject("customer");
                 if (customerJson.has("id")) {
-                    UdeskBaseInfo.customerId = customerJson.getString("id");
+                    return customerJson.getString("id");
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return "";
     }
 
 
@@ -219,73 +266,80 @@ public class JsonUtils {
         SDKIMSetting sdkimSetting = new SDKIMSetting();
         try {
             JSONObject rootJson = new JSONObject(jsonString);
-            if (rootJson != null) {
-                if (rootJson.has("code")) {
-                    sdkimSetting.setCode(rootJson.getInt("code"));
-                }
-                if (rootJson.has("message")) {
-                    sdkimSetting.setMessage(rootJson.get("message"));
-                }
-                if (rootJson.has("result")) {
-                    JSONObject resultJson = new JSONObject(rootJson.getString("result"));
-                    if (resultJson != null) {
-                        if (resultJson.has("enable_im_group")) {
-                            sdkimSetting.setEnable_im_group(resultJson.get("enable_im_group"));
-                        }
-                        if (resultJson.has("in_session")) {
-                            sdkimSetting.setIn_session(resultJson.get("in_session"));
-                        }
-                        if (resultJson.has("is_worktime")) {
-                            sdkimSetting.setIs_worktime(resultJson.get("is_worktime"));
-                        }
-                        if (resultJson.has("has_robot")) {
-                            sdkimSetting.setHas_robot(resultJson.get("has_robot"));
-                        }
-                        if (resultJson.has("enable_robot")) {
-                            sdkimSetting.setEnable_robot(resultJson.get("enable_robot"));
-                        }
-                        if (resultJson.has("enable_sdk_robot")) {
-                            sdkimSetting.setEnable_sdk_robot(resultJson.get("enable_sdk_robot"));
-                        }
-                        if (resultJson.has("enable_agent")) {
-                            sdkimSetting.setEnable_agent(resultJson.get("enable_agent"));
-                        }
-                        if (resultJson.has("enable_web_im_feedback")) {
-                            sdkimSetting.setEnable_web_im_feedback(resultJson.get("enable_web_im_feedback"));
-                        }
-                        if (resultJson.has("no_reply_hint")) {
-                            sdkimSetting.setNo_reply_hint(resultJson.get("no_reply_hint"));
-                        }
-                        if (resultJson.has("investigation_when_leave")) {
-                            sdkimSetting.setInvestigation_when_leave(resultJson.get("investigation_when_leave"));
-                        }
-                        if (resultJson.has("leave_message_type")) {
-                            sdkimSetting.setLeave_message_type(resultJson.get("leave_message_type"));
-                        }
-                        if (resultJson.has("enable_im_survey")) {
-                            sdkimSetting.setEnable_im_survey(resultJson.get("enable_im_survey"));
-                        }
-                        if (resultJson.has("robot")) {
-                            sdkimSetting.setRobot(resultJson.get("robot"));
-                        }
-                        if (resultJson.has("vcall")) {
-                            sdkimSetting.setVcall(resultJson.get("vcall"));
-                        }
-                        if (resultJson.has("vc_app_id")) {
-                            sdkimSetting.setVc_app_id(resultJson.get("vc_app_id"));
-                        }
-                        if (resultJson.has("sdk_vcall")) {
-                            sdkimSetting.setSdk_vcall(resultJson.get("sdk_vcall"));
-                        }
-                        if (resultJson.has("agora_app_id")) {
-                            sdkimSetting.setAgora_app_id(resultJson.get("agora_app_id"));
-                        }
-                        if (resultJson.has("server_url")) {
-                            sdkimSetting.setServer_url(resultJson.get("server_url"));
-                        }
-                        if (resultJson.has("vcall_token_url")) {
-                            sdkimSetting.setVcall_token_url(resultJson.get("vcall_token_url"));
-                        }
+            if (rootJson.has("code")) {
+                sdkimSetting.setCode(rootJson.getInt("code"));
+            }
+            if (rootJson.has("message")) {
+                sdkimSetting.setMessage(rootJson.get("message"));
+            }
+            if (rootJson.has("result")) {
+                JSONObject resultJson = new JSONObject(rootJson.getString("result"));
+                if (resultJson != null) {
+                    if (resultJson.has("enable_im_group")) {
+                        sdkimSetting.setEnable_im_group(resultJson.get("enable_im_group"));
+                    }
+                    if (resultJson.has("in_session")) {
+                        sdkimSetting.setIn_session(resultJson.get("in_session"));
+                    }
+                    if (resultJson.has("is_worktime")) {
+                        sdkimSetting.setIs_worktime(resultJson.get("is_worktime"));
+                    }
+                    if (resultJson.has("has_robot")) {
+                        sdkimSetting.setHas_robot(resultJson.get("has_robot"));
+                    }
+                    if (resultJson.has("enable_robot")) {
+                        sdkimSetting.setEnable_robot(resultJson.get("enable_robot"));
+                    }
+                    if (resultJson.has("enable_sdk_robot")) {
+                        sdkimSetting.setEnable_sdk_robot(resultJson.get("enable_sdk_robot"));
+                    }
+                    if (resultJson.has("enable_agent")) {
+                        sdkimSetting.setEnable_agent(resultJson.get("enable_agent"));
+                    }
+                    if (resultJson.has("enable_web_im_feedback")) {
+                        sdkimSetting.setEnable_web_im_feedback(resultJson.get("enable_web_im_feedback"));
+                    }
+                    if (resultJson.has("no_reply_hint")) {
+                        sdkimSetting.setNo_reply_hint(resultJson.get("no_reply_hint"));
+                    }
+                    if (resultJson.has("investigation_when_leave")) {
+                        sdkimSetting.setInvestigation_when_leave(resultJson.get("investigation_when_leave"));
+                    }
+                    if (resultJson.has("leave_message_type")) {
+                        sdkimSetting.setLeave_message_type(resultJson.get("leave_message_type"));
+                    }
+                    if (resultJson.has("enable_im_survey")) {
+                        sdkimSetting.setEnable_im_survey(resultJson.get("enable_im_survey"));
+                    }
+                    if (resultJson.has("robot")) {
+                        sdkimSetting.setRobot(resultJson.get("robot"));
+                    }
+                    if (resultJson.has("vcall")) {
+                        sdkimSetting.setVcall(resultJson.get("vcall"));
+                    }
+                    if (resultJson.has("vc_app_id")) {
+                        sdkimSetting.setVc_app_id(resultJson.get("vc_app_id"));
+                    }
+                    if (resultJson.has("sdk_vcall")) {
+                        sdkimSetting.setSdk_vcall(resultJson.get("sdk_vcall"));
+                    }
+                    if (resultJson.has("agora_app_id")) {
+                        sdkimSetting.setAgora_app_id(resultJson.get("agora_app_id"));
+                    }
+                    if (resultJson.has("server_url")) {
+                        sdkimSetting.setServer_url(resultJson.get("server_url"));
+                    }
+                    if (resultJson.has("vcall_token_url")) {
+                        sdkimSetting.setVcall_token_url(resultJson.get("vcall_token_url"));
+                    }
+                    if (resultJson.has("im_survey_show_type")) {
+                        sdkimSetting.setIm_survey_show_type(resultJson.opt("im_survey_show_type"));
+                    }
+                    if (resultJson.has("leave_message_guide")){
+                        sdkimSetting.setLeave_message_guide(resultJson.opt("leave_message_guide"));
+                    }
+                    if (resultJson.has("show_robot_times")){
+                        sdkimSetting.setShow_robot_times(resultJson.opt("show_robot_times"));
                     }
                 }
             }
@@ -435,6 +489,13 @@ public class JsonUtils {
                             logMessage.setPlatform(contentJson.opt("platform"));
                             logMessage.setVersion(contentJson.opt("version"));
 
+                            if (contentJson.has("filename")){
+                                logMessage.setFileName(contentJson.opt("filename"));
+                            }
+                            if (contentJson.has("filesize")){
+                                logMessage.setFileSize(contentJson.opt("filesize"));
+                            }
+
                             if (contentJson.has("seq_num")) {
                                 logMessage.setSeq_num(contentJson.opt("seq_num"));
                             }
@@ -450,6 +511,12 @@ public class JsonUtils {
                                 }
                                 if (dataObject.has("duration")) {
                                     logMessage.setDuration(dataObject.opt("duration"));
+                                }
+                                if (dataObject.has("filename")){
+                                    logMessage.setFileName(dataObject.opt("filename"));
+                                }
+                                if (dataObject.has("filesize")){
+                                    logMessage.setFileSize(dataObject.opt("filesize"));
                                 }
                             }
                         }

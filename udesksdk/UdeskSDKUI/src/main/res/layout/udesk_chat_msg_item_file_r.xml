@@ -75,7 +75,7 @@
             android:layout_marginLeft="@dimen/udesk_chat_head_margin"
             android:layout_marginRight="6dp"
             android:layout_marginTop="@dimen/udesk_chat_head_margin"
-            android:background="#f2f2f2"
+            android:background="@color/udesk_color_999999"
             android:orientation="vertical">
 
             <TextView
@@ -87,7 +87,7 @@
                 android:ellipsize="middle"
                 android:gravity="left|center"
                 android:singleLine="true"
-                android:textColor="@color/udesk_edit_input_msg_cololr1"
+                android:textColor="@color/white"
                 android:textSize="@dimen/udesk_sp16" />
 
             <ProgressBar
@@ -102,7 +102,7 @@
                 android:indeterminate="false"
                 android:max="100"
                 android:progress="0"
-                android:progressDrawable="@drawable/progress_drawable" />
+                android:progressDrawable="@drawable/udesk_progress_drawable" />
 
             <RelativeLayout
                 android:layout_width="fill_parent"
@@ -116,7 +116,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="@dimen/udesk_20"
                     android:gravity="left|center"
-                    android:textColor="@color/udesk_edit_input_hint_msg_cololr1"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/udesk_sp16" />
 
                 <TextView
@@ -125,28 +125,13 @@
                     android:layout_height="fill_parent"
                     android:layout_alignParentRight="true"
                     android:gravity="center"
-                    android:textColor="@color/udesk_edit_input_hint_msg_cololr1"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/udesk_sp16" />
 
             </RelativeLayout>
 
         </LinearLayout>
 
-        <!--<TextView-->
-        <!--android:id="@+id/udesk_tv_msg"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="@dimen/udesk_chat_head_margin"-->
-        <!--android:layout_marginLeft="@dimen/udesk_chat_head_margin"-->
-        <!--android:layout_marginRight="6dp"-->
-        <!--android:layout_marginTop="@dimen/udesk_chat_head_margin"-->
-        <!--android:lineSpacingExtra="3dip"-->
-        <!--android:autoLink="all"-->
-        <!--android:background="@drawable/udesk_im_item_bg_right"-->
-        <!--android:gravity="center_vertical"-->
-        <!--android:textColor="@color/udesk_color_im_text_right1"-->
-        <!--android:textColorLink="@color/udesk_color_im_text_right1"-->
-        <!--android:textSize="@dimen/udesk_sp16" />-->
     </TableRow>
 
 </RelativeLayout>

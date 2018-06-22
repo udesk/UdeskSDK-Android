@@ -15,8 +15,12 @@ public interface IChatActivityView {
 	CharSequence getInputContent();
 	
 	void showFailToast(String failMsg);
+
+	void updatePreSessionStatus(String pre_session_id);
+
+	boolean getPressionStatus();
 	
-	void dealAgentInfo(AgentInfo  agentInfo);
+	void dealAgentInfo(AgentInfo agentInfo);
 	
 	void clearInputContent();
 	
@@ -26,20 +30,16 @@ public interface IChatActivityView {
 	void setAgentInfo(AgentInfo agentInfo);
 
 	Handler getHandler();
-	
-	void refreshInputEmjio(String s) ;
-	
-	List<String> getEmotionStringList();
-	
-	void onRecordSuccess(String filePath , long duration);
-	
-	void dealRedirectAgentInfo(AgentInfo  agentInfo);
+
+	void dealRedirectAgentInfo(AgentInfo agentInfo);
 
 	String getGroupId();
 	String getAgentId();
 	void changgeiSSurvyOperate();
-	void setIsPermmitSurvy( boolean isPermmitSurvy);
+	void setIsPermmitSurvy(boolean isPermmitSurvy);
 
 	void initLoadData();
+
+
 
 }

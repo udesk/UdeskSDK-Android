@@ -121,8 +121,22 @@
             android:configChanges="screenSize|orientation|uiMode|keyboardHidden"></activity>
 
         <activity
-            android:name="udesk.sdk.demo.activity.UpdateUserInfoActivity"
-            android:configChanges="screenSize|orientation|uiMode|keyboardHidden"></activity>
+            android:name="udesk.sdk.demo.maps.LocationActivity"
+            android:theme="@style/Udesk_Theme">
+        </activity>
+
+        <activity android:name="udesk.sdk.demo.maps.ShowSelectLocationActivity"
+            android:theme="@style/Udesk_Theme">
+        </activity>
+
+        <activity android:name="udesk.sdk.demo.maps.SearchPositionActivity"
+            android:theme="@style/Udesk_Theme">
+        </activity>
+
+        <!-- 高德地图设置key -->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="a6560c4f309ca27eb1346d7c4a59cecb" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

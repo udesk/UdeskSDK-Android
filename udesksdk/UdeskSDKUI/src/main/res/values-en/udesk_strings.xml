@@ -28,7 +28,6 @@
     <string name="udesk_label_no_sd">SD out of work, please check</string>
 
 
-    <string name="udesk_label_hint_too_short">Too short clicks</string>
     <string name="udesk_im_record_error">Errors of recording, please check your authority of voice record on your application</string>
 
 
@@ -88,4 +87,43 @@
     <string name="udesk_has_bad_net">Network is not good, please checking you network setting!</string>
     <string name="udesk_api_error">Please contact customer service later</string>
     <string name="udesk_error">Please try again later</string>
+
+
+    <string name="press_record">Hold to Talk</string>
+    <string name="udesk_label_hint_recording">Slide up to cancel</string>
+    <string name="release_end">Release to Send</string>
+    <string name="move_up_cancel">Slide up to cancel</string>
+    <string name="release_cancel">Release to cancel</string>
+    <string name="record_to_short">Message too short</string>
+    <string name="funtion_camera">Camera</string>
+    <string name="photo">Album</string>
+    <string name="survy">Satisfaction Rating</string>
+    <string name="file">File</string>
+    <string name="location">Location</string>
+    <string name="video">Video call</string>
+    <string name="service_valuation">Satisfaction Rating</string>
+
+    <string name="summit_remark">Submit Feedback</string>
+    <string name="summit_must_remark">Remarks are required</string>
+
+    <string name="udesk_img_video">Photos</string>
+    <string name="udesk_all_video">Videos</string>
+    <string name="udesk_max_tips">Select a maximum of 9 phots</string>
+    <string name="udesk_photo_pre">Preview</string>
+    <string name="udesk_selector_action_done_photo_pre">Preview(%1$d)</string>
+    <string name="udesk_selector_action_done_photos">Send(%1$d/%2$d)</string>
+    <string name="udesk_selector_photo_index_num">(%1$d/%2$d)</string>
+    <string name="udesk_original_photos">Full Image</string>
+    <string name="udesk_selector_photos">Select</string>
+    <string name="udesk_statify">Satisfied</string>
+    <string name="udesk_common">Neutral</string>
+    <string name="udesk_unstatify">Unsatisfied</string>
+
+    <string name="udesk_remark_must">*  Remarks are required</string>
+    <string name="udesk_rollback_tips">Agent %1$s recalled amessage</string>
+
+    <string name="camera_view_tips">Tap to take phone and hold to record video</string>
+    <string name="udesk_too_short"> Message too short</string>
+    <string name="udesk_audio_permission_error">Allow app to access your microphone</string>
+
 </resources>

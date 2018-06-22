@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:descendantFocusability="blocksDescendants"
+    android:layout_width="fill_parent"
+    android:layout_height="40dp"
+    android:orientation="horizontal"
+    android:visibility="visible">
+
+    <CheckBox
+        android:id="@+id/udesk_check_box"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:background="@drawable/udesk_dlg_select_singlechoice_check_mark_light"
+        android:button="@null"
+        android:clickable="false"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/text_context"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="@dimen/udesk_7"
+        android:gravity="left|center"
+        android:textColor="@color/udesk_color_333333"
+        android:textSize="15sp" />
+
+</LinearLayout>

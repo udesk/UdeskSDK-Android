@@ -13,6 +13,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import okhttp3.Response;
+import udesk.core.UdeskConst;
+import udesk.core.event.InvokeEventContainer;
 import udesk.udesksocket.SigtokenCallBack;
 import udesk.udesksocket.UdeskSocketContants;
 import udesk.udesksocket.MessageManager;
@@ -32,7 +34,7 @@ import udesk.udeskvideo.mode.EventFinish;
 
 public class UdeskVideoCallManager {
 
-    private static volatile UdeskVideoCallManager instance = null;
+    private static volatile UdeskVideoCallManager instance = new UdeskVideoCallManager();
 
     private UdeskWorkerThread mWorkerThread;
 
@@ -44,28 +46,26 @@ public class UdeskVideoCallManager {
     private volatile int reconenctCount = 1;
 
     private UdeskVideoCallManager() {
+        InvokeEventContainer.getInstance().event_OnConnectWebsocket.bind(this, "OnConnectWebsocket");
     }
 
-
     private SurfaceView remoteVideoView;
+
+    public  void  OnConnectWebsocket(Context context){
+        setReconenctCount(1);
+        connectWebsocket(context);
+    }
 
 
     public static UdeskVideoCallManager getInstance() {
 
-        if (instance == null) {
-            synchronized (UdeskVideoCallManager.class) {
-                if (instance == null) {
-                    instance = new UdeskVideoCallManager();
-                }
-            }
-        }
         return instance;
 
     }
 
     //启动线程
     public synchronized void initWorkerThread(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
         if (mWorkerThread == null) {
             mWorkerThread = new UdeskWorkerThread(context);
             mWorkerThread.start();
@@ -105,7 +105,6 @@ public class UdeskVideoCallManager {
 
     public synchronized void reConnectWebSocket() {
 
-        Log.i(UdeskSocketContants.Tag,"reConnectWebSocket reconnectcount =" + reconenctCount);
         if (reconenctCount > 5) {
 //            不在从连击,如果声网没断开，则断开
             EventBus.getDefault().post(new EventFinish());
@@ -143,13 +142,13 @@ public class UdeskVideoCallManager {
     }
 
     public synchronized void connectWebsocket(final Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
 
-        if (UdeskWebsocket.getUdeskWebSocket().getWebSocket() != null && customerJid.equals(UdeskSocketContants.IMCustomerJid)) {
+        if (UdeskWebsocket.getUdeskWebSocket().getWebSocket() != null && customerJid.equals(UdeskConst.IMCustomerJid)) {
             return;
         }
         UdeskWebsocket.getUdeskWebSocket().close();
-        Util.getSignToken(UdeskSocketContants.Subdomain, UdeskSocketContants.vc_app_id, new SigtokenCallBack() {
+        Util.getSignToken(UdeskConst.Subdomain, UdeskConst.vc_app_id, new SigtokenCallBack() {
             @Override
             public void response(String string) {
                 Log.i(UdeskSocketContants.Tag, "getSignToken =" + string);
@@ -162,8 +161,8 @@ public class UdeskVideoCallManager {
                             public void connected() {
                                 MessageManager.getMessageManager().sendPing();
                                 Log.i(UdeskSocketContants.Tag, "Websocket connected");
-                                customerJid = UdeskSocketContants.IMCustomerJid;
-                                MessageManager.getMessageManager().login(UdeskSocketContants.vc_app_id, UdeskSocketContants.IMCustomerJid, sig_token, UdeskSocketContants.State.idle, Util.getUniqueId(context));
+                                customerJid = UdeskConst.IMCustomerJid;
+                                MessageManager.getMessageManager().login(UdeskConst.vc_app_id, UdeskConst.IMCustomerJid, sig_token, UdeskSocketContants.State.idle, Util.getUniqueId(context));
                             }
 
                             @Override
@@ -195,10 +194,11 @@ public class UdeskVideoCallManager {
 
             @Override
             public void failure() {
-                if (reconenctCount>5){
+                Log.i(UdeskSocketContants.Tag, "getSignToken failure");
+                if (reconenctCount > 5) {
                     EventBus.getDefault().post(new EventFinish());
                     FloatActionController.getInstance().stopMonkServer(mContext);
-                }else{
+                } else {
                     reConnectWebSocket();
                 }
             }

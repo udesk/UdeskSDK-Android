@@ -1,17 +1,8 @@
-# UdeskSDK Android 3.9.0+ 开发者文档
+# UdeskSDK Android 4.0.0+ 开发者文档
 
-### 快速接入
-注意导入包UdeskSDKUI后 在你apply plugin: 'com.android.application'的build.gradle文件里加入
- ``` java
-repositories {
-    flatDir {
-        dirs project(':UdeskSDKUI').file('libs')
-    }
-}
- ```
+## 快速接入
  
-------
-   一.初始管理员后台创建应用是生成的对应app key 和 app id
+  ###  一.初始管理员后台创建应用是生成的对应app key 和 app id
    
    ``` java
       UdeskSDKManager.getInstance().initApiKey(context, "you domain","App Key","App Id");
@@ -19,28 +10,220 @@ repositories {
       注意：域名不要带有http://部分，加入注册生成的域名是"http://udesksdk.udesk.cn/" ,只要传入"udesksdk.udesk.cn"
    ```
       
-   二.设置客户的信息。
+   ###  二.设置UdeskConfig配置信息。
    
-  ``` java   
-      Map<String, String> info = new HashMap<String, String>();
-      String sdkToken = "你们识别客户的唯一标识，和我们系统一一映射";
-      info.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdkToken);
-      info.put(UdeskConst.UdeskUserInfo.NICK_NAME, "客户的姓名");
-      UdeskSDKManager.getInstance().setUserInfo(context, sdkToken, info);
-      注意sdktoken是客户的唯一标识，用来识别身份，sdk_token: 你们传入的字符请使用 只包含字母，数字的字符集。
-      
+   **说明：配置的功能根据你们实际的需要进行选择，都有默认行为。 最基本设置用户的基本信息 setDefualtUserInfo**
+  ``` java 
+	 
+	  默认系统字段是Udesk已定义好的字段，开发者可以直接传入这些用户信息，供客服查看。
+      String sdktoken = “用户唯一的标识”; 
+      Map<String, String> info = new HashMap<String, String>();
+      **//sdktoken 必填**
+      info.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdktoken);
+      //以下信息是可选
+      info.put(UdeskConst.UdeskUserInfo.NICK_NAME,"昵称");
+      info.put(UdeskConst.UdeskUserInfo.EMAIL,"0631@163.com");
+      info.put(UdeskConst.UdeskUserInfo.CELLPHONE,"15651818750");
+      info.put(UdeskConst.UdeskUserInfo.DESCRIPTION,"描述信息")
+   
+      只设置用户基本信息的配置
+      UdeskConfig.Builder builder = new UdeskConfig.Builder();
+	  builder.setDefualtUserInfo(info)
+	  UdeskSDKManager.getInstance().entryChat(getApplicationContext(), builder.build(), sdkToken);
+
+ ```
+ 
+**默认客户字段说明**
+
+| key           | 是否必选   | 说明         |
+| ------------- | ------ | ---------- |
+| **sdk_token** | **必选** | **用户唯一标识** |
+| cellphone     | 可选     | 用户手机号      |
+| email         | 可选     | 邮箱账号       |
+| description   | 可选     | 用户描述       |
+  
+  
+  
+  
+**UdeskConfig内部类Builder的说明**
+
+
+| 属性           | 设置方法   | 功能说明         |
+| ------------- | ------ | ---------- |
+| udeskTitlebarBgResId        | setUdeskTitlebarBgResId       | 标题栏TitleBar的背景色,通过颜色设置   |
+| udeskTitlebarTextLeftRightResId        | setUdeskTitlebarTextLeftRightResId                         | 标题栏TitleBar，左右两侧文字的颜色                               |
+| udeskIMLeftTextColorResId              | setUdeskIMLeftTextColorResId                               | IM界面，左侧文字的字体颜色                                       |
+| udeskIMRightTextColorResId             | setUdeskIMRightTextColorResId                              | IM界面，右侧文字的字体颜色                                       |
+| udeskIMAgentNickNameColorResId         | setUdeskIMAgentNickNameColorResId                          | IM界面，左侧客服昵称文字的字体颜色                               |
+| udeskIMTimeTextColorResId              | setUdeskIMTimeTextColorResId                               | IM界面，时间文字的字体颜色                                       |
+| udeskIMTipTextColorResId               | setUdeskIMTipTextColorResId                                | IM界面，提示语文字的字体颜色，比如客服转移                       |
+| udeskbackArrowIconResId                | setUdeskbackArrowIconResId                                 | 返回箭头图标资源id                                               |
+| udeskCommityBgResId                    | setUdeskCommityBgResId                                     | 咨询商品item的背景颜色                                           |
+| udeskCommityTitleColorResId            | setUdeskCommityTitleColorResId                             | 商品介绍Title的字样颜色                                          |
+| udeskCommitysubtitleColorResId         | setUdeskCommitysubtitleColorResId                          | 商品咨询页面中，商品介绍子Title的字样颜色                        |
+| udeskCommityLinkColorResId             | setUdeskCommityLinkColorResId                              | 商品咨询页面中，发送链接的字样颜色                               |
+| isUserSDkPush                          | setUserSDkPush                                             | 配置 是否使用推送服务  true 表示使用  false表示不使用            |
+| UdeskQuenuMode                         | setUdeskQuenuMode                                          | 配置放弃排队的策略                                               |
+| isUseVoice                             | setUseVoice                                                | 是否使用录音功能  true表示使用 false表示不使用                   | 
+| isUsephoto                             | setUsephoto                                                | 是否使用发送图片的功能  true表示使用 false表示不使用             | 
+| isUsecamera                            | setUsecamera                                               | 是否使用拍照的功能  true表示使用 false表示不使用                 |      
+| isUsefile                              | setUsefile                                                 | 是否使用上传文件功能  true表示使用 false表示不使用               |  
+| isUsefile                              | setUseMap                                                  | 是否使用发送位置功能  true表示使用 false表示不使用               |  
+| isUseEmotion                           | setUseEmotion                                              | 是否使用表情 true表示使用 false表示不使用                        |  
+| isUseMore                              | setUseMore                                                 | 否使用展示出更多功能选项 true表示使用 false表示不使用            |  
+| isUseSmallVideo                        | setUseSmallVideo                                           | 设置是否需要小视频的功能 rue表示使用 false表示不使用             |  
+| ScaleMax                               | setScaleImg                                                | 上传图片是否使用原图 还是缩率图                                  |  
+| isScaleImg                             | setScaleMax                                                | 设置宽高最大值，如果超出则压缩，否则不压缩                       |  
+| Orientation                            | setOrientation                                             | 设置默认屏幕显示习惯                                             |  
+| isUserForm                             | setUserForm                                                | 本地配置是否需要表单留言，true需要， false 不需要                |  
+| defualtUserInfo                        | setDefualtUserInfo                                         | 创建用户的基本信息                                               |  
+| definedUserTextField                   | setDefinedUserTextField                                    | 创建自定义的文本信息                                             |
+| definedUserRoplist                     | setDefinedUserRoplist                                      | 创建自定义的列表信息                                             |    
+| updateDefualtUserInfo                  | setUpdateDefualtUserInfo                                   | 用户需要更新的基本信息                                           |  
+| updatedefinedUserTextField             | setUpdatedefinedUserTextField                              | 用户需要更新自定义字段文本信息                                   |  
+| updatedefinedUserRoplist               | setUpdatedefinedUserRoplist                                | 用户需要更新自定义列表字段信息                                   |  
+| firstMessage                           | setFirstMessage                                            | 设置带入一条消息  会话分配就发送给客服                           |  
+| robot_modelKey                         | setRobot_modelKey                                          |  udesk 机器人配置欢迎语 对应的Id值                               |  
+| concatRobotUrlWithCustomerInfo         | setConcatRobotUrlWithCustomerInfo                          |  用于机器人页面收集客户信息                                      |  
+| customerUrl                            | setCustomerUrl                                             |  设置客户的头像地址                                              |    
+| commodity                              | setCommodity                                               |  配置发送商品链接的mode                                          |  
+| txtMessageClick                        | setTxtMessageClick                                         | 文本消息中的链接消息的点击事件的拦截回调。 包含表情的不会拦截回调 |  
+| formCallBack                           | setFormCallBack                                            | 离线留言表单的回调接口 ，回调使用自己的处理流程                   |  
+| structMessageCallBack                  | setStructMessageCallBack                                   | 设置结构化消息的点击事件回调接口                                  |  
+| extreFunctions                         | setExtreFunctions                                          | 设置额外的功能按钮                                               |  
+| functionItemClickCallBack              | setExtreFunctions                                          | 点击事件回调 直接发送文本,图片,视频,文件,地理位置,商品信息        |  
+| isUseNavigationRootView                | setNavigations                                             | 设置是否使用导航UI true表示使用 false表示不使用                   |  
+| navigationModes                        | setNavigations                                             | 约定传递的自定义按钮集合                                          |  
+| navigationItemClickCallBack            | setNavigations                                             | 支持客户在导航处添加自定义按钮的点击回调事件                      | 
+| isUseNavigationSurvy                   | setUseNavigationSurvy                                      | 设置是否使用导航UI中的满意度评价UI rue表示使用 false表示不使用    | 
+| useMapType                             | setUseMapSetting                                           | 设置使用那种地图                                                 | 
+| locationMessageClickCallBack           | setUseMapSetting                                           | 点击地理位置信息的回调接口                                       | 
+| cls                                    | setUseMapSetting                                           | 传入打开地图消息显示的详请activity                               | 
+| groupId                                | setGroupId                                                 | 设置的指定组，每次进入都必须重新指定                             | 
+| isOnlyByGroupId                        | setGroupId                                                 | 是否仅仅指定组进入                                               | 
+| agentId                                | setAgentId                                                 | 设置指订客服id，每次进入都必须重新指定                           | 
+| isOnlyByAgentId                        | setAgentId                                                 | 是否仅仅指定客服进入                                              | 
+| isOnlyUseRobot                         | setOnlyUseRobot                                            | 设置是否只使用机器人 不用其它功能                                 | 
+| locale                                | setLocale                                                   | 设置本地化语言                    | 
+
+
+
+**一个完整的参考例子**
+   ``` java 
+
+   private UdeskConfig.Builder makeBuilder() {
+        UdeskConfig.Builder builder = new UdeskConfig.Builder();
+        builder.setUdeskTitlebarBgResId(R.color.udesk_titlebar_bg1) //设置标题栏TitleBar的背景色
+                .setUdeskTitlebarTextLeftRightResId(R.color.udesk_color_navi_text1) //设置标题栏TitleBar，左右两侧文字的颜色
+                .setUdeskIMLeftTextColorResId(R.color.udesk_color_im_text_left1) //设置IM界面，左侧文字的字体颜色
+                .setUdeskIMRightTextColorResId(R.color.udesk_color_im_text_right1) // 设置IM界面，右侧文字的字体颜色
+                .setUdeskIMAgentNickNameColorResId(R.color.udesk_color_im_left_nickname1) //设置IM界面，左侧客服昵称文字的字体颜色
+                .setUdeskIMTimeTextColorResId(R.color.udesk_color_im_time_text1) // 设置IM界面，时间文字的字体颜色
+                .setUdeskIMTipTextColorResId(R.color.udesk_color_im_tip_text1) //设置IM界面，提示语文字的字体颜色，比如客服转移
+                .setUdeskbackArrowIconResId(R.drawable.udesk_titlebar_back) // 设置返回箭头图标资源id
+                .setUdeskCommityBgResId(R.color.udesk_color_im_commondity_bg1) //咨询商品item的背景颜色
+                .setUdeskCommityTitleColorResId(R.color.udesk_color_im_commondity_title1) // 商品介绍Title的字样颜色
+                .setUdeskCommitysubtitleColorResId(R.color.udesk_color_im_commondity_subtitle1)// 商品咨询页面中，商品介绍子Title的字样颜色
+                .setUdeskCommityLinkColorResId(R.color.udesk_color_im_commondity_link1) //商品咨询页面中，发送链接的字样颜色
+                .setUserSDkPush(set_sdkpush.isChecked()) // 配置 是否使用推送服务  true 表示使用  false表示不使用
+                .setOnlyUseRobot(set_use_onlyrobot.isChecked())//配置是否只使用机器人功能 只使用机器人功能,只使用机器人功能;  其它功能不使用。
+                .setUdeskQuenuMode(force_quit.isChecked() ? UdeskConfig.UdeskQuenuFlag.FORCE_QUIT : UdeskConfig.UdeskQuenuFlag.Mark)  //  配置放弃排队的策略
+                .setUseVoice(set_usevoice.isChecked()) // 是否使用录音功能  true表示使用 false表示不使用
+                .setUsephoto(set_usephoto.isChecked()) //是否使用发送图片的功能  true表示使用 false表示不使用
+                .setUsecamera(set_usecamera.isChecked()) //是否使用拍照的功能  true表示使用 false表示不使用
+                .setUsefile(set_usefile.isChecked()) //是否使用上传文件功能  true表示使用 false表示不使用
+                .setUseMap(set_usemap.isChecked()) //是否使用发送位置功能  true表示使用 false表示不使用
+                .setUseMapSetting(UdeskConfig.UdeskMapType.GaoDe, LocationActivity.class, new ILocationMessageClickCallBack() {
+                    @Override
+                    public void luanchMap(Context context, double latitude, double longitude, String selctLoactionValue) {
+                        Intent intent = new Intent();
+                        intent.putExtra(UdeskConfig.UdeskMapIntentName.Position, selctLoactionValue);
+                        intent.putExtra(UdeskConfig.UdeskMapIntentName.Latitude, latitude);
+                        intent.putExtra(UdeskConfig.UdeskMapIntentName.Longitude, longitude);
+                        intent.setClass(context, ShowSelectLocationActivity.class);
+                        context.startActivity(intent);
+                    }
+                })
+                .setUseEmotion(set_useemotion.isChecked()) //是否使用表情 true表示使用 false表示不使用
+                .setUseMore(set_usemore.isChecked()) // 是否使用更多控件 展示出更多功能选项 true表示使用 false表示不使用
+                .setUseNavigationSurvy(set_use_navigation_survy.isChecked()) //设置是否使用导航UI中的满意度评价UI rue表示使用 false表示不使用
+                .setUseSmallVideo(set_use_smallvideo.isChecked())  //设置是否需要小视频的功能 rue表示使用 false表示不使用
+                .setScaleImg(set_use_isscaleimg.isChecked()) //上传图片是否使用原图 还是缩率图
+                .setScaleMax(1024) // 缩放图 设置最大值，如果超出则压缩，否则不压缩
+                .setOrientation(landscape.isChecked() ? UdeskConfig.OrientationValue.landscape :
+                        (user.isChecked() ? UdeskConfig.OrientationValue.user : UdeskConfig.OrientationValue.portrait)) //设置默认屏幕显示习惯
+                .setUserForm(true) //在没有请求到管理员在后端对sdk使用配置下，在默认的情况下，是否需要表单留言，true需要， false 不需要
+                .setDefualtUserInfo(getDefualtUserInfo()) // 创建用户基本信息
+                .setDefinedUserTextField(getDefinedUserTextField()) //创建用户自定义的文本信息
+                .setDefinedUserRoplist(getDefinedUserRoplist()) //创建用户自定义的列表信息
+                .setUpdateDefualtUserInfo(getUpdateDefualtUserInfo()) // 设置更新用户的基本信息
+                .setUpdatedefinedUserTextField(getUpdateDefinedTextField()) //设置用户更新自定义字段文本信息
+                .setUpdatedefinedUserRoplist(getUpdateDefinedRoplist()) //设置用户更新自定义列表字段信息
+                .setFirstMessage(firstMessage.getText().toString()) //设置带入一条消息  会话分配就发送给客服
+                .setCustomerUrl(customerUrl.getText().toString()) //设置客户的头像地址
+                .setRobot_modelKey(robot_modelKey.getText().toString()) // udesk 机器人配置插件 对应的Id值
+                .setConcatRobotUrlWithCustomerInfo(robpt_customer_info.getText().toString())
+                .setCommodity(set_use_commodity.isChecked() ? createCommodity() : null)//配置发送商品链接的mode
+                .setExtreFunctions(getExtraFunctions(), new IFunctionItemClickCallBack() {
+                    @Override
+                    public void callBack(Context context, ChatActivityPresenter mPresenter, int id, String name) {
+
+                        if (id == 21) {
+                            UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
+                            mPresenter.sendTxtMessage("打开帮助中心");
+                        } else if (id == 22) {
+                            mPresenter.sendTxtMessage("打开表单留言");
+                            UdeskSDKManager.getInstance().goToForm(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
+                        }
+                    }
+                })//在more 展开面板中设置额外的功能按钮
+                .setNavigations(set_use_navigation_view.isChecked(), getNavigations(), new INavigationItemClickCallBack() {
+                    @Override
+                    public void callBack(Context context, ChatActivityPresenter mPresenter, NavigationMode navigationMode) {
+                        if (navigationMode.getId() == 1) {
+                            UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
+                        } else if (navigationMode.getId() == 2) {
+                            mPresenter.sendTxtMessage(UUID.randomUUID().toString());
+                            mPresenter.sendTxtMessage("www.baidu.com");
+                        }
+                    }
+                })//设置是否使用导航UI rue表示使用 false表示不使用
+                .setTxtMessageClick(new ITxtMessageWebonCliclk() {
+                    @Override
+                    public void txtMsgOnclick(String url) {
+                        Toast.makeText(getApplicationContext(), "对文本消息中的链接消息处理设置回调", Toast.LENGTH_SHORT).show();
+                    }
+                })   //如果需要对文本消息中的链接消息处理可以设置该回调，点击事件的拦截回调。 包含表情的不会拦截回调。
+                .setFormCallBack(new IUdeskFormCallBack() {
+                    @Override
+                    public void toLuachForm(Context context) {
+                        Toast.makeText(getApplicationContext(), "不用udesk系统提供的留言功能", Toast.LENGTH_SHORT).show();
+                    }
+                })//离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
+                .setStructMessageCallBack(new IUdeskStructMessageCallBack() {
+
+                    @Override
+                    public void structMsgCallBack(Context context, String josnValue) {
+                        Toast.makeText(getApplicationContext(), "结构化消息控件点击事件回调", Toast.LENGTH_SHORT).show();
+                    }
+                })//设置结构化消息控件点击事件回调接口.
+        ;
+
+        return builder;
+    }
+
   ```    
      
-  三. 进入页面分配会话
-  
+### 三. 进入页面分配会话
+
 ``` java
     
-      UdeskSDKManager.getInstance().entryChat(context);
-	  注意：只有通过这个方法进入会话,管理员在后台配置的选项才会生效, 其它方式进入会话,配置不会生效。 
+  UdeskSDKManager.getInstance().entryChat(getApplicationContext(), makeBuilder().build(), sdkToken);
+  注意：只有通过这个方法进入会话,管理员在后台配置的选项才会生效, 其它方式进入会话,配置不会生效。 
       
 ``` 
 
-四. Proguard
+### 四. Proguard
   
 ``` java
 //udesk
@@ -107,7 +290,7 @@ repositories {
 -keep class io.agora.**{*;}
 
 ```
-  五：  如果需要设置咨询对象，参照如下设置：
+ ### 五：  如果需要设置咨询对象，参照如下设置：
   ``` java
       UdeskCommodityItem item = new UdeskCommodityItem();
         item.setTitle("木林森男鞋新款2016夏季透气网鞋男士休闲鞋网面韩版懒人蹬潮鞋子");// 商品主标题
@@ -118,69 +301,35 @@ repositories {
        在进入会话界面前调用 。
   ```
   
-  六： 如果需要设置客户头像，参照如下：
-  ``` java
-     UdeskSDKManager.getInstance().setCustomerUrl(url);
-  ```
-  
-  更多功参考demo。
+  **更多功参考demo。**
   
  
-------
 
 
-### SDK中较常见配置项说明
-------
 
- 一. IM中聊天功能选项的使用的配置开关说明:
- 
-     配置开关在UdeskConfig类中：
+## SDK中功能项说明
+
+
+ ### 一:设置自定义表情的说明：
+     
+	1，自定义表情必须在assets下建立udeskemotion目录，当程序启动时，会自动将assets的udeskemotion目录下所有的贴图复制到贴图的存放位置；
+	2，udeskemotion目录下必须是 一个tab图标+一个贴图文件夹，两者必须同名 
+	具体参考demo
+   
 	 
-    //配置 是否使用推送服务  true 表示使用  false表示不使用
-    public static boolean isUserSDkPush = true;
-
-    //配置放弃排队的策略
-    public static String UdeskQuenuMode = UdeskQuenuFlag.Mark;
-
-    //配置开启留言时的    留言表单留言提示语
-    public static String UdeskLeavingMsg = "";
-
-    //配置是否把domain 和 appid 和 appkey 和 sdktoken 存在sharePrefence中， true保存，false 不存
-    public static boolean isUseShare = true;
-
-    //是否使用录音功能  true表示使用 false表示不使用
-    public static boolean isUseVoice = true;
-
-    //是否使用发送图片的功能  true表示使用 false表示不使用
-    public static boolean isUsephoto = true;
-
-    //是否使用拍照的功能  true表示使用 false表示不使用
-    public static boolean isUsecamera = true;
-
-    //是否使用上传MP4视频文件功能  true表示使用 false表示不使用
-    public static boolean isUsefile = true;
-
-    //是否使用发送位置功能  true表示使用 false表示不使用
-    public static boolean isUseMap = false;
-
-    //配置接入使用的地图类型
-    public static String useMapType = UdeskMapType.Other;
-	
-	//在没有请求到管理员在后端对sdk使用配置下，在默认的情况下，是否需要表单留言，true需要， false 不需要
-    public static boolean isUserForm = false;
-	 
- 二. IM中聊天功能 如果场景需要进入会话界面,先配置一条消息发送给客服可以如下:
+ ### 二. IM中聊天功能 如果场景需要进入会话界面,先配置一条消息发送给客服可以如下:
       每次进入会话界面前，调用如下方法传值：
+``` java
       UdeskSDKManager.getInstance().setFirstMessage(String message);
+  ```
 	
- 三. IM中聊天功能 集成发送地理位置的信息说明:
+ ### 三. IM中聊天功能 集成发送地理位置的信息说明:
      
 	 android 接入的第三方选择性比较多等原因，没有直接在SDK中内嵌地图SDK，由客户根据实际需要选择是否集成发送地理位置信息。
 	 提供集成地图的demo例子有：百度地图（见baidumapdemo 这个module），高德地图（gaodemapdemo）腾讯地图（tenxunmapdemo）
 	 
-	 集成发送地理位置信息步骤：
-	 1.初始配置 
-	 UdeskConfig.isUseMap = true;
+	 
+	 1.地图类型的说明
 	 百度地图设置
      UdeskConfig.useMapType = UdeskConfig.UdeskMapType.BaiDu; 
 	 高德地图设置
@@ -189,25 +338,12 @@ repositories {
 	 UdeskConfig.useMapType = UdeskConfig.UdeskMapType.Tencent;
 	 其它地图设置
 	 UdeskConfig.useMapType = UdeskConfig.UdeskMapType.Other;
-	 
-	 2.设置地理位置点击事件的回调：
-	 UdeskSDKManager.getInstance().setLocationMessageClickCallBack(new UdeskSDKManager.ILocationMessageClickCallBack() {
-                        @Override
-                        public void luanchMap(Context context, double latitude, double longitude, String selctLoactionValue) {
-                        
-                        }
-                    });
-	  说明：回调返回发送地理位置信息的经纬度和选择的位置信息， 由客户根据需要实现对应的跳转界面。
-	  
-	  3.需要设置选择地图位置的activity，供UdeskSDK，点击发送地理位置时调用
-	  举例是：LocationActivity，以下用LocationActivity进行说明:
-	  UdeskSDKManager.getInstance().setCls(LocationActivity.class);
-	  
-	  说明：UdeskChatActivity是通过startActivityForResult方式进入LocationActivity,在之后选择相应信息回传到UdeskChatActivity，是通过Intent方式。
+	   
+	UdeskChatActivity是通过startActivityForResult方式进入LocationActivity,在之后选择相应信息回传到UdeskChatActivity，是通过Intent方式。
 	        对intent.putExtra中的name做了约定，的遵守才能有效显示地理位置信息。
 			
-		具体约定：	
-	   public static class UdeskMapIntentName {
+		  具体约定：	
+	      public static class UdeskMapIntentName {
           //选中的位置
           public static final String Position = "udesk_position";
 
@@ -222,28 +358,109 @@ repositories {
        }
 	   
 	   具体的例子如deom提供的代码片段
-	      mMap.getScreenShot(new TencentMap.OnScreenShotListener() {
+	     ``` java
+		
+	    .setUseMap(set_usemap.isChecked()) //是否使用发送位置功能  true表示使用 false表示不使用
+                .setUseMapSetting(UdeskConfig.UdeskMapType.GaoDe, LocationActivity.class, new ILocationMessageClickCallBack() {
                     @Override
-                    public void onMapScreenShot(Bitmap bitmap) {
-                        saveBitmap(bitmap);
+                    public void luanchMap(Context context, double latitude, double longitude, String selctLoactionValue) {
                         Intent intent = new Intent();
-                        intent.putExtra(UdeskConfig.UdeskMapIntentName.Position, mPoiItem.title);
-                        intent.putExtra(UdeskConfig.UdeskMapIntentName.Latitude, (double) mPoiItem.location.lat);
-                        intent.putExtra(UdeskConfig.UdeskMapIntentName.Longitude, (double) mPoiItem.location.lng);
-                        intent.putExtra(UdeskConfig.UdeskMapIntentName.BitmapDIR, bitmapdir);
-                        setResult(RESULT_OK, intent);
-                        LocationActivity.this.finish();
+                        intent.putExtra(UdeskConfig.UdeskMapIntentName.Position, selctLoactionValue);
+                        intent.putExtra(UdeskConfig.UdeskMapIntentName.Latitude, latitude);
+                        intent.putExtra(UdeskConfig.UdeskMapIntentName.Longitude, longitude);
+                        intent.setClass(context, ShowSelectLocationActivity.class);
+                        context.startActivity(intent);
                     }
-                });
+                })
+        ``` 
+### 四. IM 使用视频功能:
 
-四. IM 使用视频功能:
-    注意：需要使用视频功能，一定需要使用UdeskSDKUI IM中功能 ,但可以单独使用UdeskSDKUI功能  
-	在你的app中 在依赖udeskvideo 模块。
-    
-------
+    **注意：需要使用视频功能，一定需要使用UdeskSDKUI IM中功能 ,但可以单独使用UdeskSDKUI功能  
+	在你的app中 在依赖udeskvideo 模块。**
 
-### 常见问题
-------
+### 五. 支持自定义设置 功能按钮  具体可参考demo
+
+      demo中的代码片断
+	   ``` java
+      .setExtreFunctions(getExtraFunctions(), new IFunctionItemClickCallBack() {
+                    @Override
+                    public void callBack(Context context, ChatActivityPresenter mPresenter, int id, String name) {
+
+                        if (id == 21) {
+                            mPresenter.sendTxtMessage("发送一条消息");
+                        } else if (id == 22) {
+                            mPresenter.sendTxtMessage("打开表单留言");
+                            UdeskSDKManager.getInstance().goToForm(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
+                        }
+                    }
+                })//在more 展开面板中设置额外的功能按钮
+		
+	   说明：一个功能按钮设置成一个FunctionMode， 包含属性
+	        //显示内容
+             private String name;
+            //用来映射选择后对应的操作 id值 前20 是udesk 预留的,  客户自定义添加的，用于返回后根据id值建立映射关系
+            private int id;
+            //如 R.drawable.udesk_001
+            //显示的图标
+            private int mIconSrc ;
+		
+
+       提供的自定义后续功能操作 ：直接发送文本,图片,视频,文件,地理位置,商品信息		
+	   根据接口回调返回的 参数进行调用方法操作 ChatActivityPresenter mPresenter
+	   
+	        1.发送文本消息
+		   public void sendTxtMessage(String msgString)
+		   mPresenter.sendTxtMessage( msgString)
+			2.发送图片消息 
+		   public void sendBitmapMessage(Bitmap bitmap)
+		   mPresenter.sendBitmapMessage(bitmap)
+			3.发送文件类的消息( 包含视频 文件 图片)
+		  /**
+			* @param filepath
+			* @param msgType  图片:UdeskConst.ChatMsgTypeString.TYPE_IMAGE
+			*                 文件:UdeskConst.ChatMsgTypeString.TYPE_File
+			*                 MP4视频: UdeskConst.ChatMsgTypeString.TYPE_VIDEO
+			*/
+		  public void sendFileMessage(String filepath, String msgType)
+			 
+		  mPresenter.sendFileMessage(filepath,UdeskConst.ChatMsgTypeString.TYPE_IMAGE)
+		  mPresenter.sendFileMessage(filepath,UdeskConst.ChatMsgTypeString.TYPE_File)
+		  mPresenter.sendFileMessage(filepath,UdeskConst.ChatMsgTypeString.TYPE_VIDEO)
+			 
+			4.发送地理位置信息
+		   public void sendLocationMessage(double lat, double longitude, String localvalue, String bitmapDir)
+			  
+		   mPresenter.sendLocationMessage(lat, longitude, localvalue, bitmapDir)
+			5.发送录音信息
+		   public void sendRecordAudioMsg(String audiopath, long duration)
+		   mPresenter.sendRecordAudioMsg(audiopath,duration)
+	 ``` 
+### 六. 支持自定义导航栏设置 具体可参考demo
+		代码片断
+		 ``` java
+		.setNavigations(set_use_navigation_view.isChecked(), getNavigations(), new INavigationItemClickCallBack() {
+                    @Override
+                    public void callBack(Context context, ChatActivityPresenter mPresenter, NavigationMode navigationMode) {
+                        if (navigationMode.getId() == 1) {
+                            UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
+                        } else if (navigationMode.getId() == 2) {
+                            mPresenter.sendTxtMessage(UUID.randomUUID().toString());
+                            mPresenter.sendTxtMessage("www.baidu.com");
+                        }
+                    }
+                })
+		  ``` 
+ 说明：导航栏一个功能按钮设置成一个NavigationMode， 包含属性
+        //文字的显示内容
+      private String name;
+      //用来映射选择后对应的操作
+      private int id;
+	  
+支持自定义的功能 同 功能按钮
+  
+	
+## 常见问题
+
 ``` java
    1. 指定客服组或者客服分配出现与指定客服组客服不一致的情况？
    
@@ -278,29 +495,9 @@ repositories {
    
    有问题直接加QQ：1979305929
 ``` 
-------
-## 一、SDK工作流程图
-Udesk-SDK的工作流程如下图所示。
 
-![alt text](indeximg/android-new-liuchen.png)
-## 二、下载和集成SDK
 
-#### 2.1下载Udesk SDK
-
-#### 2.2集成到AndroidStudio
-
-2.2.1解压后文件介绍
-
-| SDK 中的文件          | 说明                                       |
-| ----------------- | ---------------------------------------- |
-| udeskNewDemo      | UdeskSDKUI module使用的例子              |
-| gaodemapdemo      | gaodemapdemo 使用高德地图的例子          | 
-| tenxunmapdemo     | tenxunmapdemo 使用腾讯地图的例子         |
-| baidumapdemo      | baidumapdemo 使用百度地图的例子          |
-| UdeskSDKUI        | 核心IM功能                               |
-| udeskvideo        | 视频功能的模块                           |
-
-2.2.2导入集成
+## 导入集成
 
 你所要做的是把UdeskSDKUI做为独立的module import, 并在你APP build.gradle文件中加入：
 
@@ -308,110 +505,9 @@ Udesk-SDK的工作流程如下图所示。
 dependencies {
     compile project(':UdeskSDKUI')
 }
+
 ```
-### 注意[eclipse] [1]目录地址如下：
- https://github.com/udesk/udesk_sdk_android_eclipse      
-
- webview方式接入的参考demo目录地址：
- https://github.com/udesk/udesk_android_sdk_h5
-## 三、快速集成SDK
-
-### 3.1初始化
-
-获取appid 和 密钥的方式，见如下图：
-
-![udesk](http://7xr0de.com1.z0.glb.clouddn.com/initUdesk.png)
-使用公司域名和密钥 和 appid 初始化SDK
-
-``` java
-UdeskSDKManager.getInstance().initApiKey(context, "You domain","You key","You appid") 
-
-注意：域名不要带有http://部分，加入注册生成的域名是"http://udesksdk.udesk.cn/" ,只要传入"udesksdk.udesk.cn"
-```
-
-### 3.2初始化客户信息
-
-注意：若要在SDK中使用 客户自定义字段 需先在管理员网页端设置添加用户自定义字字段。 
-
-默认系统字段是Udesk已定义好的字段，开发者可以直接传入这些用户信息，供客服查看。
-
-``` java
-String sdktoken = “用户唯一的标识”; 
-Map<String, String> info = new HashMap<String, String>();
-//sdktoken 必填
-info.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdktoken);
-//以下信息是可选
-info.put(UdeskConst.UdeskUserInfo.NICK_NAME,"昵称");
-info.put(UdeskConst.UdeskUserInfo.EMAIL,"0631@163.com");
-info.put(UdeskConst.UdeskUserInfo.CELLPHONE,"15651818750");
-info.put(UdeskConst.UdeskUserInfo.DESCRIPTION,"描述信息")
-UdeskSDKManager.getInstance().setUserInfo(this, sdktoken, info);
-```
-默认客户字段说明
-
-| key           | 是否必选   | 说明         |
-| ------------- | ------ | ---------- |
-| **sdk_token** | **必选** | **用户唯一标识** |
-| cellphone     | 可选     | 用户手机号      |
-| email         | 可选     | 邮箱账号       |
-| description   | 可选     | 用户描述       |
-
-##### 3.2.1添加用户自定义字段 
-用管理员账号登录后台，在[管理中心-用户字段]中添加自定义字段。
-![udesk](http://7xr0de.com1.z0.glb.clouddn.com/custom.jpeg)
-#####3.2.2获取自定义字段信息
-``` java
-UdeskHttpFacade.getInstance().getUserFields(UDESK_DOMAIN, "you App key", "you App Id",new UdeskCallBack(){
-
-	@Override
-	public void onSuccess(String message) {
-		
-	}
-
-	@Override
-	public void onFail(String message) {
-
-	}
-});
-```
-##### 3.2.3给自定义字段赋值
-用户自定义字段共有两类：文本型字段和选择型字段。 
-文本型字段示例：
-``` java
-{
-      "field_name": "TextField_684",
-      "field_label": "地址",
-      "content_type": "text",
-      "comment": "字段描述",
-      "options": null,
-      "permission": 0,
-      "requirment": false
-}
-取该json中字段“field_name”对应的value值作为自定义字段key值进行赋值。 示例如下：
-textFieldMap.put("TextField_684","北京西城区");
-```
-选择型字段示例：
-``` java
-{
-    "field_name": "SelectField_457", 
-    "permission": 0, 
-    "comment": "这是描述", 
-    "requirment": true, 
-    "content_type": "droplist", 
-    "field_label": "性别", 
-    "options": [
-        {
-            "0": "男"
-        }, 
-        {
-            "1": "女"
-        }
-    ]
-}  
-取该json中字段“field_name”对应的value值作为自定义字段key值进行赋值,取"options"中的某一项key值作为value，示例如下：
-roplistMap.put("SelectField_457","1");
-```
-##### 3.2.4初始化客户逻辑
+### 初始化客户逻辑
 
 ``` java
 1使用主键 sdk_token email cellphone 依次查找用户,找到转1.1
@@ -432,30 +528,22 @@ roplistMap.put("SelectField_457","1");
 ```
 **注意sdktoken** 是客户的唯一标识，用来识别身份，**sdk_token: 传入的字符请使用 字母 / 数字 字符集**  。就如同身份证一样，不允许出现一个身份证号对应多个人，或者一个人有多个身份证号;**其次**如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客。  **完成了以上操作，接下来就可以使用UdeskSDK的其它功能了，祝你好运！**
 
-#### 3.3启动对话界面
 
-逻辑：
-   1 上次会话存在，直接进入会话；上次会话不存在，判断是否开启机器人，开启则进入机器人界面。没开启，则判断是否启动导航页，启动则通过导航页进入会话，没开启，则直接进入会话。
-   2  机器人中 转人工，也会判断是否开启导航页，没开启，则判断是否启动导航页，启动则通过导航页进入会话，没开启，则直接进入会话。
-   
-```java
- UdeskSDKManager.getInstance().entryChat(this);
-```
-
-
-#### 3.4启动帮助中心界面
+### 3.1启动帮助中心界面
 
 Udek系统帮助中心后台可以创建帮助文档，客户通过帮助中心可查看相关文档。调用以下接口启动帮助中心界面
 
 ```java
-UdeskSDKManager.getInstance().toLanuchHelperAcitivty(this);
+UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
 ```
 
-# 四、Udesk SDK API说明
+## 四、Udesk SDK API说明
 
-#### 4.1更新客户信息
+ ### 4.1更新客户信息
 
-4.1.1更新系统默认客户字段，昵称、邮箱、电话、描述
+  UdeskConfig.Builder builder = new UdeskConfig.Builder();
+
+   4.1.1更新系统默认客户字段，昵称、邮箱、电话、描述
 
 ```java
 Map<String, String> info = new HashMap<String, String>();
@@ -467,11 +555,11 @@ info.put(UdeskConst.UdeskUserInfo.CELLPHONE,"15651818750");
 info.put(UdeskConst.UdeskUserInfo.DESCRIPTION,"更新后的描述信息")
 
 //传入需要更新的Udesk系统默认字段
-UdeskSDKManager.getInstance().setUpdateUserinfo(info);
-注意更新邮箱或者手机号码，如果在后端有同样的手机号或邮箱，则会更新失败        
+注意更新邮箱或者手机号码，如果在后端有同样的手机号或邮箱，则会更新失败     
+builder.setUpdateDefualtUserInfo(info)   
 ```
 
-4.1.2更新自定义字段
+### 4.1.2更新自定义字段
 
 文本型字段示例：
 
@@ -489,7 +577,7 @@ UdeskSDKManager.getInstance().setUpdateUserinfo(info);
 updateTextFieldMap.put("TextField_684","北京西城区");
 
 //传入需要更新的自定义文本字段
- UdeskSDKManager.getInstance().setUpdateTextField(updateTextFieldMap);
+ builder.setUpdatedefinedUserTextField(updateTextFieldMap);
 ```
 
 选择型字段示例
@@ -515,10 +603,10 @@ updateTextFieldMap.put("TextField_684","北京西城区");
 updateRoplistMap.put("SelectField_457","1");
 
 //传入需要更新的自定义下拉列表字段
-UdeskSDKManager.getInstance().setUpdateRoplist(updateRoplistMap);
+builder.setUpdatedefinedUserRoplist(updateRoplistMap);
 ```
 
-#### 4.2发送咨询对象
+### 4.2发送咨询对象
 
 在客户与客服对话时，经常需要将如咨询商品或订单发送给客服以便客服查看。
 
@@ -536,7 +624,7 @@ item.setThumbHttpUrl("https://img.alicdn.com/imgextra/i1/1728293990/TB2ngm0qFXXX
 // 商品网络链接
 item.setCommodityUrl("https://detail.tmall.com/item.htm?spm=a1z10.3746-b.w4946-14396547293.1.4PUcgZ&id=529634221064&sku_properties=-1:-1");
 
-UdeskSDKManager.getInstance().setCommodity(item);    
+builder.setCommodity(item);    
 
 //发送商品信息 见ChatActivityPresenter类中的sendCommodityMessage方法
 public void sendCommodityMessage(UdeskCommodityItem commodityItem) {
@@ -545,40 +633,9 @@ UdeskMessageManager.getInstance().sendComodityMessage(buildCommodityMessage(comm
 }
 ```
 
-#### 4.3指定分配客服或客服组
-
-在创建客户之后，调用此接口可主动指定分配客服或客服组并自动打开人工客服界面。
-
-指定客服或客服组接口一次只能用一个
-
-```java
-String agentId = "5236";
-UdeskSDKManager.getInstance().lanuchChatByAgentId(this,agentId);
 
 ```
-
-```java
-String groupId = "14005";
-UdeskSDKManager.getInstance().lanuchChatByGroupId(this,groupId);
-
-```
-
-**客服和客服组ID获取方式**
-
-管理员在【管理中心-即时通讯-基本信息-专用链接】中选择指定的客服组或客服，可看到客服ID和客服组ID。
-#### 4.4 支持设置客户的头像显示
-在UdeskSDKManager中设置客户头像的url
-``` java
-UdeskSDKManager.getInstance().setCustomerUrl(url)
-
-```
-#### 4.5 配置开启留言时的留言表单的留言提示语
-在UdeskSDKManager中设置
-``` java
-UdeskSDKManager.getInstance().setLeavingMsg(msg)
-
-```
-#### 4.6获取未读消息
+### 4.3获取未读消息
 
 在退出对话界面后，没有断开与Udesk服务器的连接，注册获取未读消息事件方法，之后在该方法中可以收到未读消息。
 
@@ -600,7 +657,7 @@ OnNewMsgNotice方法的实现
 
 3 实现的方法  必须public修饰。
 
-#### 4.7获取未读消息数
+### 4.4获取未读消息数
 
 sdk 3.2.0版本开始，可在退出对话界面后，没有断开与Udesk服务器的连接，可获得这个会话的未读消息数，打开对话界面后未读消息数会清空。
 
@@ -608,53 +665,15 @@ sdk 3.2.0版本开始，可在退出对话界面后，没有断开与Udesk服务
 UdeskSDKManager.getInstance().getCurrentConnectUnReadMsgCount();
 ```
 
-#### 4.8删除客户聊天数据
+### 4.5 删除客户聊天数据
 
 sdk初始化成功，创建客户后，调用此接口可删除当前客户的聊天记录信息
 
 ```java
 UdeskSDKManager.getInstance().deleteMsg();
+
 ```
-
-#### 4.9 设置留言界面的回调接口
-
-不想使用udesk系统的留言模块，可以设置该接口，在接口回调的方法中处理你们的逻辑
-```java
-UdeskSDKManager.getInstance().setFormCallBak(formCallBak);
-
- public void setFormCallBak(IUdeskFormCallBak formCallBak) {
-        this.formCallBak = formCallBak;
-    }
-```
-
-#### 4.10 设置文本中的链接地址的点击事件的拦截回调
-对于会话中的链接地址想自由处理，设置该接口
-```java
-UdeskSDKManager.getInstance().setTxtMessageClick(txtMessageClick);
-
- public void setTxtMessageClick(ITxtMessageWebonCliclk txtMessageClick) {
-        this.txtMessageClick = txtMessageClick;
-    }
-```
-
-
-#### 4.11 设置结构化消息type为sdk_callback的消息回调
-设置结构化消息type为sdk_callback的消息回调接口
-```java
-  UdeskSDKManager.getInstance().setStructMessageCallBack(structMessageCallBack);
-
-   /**
-     * 设置结构化消息的回调接口
-     *
-     * @param structMessageCallBack
-     */
-    public void setStructMessageCallBack(IUdeskStructMessageCallBack structMessageCallBack) {
-        this.structMessageCallBack = structMessageCallBack;
-    }
-    
-```
-
-#### 4.12控制台日志开关
+### 4.6 控制台日志开关
 
 如果开发中，想在控制台看当前客户与Udesk服务器连接（xmpp)的交互报文，调用如下接口可实现
 
@@ -663,284 +682,21 @@ UdeskSDKManager.getInstance().setTxtMessageClick(txtMessageClick);
 UdeskSDKManager.getInstance().isShowLog(true);
 ```
 
-#### 4.13 断开与Udesk服务器连接
+### 4.7 断开与Udesk服务器连接
 
   App运行时如果需要客服离线或不再接收客服消息，调此接口可以主动断开与Udesk服务器的的连接。
 
 ```java
 UdeskSDKManager.getInstance().disConnectXmpp();
 ```
-#### 4.14设置退出排队的模式
+### 4.8设置退出排队的模式
 
  quitmode: mark (默认,标记放弃)/ cannel_mark(取消标记) / force_quit(强制立即放弃)
 ```java
-UdeskSDKManager.getInstance().setQuitQuenuMode(quitmode);
+build.setUdeskQuenuMode(quitmode);
 ```
 
-
-# 五、SDK内部封装API
-
-#### 5.1支持的消息类型 
-
-收发文本、图片、语音，接收富文本信息。在项目中定义的标识为：
-
-``` java
-    /**
-     * 收到的文本消息标识
-     */
-    private static final int MSG_TXT_L = 0;
-    /**
-     * 发送的文本消息标识
-     */
-    private static final int MSG_TXT_R = 1;
-    /**
-     * 收到的语音消息标识
-     */
-    private static final int MSG_AUDIO_L = 2;
-    /**
-     * 发送的语音消息标识
-     */
-    private static final int MSG_AUDIO_R = 3;
-    /**
-     * 收到图片消息标识
-     */
-    private static final int MSG_IMG_L = 4;
-    /**
-     * 发送图片消息标识
-     */
-    private static final int MSG_IMG_R = 5;
-    /**
-     * 收到转移客服消息标识
-     */
-    private static final int MSG_REDIRECT = 6;
-    /**
-     * 收到富文本消息标识
-     */
-    private static final int RICH_TEXT = 7;
-    /**
-     * 发送商品链接本消息标识
-     */
-    private static final int COMMODITY = 8;
-```
-#### 5.2 发送文本消息
-``` java
-     //发送文本消息  见ChatActivityPresenter
-    public void sendTxtMessage(String msgString) {
-        MessageInfo msg = buildSendMessage(
-                UdeskConst.ChatMsgTypeString.TYPE_TEXT,
-                System.currentTimeMillis(), msgString, "");
-        saveMessage(msg);
-        mChatView.clearInputContent();
-        mChatView.addMessage(msg);
-        UdeskMessageManager.getInstance().sendMessage(msg.getMsgtype(),
-                msg.getMsgContent(), msg.getMsgId(),
-                mChatView.getAgentInfo().getAgentJid(), msg.getDuration());
-        UdeskDBManager.getInstance().addSendingMsg(msg.getMsgId(),
-                UdeskConst.SendFlag.RESULT_SEND, System.currentTimeMillis());
-    }
-    //xmpp最后message报文
-    <message to='agent_5236_3055@im03.udesk.cn' id='6314149748198604802' type='chat'>
-    <body>
-	   {
-	     &quot;data&quot;:{&quot;content&quot;:&quot;测试信息&quot;,&quot;duration&quot;:0},
-	     &quot;type&quot;:&quot;message&quot;,
-		 &quot;platform&quot;:&quot;android&quot;,
-		 &quot;version&quot;:&quot;3.2.1&quot;
-		}
-	</body>
-	<request xmlns='urn:xmpp:receipts'/>
-</message>	
-```
-#### 5.3 输入预知
-
-通过以下方法将用户正在输入的内容，实时显示在客服对话窗口，每500毫秒发送一次消息。注掉以下实现方法可以取消输入预知功能。
-
-``` java
-//发送输入预支消息  见ChatActivityPresenter
-public void sendPreMessage() {
-     UdeskMessageManager.getInstance().sendPreMsg(UdeskConst.ChatMsgTypeString.TYPE_TEXT,
-		mChatView.getInputContent().toString(), mChatView.getAgentInfo().getAgentJid());
-}
-
-//xmpp最后预输入消息message报文    premsg= "true" 标识预输入消息
-<message to='agent_5236_3055@im03.udesk.cn' id=' ' type='chat'>
-	<body>
-		{
-			&quot;data&quot;:{&quot;content&quot;:&quot;&quot;},
-			&quot;type&quot;:&quot;message&quot;,
-			&quot;platform&quot;:&quot;android&quot;,
-			&quot;version&quot;:&quot;3.2.1&quot;
-		}
-	</body>
-	<premsg xmlns="udesk:premsg" premsg= "true"></premsg>
-</message>
-```
-#### 5.4 发送语音消息
-
-``` java
-//xmpp发语音消息message报文
-<message to='agent_5236_3055@im03.udesk.cn' id='6314152806215319555' type='chat'>
-	<body>
-		{
-			&quot;data&quot;:
-				{   
-				   &quot;content&quot;:&quot;http:\/\/qnudeskim.flyudesk.com\/audio_20160802_165740.aac&quot;,
-				   &quot;duration&quot;:3
-				 },
-			&quot;type&quot;:&quot;audio&quot;,
-			&quot;platform&quot;:&quot;android&quot;,
-			&quot;version&quot;:&quot;3.2.2&quot;
-		}
-	</body>
-	<request xmlns='urn:xmpp:receipts'/>
-</message>
-
-```
-#### 5.5 发送图片消息
-``` java
-//xmpp发图片消息message报文
-<message to='agent_5236_3055@im03.udesk.cn' id='6314154919339229186' type='chat'>
-	<body>
-		{
-			&quot;data&quot;:{&quot;content&quot;:&quot;http:\/\/qnudeskim.flyudesk.com\/eaa5d186b72abd4a44b9ef211ec6bc83&quot;,&quot;duration&quot;:0},
-			&quot;type&quot;:&quot;image&quot;,
-			&quot;platform&quot;:&quot;android&quot;,
-			&quot;version&quot;:&quot;3.2.1&quot;
-		}
-	</body>
-	<request xmlns='urn:xmpp:receipts'/>
-</message>
-```
-
-#### 5.6支持满意度调查
-5.5.1客服在pc端叉掉会话，sdk会受到一条满意度调查信息。
-
-``` java
-//满意度调查xmpp报文消息  survey='true'  标识调查
-<message from='agent_13988_3055@im03.udesk.cn/3201253852559793907391870209273268523016675556031893299406' 
-	to='customer_8698750_3055@im03.udesk.cn' type='chat' nick='许一' user_id='13988'>
-		isreqsurvey xmlns='survey' survey='true'/>
-</message>
-```
-5.5.2处理满意度选项
-
-移动端会在见ChatActivityPresenter中处理收到满意度调查消息，获取满意度选项，弹出满意度调查框，可提交满意度选项
-``` java
-//收到满意度调查消息
-public void onReqsurveyMsg(Boolean isSurvey) {
-
-     if (isSurvey) {
-         getIMSurveyOptions();
-     }
-}
-```
-5.5.3启动满意度调查
-
-``` java
-private void toLuanchSurveyActivity(SurveyOptionsModel surveyOptions) {
-	Intent intent = new Intent();
-	intent.setClass(UdeskChatActivity.this, SurvyDialogActivity.class);
-	intent.putExtra(UdeskConst.SurvyDialogKey, surveyOptions);
-	startActivityForResult(intent, SELECT_SURVY_OPTION_REQUEST_CODE);
-}
-```
-5.5.4提交满意度调查
-
-``` java
-    Toast.makeText(UdeskChatActivity.this, "感谢您的评价！", Toast.LENGTH_SHORT).show();
-    String optionId = data.getStringExtra(UdeskConst.SurvyOptionIDKey);
-    mPresenter.putIMSurveyResult(optionId);
-```
-
-#### 5.7支持客服不在线留言
-当前客服繁忙或者不在线，输入内容发送消息，弹出留言提示，如果客户点击则跳转到表单界面。
-``` java
-protected void goToForm() {
-      Intent intent = new Intent(UdeskChatActivity.this,UdeskFormActivity.class);
-      startActivity(intent);
-      dismissFormWindow();
-}
-```
-
-# 六、自定义UI和配置设置
-
-UdeskConfig这个类提供了一些颜色的资源的配置
-```java
-   // 标题栏TitleBar的背景色  通过颜色设置
-    public static int udeskTitlebarBgResId = DEFAULT;
-
-    // 标题栏TitleBar，左右两侧文字的颜色
-    public static int udeskTitlebarTextLeftRightResId = DEFAULT;
-
-    //IM界面，左侧文字的字体颜色
-    public static int udeskIMLeftTextColorResId = DEFAULT;
-
-    //IM界面，右侧文字的字体颜色
-    public static int udeskIMRightTextColorResId = DEFAULT;
-
-    //IM界面，左侧客服昵称文字的字体颜色
-    public static int udeskIMAgentNickNameColorResId = DEFAULT;
-
-    //IM界面，时间文字的字体颜色
-    public static int udeskIMTimeTextColorResId = DEFAULT;
-
-    // IM界面，提示语文字的字体颜色，比如客服转移
-    public static int udeskIMTipTextColorResId = DEFAULT;
-
-    // 返回箭头图标资源id
-    public static int udeskbackArrowIconResId = DEFAULT;
-
-    // 咨询商品item的背景颜色
-    public static int udeskCommityBgResId = DEFAULT;
-
-    //    商品介绍Title的字样颜色
-    public static int udeskCommityTitleColorResId = DEFAULT;
-
-    //  商品咨询页面中，商品介绍子Title的字样颜色
-    public static int udeskCommitysubtitleColorResId = DEFAULT;
-
-    //    商品咨询页面中，发送链接的字样颜色
-    public static int udeskCommityLinkColorResId = DEFAULT;
-
-    //配置 是否使用推送服务  true 表示使用  false表示不使用
-    public  static  boolean isUserSDkPush = true;
-
-    //配置放弃排队的策略
-    public  static  String  UdeskQuenuMode = UdeskQuenuFlag.Mark;
-
-    //配置开启留言时的    留言表单留言提示语
-    public  static  String  UdeskLeavingMsg = "";
-
-    //配置是否把domain 和 appid 和 appkey 和 sdktoken 存在sharePrefence中， ftrue保存，false 不存
-    public  static  boolean  isUseShare = true;
-
-    //是否使用录音功能  true表示使用 false表示不使用
-    public  static  boolean  isUseVoice = true;
-    
-     //在没有请求到管理员在后端对sdk使用配置下，在默认的情况下，是否需要表单留言，true需要， false 不需要
-     public  static  boolean  isUserForm= true;
-```
-参照udeskNewDemo 提供的例子进行配置
-```java
-
- private void UIStyle1(){
-        UdeskConfig.udeskTitlebarBgResId = R.color.udesk_titlebar_bg1;
-        UdeskConfig.udeskTitlebarTextLeftRightResId = R.color.udesk_color_navi_text1;
-        UdeskConfig.udeskIMRightTextColorResId = R.color.udesk_color_im_text_right1;
-        UdeskConfig.udeskIMLeftTextColorResId = R.color.udesk_color_im_text_left1;
-        UdeskConfig.udeskIMAgentNickNameColorResId = R.color.udesk_color_im_left_nickname1;
-        UdeskConfig.udeskIMTimeTextColorResId = R.color.udesk_color_im_time_text1;
-        UdeskConfig.udeskIMTipTextColorResId = R.color.udesk_color_im_tip_text1;
-        UdeskConfig.udeskbackArrowIconResId = R.drawable.udesk_titlebar_back;
-        UdeskConfig.udeskCommityBgResId = R.color.udesk_color_im_commondity_bg1;
-        UdeskConfig.udeskCommityTitleColorResId = R.color.udesk_color_im_commondity_title1;
-        UdeskConfig.udeskCommitysubtitleColorResId = R.color.udesk_color_im_commondity_subtitle1;
-        UdeskConfig.udeskCommityLinkColorResId = R.color.udesk_color_im_commondity_title1;
-    }
-    
-```
-
-可以通过以下文件名称快速定位SDK资源，修改相应的资源可以实现UI自定义
+### 4.9可以通过以下文件名称快速定位SDK资源，修改相应的资源可以实现UI自定义
 
  聊天界面UdeskChatActivity中的MessageAdatper，展示语音，文本，图片等消息。
 
@@ -978,7 +734,7 @@ RedirectViewHolder  显示转移提示语信息；
     UdeskTitleBar 标题栏
 ```
 
-# 七、集成UdeskSDK中使用的接口说明
+## 五、集成UdeskSDK中使用的接口说明
 
   接口已开发实现，不需要再开发。
 ``` java
@@ -996,22 +752,22 @@ RedirectViewHolder  显示转移提示语信息；
 		
 ```
 
-# 八、离线消息推送
+## 六、离线消息推送
 当前仅支持一种推送方案，即Udesk务端发送消息至开发者的服务端，开发者再推送消息到 App。
-#### 8.1 设置接收推送的服务器地址
+### 6.1 设置接收推送的服务器地址
         推送消息将会发送至开发者的服务器。
 	
 	设置服务器地址，请使用Udesk管理员帐号登录 Udesk，在 设置 -> 移动SDK 中设置。
 ![udesk](http://7xr0de.com1.z0.glb.clouddn.com/5D761252-3D9D-467C-93C9-8189D0B22424.png)	
 	
-#### 8.2 使用Udesk 推送功能的配置
+### 6.2 使用Udesk 推送功能的配置
 ``` java
    //配置 是否使用推送服务  true 表示使用  false表示不使用
     public  static  boolean isUserSDkPush = false;
 
 ``` 
 	
-#### 8.3 设置用户的设备唯一标识
+### 6.3 设置用户的设备唯一标识
 ``` java
     UdeskSDKManager.getInstance().setRegisterId（context,"xxxxregisterId"）
      //保存注册推送的的设备ID
@@ -1024,7 +780,7 @@ RedirectViewHolder  显示转移提示语信息；
 ``` 
    关闭和开启Udesk推送服务，Udesk推送给开发者服务端的消息数据格式中，会有 device_token 的字段。
    
-#### 8.4	关闭开启Udek推送服务
+### 6.4	关闭开启Udek推送服务
 ``` java
   /**
      * @param domain    公司注册生成的域名
@@ -1039,7 +795,7 @@ RedirectViewHolder  显示转移提示语信息；
 		
 ```
 
-#### 8.5 Udek推送给开发者服务端的接口说明
+### 6.5 Udek推送给开发者服务端的接口说明
 **基本要求**
 
 - 推送接口只支持 http，不支持 https

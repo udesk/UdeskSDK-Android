@@ -75,11 +75,10 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/udesk_chat_head_margin"
             android:layout_marginRight="@dimen/udesk_chat_head_margin"
-            android:background="#F0F1F5"
+            android:background="@color/white"
             >
 
             <TextView
-
                 android:id="@+id/postion_value"
                 android:layout_width="@dimen/udesk_200"
                 android:layout_height="@dimen/udesk_40"

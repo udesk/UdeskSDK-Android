@@ -15,11 +15,9 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.BounceInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,6 +32,8 @@ import java.lang.ref.WeakReference;
 import java.util.Map;
 
 import io.agora.rtc.RtcEngine;
+import udesk.core.UdeskConst;
+import udesk.core.event.InvokeEventContainer;
 import udesk.udesksocket.EventScoketMode;
 import udesk.udesksocket.MessageManager;
 import udesk.udesksocket.MethodEnum;
@@ -149,7 +149,7 @@ public class UdeskVideoActivity extends Activity implements View.OnClickListener
             initview();
             if (isInvete) {
                 initinvite();
-                MessageManager.getMessageManager().invite(UdeskSocketContants.IMAgentJid, UdeskSocketContants.ToResId, UdeskSocketContants.CallType.video, channelID, Util.objectToInt(UdeskSocketContants.IMBusseniessId));
+                MessageManager.getMessageManager().invite(UdeskConst.IMAgentJid, UdeskSocketContants.ToResId, UdeskSocketContants.CallType.video, channelID, Util.objectToInt(UdeskConst.IMBusseniessId));
             } else {
                 initReceiveVideo();
                 startAlarm();
@@ -310,12 +310,7 @@ public class UdeskVideoActivity extends Activity implements View.OnClickListener
     private void sendVideoBroadcast(String type, String message) {
 
         try {
-            Intent intent = new Intent(UdeskSocketContants.Udesk_NOTIFICATION);
-            intent.putExtra(UdeskSocketContants.VideoEvent, type);
-            intent.putExtra(UdeskSocketContants.VideoMessage, message);
-            intent.putExtra(UdeskSocketContants.VideoIsInvite, isInvete);
-            intent.putExtra(UdeskSocketContants.VideoChannelId, channelID);
-            sendBroadcast(intent);
+            InvokeEventContainer.getInstance().event_OnVideoEventReceived.invoke(type, channelID, message, isInvete);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -532,9 +527,9 @@ public class UdeskVideoActivity extends Activity implements View.OnClickListener
 
                         EvtCancel evtCancel = (EvtCancel) event.getData();
                         if (Util.objectToString(evtCancel.getReason()).equals(UdeskSocketContants.TimeoutCancel)) {
-                            sendVideoBroadcast(UdeskSocketContants.ReceiveType.Timeout, UdeskSocketContants.IMAgentName + getResources().getString(R.string.udesk_video_timeout));
+                            sendVideoBroadcast(UdeskSocketContants.ReceiveType.Timeout, UdeskConst.IMAgentName + getResources().getString(R.string.udesk_video_timeout));
                         } else if (Util.objectToString(evtCancel.getReason()).equals(UdeskSocketContants.CalledReject)) {
-                            sendVideoBroadcast(UdeskSocketContants.ReceiveType.Reject, UdeskSocketContants.IMAgentName + getResources().getString(R.string.udesk_video_reject));
+                            sendVideoBroadcast(UdeskSocketContants.ReceiveType.Reject, UdeskConst.IMAgentName + getResources().getString(R.string.udesk_video_reject));
                         }
                         finish();
                     }
@@ -584,7 +579,6 @@ public class UdeskVideoActivity extends Activity implements View.OnClickListener
                     break;
                 case onLeaveChannel:
                     if (videoPresenter != null) {
-                        Log.i("UdeskSdk","onLeaveChannel");
                         isNeedSendByeOndestory = false;
                         videoPresenter.stopMedia(channelID);
                         videoPresenter.bye(channelID);

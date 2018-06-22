@@ -18,13 +18,17 @@
     <dimen name="udesk_3">3dip</dimen>
     <dimen name="udesk_4">4dip</dimen>
     <dimen name="udesk_5">5dip</dimen>
+    <dimen name="udesk_7">7dip</dimen>
     <dimen name="udesk_8">8dip</dimen>
     <dimen name="udesk_10">10dip</dimen>
     <dimen name="udesk_13">13dip</dimen>
+    <dimen name="udesk_14">14dip</dimen>
     <dimen name="udesk_15">15dip</dimen>
+    <dimen name="udesk_18">18dip</dimen>
     <dimen name="udesk_20">20dip</dimen>
     <dimen name="udesk_22">22dip</dimen>
     <dimen name="udesk_25">25dip</dimen>
+    <dimen name="udesk_28">28dip</dimen>
     <dimen name="udesk_30">30dip</dimen>
     <dimen name="udesk_35">35dip</dimen>
     <dimen name="udesk_40">40dip</dimen>
@@ -34,10 +38,12 @@
     <dimen name="udesk_60">60dip</dimen>
     <dimen name="udesk_70">70dip</dimen>
     <dimen name="udesk_80">80dip</dimen>
+    <dimen name="udesk_90">90dip</dimen>
     <dimen name="udesk_95">95dip</dimen>
     <dimen name="udesk_100">100dip</dimen>
     <dimen name="udesk_105">105dip</dimen>
     <dimen name="udesk_120">120dip</dimen>
+    <dimen name="udesk_130">130dip</dimen>
     <dimen name="udesk_140">140dip</dimen>
     <dimen name="udesk_160">160dip</dimen>
     <dimen name="udesk_190">190dip</dimen>
@@ -46,7 +52,9 @@
     <dimen name="udesk_240">240dip</dimen>
     <dimen name="udesk_300">300dip</dimen>
 
+    <dimen name="udesk_sp10">10sp</dimen>
     <dimen name="udesk_sp12">12sp</dimen>
+    <dimen name="udesk_sp13">13sp</dimen>
     <dimen name="udesk_sp14">14sp</dimen>
     <dimen name="udesk_sp15">15sp</dimen>
     <dimen name="udesk_sp16">16sp</dimen>
@@ -61,9 +69,10 @@
     <!-- 整体界面中，TitleBar中文字的大小 -->
     <dimen name="udesk_navi_text_size">18sp</dimen>
 
-   
-
-
+    <!-- IM界面中，录音过程中，手指移动出录音按钮,并可以确认为取消状态的偏移量。 在这个偏移量之内，只是预准备取消状态 -->
+    <dimen name="udesk_im_move_to_cancel_offset">50dp</dimen>
+    <dimen name="udesk_im_record_popup_width">148dp</dimen>
+    <dimen name="udesk_im_record_popup_height">148dp</dimen>
 
 
 

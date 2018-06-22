@@ -21,7 +21,7 @@ public class IgnoredMsgReceive implements PacketExtensionProvider {
     public PacketExtension parseExtension(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
         IgnoredMsgXmpp ignoredMsg = null;
         boolean stop = false;
-        String xmlName = null;
+        String xmlName;
         int evtType;
         while (!stop){
             evtType = parser.getEventType();

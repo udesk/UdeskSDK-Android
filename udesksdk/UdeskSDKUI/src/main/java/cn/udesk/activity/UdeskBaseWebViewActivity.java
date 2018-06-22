@@ -1,7 +1,6 @@
 package cn.udesk.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -18,13 +17,12 @@ import cn.udesk.R;
 import cn.udesk.widget.UdeskTitleBar;
 
 
-public class UdeskBaseWebViewActivity extends Activity {
+public class UdeskBaseWebViewActivity extends UdeskBaseActivity {
 
     protected WebView mwebView;
     protected LinearLayout linearLayout;
     protected UdeskTitleBar mTitlebar;
     protected UdeskWebChromeClient udeskWebChromeClient;
-
 
 
     @Override
@@ -44,9 +42,9 @@ public class UdeskBaseWebViewActivity extends Activity {
             });
             linearLayout = (LinearLayout) findViewById(R.id.udesk_webview_root);
             mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
-            mwebView = new WebView(this);
+            mwebView = new WebView(getApplicationContext());
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.
-                    LayoutParams.FILL_PARENT,LinearLayout.LayoutParams.FILL_PARENT);
+                    LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
             mwebView.setLayoutParams(param);
             linearLayout.addView(mwebView);
             settingWebView();
@@ -55,7 +53,7 @@ public class UdeskBaseWebViewActivity extends Activity {
         }
     }
 
-    protected void setH5TitleListener(UdeskWebChromeClient.GetH5Title h5TitleListener){
+    protected void setH5TitleListener(UdeskWebChromeClient.GetH5Title h5TitleListener) {
         try {
             udeskWebChromeClient.setH5TitleListener(h5TitleListener);
         } catch (Exception e) {
@@ -121,18 +119,23 @@ public class UdeskBaseWebViewActivity extends Activity {
 
                 }
 
-                @Override
-                public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+//                @Override
+//                public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
 //                    handler.proceed();
-                }
+//                }
 
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
+                    Uri uri = Uri.parse(url);
                     if (url.contains("tel:")) {
-                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(url));
+                        Intent intent = new Intent(Intent.ACTION_DIAL, uri);
                         startActivity(intent);
-                    } else {
+                    } else if (url.contains("show_transfer")) {
+                        showTransfer();
+                        return true;
+                    } else if (url.contains("go_chat")){
+                        goChat();
+                    }else {
                         view.loadUrl(url);
                     }
                     return true;
@@ -143,6 +146,13 @@ public class UdeskBaseWebViewActivity extends Activity {
         }
     }
 
+    protected void showTransfer() {
+
+    }
+
+    protected void goChat(){
+
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

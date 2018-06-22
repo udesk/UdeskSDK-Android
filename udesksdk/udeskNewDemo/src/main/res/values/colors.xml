@@ -8,4 +8,43 @@
     <color name="update_userinfo_key">#333333</color>
     <color name="update_userinfo_value">#CCCCCC</color>
     <color name="udesk_custom_dialog_des_color">#666666</color>
+    <color name="lightColorAccent">#30FF4081</color>
+
+
+    <!--标题栏颜色-->
+    <color name="actionBarColor">#393A3E</color>
+    <!--标题栏点击背景色-->
+    <color name="actionBarPreColor">#303135</color>
+    <!--分割线颜色-->
+    <color name="divideColor">#F0F1F2</color>
+    <!--背景色-->
+    <color name="bgColor">#FEFFFF</color>
+    <!--提示语颜色-->
+    <color name="hintTextColor">#F0F1F2</color>
+    <!--地点名称文字颜色-->
+    <color name="positionNameColor">#0B0F12</color>
+    <!--地点地址文字颜色-->
+    <color name="positionAddressColor">#999999</color>
+    <!--列表默认颜色-->
+    <color name="itemNorColor">#FFFEFFFF</color>
+    <!--列表点击颜色-->
+    <color name="itemPreColor">#EEEEEE</color>
+    <!--标题栏的绿色按钮默认颜色-->
+    <color name="greenNorColor">#FF00AD2E</color>
+    <!--标题栏的绿色按钮点击颜色-->
+    <color name="greenPreBtn">#DD00AD2E</color>
+
+
+
+    <color name="udesk_titlebar_bg2">#00BAD4</color>
+    <color name="udesk_color_navi_text2">#FFFFFF</color>
+    <color name="udesk_color_im_text_left2">#313F48</color>
+    <color name="udesk_color_im_text_right2">#FFFFFF</color>
+    <color name="udesk_color_im_left_nickname2">#C3CDD4</color>
+    <color name="udesk_color_im_time_text2">#C3CDD4</color>
+    <color name="udesk_color_im_tip_text2">#c7c6c6</color>
+    <color name="udesk_color_im_commondity_bg2">#ECEFF1</color>
+    <color name="udesk_color_im_commondity_link2">#FFFFFF</color>
+    <color name="udesk_color_im_commondity_title2">#313F48</color>
+    <color name="udesk_color_im_commondity_subtitle2">#FF3B30</color>
 </resources>

@@ -25,7 +25,6 @@
     <string name="udesk_msg_busy_default_to_form">您好，当前无客服在线，请在工作时间联系客服</string>
     <string name="udesk_label_search_fail">无法找到你搜索的内容么?</string>
     <string name="udesk_label_no_sd">SD卡不可用，请检查</string>
-    <string name="udesk_label_hint_too_short">按键时间太短</string>
     <string name="udesk_im_record_error">录音出错，请检查是否开启了应用的录音权限</string>
     <string name="udesk_im_time_format_yday">"昨天"</string>
     <string name="udesk_im_time_format_dby">"前天"</string>
@@ -49,7 +48,8 @@
 
     <string name="udesk_edit_hint_msg">输入消息...</string>
     <string name="udesk_voice_init">按住说话</string>
-    <string name="udesk_voice_cancle">手指松开，取消发送</string>
+
+    <string name="udesk_label_hint_cancel">手指松开，取消发送</string>
     <string name="udesk_thanks_survy">感谢您的评价！</string>
     <string name="udesk_transfer_success">客服转接成功,</string>
     <string name="udesk_service">为您服务</string>
@@ -80,5 +80,44 @@
     <string name="udesk_close_chart">会话已结束</string>
     <string name="udesk_has_bad_net">网络不好,请检查网络设置!</string>
     <string name="udesk_error">请稍后请重试</string>
+
+    <!--<string name="please_to_talk">按住 说话</string>-->
+    <!--<string name="udesk_label_hint_recording">向上滑动 取消发送</string>-->
+    <!--<string name="udesk_label_hint_too_short">说话时间太短</string>-->
+    <!--<string name="udesk_cancle_im_long_voice">松开 结束</string>-->
+    <string name="press_record">按住 说话</string>
+    <string name="release_end">松开 发送</string>
+    <string name="release_cancel">松开手指 取消发送</string>
+    <string name="move_up_cancel">手指上滑 取消发送</string>
+    <string name="record_to_short">说话时间过短</string>
+    <string name="funtion_camera">拍摄</string>
+    <string name="photo">相册</string>
+    <string name="survy">评价</string>
+    <string name="file">文件</string>
+    <string name="location">位置</string>
+    <string name="video">视频</string>
+    <string name="service_valuation">服务评价</string>
+    <string name="summit_remark">提交评价</string>
+    <string name="summit_must_remark">评价备注必需填写</string>
+
+    <string name="udesk_img_video">图片和视频</string>
+    <string name="udesk_all_video">所有视频</string>
+    <string name="udesk_max_tips">你最多选择9个图片或者视频</string>
+    <string name="udesk_photo_pre">预览</string>
+    <string name="udesk_selector_action_done_photo_pre">预览(%1$d)</string>
+    <string name="udesk_selector_action_done_photos">发送(%1$d/%2$d)</string>
+    <string name="udesk_selector_photo_index_num">(%1$d/%2$d)</string>
+    <string name="udesk_original_photos">原图</string>
+    <string name="udesk_selector_photos">选择</string>
+    <string name="udesk_statify">满意</string>
+    <string name="udesk_unstatify">不满意</string>
+    <string name="udesk_common">一般</string>
+
+    <string name="udesk_remark_must">* 评价备注为必填项</string>
+    <string name="udesk_rollback_tips">客服 %1$s 撤回一条消息</string>
+    <string name="camera_view_tips">轻触拍照，长按摄像</string>
+    <string name="udesk_too_short">录制时间过短,请重新录制</string>
+    <string name="udesk_audio_permission_error">请检查是否开启了应用的录音权限</string>
+
 
 </resources>

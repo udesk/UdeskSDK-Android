@@ -3,9 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/UdeskSDKUI/UdeskSDKUI.iml" filepath="$PROJECT_DIR$/UdeskSDKUI/UdeskSDKUI.iml" />
-      <module fileurl="file://$PROJECT_DIR$/baidumapdemo/baidumapdemo.iml" filepath="$PROJECT_DIR$/baidumapdemo/baidumapdemo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/gaodemapdemo/gaodemapdemo.iml" filepath="$PROJECT_DIR$/gaodemapdemo/gaodemapdemo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/tenxunmapdemo/tenxunmapdemo.iml" filepath="$PROJECT_DIR$/tenxunmapdemo/tenxunmapdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/udeskNewDemo/udeskNewDemo.iml" filepath="$PROJECT_DIR$/udeskNewDemo/udeskNewDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/udesksdk.iml" filepath="$PROJECT_DIR$/udesksdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/udeskvideo/udeskvideo.iml" filepath="$PROJECT_DIR$/udeskvideo/udeskvideo.iml" />

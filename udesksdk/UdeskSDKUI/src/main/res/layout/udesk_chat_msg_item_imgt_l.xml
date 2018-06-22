@@ -64,7 +64,7 @@
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/udesk_im_image"
                 android:layout_width="@dimen/udesk_140"
-                android:layout_height="@dimen/udesk_160"
+                android:layout_height="@dimen/udesk_220"
                 fresco:actualImageScaleType="centerCrop"
                 fresco:failureImage="@drawable/udesk_defualt_failure"
                 fresco:failureImageScaleType="centerCrop"
@@ -72,6 +72,15 @@
                 fresco:placeholderImageScaleType="centerCrop"
                 />
 
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/udesk_precent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/udesk_shape_oval"
+                android:gravity="center"
+                android:textSize="@dimen/udesk_sp14" />
             <!--<cn.udesk.widget.ChatImageView-->
             <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
             <!--android:id="@+id/udesk_im_image"-->

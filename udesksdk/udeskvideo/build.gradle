@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         minSdkVersion 14
@@ -29,9 +29,9 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    //noinspection GradleCompatible
-    provided 'com.android.support:appcompat-v7:24.0.0'
+
     compile 'com.squareup.okhttp3:okhttp:3.9.1'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile files('libs/agora-rtc-sdk.jar')
+    compile project(':UdeskSDKUI')
 }

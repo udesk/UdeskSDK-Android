@@ -1,6 +1,7 @@
 package cn.udesk.model;
 
 import cn.udesk.UdeskUtil;
+import udesk.core.utils.UdeskUtils;
 
 /**
  * Created by user on 2016/12/27.
@@ -48,6 +49,9 @@ public class SDKIMSetting {
     private Object agora_app_id;
     private Object server_url;
     private Object vcall_token_url;
+    private Object im_survey_show_type;
+    private Object leave_message_guide;
+    private Object show_robot_times;
 
 //    "vcall":true,
 //            "vc_app_id":"fbcc5d3df6dfa25c418910a3611020eb",
@@ -270,5 +274,29 @@ public class SDKIMSetting {
 
     public void setVcall_token_url(Object vcall_token_url) {
         this.vcall_token_url = vcall_token_url;
+    }
+
+    public String getIm_survey_show_type() {
+        return UdeskUtil.objectToString(im_survey_show_type);
+    }
+
+    public void setIm_survey_show_type(Object im_survey_show_type) {
+        this.im_survey_show_type = im_survey_show_type;
+    }
+
+    public String getLeave_message_guide() {
+        return UdeskUtil.objectToString(leave_message_guide);
+    }
+
+    public void setLeave_message_guide(Object leave_message_guide) {
+        this.leave_message_guide = leave_message_guide;
+    }
+
+    public Object getShow_robot_times() {
+        return show_robot_times;
+    }
+
+    public void setShow_robot_times(Object show_robot_times) {
+        this.show_robot_times = show_robot_times;
     }
 }

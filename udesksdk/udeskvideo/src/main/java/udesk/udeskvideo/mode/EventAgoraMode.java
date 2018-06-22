@@ -1,6 +1,5 @@
 package udesk.udeskvideo.mode;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**

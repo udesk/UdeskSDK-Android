@@ -5,14 +5,13 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
+import udesk.core.UdeskConst;
 import udesk.core.model.AgentInfo;
 import udesk.core.model.MessageInfo;
 
@@ -54,6 +53,18 @@ public class UdeskDBManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public  boolean isNeedInit(String sdktoken){
+
+        try {
+            if (mSdktoken != null  && mSdktoken.equals(sdktoken) && mDatabase != null){
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  true;
     }
 
     /**
@@ -118,8 +129,8 @@ public class UdeskDBManager {
                     + UdeskDBHelper.UdeskMessage
                     + "(MsgID ,Time ,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,"
                     + "Direction,LocalPath,Duration,Receive_AgentJid,created_at," +
-                    "updated_at,reply_user,reply_userurl,subsessionid,seqNum)"
-                    + " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                    "updated_at,reply_user,reply_userurl,subsessionid,seqNum,fileName,fileSize)"
+                    + " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
             getSQLiteDatabase().execSQL(
                     sql,
@@ -131,7 +142,7 @@ public class UdeskDBManager {
                             msg.getmAgentJid(), msg.getCreatedTime(),
                             msg.getUpdateTime(), msg.getReplyUser(),
                             msg.getUser_avatar(), msg.getSubsessionid(),
-                            msg.getSeqNum()
+                            msg.getSeqNum(),msg.getFilename(),msg.getFilesize()
                     });
             return true;
         } catch (SQLException e) {
@@ -221,7 +232,7 @@ public class UdeskDBManager {
         Cursor cursor = null;
         try {
             if (getSQLiteDatabase() == null) {
-                return msg;
+                return null;
             }
             cursor = getSQLiteDatabase().rawQuery(sql, new String[]{msgid});
             if (cursor.moveToFirst()) {
@@ -233,7 +244,6 @@ public class UdeskDBManager {
         } finally {
             if (cursor != null) {
                 cursor.close();
-                cursor = null;
             }
         }
         return msg;
@@ -248,7 +258,7 @@ public class UdeskDBManager {
         Cursor cursor = null;
         try {
             if (getSQLiteDatabase() == null) {
-                return msg;
+                return null;
             }
             cursor = getSQLiteDatabase().rawQuery(sql, new String[]{msgid});
             if (cursor.moveToFirst()) {
@@ -267,6 +277,8 @@ public class UdeskDBManager {
                 String reply_userurl = cursor.getString(14);
                 String subsessionid = cursor.getString(15);
                 int seqNum = cursor.getInt(16);
+                String fileName = UdeskUtil.objectToString(cursor.getString(17));
+                String fileSize = UdeskUtil.objectToString(cursor.getString(18));
                 msg = new MessageInfo(time, msgId, msgtype, msgContent,
                         readFlag, sendFlag, playFlag, direction, localPath,
                         duration, agentJid);
@@ -274,6 +286,8 @@ public class UdeskDBManager {
                 msg.setSeqNum(seqNum);
                 msg.setUser_avatar(reply_userurl);
                 msg.setReplyUser(replyUser);
+                msg.setFilename(fileName);
+                msg.setFilesize(fileSize);
                 if (!TextUtils.isEmpty(agentJid.trim())) {
                     String[] urlAndNick = getAgentUrlAndNick(agentJid);
                     if (urlAndNick != null) {
@@ -291,7 +305,6 @@ public class UdeskDBManager {
         } finally {
             if (cursor != null) {
                 cursor.close();
-                cursor = null;
             }
         }
         return msg;
@@ -339,13 +352,17 @@ public class UdeskDBManager {
                 String reply_userurl = UdeskUtil.objectToString(cursor.getString(14));
                 String subSeessionId = UdeskUtil.objectToString(cursor.getString(15));
                 int seqNum = cursor.getInt(16);
+                String fileName = UdeskUtil.objectToString(cursor.getString(17));
+                String fileSize = UdeskUtil.objectToString(cursor.getString(18));
 
-                if (sendFlag == UdeskConst.SendFlag.RESULT_SEND) {
+                if (sendFlag == UdeskConst.SendFlag.RESULT_SEND && System.currentTimeMillis() -time > 30 * 1000) {
                     sendFlag = UdeskConst.SendFlag.RESULT_FAIL;
                 }
                 MessageInfo message = new MessageInfo(time, msgId, msgtype,
                         msgContent, readFlag, sendFlag, playFlag, direction,
                         localPath, duration, agentJid);
+                message.setFilename(fileName);
+                message.setFilesize(fileSize);
                 message.setSeqNum(seqNum);
                 message.setSubsessionid(subSeessionId);
                 message.setCreatedTime(createdTime);
@@ -370,7 +387,6 @@ public class UdeskDBManager {
         } finally {
             if (cursor != null) {
                 cursor.close();
-                cursor = null;
             }
         }
         return list;
@@ -404,14 +420,18 @@ public class UdeskDBManager {
                 int direction = cursor.getInt(7);
                 String localPath = cursor.getString(8);
                 long duration = cursor.getLong(9);
-                String agentJid =UdeskUtil.objectToString(cursor.getString(10));
+                String agentJid = UdeskUtil.objectToString(cursor.getString(10));
                 String replyUser = UdeskUtil.objectToString(cursor.getString(13));
                 String reply_userurl = UdeskUtil.objectToString(cursor.getString(14));
                 String subSeessionId = UdeskUtil.objectToString(cursor.getString(15));
                 int seqNum = cursor.getInt(16);
+                String fileName = UdeskUtil.objectToString(cursor.getString(17));
+                String fileSize = UdeskUtil.objectToString(cursor.getString(18));
                 msgInfo = new MessageInfo(time, msgId, msgtype,
                         msgContent, readFlag, sendFlag, playFlag, direction,
                         localPath, duration, agentJid);
+                msgInfo.setFilename(fileName);
+                msgInfo.setFilesize(fileSize);
                 msgInfo.setSubsessionid(subSeessionId);
                 msgInfo.setSeqNum(seqNum);
                 msgInfo.setReplyUser(replyUser);
@@ -435,7 +455,6 @@ public class UdeskDBManager {
         } finally {
             if (cursor != null) {
                 cursor.close();
-                cursor = null;
             }
         }
         return msgInfo;
@@ -479,9 +498,13 @@ public class UdeskDBManager {
                 String reply_userurl = UdeskUtil.objectToString(cursor.getString(14));
                 String subSeessionId = UdeskUtil.objectToString(cursor.getString(15));
                 int seqNum = cursor.getInt(16);
+                String fileName = UdeskUtil.objectToString(cursor.getString(17));
+                String fileSize = UdeskUtil.objectToString(cursor.getString(18));
                 msgInfo = new MessageInfo(time, msgId, msgtype,
                         msgContent, readFlag, sendFlag, playFlag, direction,
                         localPath, duration, agentJid);
+                msgInfo.setFilename(fileName);
+                msgInfo.setFilesize(fileSize);
                 msgInfo.setSeqNum(seqNum);
                 msgInfo.setSubsessionid(subSeessionId);
                 msgInfo.setReplyUser(replyUser);
@@ -504,7 +527,6 @@ public class UdeskDBManager {
         } finally {
             if (cursor != null) {
                 cursor.close();
-                cursor = null;
             }
         }
         return msgInfo;
@@ -535,7 +557,6 @@ public class UdeskDBManager {
         } finally {
             if (cursor != null) {
                 cursor.close();
-                cursor = null;
             }
         }
         return count;
@@ -630,7 +651,6 @@ public class UdeskDBManager {
         } finally {
             if (cursor != null) {
                 cursor.close();
-                cursor = null;
             }
         }
         return listItems;
@@ -691,7 +711,6 @@ public class UdeskDBManager {
         } finally {
             if (cursor != null) {
                 cursor.close();
-                cursor = null;
             }
         }
         return false;
@@ -795,7 +814,6 @@ public class UdeskDBManager {
         } finally {
             if (cursor != null) {
                 cursor.close();
-                cursor = null;
             }
         }
         return list;
@@ -803,7 +821,7 @@ public class UdeskDBManager {
 
     //获取未读消息数
     public synchronized int getUnReadMessageCount() {
-        int count = 0;
+        int count;
         if (getSQLiteDatabase() == null) {
             return 0;
         }
@@ -822,7 +840,6 @@ public class UdeskDBManager {
             if (cursor != null
                     && !cursor.isClosed()) {
                 cursor.close();
-                cursor = null;
             }
         }
 
@@ -849,7 +866,6 @@ public class UdeskDBManager {
         } finally {
             if (cursor != null) {
                 cursor.close();
-                cursor = null;
             }
         }
         return urlAndNick;

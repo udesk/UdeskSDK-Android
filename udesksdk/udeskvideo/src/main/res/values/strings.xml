@@ -27,5 +27,10 @@
     <string name="udesk_video_not_loggin">客服未登录视频</string>
 
 
+    <string name="udesk_permission">您的手机没有授予悬浮窗权限，请开启后再试</string>
+    <string name="udesk_open">现在去开启</string>
+    <string name="udesk_ignore">暂不开启</string>
+
+
 
 </resources>

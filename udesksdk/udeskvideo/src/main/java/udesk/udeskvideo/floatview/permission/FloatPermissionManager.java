@@ -13,6 +13,7 @@ import android.util.Log;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import udesk.udeskvideo.R;
 import udesk.udeskvideo.floatview.permission.rom.HuaweiUtils;
 import udesk.udeskvideo.floatview.permission.rom.MeizuUtils;
 import udesk.udeskvideo.floatview.permission.rom.MiuiUtils;
@@ -208,7 +209,7 @@ public class FloatPermissionManager {
     }
 
     private void showConfirmDialog(Context context, OnConfirmResult result) {
-        showConfirmDialog(context, "您的手机没有授予悬浮窗权限，请开启后再试", result);
+        showConfirmDialog(context, context.getString(R.string.udesk_permission), result);
     }
 
     private void showConfirmDialog(Context context, String message, final OnConfirmResult result) {
@@ -218,14 +219,14 @@ public class FloatPermissionManager {
 
         dialog = new AlertDialog.Builder(context).setCancelable(true).setTitle("")
                 .setMessage(message)
-                .setPositiveButton("现在去开启",
+                .setPositiveButton(context.getString(R.string.udesk_open),
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 result.confirmResult(true);
                                 dialog.dismiss();
                             }
-                        }).setNegativeButton("暂不开启",
+                        }).setNegativeButton(context.getString(R.string.udesk_ignore),
                         new DialogInterface.OnClickListener() {
 
                             @Override

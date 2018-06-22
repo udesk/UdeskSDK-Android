@@ -11,6 +11,7 @@ import android.view.SurfaceView;
 import io.agora.rtc.Constants;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
+import udesk.core.UdeskConst;
 import udesk.udesksocket.UdeskSocketContants;
 
 public class UdeskWorkerThread extends Thread {
@@ -119,7 +120,7 @@ public class UdeskWorkerThread extends Thread {
     private RtcEngine ensureRtcEngineReadyLock() {
         if (mRtcEngine == null) {
             //Agora 为应用程序开发者签发的 App ID
-            String appId = UdeskSocketContants.agora_app_id;
+            String appId = UdeskConst.agora_app_id;
             if (TextUtils.isEmpty(appId)) {
                 throw new RuntimeException("NEED TO use your App ID, get your own ID at https://dashboard.agora.io/");
             }

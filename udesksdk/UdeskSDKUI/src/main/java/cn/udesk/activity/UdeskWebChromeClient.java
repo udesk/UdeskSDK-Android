@@ -6,12 +6,10 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
-
 
 
 /**
@@ -145,8 +143,8 @@ public class UdeskWebChromeClient extends WebChromeClient {
                 }
                 if (uploadMessageAboveL != null) {//5.0以上
                     onActivityResultAboveL(requestCode, resultCode, data);
-                }else if(uploadMessage != null) {
-                    if (data != null &&  resultCode == Activity.RESULT_OK ){
+                }else {
+                    if (resultCode == Activity.RESULT_OK){
                         Uri result = data.getData();
                         uploadMessage.onReceiveValue(result);
                         uploadMessage = null;

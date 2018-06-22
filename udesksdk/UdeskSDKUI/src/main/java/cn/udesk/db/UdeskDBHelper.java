@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class UdeskDBHelper extends SQLiteOpenHelper {
 
     public static String DATABASE_NAME = "udesk_sdk";
-    public final static int DATABASE_VERSION = 5;
+    public final static int DATABASE_VERSION = 6;
 
 
     public static String UdeskMessage = "udeskMessageInfo";
@@ -32,7 +32,7 @@ public class UdeskDBHelper extends SQLiteOpenHelper {
                 + "PlayedFlag INTEGER,Direction INTEGER,LocalPath Text,"
                 + "Duration INTEGER,Receive_AgentJid TEXT,created_at TEXT,"
                 + "updated_at TEXT,reply_user TEXT,reply_userurl TEXT,"
-                + "subsessionid TEXT,seqNum INTEGER)");
+                + "subsessionid TEXT,seqNum INTEGER,fileName TEXT,fileSize TEXT)");
 
 
         db.execSQL("CREATE TABLE IF NOT EXISTS "
@@ -51,13 +51,13 @@ public class UdeskDBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.beginTransaction();
         try {
-
-
-            db.execSQL("DROP TABLE IF EXISTS udesksendIngMsgs");
-            db.execSQL("DROP TABLE IF EXISTS udeskAgentMsg");
-            db.execSQL("DROP TABLE IF EXISTS sub_sessionid");
-            onUpgradeDB(db, oldVersion);
-
+            while (oldVersion <newVersion){
+                onUpgradeDB(db, oldVersion);
+                if (oldVersion <=4){
+                    oldVersion = 4;
+                }
+                oldVersion++;
+            }
             db.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,46 +69,62 @@ public class UdeskDBHelper extends SQLiteOpenHelper {
 
     public void onUpgradeDB(SQLiteDatabase db, int oldVersion) {
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS "
-                + UdeskSendIngMsgs
-                + "( MsgID TEXT, SendFlag INTEGER, Time BIGINT, primary key(MsgID))");
+        if (oldVersion <= 4) {
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS "
-                + UdeskAgentMsg
-                + "( Receive_AgentJid TEXT, HeadUrl TEXT, AgentNick TEXT, primary key(Receive_AgentJid))");
+            db.execSQL("DROP TABLE IF EXISTS udesksendIngMsgs");
+            db.execSQL("DROP TABLE IF EXISTS udeskAgentMsg");
+            db.execSQL("DROP TABLE IF EXISTS sub_sessionid");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + SubSessionId
-                + "( SUBID TEXT primary key, SEQNUM INTEGER)");
+            db.execSQL("CREATE TABLE IF NOT EXISTS "
+                    + UdeskSendIngMsgs
+                    + "( MsgID TEXT, SendFlag INTEGER, Time BIGINT, primary key(MsgID))");
+
+            db.execSQL("CREATE TABLE IF NOT EXISTS "
+                    + UdeskAgentMsg
+                    + "( Receive_AgentJid TEXT, HeadUrl TEXT, AgentNick TEXT, primary key(Receive_AgentJid))");
+
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + SubSessionId
+                    + "( SUBID TEXT primary key, SEQNUM INTEGER)");
 
 
-        String tempMessageInfo = "TempMessageInfo";
-        db.execSQL("CREATE TABLE IF NOT EXISTS "
-                + tempMessageInfo
-                + "(MsgID TEXT primary key,Time BIGINT,MsgContent TEXT,"
-                + "MsgType TEXT, ReadFlag INTEGER,SendFlag INTEGER,"
-                + "PlayedFlag INTEGER,Direction INTEGER,LocalPath Text,"
-                + "Duration INTEGER,Receive_AgentJid TEXT,created_at TEXT,"
-                + "updated_at TEXT,reply_user TEXT,reply_userurl TEXT,"
-                + "subsessionid TEXT,seqNum INTEGER)");
+            String tempMessageInfo = "TempMessageInfo";
+            db.execSQL("CREATE TABLE IF NOT EXISTS "
+                    + tempMessageInfo
+                    + "(MsgID TEXT primary key,Time BIGINT,MsgContent TEXT,"
+                    + "MsgType TEXT, ReadFlag INTEGER,SendFlag INTEGER,"
+                    + "PlayedFlag INTEGER,Direction INTEGER,LocalPath Text,"
+                    + "Duration INTEGER,Receive_AgentJid TEXT,created_at TEXT,"
+                    + "updated_at TEXT,reply_user TEXT,reply_userurl TEXT,"
+                    + "subsessionid TEXT,seqNum INTEGER)");
 
-        if (oldVersion < 3) {
-            db.execSQL(" INSERT INTO TempMessageInfo "
-                    + "(MsgID,Time,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,Direction,LocalPath,Duration) "
-                    + "SELECT MsgID,Time,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,Direction,LocalPath,Duration "
-                    + " FROM udeskMessageInfo ");
-        } else if (oldVersion == 3) {
-            db.execSQL(" INSERT INTO TempMessageInfo "
-                    + "(MsgID,Time,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,Direction,LocalPath,Duration,Receive_AgentJid,created_at,reply_user,reply_userurl) "
-                    + "SELECT MsgID,Time,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,Direction,LocalPath,Duration,AgentJid,created_at,reply_user,reply_userurl "
-                    + " FROM udeskMessageInfo ");
-        } else if (oldVersion == 4) {
-            db.execSQL(" INSERT INTO TempMessageInfo "
-                    + "(MsgID,Time,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,Direction,LocalPath,Duration) "
-                    + "SELECT MsgID,Time,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,Direction,LocalPath,Duration "
-                    + " FROM udeskMessageInfo ");
+            if (oldVersion < 3) {
+                db.execSQL(" INSERT INTO TempMessageInfo "
+                        + "(MsgID,Time,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,Direction,LocalPath,Duration) "
+                        + "SELECT MsgID,Time,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,Direction,LocalPath,Duration "
+                        + " FROM udeskMessageInfo ");
+            } else if (oldVersion == 3) {
+                db.execSQL(" INSERT INTO TempMessageInfo "
+                        + "(MsgID,Time,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,Direction,LocalPath,Duration,Receive_AgentJid,created_at,reply_user,reply_userurl) "
+                        + "SELECT MsgID,Time,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,Direction,LocalPath,Duration,AgentJid,created_at,reply_user,reply_userurl "
+                        + " FROM udeskMessageInfo ");
+            } else if (oldVersion == 4) {
+                db.execSQL(" INSERT INTO TempMessageInfo "
+                        + "(MsgID,Time,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,Direction,LocalPath,Duration) "
+                        + "SELECT MsgID,Time,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,Direction,LocalPath,Duration "
+                        + " FROM udeskMessageInfo ");
+            }
+            db.execSQL("DROP TABLE udeskMessageInfo");
+            db.execSQL("ALTER TABLE TempMessageInfo RENAME TO udeskMessageInfo");
+        } else {
+            switch (oldVersion) {
+                case 5:
+                    db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN  fileName TEXT ");
+                    db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN  fileSize TEXT ");
+                    break;
+            }
         }
-        db.execSQL("DROP TABLE udeskMessageInfo");
-        db.execSQL("ALTER TABLE TempMessageInfo RENAME TO udeskMessageInfo");
+
+
     }
 
 

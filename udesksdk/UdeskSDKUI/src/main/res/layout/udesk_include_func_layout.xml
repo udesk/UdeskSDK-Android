@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/udesk_color_f9f9f9"
+    android:gravity="center"
+    android:orientation="vertical">
+
+
+    <GridView
+        android:id="@+id/function_gridview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/udesk_20"
+        android:layout_marginTop="@dimen/udesk_20"
+        android:columnWidth="@dimen/udesk_60"
+        android:fadeScrollbars="true"
+        android:gravity="center"
+        android:listSelector="#00000000"
+        android:numColumns="4"
+        android:stretchMode="spacingWidthUniform"
+        android:verticalSpacing="@dimen/udesk_20" />
+
+</LinearLayout>

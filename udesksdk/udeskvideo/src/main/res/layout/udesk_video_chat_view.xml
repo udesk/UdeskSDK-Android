@@ -220,7 +220,6 @@
                 android:id="@+id/agent_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="客服李四"
                 android:textColor="@color/color555555"
                 android:textSize="20sp" />
 
@@ -228,7 +227,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="发起视频对话"
                 android:textColor="@color/color555555"
                 android:textSize="17sp" />
 

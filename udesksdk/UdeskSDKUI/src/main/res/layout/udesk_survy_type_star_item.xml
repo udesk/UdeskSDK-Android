@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="40dp"
+    android:id="@+id/star_root"
+    android:layout_marginLeft="@dimen/udesk_15"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="horizontal"
+    android:visibility="visible">
+
+
+    <ImageView
+        android:id="@+id/udesk_star_img"
+        android:layout_width="@dimen/udesk_28"
+        android:layout_height="@dimen/udesk_28" />
+
+</LinearLayout>

@@ -2,7 +2,6 @@ package udesk.udeskvideo.floatview;
 
 import android.content.Context;
 import android.content.Intent;
-import android.view.SurfaceView;
 
 import udesk.udeskvideo.floatview.service.FloatMonkService;
 
