@@ -5,13 +5,12 @@ import android.util.Log;
 
 import java.util.concurrent.ExecutorService;
 
-import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.model.MsgNotice;
-import udesk.core.UdeskCoreConst;
+import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.event.ReflectInvokeMethod;
 import udesk.core.model.MessageInfo;
@@ -23,7 +22,8 @@ public class UdeskMessageManager {
     private UdeskXmppManager mUdeskXmppManager;
     private ExecutorService messageExecutor;
     public ReflectInvokeMethod event_OnNewMessage = new ReflectInvokeMethod(new Class<?>[]{Message.class, String.class,
-            String.class, String.class, String.class, Long.class, String.class, String.class, Integer.class});
+            String.class, String.class, String.class, Long.class, String.class, String.class,
+            Integer.class,String.class,String.class});
     public ReflectInvokeMethod eventui_OnMessageReceived = new ReflectInvokeMethod(new Class<?>[]{String.class});
     public ReflectInvokeMethod eventui_OnNewMessage = new ReflectInvokeMethod(new Class<?>[]{MessageInfo.class});
     public ReflectInvokeMethod eventui_OnNewPresence = new ReflectInvokeMethod(new Class<?>[]{String.class, Integer.class});
@@ -79,8 +79,8 @@ public class UdeskMessageManager {
         mUdeskXmppManager.sendVCCallMessage(type, to, text);
     }
 
-    public void sendMessage(String type, String text, String msgId, String to, long duration, String subsessionId, boolean noNeedSave, int seqNum) {
-        mUdeskXmppManager.sendMessage(type, text, msgId, to, duration, subsessionId, noNeedSave, seqNum);
+    public void sendMessage(String type, String text, String msgId, String to, long duration, String subsessionId, boolean noNeedSave, int seqNum,String fileName,String filesize) {
+        mUdeskXmppManager.sendMessage(type, text, msgId, to, duration, subsessionId, noNeedSave, seqNum,fileName,filesize);
     }
 
     public void sendComodityMessage(String text, String to) {
@@ -118,7 +118,7 @@ public class UdeskMessageManager {
 
 
     public void onNewMessage(final Message message, String agentJid, final String type, final String msgId, final String content,
-                             final Long duration, final String send_status, String imsessionId, Integer seqNum) {
+                             final Long duration, final String send_status, String imsessionId, Integer seqNum,String fileName,String fileSize) {
         try {
             String jid[] = agentJid.split("/");
             MessageInfo msginfo = null;
@@ -130,30 +130,30 @@ public class UdeskMessageManager {
                     if (urlAndNick != null) {
                         agentName = urlAndNick[1];
                     }
-                    String buildrollBackMsg = "客服" + agentName + "撤回一条消息";
-                    msginfo = buildReceiveMessage(jid[0], UdeskConst.ChatMsgTypeString.TYPE_EVENT, msgId, buildrollBackMsg, duration, send_status, imsessionId, seqNum);
+                    String buildrollBackMsg = agentName;
+                    msginfo = buildReceiveMessage(jid[0], UdeskConst.ChatMsgTypeString.TYPE_EVENT, msgId, buildrollBackMsg, duration, send_status, imsessionId, seqNum,fileName,fileSize);
                 }
             } else {
                 //消息在本地数据库存在，则结束后续流程
                 if (UdeskDBManager.getInstance().hasReceviedMsg(msgId)) {
                     return;
                 }
-                msginfo = buildReceiveMessage(jid[0], type, msgId, content, duration, send_status, imsessionId, seqNum);
+                msginfo = buildReceiveMessage(jid[0], type, msgId, content, duration, send_status, imsessionId, seqNum,fileName,fileSize);
             }
 
-            if (type.equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT) || type.equals(UdeskConst.ChatMsgTypeString.TYPE_STRUCT)) {
-                if (mUdeskXmppManager != null) {
-                    mUdeskXmppManager.sendReceivedMsg(message);
-                }
-            } else {
+            if (!type.equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT)) {
                 boolean isSaveSuccess = UdeskDBManager.getInstance().addMessageInfo(msginfo);
                 if (isSaveSuccess) {
                     if (mUdeskXmppManager != null) {
                         mUdeskXmppManager.sendReceivedMsg(message);
                     }
                 }
+            } else {
+                if (mUdeskXmppManager != null) {
+                    mUdeskXmppManager.sendReceivedMsg(message);
+                }
             }
-            if (UdeskCoreConst.isDebug && msginfo != null) {
+            if (UdeskConst.isDebug && msginfo != null) {
                 Log.i("newMessage", msginfo.toString());
             }
             eventui_OnNewMessage.invoke(msginfo);
@@ -163,9 +163,7 @@ public class UdeskMessageManager {
             if (UdeskBaseInfo.isNeedMsgNotice) {
                 MsgNotice msgNotice = new MsgNotice(msgId, type, content);
                 event_OnNewMsgNotice.invoke(msgNotice);
-                if (msgNotice != null && UdeskSDKManager.getInstance().getOnlineMessage() != null && !UdeskConfig.isUserSDkPush) {
-                    UdeskSDKManager.getInstance().getOnlineMessage().onlineMessageReceive(msgNotice);
-                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -174,7 +172,8 @@ public class UdeskMessageManager {
     }
 
     public MessageInfo buildReceiveMessage(String agentJid, String msgType, String msgId,
-                                           String content, long duration, String send_status, String imsessionId, Integer seqNum) {
+                                           String content, long duration, String send_status,
+                                           String imsessionId, Integer seqNum,String fileName,String fileSize) {
         MessageInfo msg = new MessageInfo();
         msg.setMsgtype(msgType);
         msg.setTime(System.currentTimeMillis());
@@ -190,6 +189,8 @@ public class UdeskMessageManager {
         msg.setSend_status(send_status);
         msg.setSubsessionid(imsessionId);
         msg.setSeqNum(seqNum);
+        msg.setFilename(fileName);
+        msg.setFilesize(fileSize);
         return msg;
     }
 

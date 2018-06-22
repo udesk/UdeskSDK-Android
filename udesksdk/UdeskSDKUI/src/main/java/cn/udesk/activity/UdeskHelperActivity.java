@@ -1,6 +1,5 @@
 package cn.udesk.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,22 +15,21 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import cn.udesk.R;
 import cn.udesk.JsonUtils;
-import cn.udesk.UdeskConst;
+import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.adapter.UDHelperAdapter;
 import cn.udesk.config.UdekConfigUtil;
-import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.widget.UdeskLoadingView;
 import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskCallBack;
+import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
 import udesk.core.model.UDHelperItem;
 
-public class UdeskHelperActivity extends Activity implements OnClickListener, AdapterView.OnItemClickListener {
+public class UdeskHelperActivity extends UdeskBaseActivity implements OnClickListener, AdapterView.OnItemClickListener {
 
     private UdeskTitleBar mTitlebar;
     private View naviToIm;
@@ -47,6 +45,7 @@ public class UdeskHelperActivity extends Activity implements OnClickListener, Ad
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UdeskUtil.setOrientation(this);
         setContentView(R.layout.udesk_activity_base);
         initView();
     }
@@ -110,12 +109,12 @@ public class UdeskHelperActivity extends Activity implements OnClickListener, Ad
                         finish();
                     }
                 });
-                if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
-                    mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
+                if (UdeskConfig.DEFAULT != UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId) {
+                    mTitlebar.getUdeskBackImg().setImageResource(UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId);
                 }
-               UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId,mTitlebar.getLeftTextView(),mTitlebar.getRightTextView());
-                if (mTitlebar.getRootView() != null){
-                    UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId ,mTitlebar.getRootView());
+                UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarTextLeftRightResId, mTitlebar.getLeftTextView(), mTitlebar.getRightTextView());
+                if (mTitlebar.getRootView() != null) {
+                    UdekConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarBgResId, mTitlebar.getRootView());
                 }
             }
         } catch (Exception e) {
@@ -199,7 +198,7 @@ public class UdeskHelperActivity extends Activity implements OnClickListener, Ad
                     startGetSerchHelper(search);
                 }
             } else if (v.getId() == R.id.udesk_navi_to_im) {
-                UdeskSDKManager.getInstance().showConversationByImGroup(UdeskHelperActivity.this);
+                UdeskSDKManager.getInstance().entryChat(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig(), UdeskSDKManager.getInstance().getSdkToken(getApplicationContext()));
             }
         } catch (Exception e) {
             e.printStackTrace();

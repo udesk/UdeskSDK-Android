@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PopoEmoticons>
+    <Catalog Title="default">
+        <Emoticon File="udesk_001.png" ID="emoticon_emoji_00" Tag="[emoji001]"/>
+        <Emoticon File="udesk_002.png" ID="emoticon_emoji_01" Tag="[emoji002]"/>
+        <Emoticon File="udesk_003.png" ID="emoticon_emoji_02" Tag="[emoji003]"/>
+        <Emoticon File="udesk_004.png" ID="emoticon_emoji_03" Tag="[emoji004]"/>
+        <Emoticon File="udesk_005.png" ID="emoticon_emoji_04" Tag="[emoji005]"/>
+        <Emoticon File="udesk_006.png" ID="emoticon_emoji_05" Tag="[emoji006]"/>
+        <Emoticon File="udesk_007.png" ID="emoticon_emoji_06" Tag="[emoji007]"/>
+        <Emoticon File="udesk_008.png" ID="emoticon_emoji_07" Tag="[emoji008]"/>
+        <Emoticon File="udesk_009.png" ID="emoticon_emoji_08" Tag="[emoji009]"/>
+        <Emoticon File="udesk_010.png" ID="emoticon_emoji_09" Tag="[emoji010]"/>
+        <Emoticon File="udesk_011.png" ID="emoticon_emoji_10" Tag="[emoji011]"/>
+		<Emoticon File="udesk_012.png" ID="emoticon_emoji_10" Tag="[emoji012]"/>
+        <Emoticon File="udesk_013.png" ID="emoticon_emoji_11" Tag="[emoji013]"/>
+        <Emoticon File="udesk_014.png" ID="emoticon_emoji_12" Tag="[emoji014]"/>
+        <Emoticon File="udesk_015.png" ID="emoticon_emoji_13" Tag="[emoji015]"/>
+        <Emoticon File="udesk_016.png" ID="emoticon_emoji_14" Tag="[emoji016]"/>
+        <Emoticon File="udesk_017.png" ID="emoticon_emoji_15" Tag="[emoji017]"/>
+        <Emoticon File="udesk_018.png" ID="emoticon_emoji_16" Tag="[emoji018]"/>
+        <Emoticon File="udesk_019.png" ID="emoticon_emoji_17" Tag="[emoji019]"/>
+        <Emoticon File="udesk_020.png" ID="emoticon_emoji_18" Tag="[emoji020]"/>
+        <Emoticon File="udesk_021.png" ID="emoticon_emoji_19" Tag="[emoji021]"/>
+        <Emoticon File="udesk_022.png" ID="emoticon_emoji_20" Tag="[emoji022]"/>
+        <Emoticon File="udesk_023.png" ID="emoticon_emoji_21" Tag="[emoji023]"/>
+        <Emoticon File="udesk_024.png" ID="emoticon_emoji_22" Tag="[emoji024]"/>
+        <Emoticon File="udesk_025.png" ID="emoticon_emoji_23" Tag="[emoji025]"/>
+        <Emoticon File="udesk_026.png" ID="emoticon_emoji_24" Tag="[emoji026]"/>
+        <Emoticon File="udesk_027.png" ID="emoticon_emoji_25" Tag="[emoji027]"/>
+        <Emoticon File="udesk_028.png" ID="emoticon_emoji_26" Tag="[emoji028]"/>
+        
+    </Catalog>
+</PopoEmoticons>
+
+

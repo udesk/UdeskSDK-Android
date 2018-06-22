@@ -25,5 +25,8 @@
     <string name="udesk_video_timeout">busy</string>
     <string name="udesk_video_not_loggin">the agent has not logged in the video</string>
 
+    <string name="udesk_permission"> Your phone is not granted floating window permission. Please open and try again</string>
+    <string name="udesk_open">Now go to open</string>
+    <string name="udesk_ignore">Not open temporarily</string>
 
 </resources>

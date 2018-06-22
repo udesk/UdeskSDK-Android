@@ -1,13 +1,11 @@
 package cn.udesk.activity;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
-
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
@@ -18,11 +16,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import cn.udesk.R;
-import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
+import me.relex.photodraweeview.OnPhotoTapListener;
 import me.relex.photodraweeview.PhotoDraweeView;
 
-public class UdeskZoomImageActivty extends Activity implements
+public class UdeskZoomImageActivty extends UdeskBaseActivity implements
         OnClickListener {
 
     private PhotoDraweeView zoomImageView;
@@ -32,23 +30,33 @@ public class UdeskZoomImageActivty extends Activity implements
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
-
+        UdeskUtil.setOrientation(this);
         try {
             if (!Fresco.hasBeenInitialized()) {
-                UdeskSDKManager.getInstance().frescoInit(this);
+                UdeskUtil.frescoInit(this);
             }
             setContentView(R.layout.udesk_zoom_imageview);
             zoomImageView = (PhotoDraweeView) findViewById(R.id.udesk_zoom_imageview);
+            zoomImageView.setOnPhotoTapListener(new OnPhotoTapListener() {
+                @Override
+                public void onPhotoTap(View view, float x, float y) {
+                    finish();
+                }
+            });
             Bundle bundle = getIntent().getExtras();
             uri = bundle.getParcelable("image_path");
-            UdeskUtil.loadImage(getApplicationContext(),zoomImageView, uri);
+            UdeskUtil.loadImage(getApplicationContext(), zoomImageView, uri);
             saveIdBtn = findViewById(R.id.udesk_zoom_save);
             saveIdBtn.setOnClickListener(this);
         } catch (Exception e) {
             e.printStackTrace();
-        }catch (OutOfMemoryError error){
+        } catch (OutOfMemoryError error) {
             error.printStackTrace();
         }
+
+    }
+
+    private static class MySaveImageThread extends Thread {
 
     }
 
@@ -56,7 +64,7 @@ public class UdeskZoomImageActivty extends Activity implements
     public void onClick(View v) {
         try {
             if (v.getId() == R.id.udesk_zoom_save) {
-                new Thread() {
+                new MySaveImageThread() {
                     public void run() {
                         saveImage();
                     }
@@ -74,7 +82,7 @@ public class UdeskZoomImageActivty extends Activity implements
             return;
         }
         try {
-            File oldFile = UdeskUtil.getFileFromDiskCache(UdeskZoomImageActivty.this.getApplicationContext(),uri);
+            File oldFile = UdeskUtil.getFileFromDiskCache(UdeskZoomImageActivty.this.getApplicationContext(), uri);
             if (oldFile == null) {
                 String oldPath = uri.getPath();
                 oldFile = new File(oldPath);
@@ -125,7 +133,7 @@ public class UdeskZoomImageActivty extends Activity implements
     }
 
     private boolean copyFile(File srcFile, File destFile) {
-        boolean result = false;
+        boolean result;
         try {
             InputStream in = new FileInputStream(srcFile);
             try {

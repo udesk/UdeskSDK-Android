@@ -1,7 +1,5 @@
 package cn.udesk.model;
 
-import java.util.List;
-
 
 public class LogMessage {
 
@@ -30,6 +28,8 @@ public class LogMessage {
     private Object content;
     private Object duration;
     private Object agentJId;
+    private Object fileName;
+    private Object fileSize;
 
 
     public Object getId() {
@@ -198,5 +198,21 @@ public class LogMessage {
 
     public void setAgentJId(Object agentJId) {
         this.agentJId = agentJId;
+    }
+
+    public Object getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(Object fileName) {
+        this.fileName = fileName;
+    }
+
+    public Object getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(Object fileSize) {
+        this.fileSize = fileSize;
     }
 }

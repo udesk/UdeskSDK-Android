@@ -11,6 +11,7 @@ import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 import okio.ByteString;
+import udesk.core.UdeskConst;
 import udesk.udesksocket.OnMessageListener;
 import udesk.udesksocket.UdeskSocketContants;
 
@@ -60,7 +61,7 @@ public class UdeskWebsocket extends WebSocketListener {
     public synchronized void connect() {
         try {
             Request request = new Request.Builder()
-                    .url(UdeskSocketContants.server_url)
+                    .url(UdeskConst.server_url)
                     .build();
             mOkHttpClient.newWebSocket(request, this);
         } catch (Exception e) {

@@ -9,16 +9,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
-import cn.jpush.android.api.JPushInterface;
 import cn.udesk.PreferenceHelper;
-import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
-import cn.udesk.config.UdeskConfig;
-import udesk.core.UdeskCoreConst;
+import udesk.core.UdeskConst;
 import udesk.sdk.demo.R;
 
 
@@ -30,14 +25,6 @@ public class UdeskInitKeyActivity extends Activity {
     private String AppId = "cdc6da4fa97efc2c";
     // 替换成你们在后台生成的密钥
     private String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
-
-
-//    private String AppId = "e6e262eacb0f583a";
-//
-//    private String UDESK_DOMAIN = "brazil.udesk.cn";
-//    //    替换成你们在后台生成的密钥
-//    private String UDESK_SECRETKEY = "97c3bb74c32efd0b335dc827640e05e2";
-
 
     private EditText mDomainEdit;
 
@@ -75,29 +62,21 @@ public class UdeskInitKeyActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (!TextUtils.isEmpty(mDomainEdit.getText().toString()) && !TextUtils.isEmpty(mKeyEdit.getText().toString())) {
-                    /*  使用前需要设置的信息:
-                        1 保存domain和key
-                        2创建客户*/
-                    UdeskCoreConst.HTTP = "http://";
-//                    UdeskSDKManager.getInstance().setFormUrl("https://www.baidu.com/");
-//                    UdeskSDKManager.getInstance().setFormCallBak(new UdeskSDKManager.IUdeskFormCallBak() {
-//                        @Override
-//                        public void toLuachForm() {
-//
-//                        }
-//                    });
-                    UdeskSDKManager.getInstance().initApiKey(getApplicationContext(), mDomainEdit.getText().toString(), mKeyEdit.getText().toString(), mAppidEdit.getText().toString());
+                    //  使用前需要设置的信息:
+
+                    UdeskSDKManager.getInstance().initApiKey(getApplicationContext(), mDomainEdit.getText().toString(),
+                            mKeyEdit.getText().toString(), mAppidEdit.getText().toString());
+                    UdeskConst.HTTP = "http://";
                     String sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
                     if (TextUtils.isEmpty(sdkToken)) {
                         sdkToken = UUID.randomUUID().toString();
                     }
-                    Map<String, String> info = new HashMap<String, String>();
-                    info.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdkToken);
-                    info.put(UdeskConst.UdeskUserInfo.NICK_NAME, sdkToken);
-                    UdeskSDKManager.getInstance().setUserInfo(
-                            getApplicationContext(), sdkToken, info);
                     saveDoamiandKey();
                     PreferenceHelper.write(getApplicationContext(), "init_base_name", "sdktoken", sdkToken);
+                    PreferenceHelper.write(getApplicationContext(), "init_base_name", "domain", mDomainEdit.getText().toString());
+                    PreferenceHelper.write(getApplicationContext(), "init_base_name", "appkey", mKeyEdit.getText().toString());
+                    PreferenceHelper.write(getApplicationContext(), "init_base_name", "appid", mAppidEdit.getText().toString());
+
                     Intent intent = new Intent();
                     intent.setClass(UdeskInitKeyActivity.this, UdeskUseGuideActivity.class);
                     startActivity(intent);

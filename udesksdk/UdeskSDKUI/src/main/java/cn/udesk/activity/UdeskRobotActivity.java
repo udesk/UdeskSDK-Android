@@ -3,18 +3,18 @@ package cn.udesk.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-
 import cn.udesk.R;
-import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.config.UdekConfigUtil;
-import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
+import cn.udesk.model.SDKIMSetting;
 import cn.udesk.widget.UdeskTitleBar;
+import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
 
 public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
@@ -25,6 +25,7 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UdeskUtil.setOrientation(this);
         initData();
         loadingView();
     }
@@ -51,11 +52,21 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
                         this, UdeskSDKManager.getInstance().getAppkey(this),
                         h5Url,
                         UdeskSDKManager.getInstance().getSdkToken(this));
+                url = url + "&udesk_sdk_features=show_transfer,go_chat";
                 if (!UdeskUtil.isZh(this)) {
                     url = url + "&language=en-us";
                 }
                 if (!TextUtils.isEmpty(UdeskSDKManager.getInstance().getAppId(this))) {
                     url = url + "&app_id=" + UdeskSDKManager.getInstance().getAppId(this);
+                }
+                if (!TextUtils.isEmpty(UdeskSDKManager.getInstance().getUdeskConfig().robot_modelKey)) {
+                    url = url + "&robot_modelKey=" + UdeskSDKManager.getInstance().getUdeskConfig().robot_modelKey;
+                }
+                if (!TextUtils.isEmpty(UdeskSDKManager.getInstance().getUdeskConfig().concatRobotUrlWithCustomerInfo)) {
+                    url = url + UdeskSDKManager.getInstance().getUdeskConfig().concatRobotUrlWithCustomerInfo;
+                }
+                if (UdeskConst.isDebug) {
+                    Log.i("udesksdk", "roboturl = " + url);
                 }
                 mwebView.loadUrl(url);
             } else {
@@ -74,12 +85,12 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
         try {
             mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
             if (mTitlebar != null) {
-                UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId, mTitlebar.getLeftTextView(), mTitlebar.getRightTextView());
+                UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarTextLeftRightResId, mTitlebar.getLeftTextView(), mTitlebar.getRightTextView());
                 if (mTitlebar.getRootView() != null) {
-                    UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId, mTitlebar.getRootView());
+                    UdekConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarBgResId, mTitlebar.getRootView());
                 }
-                if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
-                    mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
+                if (UdeskConfig.DEFAULT != UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId) {
+                    mTitlebar.getUdeskBackImg().setImageResource(UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId);
                 }
                 mTitlebar
                         .setLeftTextSequence(getString(R.string.udesk_robot_title));
@@ -93,11 +104,23 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
                     }
                 });
 
+                SDKIMSetting sdkimSetting = UdeskSDKManager.getInstance().getImSetting();
+                if (sdkimSetting != null && UdeskUtil.objectToInt(sdkimSetting.getShow_robot_times()) > 0) {
+                    return;
+                }
                 settingTitleBarRight(tranfer);
 
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void showTransfer() {
+//        super.showTransfer();
+        if (tranfer.trim().equals("true")) {
+            settingTitleBarRight("true");
         }
     }
 
@@ -113,14 +136,7 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
 
                     @Override
                     public void onClick(View v) {
-                        if (isTranferByImGroup) {
-                            UdeskSDKManager.getInstance().showConversationByImGroup(UdeskRobotActivity.this);
-                        } else {
-                            Intent intent = new Intent(UdeskRobotActivity.this, UdeskChatActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            UdeskRobotActivity.this.startActivity(intent);
-                        }
-
+                        goChat();
                     }
                 });
             } else {
@@ -130,6 +146,20 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void goChat() {
+        if (isTranferByImGroup) {
+            Intent intent = new Intent(getApplicationContext(), UdeskOptionsAgentGroupActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(UdeskRobotActivity.this, UdeskChatActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            UdeskRobotActivity.this.startActivity(intent);
+        }
+
     }
 
     @Override

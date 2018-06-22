@@ -1,6 +1,5 @@
 package cn.udesk.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,25 +11,26 @@ import android.widget.Toast;
 
 import cn.udesk.JsonUtils;
 import cn.udesk.R;
-import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
+import cn.udesk.UdeskUtil;
 import cn.udesk.config.UdekConfigUtil;
-import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskCallBack;
+import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
 import udesk.core.model.UDHelperArticleContentItem;
 
-public class UdeskHelperArticleActivity extends Activity {
+public class UdeskHelperArticleActivity extends UdeskBaseActivity {
 
-	   private UdeskTitleBar  mTitlebar;
+	   private UdeskTitleBar mTitlebar;
 	   private View udeskLoading;
 	   private TextView udeskSubject;
 	   private WebView  udeskWebView;
 		@Override
 		protected void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
+			UdeskUtil.setOrientation(this);
 			setContentView(R.layout.udesk_articleactivity_view);
 			try {
 				settingTitlebar();
@@ -55,10 +55,10 @@ public class UdeskHelperArticleActivity extends Activity {
 			try {
 				mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
 				if(mTitlebar != null){
-                    UdekConfigUtil.setUITextColor(UdeskConfig.udeskTitlebarTextLeftRightResId,mTitlebar.getLeftTextView(),mTitlebar.getRightTextView());
-                    UdekConfigUtil.setUIbgDrawable(UdeskConfig.udeskTitlebarBgResId ,mTitlebar.getRootView());
-                    if (UdeskConfig.DEFAULT != UdeskConfig.udeskbackArrowIconResId) {
-                        mTitlebar.getUdeskBackImg().setImageResource(UdeskConfig.udeskbackArrowIconResId);
+                    UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarTextLeftRightResId,mTitlebar.getLeftTextView(),mTitlebar.getRightTextView());
+                    UdekConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarBgResId ,mTitlebar.getRootView());
+                    if (UdeskConfig.DEFAULT != UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId) {
+                        mTitlebar.getUdeskBackImg().setImageResource(UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId);
                     }
                     mTitlebar.setLeftTextSequence(getString(R.string.udesk_navi_helper_title_main));
                     mTitlebar.setLeftLinearVis(View.VISIBLE);

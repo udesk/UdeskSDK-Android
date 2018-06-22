@@ -1,13 +1,8 @@
 package udesk.udesksocket;
 
-import android.content.Intent;
-
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import okhttp3.Response;
 import okio.ByteString;

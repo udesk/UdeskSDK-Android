@@ -9,7 +9,7 @@
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/puw_bg_corners"
+        android:background="@drawable/udesk_puw_bg_corners"
         android:minHeight="180dp"
         android:orientation="vertical">
 
@@ -25,7 +25,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:autoLink="all"
                 android:gravity="center_vertical|center_horizontal"
                 android:maxHeight="@dimen/udesk_300"
                 android:padding="15dp"
@@ -47,7 +46,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:background="@drawable/puw_bt_selecter_left"
+                android:background="@drawable/udesk_puw_bt_selecter_left"
                 android:gravity="center"
                 android:textColor="@color/udesk_custom_dialog_cancle_btn_color"
                 android:textSize="@dimen/udesk_sp15" />
@@ -60,7 +59,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:background="@drawable/puw_bt_selecter_right"
+                android:background="@drawable/udesk_puw_bt_selecter_right"
                 android:gravity="center"
                 android:textColor="@color/udesk_custom_dialog_sure_btn_color"
                 android:textSize="@dimen/udesk_sp15" />

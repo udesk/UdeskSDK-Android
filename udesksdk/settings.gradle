@@ -1,1 +1,1 @@
-include ':UdeskSDKUI', ':udeskNewDemo', ':baidumapdemo', ':gaodemapdemo', ':tenxunmapdemo', ':udeskvideo'
+include ':UdeskSDKUI', ':udeskNewDemo', ':udeskvideo'

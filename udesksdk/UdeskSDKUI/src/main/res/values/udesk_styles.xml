@@ -31,17 +31,21 @@
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="Udesk_Theme" parent="Theme.AppCompat.NoActionBar"></style>
+    <style name="Udesk_Theme" parent="Theme.AppCompat.NoActionBar" />
 
 
-    <style name="transcutestyle" parent="@android:style/Theme.Dialog">
-        <item name="android:windowFrame">@android:color/transparent</item><!-- 边框 -->
-        <item name="android:windowIsFloating">true</item><!-- 是否浮现在activity之上 -->
-        <item name="android:windowNoTitle">true</item><!-- 无标题 -->
-        <item name="android:windowBackground">@android:color/transparent</item><!-- 背景透明 -->
+    <style name="Theme_Audio_Record_Button">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <!--背景变暗-->
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 
-        <item name="android:windowIsTranslucent">false</item>
-
+    <style name="udesk_survy_anim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/udesk_pop_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/udesk_pop_exit_anim</item>
     </style>
 
 </resources>

@@ -1,10 +1,9 @@
 package udesk.udesksocket;
 
-import android.app.KeyguardManager;
 import android.content.Context;
 import android.os.Build;
-import android.os.PowerManager;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -25,6 +24,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import udesk.core.UdeskConst;
 
 /**
  * author : ${揭军平}
@@ -37,7 +37,7 @@ public class Util {
 
 
     private static int mId = 1;
-    private static Object lock = new Object();
+    private static final Object lock = new Object();
 
     public static int getNextId() {
         synchronized (lock) {
@@ -65,13 +65,13 @@ public class Util {
         return builder.toString();
     }
 
-    public static int toInt(String str, int defValue) {
+    public static int toInt(String str) {
         try {
             return Integer.parseInt(str);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return defValue;
+        return 0;
     }
 
     public static int objectToInt(Object obj) {
@@ -88,7 +88,7 @@ public class Util {
             return Float.valueOf((Float) obj).intValue();
         }
         if (isNumeric(obj.toString())) {
-            return toInt(obj.toString(), 0);
+            return toInt(obj.toString());
         }
         return 0;
     }
@@ -100,10 +100,7 @@ public class Util {
         }
         Pattern pattern = Pattern.compile("[0-9]*");
         Matcher isNum = pattern.matcher(str);
-        if (!isNum.matches()) {
-            return false;
-        }
-        return true;
+        return isNum.matches();
     }
 
     public static String objectToString(Object obj) {
@@ -160,10 +157,10 @@ public class Util {
 //    }
 
     public static String secToTime(int time) {
-        String timeStr = null;
-        int hour = 0;
-        int minute = 0;
-        int second = 0;
+        String timeStr;
+        int hour;
+        int minute;
+        int second;
         if (time <= 0)
             return "00:00";
         else {
@@ -185,7 +182,7 @@ public class Util {
 
 
     public static String unitFormat(int i) {
-        String retStr = null;
+        String retStr;
         if (i >= 0 && i < 10)
             retStr = "0" + Integer.toString(i);
         else
@@ -225,17 +222,17 @@ public class Util {
             RequestBody requestBody = RequestBody.create(JSON, jsonObject.toString());
             Log.i(UdeskSocketContants.Tag, jsonObject.toString());
             Request request = new Request.Builder()
-                    .url(UdeskSocketContants.signToenUrl)
+                    .url(UdeskConst.signToenUrl)
                     .post(requestBody)
                     .build();
             okHttpClient.newCall(request).enqueue(new Callback() {
                 @Override
-                public void onFailure(Call call, IOException e) {
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
                     sigtokenCallBack.failure();
                 }
 
                 @Override
-                public void onResponse(Call call, Response response) throws IOException {
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                     sigtokenCallBack.response(response.body().string());
                 }
             });

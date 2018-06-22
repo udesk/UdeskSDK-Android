@@ -2,58 +2,29 @@
 <resources>
 
 
-
-
     <!-- 顶部TitleBar的背景色 -->
     <color name="udesk_titlebar_bg1">#0093FF</color>
-    <color name="udesk_titlebar_bg2">#00BAD4</color>
-
     <!-- 顶部TitleBar，左右两侧文字的颜色 -->
     <color name="udesk_color_navi_text1">#FFFFFF</color>
-    <color name="udesk_color_navi_text2">#FFFFFF</color>
-
-    <!-- 顶部TitleBar，中间文字的颜色 -->
-    <color name="udesk_color_titlebar_text_center1">#FFFFFF</color>
-    <color name="udesk_color_titlebar_text_center2">#FFFFFF</color>
-
-
     <!-- IM界面，左侧文字的字体颜色 -->
     <color name="udesk_color_im_text_left1">#313F48</color>
-    <color name="udesk_color_im_text_left2">#313F48</color>
-
     <!-- IM界面，右侧文字的字体颜色 -->
     <color name="udesk_color_im_text_right1">#FFFFFF</color>
-    <color name="udesk_color_im_text_right2">#FFFFFF</color>
-
     <!-- IM界面，左侧客服昵称文字的字体颜色 -->
     <color name="udesk_color_im_left_nickname1">#C3CDD4</color>
-    <color name="udesk_color_im_left_nickname2">#C3CDD4</color>
-
     <!-- IM界面，时间文字的字体颜色 -->
     <color name="udesk_color_im_time_text1">#C3CDD4</color>
-    <color name="udesk_color_im_time_text2">#C3CDD4</color>
-
     <!-- IM界面，提示语文字的字体颜色，比如客服转移-->
     <color name="udesk_color_im_tip_text1">#c7c6c6</color>
-    <color name="udesk_color_im_tip_text2">#c7c6c6</color>
-
-
     <!-- 商品咨询页面中背景色 -->
     <color name="udesk_color_im_commondity_bg1">#ECEFF1</color>
-    <color name="udesk_color_im_commondity_bg2">#ECEFF1</color>
-
-
     <!-- 商品咨询页面中，发送链接的字样颜色 -->
     <color name="udesk_color_im_commondity_link1">#FFFFFF</color>
-    <color name="udesk_color_im_commondity_link2">#FFFFFF</color>
-
     <!--询页面中，商品介绍Title的字样颜色 -->
     <color name="udesk_color_im_commondity_title1">#313F48</color>
-    <color name="udesk_color_im_commondity_title2">#313F48</color>
-
     <!-- 商品咨询页面中，商品介绍子Title的字样颜色 -->
     <color name="udesk_color_im_commondity_subtitle1">#FF3B30</color>
-    <color name="udesk_color_im_commondity_subtitle2">#FF3B30</color>
+
 
     <!-- textview 超链接的颜色 -->
     <color name="textlinkcolor">#ffffff</color>
@@ -77,22 +48,51 @@
     <color name="udesk_bottom_send_textcolor1">#FFFFFFFF</color>
     <color name="udesk_bottom_send_textcolor2">#FFFFFFFF</color>
 
-    <!-- 默认白色背景 --><color name="udesk_color_bg_white">#FFFFFFFF</color>
+    <!-- 默认白色背景 -->
+    <color name="udesk_color_bg_white">#FFFFFFFF</color>
 
-    <!-- 黑色 背景--> <color name="udesk_black">#ff000000</color>
-
+    <!-- 黑色 背景-->
+    <color name="udesk_black">#ff000000</color>
 
 
     <color name="udesk_color_text_light">#efeff3</color>
     <color name="udesk_color_text_gray">#dadada</color>
 
     <color name="udesk_default_gray_bg">#F0EFF5</color>
-    <color name="udesk_view_line">#d0D8D8D8</color>
+    <color name="udesk_view_line">#D7D7D7</color>
 
     <color name="udesk_custom_dialog_cancle_btn_color">#333333</color>
     <color name="udesk_custom_dialog_sure_btn_color">#007AFF</color>
 
     <color name="udesk_struct_bg_line_color">#e4e4e4</color>
+    <color name="udesk_color_f9f9f9">#f9f9f9</color>
+    <color name="udesk_color_7878787">#787878</color>
+    <color name="udesk_color_999999">#999999</color>
+    <color name="udesk_color_2d93fa">#2D93FA</color>
+    <color name="udesk_color_393a3f">#393A3F</color>
+    <color name="udesk_color_f2212123">#f2242526</color>
+    <color name="udesk_color_eb212123">#eb212123</color>
+    <color name="udesk_color_8045c01a">#8045C01A</color>
+    <color name="udesk_color_45c01a">#45C01A</color>
+    <color name="udesk_color_747578">#747578</color>
+    <color name="udesk_color_666666">#666666</color>
+    <color name="udesk_color_fof2f2">#f0f2f2</color>
+    <color name="udesk_color_d8d8d8">#D8D8D8</color>
+    <color name="udesk_color_333333">#333333</color>
+    <color name="udesk_color_cccccc">#cccccc</color>
+    <color name="udesk_color_cd3f31">#CD3F31</color>
 
+    <color name="line">#ccc</color>
+    <color name="white">#fff</color>
+    <color name="gray">#D9D9D9</color>
+    <color name="gray1">#7e7e7e</color>
+    <color name="green2">#A3DEA3</color>
+    <color name="gray4">#F5F5F5</color>
+    <color name="gray5">#EBEBEB</color>
+    <color name="transparent">#00000000</color>
+    <color name="dialog_back_color">#80000000</color>
+    <color name="default_back_color">#fAfAfA</color>
+    <color name="light_gray_color">#f7f7f7</color>
+    <color name="stroke_color">#e9e5e5</color>
 
 </resources>

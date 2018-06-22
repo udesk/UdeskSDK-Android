@@ -14,7 +14,7 @@ public class UdeskSocketContants {
 
 //    public static String getSignToenUrl = "http://vcall.udeskb3.com/v1/token";
 //    public static String getSignToenUrl = "http://app.vcall.udeskb3.com/vcall/v1/token";
-    public static String Subdomain = "";
+
 
 
     public static String Ver = "1.0";
@@ -54,22 +54,21 @@ public class UdeskSocketContants {
 
     }
 
-    public static final String Udesk_NOTIFICATION = "com.udesk.video.event";
-    public static final String Udesk_STARTVIDEO = "com.udesk.startvideo.event";
-    public static String VideoEvent = "VideoEvent";
-    public static String VideoIsInvite = "VideoIsInvite";
-    public static String VideoChannelId = "VideoChannelId";
-    public static String VideoMessage = "VideoMessage";
-    public static String Receive_WebsocketConnect = "websocket_connect";
-    public static String Receive_BusseniessId = "bizSessionId";
-    public static String Receive_AgentJid = "agentJid";
-    public static String Receive_CustomerJid = "CustomerJid";
-    public static String Receive_AgentName = "agentName";
-    public static String Receive_VcAppId = "vc_app_id";
-    public static String Receive_Agora_app_id = "agora_app_id";
-    public static String Receive_SocketServer_url = "server_url";
-    public static String Receiver_Vcall_token_url = "vcall_token_url";
-    public static String Receive_Subdomain = "subdomain";
+
+//    public static String VideoEvent = "VideoEvent";
+//    public static String VideoIsInvite = "VideoIsInvite";
+//    public static String VideoChannelId = "VideoChannelId";
+//    public static String VideoMessage = "VideoMessage";
+//    public static String Receive_WebsocketConnect = "websocket_connect";
+//    public static String Receive_BusseniessId = "bizSessionId";
+//    public static String Receive_AgentJid = "agentJid";
+//    public static String Receive_CustomerJid = "CustomerJid";
+//    public static String Receive_AgentName = "agentName";
+//    public static String Receive_VcAppId = "vc_app_id";
+//    public static String Receive_Agora_app_id = "agora_app_id";
+//    public static String Receive_SocketServer_url = "server_url";
+//    public static String Receiver_Vcall_token_url = "vcall_token_url";
+//    public static String Receive_Subdomain = "subdomain";
     public static class ReceiveType {
 
         //发起视频
@@ -95,11 +94,9 @@ public class UdeskSocketContants {
     public static String REASON = "reason";
 
 
-    public static String IMBusseniessId = "";
-    public static String IMAgentJid = "";
-    public static String IMCustomerJid = "";
-    public static String IMAgentName = "";
-    public static String vc_app_id = "";
+
+
+
 
 
     public static String CalledReject = "001";
@@ -113,9 +110,8 @@ public class UdeskSocketContants {
     public static String ClientNotInIdleStateError = "000103"; // 目标坐席非空闲
     public static String ACKTimeOut = "000104"; // ACK 超时（000104）
 
-    public static String agora_app_id = "";
-    public static String server_url = "";
-    public static String signToenUrl = "";
+
+
 
 
 }

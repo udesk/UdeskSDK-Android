@@ -22,7 +22,7 @@ public class ActionMsgReceive implements PacketExtensionProvider {
         ActionMsgXmpp actionMsgXmpp = null;
         try {
             boolean stop = false;
-            String xmlName = null;
+            String xmlName;
             int evtType;
             while (!stop){
                 evtType = parser.getEventType();

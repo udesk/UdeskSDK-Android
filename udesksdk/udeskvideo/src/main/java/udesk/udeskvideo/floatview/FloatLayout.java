@@ -3,7 +3,6 @@ package udesk.udeskvideo.floatview;
 import android.content.Context;
 import android.content.Intent;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;

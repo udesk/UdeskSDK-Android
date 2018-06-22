@@ -1,7 +1,0 @@
-<resources>
-    <!--标题栏高度-->
-    <dimen name="ActionBarHeight">50dp</dimen>
-    <!--地图高度-->
-    <dimen name="mapHeight">200dp</dimen>
-
-</resources>

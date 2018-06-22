@@ -26,9 +26,8 @@
         android:layout_below="@id/udesk_tv_time"
         android:layout_marginTop="@dimen/udesk_chat_head_margin"
         fresco:actualImageScaleType="centerCrop"
-        fresco:roundAsCircle="true"
         fresco:placeholderImage="@drawable/udesk_im_default_user_avatar"
-        />
+        fresco:roundAsCircle="true" />
 
     <TextView
         android:id="@+id/udesk_nick_name"
@@ -81,13 +80,24 @@
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/udesk_im_image"
                 android:layout_width="@dimen/udesk_140"
-                android:layout_height="@dimen/udesk_160"
+                android:layout_height="@dimen/udesk_220"
                 fresco:actualImageScaleType="centerCrop"
                 fresco:failureImage="@drawable/udesk_defualt_failure"
                 fresco:failureImageScaleType="centerCrop"
                 fresco:placeholderImage="@drawable/udesk_defalut_image_loading"
-                fresco:placeholderImageScaleType="centerCrop"
-                />
+                fresco:placeholderImageScaleType="centerCrop" />
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/udesk_precent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/udesk_shape_oval"
+                android:gravity="center"
+                android:textSize="@dimen/udesk_sp14" />
+
+
         </RelativeLayout>
     </TableRow>
 

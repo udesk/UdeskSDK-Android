@@ -76,7 +76,6 @@ public class HuaweiUtils {
             Log.e(TAG, Log.getStackTraceString(e));
         } catch (Exception e) {
             //抛出异常时提示信息
-            Toast.makeText(context, "进入设置页面失败，请手动设置", Toast.LENGTH_LONG).show();
             Log.e(TAG, Log.getStackTraceString(e));
         }
     }

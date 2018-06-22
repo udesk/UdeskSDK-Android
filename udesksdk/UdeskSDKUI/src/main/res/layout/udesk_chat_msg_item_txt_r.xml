@@ -80,7 +80,7 @@
             android:lineSpacingExtra="3dip"
             android:autoLink="phone|web"
             android:background="@drawable/udesk_im_item_bg_right"
-            android:gravity="center_vertical"
+            android:gravity="left|center"
             android:textColor="@color/udesk_color_im_text_right1"
             android:textColorLink="@color/udesk_color_im_text_right1"
             android:textSize="@dimen/udesk_sp16" />

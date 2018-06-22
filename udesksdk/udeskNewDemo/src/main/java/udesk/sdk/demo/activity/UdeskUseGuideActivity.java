@@ -3,17 +3,16 @@ package udesk.sdk.demo.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.Toast;
+
+import java.util.UUID;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.udesk.PreferenceHelper;
-import cn.udesk.UdeskConst;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.config.UdeskConfig;
-import udesk.core.UdeskHttpFacade;
 import udesk.sdk.demo.R;
-import udesk.sdk.demo.jpush.ExampleApplication;
 
 public class UdeskUseGuideActivity extends Activity {
 
@@ -29,26 +28,32 @@ public class UdeskUseGuideActivity extends Activity {
 
     public  void onClick(View v){
 
+
         String rid = JPushInterface.getRegistrationID(getApplicationContext());
-        UdeskSDKManager.getInstance().setRegisterId(UdeskUseGuideActivity.this,rid);
-        if (v.getId() == R.id.udesk_group_help){
+        UdeskSDKManager.getInstance().setRegisterId(UdeskUseGuideActivity.this, rid);
+
+        if (v.getId() == R.id.udesk_group_help) {
             //帮助中心
-            UdeskSDKManager.getInstance().toLanuchHelperAcitivty(UdeskUseGuideActivity.this);
-        }else if (v.getId() == R.id.udesk_group_conversation){
+            UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
+        } else if (v.getId() == R.id.udesk_group_conversation) {
+            String sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
+            if (TextUtils.isEmpty(sdkToken)) {
+                sdkToken = UUID.randomUUID().toString();
+            }
             //咨询会话
-            UdeskSDKManager.getInstance().entryChat(UdeskUseGuideActivity.this);
-        }else if (v.getId() == R.id.udesk_group_formtable){
+            UdeskSDKManager.getInstance().entryChat(getApplicationContext(), UdeskConfig.createDefualt(), sdkToken);
+        } else if (v.getId() == R.id.udesk_group_formtable) {
             //留言表单
-            UdeskSDKManager.getInstance().goToForm(UdeskUseGuideActivity.this);
-        }else  if(v.getId() == R.id.udesk_group_utils){
+            UdeskSDKManager.getInstance().goToForm(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
+        } else if (v.getId() == R.id.udesk_group_utils) {
             //开发者功能
             Intent funtionIntent = new Intent();
             funtionIntent.setClass(UdeskUseGuideActivity.this, UdeskFuncationExampleActivity.class);
             startActivity(funtionIntent);
-        }else if(v.getId() == R.id.udesk_group_reset){
+        } else if (v.getId() == R.id.udesk_group_reset) {
             //重置域名和App Key
             PreferenceHelper.write(UdeskUseGuideActivity.this, "init_base_name",
-                   "sdktoken", "");
+                    "sdktoken", "");
             Intent initIntent = new Intent();
             initIntent.setClass(UdeskUseGuideActivity.this, UdeskInitKeyActivity.class);
             startActivity(initIntent);

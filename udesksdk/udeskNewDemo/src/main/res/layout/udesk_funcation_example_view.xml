@@ -1,19 +1,994 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="fill_parent">
 
-    >
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@color/android:white"
+        android:background="@color/white"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <cn.udesk.widget.UdeskTitleBar
             android:id="@+id/udesktitlebar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_sdkpush"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="是否使用推送"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_usevoice"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="是否使用录音"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_usephoto"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="是否使用相册"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_usecamera"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="是否使用拍照"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_usemap"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="是否使用发送位置"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_usefile"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="是否使用上传文件"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_useemotion"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="是否使用表情"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_usemore"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="是否使用更多控件"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_use_navigation_view"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="是否使用导航UI"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_use_navigation_survy"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="是否使用导航中的满意度评价"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_use_onlyrobot"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="是否只使用机器人"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_use_smallvideo"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="设置是否需要小视频"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_use_isscaleimg"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="传图是否压缩"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_use_commodity"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="配置商品链接"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="24dp"
+                android:gravity="left|center"
+                android:text="配置放弃排队策略"
+                android:textColor="#666666"
+                android:textSize="15sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/mark"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="mark"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/force_quit"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="force_quit"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:gravity="left|center"
+            android:text="设置屏幕显示"
+            android:textColor="#666666"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/portrait"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="portrait"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/landscape"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="landscape"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/user"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="user"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_en"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="设置英语"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_ch"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="设置中文"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:gravity="left|center"
+            android:text="设置客户的头像地址"
+            android:textColor="#666666"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/customerUrl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="@dimen/udesk_10"
+            android:gravity="left|center"
+            android:text="http://img.taopic.com/uploads/allimg/110729/1830-110H916410651.jpg"
+            android:textColor="#333333"
+            android:textSize="16sp" />
+
+
+        <EditText
+            android:id="@+id/firstMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="@dimen/udesk_10"
+            android:gravity="left|center"
+            android:hint="设置带入一条消息 会话分配就发送给客服"
+            android:textColor="#333333"
+            android:textColorHint="@color/udesk_color_999999"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/robot_modelKey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="@dimen/udesk_10"
+            android:gravity="left|center"
+            android:hint="udesk 机器人配置欢迎语 对应的Id值"
+            android:textColor="#333333"
+            android:textColorHint="@color/udesk_color_999999"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="@dimen/udesk_10"
+            android:gravity="left|center"
+            android:text="创建用户的基本信息"
+            android:textColor="#333333"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/nick_name"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="@dimen/udesk_10"
+                android:gravity="left|center"
+                android:hint="nick_name"
+                android:textColor="#333333"
+                android:textColorHint="@color/udesk_color_999999"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/cellphone"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="@dimen/udesk_10"
+                android:gravity="left|center"
+                android:hint="cellphone"
+                android:textColor="#333333"
+                android:textColorHint="@color/udesk_color_999999"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="@dimen/udesk_10"
+                android:gravity="left|center"
+                android:hint="email"
+                android:textColor="#333333"
+                android:textColorHint="@color/udesk_color_999999"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="@dimen/udesk_10"
+                android:gravity="left|center"
+                android:hint="description"
+                android:textColor="#333333"
+                android:textColorHint="@color/udesk_color_999999"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="@dimen/udesk_10"
+            android:gravity="left|center"
+            android:text="创建用户的自定义的文本信息"
+            android:textColor="#333333"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/udesk_10"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:gravity="left|center"
+                android:text="自定义字段的key"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+
+
+            <EditText
+                android:id="@+id/textfiledkey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:gravity="left|center"
+                android:hint="管理员后台找key"
+                android:textColor="#333333"
+                android:textColorHint="@color/udesk_color_999999"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/udesk_10"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:gravity="left|center"
+                android:text="key对应的value"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+
+
+            <EditText
+                android:id="@+id/textfiledvalue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:gravity="left|center"
+                android:hint="填写value"
+                android:textColor="#333333"
+                android:textColorHint="@color/udesk_color_999999"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="@dimen/udesk_10"
+            android:gravity="left|center"
+            android:text="更新用户的基本信息"
+            android:textColor="#333333"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/update_nick_name"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="@dimen/udesk_10"
+                android:gravity="left|center"
+                android:hint="nick_name"
+                android:textColor="#333333"
+                android:textColorHint="@color/udesk_color_999999"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/update_description"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="@dimen/udesk_10"
+                android:gravity="left|center"
+                android:hint="description"
+                android:textColor="#333333"
+                android:textColorHint="@color/udesk_color_999999"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="@dimen/udesk_10"
+            android:gravity="left|center"
+            android:text="更新用户的自定义的文本信息"
+            android:textColor="#333333"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/udesk_10"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:gravity="left|center"
+                android:text="自定义字段的key"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+
+
+            <EditText
+                android:id="@+id/updatetextfiledkey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:gravity="left|center"
+                android:hint="管理员后台找key"
+                android:textColor="#333333"
+                android:textColorHint="@color/udesk_color_999999"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/udesk_10"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:gravity="left|center"
+                android:text="key对应的value"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+
+
+            <EditText
+                android:id="@+id/updatetextfiledvalue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:gravity="left|center"
+                android:hint="填写value"
+                android:textColor="#333333"
+                android:textColorHint="@color/udesk_color_999999"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/udesk_conversion_bysetting_menu"
+            android:layout_width="fill_parent"
+            android:layout_height="62dip"
+            android:onClick="onClick">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="20dip"
+                    android:layout_height="20dip"
+                    android:src="@mipmap/udesk_conversion_bysetting_menu" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:gravity="center"
+                    android:text="@string/udesk_conversion_tips"
+                    android:textColor="#333333"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="8dip"
+                android:layout_height="15dip"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="16dp"
+                android:src="@mipmap/udesk_redict_img" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="16dp"
+            android:background="#E4E7F0" />
+
 
         <RelativeLayout
             android:id="@+id/udesk_by_agentid"
@@ -195,230 +1170,48 @@
             android:layout_marginLeft="16dp"
             android:background="#E4E7F0" />
 
-        <RelativeLayout
-            android:id="@+id/udesk_update_userinfo"
-            android:layout_width="fill_parent"
-            android:layout_height="62dip"
-            android:onClick="onClick">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="16dp"
-                android:gravity="center"
-                android:orientation="horizontal">
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/udesk_en"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="62dip"-->
+            <!--android:onClick="onClick">-->
 
-                <ImageView
-                    android:layout_width="20dip"
-                    android:layout_height="20dip"
-                    android:src="@mipmap/udesk_update_userinfo" />
+            <!--<LinearLayout-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="fill_parent"-->
+                <!--android:layout_alignParentLeft="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginLeft="16dp"-->
+                <!--android:gravity="center"-->
+                <!--android:orientation="horizontal">-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:gravity="center"
-                    android:text="@string/udesk_update_userinfo"
-                    android:textColor="#333333"
-                    android:textSize="16sp" />
-            </LinearLayout>
 
-            <ImageView
-                android:layout_width="8dip"
-                android:layout_height="15dip"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="16dp"
-                android:src="@mipmap/udesk_redict_img" />
-        </RelativeLayout>
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="16dp"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="@string/udesk_setting_en"-->
+                    <!--android:textColor="#333333"-->
+                    <!--android:textSize="16sp" />-->
+            <!--</LinearLayout>-->
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginLeft="16dp"
-            android:background="#E4E7F0" />
+            <!--<ImageView-->
+                <!--android:layout_width="8dip"-->
+                <!--android:layout_height="15dip"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_centerInParent="true"-->
+                <!--android:layout_marginRight="16dp"-->
+                <!--android:src="@mipmap/udesk_redict_img" />-->
+        <!--</RelativeLayout>-->
 
-        <RelativeLayout
-            android:id="@+id/udesk_update_ui"
-            android:layout_width="fill_parent"
-            android:layout_height="62dip"
-            android:onClick="onClick">
+        <!--<View-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="0.5dp"-->
+            <!--android:layout_marginLeft="16dp"-->
+            <!--android:background="#E4E7F0" />-->
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="16dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="20dip"
-                    android:layout_height="20dip"
-                    android:src="@mipmap/udesk_update_ui" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:gravity="center"
-                    android:text="@string/udesk_update_uitemplemt"
-                    android:textColor="#333333"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <ImageView
-                android:layout_width="8dip"
-                android:layout_height="15dip"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="16dp"
-                android:src="@mipmap/udesk_redict_img" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginLeft="16dp"
-            android:background="#E4E7F0" />
-
-        <RelativeLayout
-            android:id="@+id/udesk_conversion_bysetting_menu"
-            android:layout_width="fill_parent"
-            android:layout_height="62dip"
-            android:onClick="onClick">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="16dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="20dip"
-                    android:layout_height="20dip"
-                    android:src="@mipmap/udesk_conversion_bysetting_menu" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:gravity="center"
-                    android:text="@string/udesk_conversion_bysetting_menu"
-                    android:textColor="#333333"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <ImageView
-                android:layout_width="8dip"
-                android:layout_height="15dip"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="16dp"
-                android:src="@mipmap/udesk_redict_img" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginLeft="16dp"
-            android:background="#E4E7F0" />
-
-        <RelativeLayout
-            android:id="@+id/udesk_send_commodity_link"
-            android:layout_width="fill_parent"
-            android:layout_height="62dip"
-            android:onClick="onClick">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="16dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="20dip"
-                    android:layout_height="20dip"
-                    android:src="@mipmap/udesk_send_commodity_link" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:gravity="center"
-                    android:text="@string/udesk_send_commodity_link"
-                    android:textColor="#333333"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <ImageView
-                android:layout_width="8dip"
-                android:layout_height="15dip"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="16dp"
-                android:src="@mipmap/udesk_redict_img" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginLeft="16dp"
-            android:background="#E4E7F0" />
-
-        <RelativeLayout
-            android:id="@+id/udesk_sdkpush"
-            android:layout_width="fill_parent"
-            android:layout_height="62dip"
-            android:onClick="onClick">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="16dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="20dip"
-                    android:layout_height="20dip"
-                    android:src="@mipmap/udesk_push" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:gravity="center"
-                    android:text="@string/udesk_setting_push"
-                    android:textColor="#333333"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <ImageView
-                android:layout_width="8dip"
-                android:layout_height="15dip"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="16dp"
-                android:src="@mipmap/udesk_redict_img" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginLeft="16dp"
-            android:background="#E4E7F0" />
     </LinearLayout>
 
 

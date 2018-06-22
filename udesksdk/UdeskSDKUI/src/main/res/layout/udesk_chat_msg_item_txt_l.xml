@@ -60,7 +60,7 @@
             android:layout_marginTop="@dimen/udesk_chat_head_margin"
             android:autoLink="phone|web"
             android:background="@drawable/udesk_im_item_bg_left"
-            android:gravity="left|center_vertical"
+            android:gravity="left|center"
             android:lineSpacingExtra="3dip"
             android:textColor="@color/udesk_color_im_text_left1"
             android:textColorLink="@color/udesk_color_im_text_left1"
