@@ -493,7 +493,7 @@
     5.h5接入参考例子
     https://github.com/udesk/udesk_android_sdk_h5
    
-   有问题直接加QQ：1979305929
+  
 ``` 
 
 
