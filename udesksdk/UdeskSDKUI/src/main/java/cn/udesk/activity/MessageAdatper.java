@@ -34,6 +34,8 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -1125,7 +1127,9 @@ public class MessageAdatper extends BaseAdapter {
                     int[] wh = UdeskUtil.getImageWH(message.getLocalPath());
                     UdeskUtil.loadFileFromSdcard(context, imgView, Uri.fromFile(new File(message.getLocalPath())), wh[0], wh[1]);
                 } else {
-                    UdeskUtil.loadImageView(context, imgView, Uri.parse(message.getMsgContent()));
+                    String uRLEncoder = URLEncoder.encode(message.getMsgContent(),"utf-8").replaceAll("\\+", "%20");
+                    uRLEncoder = uRLEncoder.replaceAll("%3A", ":").replaceAll("%2F", "/");
+                    UdeskUtil.loadImageView(context, imgView, Uri.parse(uRLEncoder));
                 }
 
                 imgView.setTag(message.getTime());
@@ -1140,7 +1144,13 @@ public class MessageAdatper extends BaseAdapter {
                         if (!TextUtils.isEmpty(message.getLocalPath())) {
                             imgUri = Uri.fromFile(new File(message.getLocalPath()));
                         } else if (!TextUtils.isEmpty(message.getMsgContent())) {
-                            imgUri = Uri.parse(message.getMsgContent());
+                            try {
+                                String uRLEncoder = URLEncoder.encode(message.getMsgContent(),"utf-8").replaceAll("\\+", "%20");
+                                uRLEncoder = uRLEncoder.replaceAll("%3A", ":").replaceAll("%2F", "/");
+                                imgUri = Uri.parse(uRLEncoder);
+                            } catch (Exception e) {
+                                imgUri = Uri.parse(message.getMsgContent());
+                            }
                         }
                         previewPhoto(mContext, imgUri);
                     }
