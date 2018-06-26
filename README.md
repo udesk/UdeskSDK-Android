@@ -358,7 +358,7 @@
        }
 	   
 	   具体的例子如deom提供的代码片段
-	     ``` java
+	    
 		
 	    .setUseMap(set_usemap.isChecked()) //是否使用发送位置功能  true表示使用 false表示不使用
                 .setUseMapSetting(UdeskConfig.UdeskMapType.GaoDe, LocationActivity.class, new ILocationMessageClickCallBack() {
@@ -372,16 +372,16 @@
                         context.startActivity(intent);
                     }
                 })
-        ``` 
+       
 ### 四. IM 使用视频功能:
 
-    **注意：需要使用视频功能，一定需要使用UdeskSDKUI IM中功能 ,但可以单独使用UdeskSDKUI功能  
-	在你的app中 在依赖udeskvideo 模块。**
+    注意：需要使用视频功能，一定需要使用UdeskSDKUI IM中功能 ,但可以单独使用UdeskSDKUI功能  
+	在你的app中 在依赖udeskvideo 模块。
 
 ### 五. 支持自定义设置 功能按钮  具体可参考demo
 
       demo中的代码片断
-	   ``` java
+	  ``` java
       .setExtreFunctions(getExtraFunctions(), new IFunctionItemClickCallBack() {
                     @Override
                     public void callBack(Context context, ChatActivityPresenter mPresenter, int id, String name) {
@@ -529,7 +529,7 @@ dependencies {
 **注意sdktoken** 是客户的唯一标识，用来识别身份，**sdk_token: 传入的字符请使用 字母 / 数字 字符集**  。就如同身份证一样，不允许出现一个身份证号对应多个人，或者一个人有多个身份证号;**其次**如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客。  **完成了以上操作，接下来就可以使用UdeskSDK的其它功能了，祝你好运！**
 
 
-### 3.1启动帮助中心界面
+### 3 启动帮助中心界面
 
 Udek系统帮助中心后台可以创建帮助文档，客户通过帮助中心可查看相关文档。调用以下接口启动帮助中心界面
 
@@ -539,11 +539,11 @@ UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), Ud
 
 ## 四、Udesk SDK API说明
 
- ### 4.1更新客户信息
+ ### 4.1.更新客户信息
 
   UdeskConfig.Builder builder = new UdeskConfig.Builder();
 
-   4.1.1更新系统默认客户字段，昵称、邮箱、电话、描述
+  更新系统默认客户字段，昵称、邮箱、电话、描述
 
 ```java
 Map<String, String> info = new HashMap<String, String>();
@@ -559,7 +559,7 @@ info.put(UdeskConst.UdeskUserInfo.DESCRIPTION,"更新后的描述信息")
 builder.setUpdateDefualtUserInfo(info)   
 ```
 
-### 4.1.2更新自定义字段
+### 4.2更新自定义字段
 
 文本型字段示例：
 
@@ -606,7 +606,7 @@ updateRoplistMap.put("SelectField_457","1");
 builder.setUpdatedefinedUserRoplist(updateRoplistMap);
 ```
 
-### 4.2发送咨询对象
+### 4.3.发送咨询对象
 
 在客户与客服对话时，经常需要将如咨询商品或订单发送给客服以便客服查看。
 
@@ -635,7 +635,7 @@ UdeskMessageManager.getInstance().sendComodityMessage(buildCommodityMessage(comm
 
 
 ```
-### 4.3获取未读消息
+### 4.4.获取未读消息
 
 在退出对话界面后，没有断开与Udesk服务器的连接，注册获取未读消息事件方法，之后在该方法中可以收到未读消息。
 
@@ -657,7 +657,7 @@ OnNewMsgNotice方法的实现
 
 3 实现的方法  必须public修饰。
 
-### 4.4获取未读消息数
+### 4.5获取未读消息数
 
 sdk 3.2.0版本开始，可在退出对话界面后，没有断开与Udesk服务器的连接，可获得这个会话的未读消息数，打开对话界面后未读消息数会清空。
 
@@ -665,7 +665,7 @@ sdk 3.2.0版本开始，可在退出对话界面后，没有断开与Udesk服务
 UdeskSDKManager.getInstance().getCurrentConnectUnReadMsgCount();
 ```
 
-### 4.5 删除客户聊天数据
+### 4.6 删除客户聊天数据
 
 sdk初始化成功，创建客户后，调用此接口可删除当前客户的聊天记录信息
 
@@ -673,7 +673,7 @@ sdk初始化成功，创建客户后，调用此接口可删除当前客户的�
 UdeskSDKManager.getInstance().deleteMsg();
 
 ```
-### 4.6 控制台日志开关
+### 4.7 控制台日志开关
 
 如果开发中，想在控制台看当前客户与Udesk服务器连接（xmpp)的交互报文，调用如下接口可实现
 
