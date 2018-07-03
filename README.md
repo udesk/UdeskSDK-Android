@@ -800,7 +800,6 @@ RedirectViewHolder  显示转移提示语信息；
 
 - 推送接口只支持 http，不支持 https
 - 请求已 POST 方法发送
-- 请求 Body 数据为 JSON 格式，见示例
 - 请求时使用的 content-type 为 application/x-www-form-urlencoded
 
 
@@ -826,22 +825,4 @@ RedirectViewHolder  显示转移提示语信息；
 
 
 
-**参数示例**
-
-```json
-{
-    "message_id": "di121jdlasf82jfdasfklj39dfda",
-    "platform": "ios",
-    "device_token": "4312kjklfds2",
-    "app_id": "dafjidalledaf",
-    "content": "Hello world!",
-    "sent_at": "2016-11-21T10:40:38+08:00",
-    "from_id": 231,
-    "from_name": "Tom",
-    "to_id": 12,
-    "to_token": "dae121dccepm1",
-    "type": "message",
-  	"event": "close"
-}
-```
 
