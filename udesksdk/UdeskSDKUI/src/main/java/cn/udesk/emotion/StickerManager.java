@@ -39,27 +39,31 @@ public class StickerManager {
     }
 
     private void loadStickerCategory() {
-        File stickerDir = new File(LQREmotionKit.getEmotionPath());
-        if (stickerDir.exists()) {
-            File[] files = stickerDir.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                File file = files[i];
-                //当前的目录下同名的有文件和文件夹，只需要其中的一个取其名
-                if (file.isDirectory()) {
-                    String name = file.getName();
-                    StickerCategory category = new StickerCategory(name, name, true, i);
-                    stickerCategories.add(category);
-                    stickerCategoryMap.put(name, category);
+        try {
+            File stickerDir = new File(LQREmotionKit.getEmotionPath());
+            if (stickerDir.exists()) {
+                File[] files = stickerDir.listFiles();
+                for (int i = 0; i < files.length; i++) {
+                    File file = files[i];
+                    //当前的目录下同名的有文件和文件夹，只需要其中的一个取其名
+                    if (file.isDirectory()) {
+                        String name = file.getName();
+                        StickerCategory category = new StickerCategory(name, name, true, i);
+                        stickerCategories.add(category);
+                        stickerCategoryMap.put(name, category);
+                    }
                 }
-            }
 
-            //排序
-            Collections.sort(stickerCategories, new Comparator<StickerCategory>() {
-                @Override
-                public int compare(StickerCategory o1, StickerCategory o2) {
-                    return o1.getOrder() - o2.getOrder();
-                }
-            });
+                //排序
+                Collections.sort(stickerCategories, new Comparator<StickerCategory>() {
+                    @Override
+                    public int compare(StickerCategory o1, StickerCategory o2) {
+                        return o1.getOrder() - o2.getOrder();
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
