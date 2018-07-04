@@ -704,11 +704,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
             });
 
             mEmojiImg = (ImageView) findViewById(R.id.udesk_emoji_img);
-            if (UdeskSDKManager.getInstance().getUdeskConfig().isUseEmotion) {
-                mEmojiImg.setVisibility(View.VISIBLE);
-            } else {
-                mEmojiImg.setVisibility(View.GONE);
-            }
+            showEmoji();
             mMoreImg = (ImageView) findViewById(R.id.udesk_more_img);
             mBotomFramlayout = (FrameLayout) findViewById(R.id.udesk_bottom_frame);
             mEmotionlayout = (EmotionLayout) findViewById(R.id.udesk_emotion_view);
@@ -730,6 +726,15 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
         }
 
     }
+
+    private void showEmoji() {
+        if (UdeskSDKManager.getInstance().getUdeskConfig().isUseEmotion && LQREmotionKit.getEmotionPath() != null) {
+            mEmojiImg.setVisibility(View.VISIBLE);
+        } else {
+            mEmojiImg.setVisibility(View.GONE);
+        }
+    }
+
 
     private void initfunctionItems() {
         functionItems.clear();
@@ -2615,9 +2620,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
         if (UdeskSDKManager.getInstance().getUdeskConfig().isUseVoice) {
             mAudioImg.setVisibility(vis);
         }
-        if (UdeskSDKManager.getInstance().getUdeskConfig().isUseEmotion) {
-            mEmojiImg.setVisibility(vis);
-        }
+        showEmoji();
         if (UdeskSDKManager.getInstance().getUdeskConfig().isUseMore) {
             mMoreImg.setVisibility(vis);
         }
