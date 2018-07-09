@@ -944,6 +944,9 @@ public class UdeskUtil {
     public final static int TYPE_AUDIO = 3;
 
     public static int isPictureType(String pictureType) {
+        if(TextUtils.isEmpty(pictureType)){
+            return TYPE_IMAGE;
+        }
         switch (pictureType) {
             case "image/png":
             case "image/PNG":
