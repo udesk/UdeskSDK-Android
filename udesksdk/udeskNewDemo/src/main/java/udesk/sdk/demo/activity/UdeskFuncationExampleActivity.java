@@ -27,6 +27,8 @@ import cn.udesk.UdeskSDKManager;
 import cn.udesk.callback.IFunctionItemClickCallBack;
 import cn.udesk.callback.ILocationMessageClickCallBack;
 import cn.udesk.callback.INavigationItemClickCallBack;
+import cn.udesk.callback.ITxtMessageWebonCliclk;
+import cn.udesk.callback.IUdeskFormCallBack;
 import cn.udesk.callback.IUdeskStructMessageCallBack;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.model.FunctionMode;
@@ -36,6 +38,7 @@ import cn.udesk.presenter.ChatActivityPresenter;
 import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskConst;
 import udesk.core.model.MessageInfo;
+import udesk.core.model.Product;
 import udesk.sdk.demo.R;
 import cn.udesk.LocalManageUtil;
 import udesk.sdk.demo.maps.LocationActivity;
@@ -58,6 +61,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
             set_use_onlyrobot,
             set_use_smallvideo,
             set_use_commodity,
+            set_use_prouct,
             set_use_isscaleimg,
             set_en,
             set_ch,
@@ -71,7 +75,75 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
             textfiledkey, textfiledvalue,
             update_nick_name, update_description,
             updatetextfiledkey, updatetextfiledvalue,
-            firstMessage, customerUrl, robot_modelKey;
+            firstMessage, customerUrl, robot_modelKey, robpt_customer_info;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.udesk_funcation_example_view);
+        initview();
+    }
+
+    private void initview() {
+        mTitlebar = (UdeskTitleBar) findViewById(cn.udesk.R.id.udesktitlebar);
+        if (mTitlebar != null) {
+            mTitlebar.setLeftTextSequence(getString(R.string.udesk_utils_tips));
+            mTitlebar.setLeftLinearVis(View.VISIBLE);
+            mTitlebar.setLeftViewClick(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
+        set_sdkpush = (CheckBox) findViewById(R.id.set_sdkpush);
+        set_usevoice = (CheckBox) findViewById(R.id.set_usevoice);
+        set_usephoto = (CheckBox) findViewById(R.id.set_usephoto);
+        set_usecamera = (CheckBox) findViewById(R.id.set_usecamera);
+        set_usemap = (CheckBox) findViewById(R.id.set_usemap);
+        set_usefile = (CheckBox) findViewById(R.id.set_usefile);
+        set_useemotion = (CheckBox) findViewById(R.id.set_useemotion);
+        set_usemore = (CheckBox) findViewById(R.id.set_usemore);
+        set_use_navigation_view = (CheckBox) findViewById(R.id.set_use_navigation_view);
+        set_use_navigation_survy = (CheckBox) findViewById(R.id.set_use_navigation_survy);
+        set_use_onlyrobot = (CheckBox) findViewById(R.id.set_use_onlyrobot);
+        set_use_smallvideo = (CheckBox) findViewById(R.id.set_use_smallvideo);
+        set_use_commodity = (CheckBox) findViewById(R.id.set_use_commodity);
+        set_use_prouct = (CheckBox) findViewById(R.id.set_use_prouct);
+        set_use_isscaleimg = (CheckBox) findViewById(R.id.set_use_isscaleimg);
+        set_en = (CheckBox) findViewById(R.id.set_en);
+        set_ch = (CheckBox) findViewById(R.id.set_ch);
+        mark = (CheckBox) findViewById(R.id.mark);
+        force_quit = (CheckBox) findViewById(R.id.force_quit);
+        mark.setOnCheckedChangeListener(this);
+        force_quit.setOnCheckedChangeListener(this);
+        portrait = (CheckBox) findViewById(R.id.portrait);
+        landscape = (CheckBox) findViewById(R.id.landscape);
+        user = (CheckBox) findViewById(R.id.user);
+        portrait.setOnCheckedChangeListener(this);
+        landscape.setOnCheckedChangeListener(this);
+        user.setOnCheckedChangeListener(this);
+        set_en.setOnCheckedChangeListener(this);
+        set_ch.setOnCheckedChangeListener(this);
+        firstMessage = (EditText) findViewById(R.id.firstMessage);
+        customerUrl = (EditText) findViewById(R.id.customerUrl);
+        robot_modelKey = (EditText) findViewById(R.id.robot_modelKey);
+        nick_name = (EditText) findViewById(R.id.nick_name);
+        cellphone = (EditText) findViewById(R.id.cellphone);
+        email = (EditText) findViewById(R.id.email);
+        description = (EditText) findViewById(R.id.description);
+        textfiledkey = (EditText) findViewById(R.id.textfiledkey);
+        textfiledvalue = (EditText) findViewById(R.id.textfiledvalue);
+        update_nick_name = (EditText) findViewById(R.id.update_nick_name);
+        update_description = (EditText) findViewById(R.id.update_description);
+        updatetextfiledkey = (EditText) findViewById(R.id.updatetextfiledkey);
+        updatetextfiledvalue = (EditText) findViewById(R.id.updatetextfiledvalue);
+        robpt_customer_info = (EditText) findViewById(R.id.robpt_customer_info);
+
+
+    }
 
 
     private UdeskConfig.Builder makeBuilder() {
@@ -125,7 +197,9 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 .setFirstMessage(firstMessage.getText().toString()) //设置带入一条消息  会话分配就发送给客服
                 .setCustomerUrl(customerUrl.getText().toString()) //设置客户的头像地址
                 .setRobot_modelKey(robot_modelKey.getText().toString()) // udesk 机器人配置插件 对应的Id值
+                .setConcatRobotUrlWithCustomerInfo(robpt_customer_info.getText().toString())
                 .setCommodity(set_use_commodity.isChecked() ? createCommodity() : null)//配置发送商品链接的mode
+                .setProduct(set_use_prouct.isChecked() ? createProduct() : null)//配置发送商品链接的mode
                 .setExtreFunctions(getExtraFunctions(), new IFunctionItemClickCallBack() {
                     @Override
                     public void callBack(Context context, ChatActivityPresenter mPresenter, int id, String name) {
@@ -143,25 +217,25 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                     @Override
                     public void callBack(Context context, ChatActivityPresenter mPresenter, NavigationMode navigationMode) {
                         if (navigationMode.getId() == 1) {
-                            UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
+                            mPresenter.sendProductMessage(createProduct());
                         } else if (navigationMode.getId() == 2) {
                             mPresenter.sendTxtMessage(UUID.randomUUID().toString());
                             mPresenter.sendTxtMessage("www.baidu.com");
                         }
                     }
                 })//设置是否使用导航UI rue表示使用 false表示不使用
-//                .setTxtMessageClick(new ITxtMessageWebonCliclk() {
-//                    @Override
-//                    public void txtMsgOnclick(String url) {
-//                        Toast.makeText(getApplicationContext(), "对文本消息中的链接消息处理设置回调", Toast.LENGTH_SHORT).show();
-//                    }
-//                })   //如果需要对文本消息中的链接消息处理可以设置该回调，点击事件的拦截回调。 包含表情的不会拦截回调。
-//                .setFormCallBack(new IUdeskFormCallBack() {
-//                    @Override
-//                    public void toLuachForm(Context context) {
-//                        Toast.makeText(getApplicationContext(), "不用udesk系统提供的留言功能", Toast.LENGTH_SHORT).show();
-//                    }
-//                })//离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
+                .setTxtMessageClick(new ITxtMessageWebonCliclk() {
+                    @Override
+                    public void txtMsgOnclick(String url) {
+                        Toast.makeText(getApplicationContext(), "对文本消息中的链接消息处理设置回调", Toast.LENGTH_SHORT).show();
+                    }
+                })   //如果需要对文本消息中的链接消息处理可以设置该回调，点击事件的拦截回调。 包含表情的不会拦截回调。
+                .setFormCallBack(new IUdeskFormCallBack() {
+                    @Override
+                    public void toLuachForm(Context context) {
+                        Toast.makeText(getApplicationContext(), "不用udesk系统提供的留言功能", Toast.LENGTH_SHORT).show();
+                    }
+                })//离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
                 .setStructMessageCallBack(new IUdeskStructMessageCallBack() {
 
                     @Override
@@ -169,7 +243,6 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                         Toast.makeText(getApplicationContext(), "结构化消息控件点击事件回调", Toast.LENGTH_SHORT).show();
                     }
                 })//设置结构化消息控件点击事件回调接口.
-
         ;
 
         return builder;
@@ -186,7 +259,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
 
     private List<NavigationMode> getNavigations() {
         List<NavigationMode> modes = new ArrayList<>();
-        NavigationMode navigationMode1 = new NavigationMode("打开帮助中心", 1);
+        NavigationMode navigationMode1 = new NavigationMode("发送商品消", 1);
         NavigationMode navigationMode2 = new NavigationMode("发送文本", 2);
         modes.add(navigationMode1);
         modes.add(navigationMode2);
@@ -259,71 +332,51 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         return item;
     }
 
+    private Product createProduct() {
+        Product product = new Product();
+        product.setImgUrl("http://img12.360buyimg.com/n1/s450x450_jfs/t10675/253/1344769770/66891/92d54ca4/59df2e7fN86c99a27.jpg");
+        product.setName(" Apple iPhone X (A1903) 64GB 深空灰色 移动联通4G手机");
+        product.setUrl("https://item.jd.com/6748052.html");
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.udesk_funcation_example_view);
-        settingTitlebar();
+        List<Product.ParamsBean> paramsBeans = new ArrayList<>();
+
+        Product.ParamsBean paramsBean0 = new Product.ParamsBean();
+        paramsBean0.setText("京 东 价  ");
+        paramsBean0.setColor("#C1B6B6");
+        paramsBean0.setFold(false);
+        paramsBean0.setBreakX(false);
+        paramsBean0.setSize(12);
+
+        Product.ParamsBean paramsBean1 = new Product.ParamsBean();
+        paramsBean1.setText("￥6999.00");
+        paramsBean1.setColor("#E6321A");
+        paramsBean1.setFold(true);
+        paramsBean1.setBreakX(true);
+        paramsBean1.setSize(16);
+
+        Product.ParamsBean paramsBean2 = new Product.ParamsBean();
+        paramsBean2.setText("促　销  ");
+        paramsBean2.setColor("#C1B6B6");
+        paramsBean2.setFold(false);
+        paramsBean2.setBreakX(false);
+        paramsBean2.setSize(12);
+
+        Product.ParamsBean paramsBean3 = new Product.ParamsBean();
+        paramsBean3.setText("满1999元另加30元，或满2999元另加50元，即可在购物车换购热销商品 ");
+        paramsBean3.setColor("#E6321A");
+        paramsBean3.setFold(true);
+        paramsBean3.setBreakX(false);
+        paramsBean3.setSize(16);
+        paramsBeans.add(paramsBean0);
+        paramsBeans.add(paramsBean1);
+        paramsBeans.add(paramsBean2);
+        paramsBeans.add(paramsBean3);
+
+        product.setParams(paramsBeans);
+
+        return product;
     }
 
-    private void settingTitlebar() {
-        mTitlebar = (UdeskTitleBar) findViewById(cn.udesk.R.id.udesktitlebar);
-        if (mTitlebar != null) {
-            mTitlebar.setLeftTextSequence(getString(R.string.udesk_utils_tips));
-            mTitlebar.setLeftLinearVis(View.VISIBLE);
-            mTitlebar.setLeftViewClick(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
-        }
-        set_sdkpush = (CheckBox) findViewById(R.id.set_sdkpush);
-        set_usevoice = (CheckBox) findViewById(R.id.set_usevoice);
-        set_usephoto = (CheckBox) findViewById(R.id.set_usephoto);
-        set_usecamera = (CheckBox) findViewById(R.id.set_usecamera);
-        set_usemap = (CheckBox) findViewById(R.id.set_usemap);
-        set_usefile = (CheckBox) findViewById(R.id.set_usefile);
-        set_useemotion = (CheckBox) findViewById(R.id.set_useemotion);
-        set_usemore = (CheckBox) findViewById(R.id.set_usemore);
-        set_use_navigation_view = (CheckBox) findViewById(R.id.set_use_navigation_view);
-        set_use_navigation_survy = (CheckBox) findViewById(R.id.set_use_navigation_survy);
-        set_use_onlyrobot = (CheckBox) findViewById(R.id.set_use_onlyrobot);
-        set_use_smallvideo = (CheckBox) findViewById(R.id.set_use_smallvideo);
-        set_use_commodity = (CheckBox) findViewById(R.id.set_use_commodity);
-        set_use_isscaleimg = (CheckBox) findViewById(R.id.set_use_isscaleimg);
-        set_en = (CheckBox) findViewById(R.id.set_en);
-        set_ch = (CheckBox) findViewById(R.id.set_ch);
-        mark = (CheckBox) findViewById(R.id.mark);
-        force_quit = (CheckBox) findViewById(R.id.force_quit);
-        mark.setOnCheckedChangeListener(this);
-        force_quit.setOnCheckedChangeListener(this);
-        portrait = (CheckBox) findViewById(R.id.portrait);
-        landscape = (CheckBox) findViewById(R.id.landscape);
-        user = (CheckBox) findViewById(R.id.user);
-        portrait.setOnCheckedChangeListener(this);
-        landscape.setOnCheckedChangeListener(this);
-        user.setOnCheckedChangeListener(this);
-        set_en.setOnCheckedChangeListener(this);
-        set_ch.setOnCheckedChangeListener(this);
-        firstMessage = (EditText) findViewById(R.id.firstMessage);
-        customerUrl = (EditText) findViewById(R.id.customerUrl);
-        robot_modelKey = (EditText) findViewById(R.id.robot_modelKey);
-        nick_name = (EditText) findViewById(R.id.nick_name);
-        cellphone = (EditText) findViewById(R.id.cellphone);
-        email = (EditText) findViewById(R.id.email);
-        description = (EditText) findViewById(R.id.description);
-        textfiledkey = (EditText) findViewById(R.id.textfiledkey);
-        textfiledvalue = (EditText) findViewById(R.id.textfiledvalue);
-        update_nick_name = (EditText) findViewById(R.id.update_nick_name);
-        update_description = (EditText) findViewById(R.id.update_description);
-        updatetextfiledkey = (EditText) findViewById(R.id.updatetextfiledkey);
-        updatetextfiledvalue = (EditText) findViewById(R.id.updatetextfiledvalue);
-
-
-    }
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {

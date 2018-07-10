@@ -27,6 +27,6 @@
 
     <string name="udesk_update_des">描述</string>
     <string name="udesk_update_hint_des">请输入描述内容</string>
-
+    <string name="rob_cus_info">&amp;c_name=zhanshang&amp;c_email=0091@163.com&amp;c_phone=18123451678&amp;c_desc=ssasdsff&amp;c_org=kakak&amp;c_tags=qq&amp;c_other_emails=1234@126.com,45678@163.com</string>
 
 </resources>

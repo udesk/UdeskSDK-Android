@@ -19,24 +19,34 @@ import udesk.sdk.demo.R;
 
 public class UdeskInitKeyActivity extends Activity {
 
+//    //替换成你们注册生成的域名
+//    private String UDESK_DOMAIN = "linapp.udeskt2.com";
+//    //替换成你们生成应用产生的appid
+//    private String AppId = "075c55fdc38508ce";
+//    // 替换成你们在后台生成的密钥
+//    private String UDESK_SECRETKEY = "f71b983d30bb41a23cba209a5558cf8f";
+
     //替换成你们注册生成的域名
-    private String UDESK_DOMAIN = "udesksdk.udesk.cn";
+    private String UDESK_DOMAIN = "brazil0326.udesk.cn";
     //替换成你们生成应用产生的appid
-    private String AppId = "cdc6da4fa97efc2c";
+    private String AppId = "831a755b6a356808";
     // 替换成你们在后台生成的密钥
-    private String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
+    private String UDESK_SECRETKEY = "60aa29f39c09f58c85e6e26bb5bd5afd";
+
 
     private EditText mDomainEdit;
 
     private EditText mAppidEdit;
 
     private EditText mKeyEdit;
+    private EditText stoken;
 
     private Button startBtn;
 
     String domain = "";
     String appkey = "";
     String appid = "";
+    String sdkToken = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +57,13 @@ public class UdeskInitKeyActivity extends Activity {
         mDomainEdit = (EditText) findViewById(R.id.udesk_domain);
         mKeyEdit = (EditText) findViewById(R.id.udesk_appkey);
         mAppidEdit = (EditText) findViewById(R.id.appid);
+        stoken = (EditText) findViewById(R.id.stoken);
         startBtn = (Button) findViewById(R.id.udesk_start);
+        sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
+        if (TextUtils.isEmpty(sdkToken)) {
+            sdkToken = UUID.randomUUID().toString();
+        }
+        stoken.setText(sdkToken);
         if (TextUtils.isEmpty(domain) || TextUtils.isEmpty(appkey) || TextUtils.isEmpty(appid)) {
             mDomainEdit.setText(UDESK_DOMAIN);
             mKeyEdit.setText(UDESK_SECRETKEY);
@@ -67,11 +83,7 @@ public class UdeskInitKeyActivity extends Activity {
                     UdeskSDKManager.getInstance().initApiKey(getApplicationContext(), mDomainEdit.getText().toString(),
                             mKeyEdit.getText().toString(), mAppidEdit.getText().toString());
                     UdeskConst.HTTP = "http://";
-                    String sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
-                    if (TextUtils.isEmpty(sdkToken)) {
-                        sdkToken = UUID.randomUUID().toString();
-                    }
-                    saveDoamiandKey();
+                    sdkToken = stoken.getText().toString();
                     PreferenceHelper.write(getApplicationContext(), "init_base_name", "sdktoken", sdkToken);
                     PreferenceHelper.write(getApplicationContext(), "init_base_name", "domain", mDomainEdit.getText().toString());
                     PreferenceHelper.write(getApplicationContext(), "init_base_name", "appkey", mKeyEdit.getText().toString());
@@ -96,13 +108,5 @@ public class UdeskInitKeyActivity extends Activity {
         appid = PreferenceHelper.readString(this, "init_base_name", "appid");
     }
 
-    private void saveDoamiandKey() {
-        PreferenceHelper.write(this, "init_base_name",
-                "domain", mDomainEdit.getText().toString());
-        PreferenceHelper.write(this, "init_base_name",
-                "appkey", mKeyEdit.getText().toString());
-        PreferenceHelper.write(this, "init_base_name",
-                "appid", mAppidEdit.getText().toString());
-    }
 
 }

@@ -40,6 +40,9 @@ public class StickerManager {
 
     private void loadStickerCategory() {
         try {
+            if (LQREmotionKit.getEmotionPath() == null){
+                return;
+            }
             File stickerDir = new File(LQREmotionKit.getEmotionPath());
             if (stickerDir.exists()) {
                 File[] files = stickerDir.listFiles();

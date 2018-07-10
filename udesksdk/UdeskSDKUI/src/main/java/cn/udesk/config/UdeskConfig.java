@@ -6,15 +6,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import cn.udesk.R;
 import cn.udesk.callback.IFunctionItemClickCallBack;
 import cn.udesk.callback.ILocationMessageClickCallBack;
 import cn.udesk.callback.INavigationItemClickCallBack;
+import cn.udesk.callback.IProductMessageWebonCliclk;
 import cn.udesk.callback.ITxtMessageWebonCliclk;
 import cn.udesk.callback.IUdeskFormCallBack;
 import cn.udesk.callback.IUdeskStructMessageCallBack;
 import cn.udesk.model.FunctionMode;
 import cn.udesk.model.NavigationMode;
 import cn.udesk.model.UdeskCommodityItem;
+import udesk.core.model.Product;
 
 /**
  * Created by user on 2016/8/12.
@@ -49,6 +52,7 @@ public class UdeskConfig {
     public int udeskCommitysubtitleColorResId = DEFAULT;
     //    商品咨询页面中，发送链接的字样颜色
     public int udeskCommityLinkColorResId = DEFAULT;
+    public int udeskProductNameLinkColorResId = DEFAULT;
     //配置 是否使用推送服务  true 表示使用  false表示不使用
     public boolean isUserSDkPush = true;
     //配置放弃排队的策略
@@ -107,6 +111,8 @@ public class UdeskConfig {
     public UdeskCommodityItem commodity;
     //文本消息中的链接消息的点击事件的拦截回调。 包含表情的不会拦截回调。
     public ITxtMessageWebonCliclk txtMessageClick;
+    //商品消息中的链接点击回调
+    public IProductMessageWebonCliclk productMessageClick;
     //离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
     public IUdeskFormCallBack formCallBack;
     //设置结构化消息的回调接口
@@ -136,6 +142,9 @@ public class UdeskConfig {
     //配置本地化语言
     public Locale locale;
 
+    //商品消息
+    public Product mProduct;
+
 
     UdeskConfig(Builder builder) {
 
@@ -151,6 +160,7 @@ public class UdeskConfig {
         this.udeskCommityTitleColorResId = builder.udeskCommityTitleColorResId;
         this.udeskCommitysubtitleColorResId = builder.udeskCommitysubtitleColorResId;
         this.udeskCommityLinkColorResId = builder.udeskCommityLinkColorResId;
+        this.udeskProductNameLinkColorResId = builder.udeskProductNameLinkColorResId;
         this.isUserSDkPush = builder.isUserSDkPush;
         this.UdeskQuenuMode = builder.UdeskQuenuMode;
         this.isUseVoice = builder.isUseVoice;
@@ -180,6 +190,7 @@ public class UdeskConfig {
         this.customerUrl = builder.customerUrl;
         this.commodity = builder.commodity;
         this.txtMessageClick = builder.txtMessageClick;
+        this.productMessageClick = builder.productMessageClick;
         this.formCallBack = builder.formCallBack;
         this.structMessageCallBack = builder.structMessageCallBack;
         this.functionItemClickCallBack = builder.functionItemClickCallBack;
@@ -194,6 +205,7 @@ public class UdeskConfig {
         this.isOnlyByAgentId = builder.isOnlyByAgentId;
         this.isOnlyUseRobot = builder.isOnlyUseRobot;
         this.locale = builder.locale;
+        this.mProduct = builder.mProduct;
     }
 
     //s
@@ -227,6 +239,8 @@ public class UdeskConfig {
         private int udeskCommitysubtitleColorResId = DEFAULT;
         //    商品咨询页面中，发送链接的字样颜色
         private int udeskCommityLinkColorResId = DEFAULT;
+        // 商品消息的 带有链接时的  商品名字显示的颜色
+        private int udeskProductNameLinkColorResId = R.color.color_1850cc;
         //配置 是否使用推送服务  true 表示使用  false表示不使用
         private boolean isUserSDkPush = true;
         //配置放弃排队的策略
@@ -284,6 +298,8 @@ public class UdeskConfig {
         private UdeskCommodityItem commodity;
         //文本消息中的链接消息的点击事件的拦截回调。 包含表情的不会拦截回调。
         public ITxtMessageWebonCliclk txtMessageClick;
+        //商品消息中的链接点击回调
+        public IProductMessageWebonCliclk productMessageClick;
         //离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
         private IUdeskFormCallBack formCallBack;
         //设置结构化消息的回调接口
@@ -312,7 +328,7 @@ public class UdeskConfig {
         private boolean isOnlyUseRobot = false;
         //配置本地化语言
         private Locale locale;
-
+        private Product mProduct;
 
         public Builder() {
 
@@ -425,6 +441,16 @@ public class UdeskConfig {
          */
         public Builder setUdeskCommityLinkColorResId(int udeskCommityLinkColorResId) {
             this.udeskCommityLinkColorResId = udeskCommityLinkColorResId;
+            return this;
+        }
+
+        /**
+         * 设置商品信息 带链接时显示的颜色
+         * @param udeskProductNameLinkColorResId
+         * @return
+         */
+        public Builder setUdeskProductLinkColorResId(int udeskProductNameLinkColorResId) {
+            this.udeskProductNameLinkColorResId = udeskProductNameLinkColorResId;
             return this;
         }
 
@@ -656,6 +682,11 @@ public class UdeskConfig {
             return this;
         }
 
+        public Builder setProductMessageClick(IProductMessageWebonCliclk productMessageClick) {
+            this.productMessageClick = productMessageClick;
+            return this;
+        }
+
         /**
          * @param formCallBack 离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
          */
@@ -756,6 +787,11 @@ public class UdeskConfig {
          */
         public Builder setLocale(Locale locale) {
             this.locale = locale;
+            return this;
+        }
+
+        public Builder setProduct(Product mProduct) {
+            this.mProduct = mProduct;
             return this;
         }
 

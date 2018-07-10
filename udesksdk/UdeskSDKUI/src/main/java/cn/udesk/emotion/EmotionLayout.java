@@ -218,11 +218,15 @@ public class EmotionLayout extends LinearLayout implements View.OnClickListener 
 
     private void initListener() {
         if (mLlTabContainer != null) {
-            mTabCount = mLlTabContainer.getChildCount() - 1;//不包含最后的设置按钮
-            for (int position = 0; position < mTabCount; position++) {
-                View tab = mLlTabContainer.getChildAt(position);
-                tab.setTag(position);
-                tab.setOnClickListener(this);
+            try {
+                mTabCount = mLlTabContainer.getChildCount() - 1;//不包含最后的设置按钮
+                for (int position = 0; position < mTabCount; position++) {
+                    View tab = mLlTabContainer.getChildAt(position);
+                    tab.setTag(position);
+                    tab.setOnClickListener(this);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 

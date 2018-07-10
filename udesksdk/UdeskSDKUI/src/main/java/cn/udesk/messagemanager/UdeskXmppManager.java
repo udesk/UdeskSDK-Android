@@ -272,7 +272,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
      * @param to       发给客服的jid
      * @param duration 时长  默认传0,语音的发送语音的时长
      */
-    public synchronized boolean sendMessage(String type, String text, String msgId, String to, long duration, String im_sub_session_id, boolean no_need_save, int seqNum,String fileName,String filesize) {
+    public synchronized boolean sendMessage(String type, String text, String msgId, String to, long duration, String im_sub_session_id, boolean no_need_save, int seqNum, String fileName, String filesize) {
         try {
             if (TextUtils.isEmpty(to)) {
                 return false;
@@ -282,7 +282,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
                 reConnected();
             }
             xmppMsg = new Message(to, Message.Type.chat);
-            text = StringUtils.escapeForXML(text).toString();
+
             xmppMsg.setPacketID(msgId);
             JSONObject json = new JSONObject();
             json.put("type", type);
@@ -290,12 +290,18 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
                 json.put("map_type", UdeskSDKManager.getInstance().getUdeskConfig().useMapType);
             }
             JSONObject data = new JSONObject();
-            data.put("content", text);
+            if (type.equals(UdeskConst.ChatMsgTypeString.TYPE_PRODUCT)) {
+                data.put("content", new JSONObject(text));
+            } else {
+                text = StringUtils.escapeForXML(text).toString();
+                data.put("content", text);
+            }
+
             data.put("duration", duration);
-            if (!TextUtils.isEmpty(fileName)){
+            if (!TextUtils.isEmpty(fileName)) {
                 data.put("filename", fileName);
             }
-            if (!TextUtils.isEmpty(filesize)){
+            if (!TextUtils.isEmpty(filesize)) {
                 data.put("filesize", filesize);
             }
             json.put("data", data);
@@ -329,7 +335,6 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
         }
         return true;
     }
-
 
     private void processPresence(Presence pre) {
 
@@ -401,11 +406,11 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
                         duration = data.optLong("duration");
                     }
 
-                    if (data.has("filename")){
+                    if (data.has("filename")) {
                         fileName = data.optString("filename");
                     }
 
-                    if (data.has("filesize")){
+                    if (data.has("filesize")) {
                         fileSize = data.optString("filesize");
                     }
 
@@ -428,7 +433,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
 
             if (!TextUtils.isEmpty(type) && !TextUtils.isEmpty(content)) {
                 UdeskMessageManager.getInstance().event_OnNewMessage.invoke(message, message.getFrom(), type, id, content,
-                        duration, send_status, im_sub_session_id, seq_num,fileName,fileSize);
+                        duration, send_status, im_sub_session_id, seq_num, fileName, fileSize);
             }
         }
     }

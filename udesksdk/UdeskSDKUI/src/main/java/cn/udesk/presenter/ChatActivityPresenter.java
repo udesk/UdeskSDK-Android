@@ -19,7 +19,7 @@ import com.qiniu.android.storage.UploadManager;
 import com.qiniu.android.storage.UploadOptions;
 import com.qiniu.android.storage.persistent.FileRecorder;
 
-import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -54,6 +54,7 @@ import udesk.core.event.InvokeEventContainer;
 import udesk.core.http.UdeskHttpCallBack;
 import udesk.core.model.AgentInfo;
 import udesk.core.model.MessageInfo;
+import udesk.core.model.Product;
 import udesk.core.utils.UdeskIdBuild;
 import udesk.core.utils.UdeskUtils;
 import udesk.core.xmpp.XmppInfo;
@@ -294,7 +295,7 @@ public class ChatActivityPresenter {
                     if (!TextUtils.isEmpty(customerId)) {
                         updateUserInfo(customerId);
                     }
-                    if (!UdeskSDKManager.getInstance().getImSetting().getIn_session()){
+                    if (UdeskSDKManager.getInstance().getImSetting() !=null && !UdeskSDKManager.getInstance().getImSetting().getIn_session()) {
                         boolean isShowPression = false;
                         String preTitle = "";
                         if (resultJson.has("pre_session")) {
@@ -312,7 +313,7 @@ public class ChatActivityPresenter {
                         } else {
                             getAgentInfo(null);
                         }
-                    }else{
+                    } else {
                         getAgentInfo(null);
                     }
                 }
@@ -369,7 +370,7 @@ public class ChatActivityPresenter {
                                 if (json.has("pre_session_id")) {
                                     mChatView.updatePreSessionStatus(json.optString("pre_session_id"));
                                 }
-                            } catch (JSONException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
 
@@ -836,6 +837,76 @@ public class ChatActivityPresenter {
         }
     }
 
+    public void sendProductMessage(Product mProduct) {
+
+        if (mProduct == null) {
+            return;
+        }
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            if (!TextUtils.isEmpty(mProduct.getName())) {
+                jsonObject.put("name", mProduct.getName());
+            }
+            if (!TextUtils.isEmpty(mProduct.getUrl())) {
+                jsonObject.put("url", mProduct.getUrl());
+            }
+            if (!TextUtils.isEmpty(mProduct.getImgUrl())) {
+                jsonObject.put("imgUrl", mProduct.getImgUrl());
+            }
+
+            List<Product.ParamsBean> params = mProduct.getParams();
+            if (params != null && params.size() > 0) {
+                JSONArray jsonsArray = new JSONArray();
+                for (Product.ParamsBean paramsBean : params) {
+                    JSONObject param = new JSONObject();
+                    param.put("text", paramsBean.getText());
+                    param.put("color", paramsBean.getColor());
+                    param.put("fold", paramsBean.isFold());
+                    param.put("break", paramsBean.isBreakX());
+                    param.put("size", paramsBean.getSize());
+                    jsonsArray.put(param);
+                }
+
+                jsonObject.put("params", jsonsArray);
+            }
+
+            MessageInfo msg = buildSendMessage(
+                    UdeskConst.ChatMsgTypeString.TYPE_PRODUCT,
+                    System.currentTimeMillis(), jsonObject.toString(), "", "", "");
+            saveMessage(msg);
+            mChatView.addMessage(msg);
+            if (isNeedAddCachePre(msg)) {
+                return;
+            }
+            messageSave(msg);
+
+//            List<Product.ParamsBean> params = mProduct.getParams();
+//            StringBuilder builder = new StringBuilder();
+//            if(params != null && params.size()>0){
+//
+//                for (Product.ParamsBean paramsBean : params){
+//
+//                    if (TextUtils.isEmpty(paramsBean.getText())){
+//                        continue;
+//                    }
+//                    String textStr = "<font color=" + paramsBean.getColor() +
+//                            "size=" + paramsBean.getSize() + ">" + paramsBean.getText()+"</font>";
+//                    if (paramsBean.isFold()){
+//                        textStr = "<b>"+ textStr + "</b>"
+//                    }
+//                    if (paramsBean.isBreakX()){
+//                        textStr = textStr + "</br>";
+//                    }
+//                    builder.append(textStr);
+//                }
+//
+//            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     //发送原图图片消息
     public void sendBitmapMessage(Bitmap bitmap) {
         if (bitmap == null) {
@@ -1085,7 +1156,7 @@ public class ChatActivityPresenter {
                                         }
                                     }
                                 }
-                            } catch (JSONException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
 

@@ -97,6 +97,7 @@ import udesk.core.UdeskHttpFacade;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.model.AgentInfo;
 import udesk.core.model.MessageInfo;
+import udesk.core.model.Product;
 import udesk.core.utils.UdeskUtils;
 import udesk.core.xmpp.XmppInfo;
 
@@ -408,6 +409,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                             if (!activity.hasSendCommodity) {
                                 activity.hasSendCommodity = true;
                                 activity.sendCommodityMsg(UdeskSDKManager.getInstance().getUdeskConfig().commodity);
+                                activity.sendProduct(UdeskSDKManager.getInstance().getUdeskConfig().mProduct);
                             }
                             if (!activity.hasSendFirstMessage) {
                                 activity.hasSendFirstMessage = true;
@@ -727,14 +729,13 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
 
     }
 
-    private void showEmoji() {
+    private void showEmoji(){
         if (UdeskSDKManager.getInstance().getUdeskConfig().isUseEmotion && LQREmotionKit.getEmotionPath() != null) {
             mEmojiImg.setVisibility(View.VISIBLE);
         } else {
             mEmojiImg.setVisibility(View.GONE);
         }
     }
-
 
     private void initfunctionItems() {
         functionItems.clear();
@@ -1521,6 +1522,19 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
         try {
             if (commodity != null && mPresenter != null) {
                 mPresenter.sendCommodityMessage(commodity);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } catch (OutOfMemoryError error) {
+            error.printStackTrace();
+        }
+    }
+
+    private void sendProduct(Product product) {
+        try {
+            if (product != null && mPresenter != null) {
+                mPresenter.sendProductMessage(product);
 
             }
         } catch (Exception e) {
@@ -2620,7 +2634,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
         if (UdeskSDKManager.getInstance().getUdeskConfig().isUseVoice) {
             mAudioImg.setVisibility(vis);
         }
-        showEmoji();
+       showEmoji();
         if (UdeskSDKManager.getInstance().getUdeskConfig().isUseMore) {
             mMoreImg.setVisibility(vis);
         }
