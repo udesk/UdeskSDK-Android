@@ -38,14 +38,11 @@ public class LQREmotionKit {
     }
 
     public static void init(Context context, String path) {
-        try {
-            getAndSaveParameter(context);
-            EMOTION_PATH = path;
-            //将asset/sticker目录下默认的贴图复制到STICKER_PATH下
-            copyStickerToStickerPath(EMOTION_NAME_IN_ASSETS);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getAndSaveParameter(context);
+        EMOTION_PATH = path;
+
+        //将asset/sticker目录下默认的贴图复制到STICKER_PATH下
+        copyStickerToStickerPath(EMOTION_NAME_IN_ASSETS);
     }
 
     public static void init(Context context) {

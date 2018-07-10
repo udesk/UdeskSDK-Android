@@ -94,5 +94,6 @@
     <color name="default_back_color">#fAfAfA</color>
     <color name="light_gray_color">#f7f7f7</color>
     <color name="stroke_color">#e9e5e5</color>
+    <color name="color_1850cc">#1850CC</color>
 
 </resources>

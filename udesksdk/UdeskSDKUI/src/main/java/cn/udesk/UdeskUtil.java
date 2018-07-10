@@ -134,112 +134,125 @@ public class UdeskUtil {
      */
     public static String parseOwnUri(Uri uri, Context context, File cameraFile) {
         if (uri == null) return "";
-        String path;
-        if (TextUtils.equals(uri.getAuthority(), getFileProviderName(context))) {
-            if (cameraFile != null) {
-                return cameraFile.getAbsolutePath();
+        String path = "";
+        try {
+            if (TextUtils.equals(uri.getAuthority(), getFileProviderName(context))) {
+                if (cameraFile != null) {
+                    return cameraFile.getAbsolutePath();
+                } else {
+                    path = new File(Environment.getExternalStorageDirectory(), uri.getPath().replace("my_external/", "")).getAbsolutePath();
+                }
             } else {
-                path = new File(Environment.getExternalStorageDirectory(), uri.getPath().replace("my_external/", "")).getAbsolutePath();
+                path = uri.getEncodedPath();
             }
-        } else {
-            path = uri.getEncodedPath();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return path;
     }
 
     public static String getFormUrlPara(Context context) {
         StringBuilder builder = new StringBuilder();
-        builder.append("?sdk_token=").append(UdeskSDKManager.getInstance().getSdkToken(context))
-                .append("&sdk_version=").append(UdeskConst.sdkversion).append("&app_id=").append(UdeskSDKManager.getInstance().getAppId(context));
-        if (!isZh(context)) {
-            builder.append("&language=en-us");
-        }
-        Map<String, String> userinfo =  UdeskSDKManager.getInstance().getUdeskConfig().defualtUserInfo;
-        Map<String, String> textField =  UdeskSDKManager.getInstance().getUdeskConfig().definedUserTextField;
-        if (userinfo != null && !userinfo.isEmpty()) {
-            Set<String> keySet = userinfo.keySet();
-            for (String key : keySet) {
-                if (!TextUtils.isEmpty(userinfo.get(key))) {
-                    if (key.equals("sdk_token")) {
-                        continue;
-                    }
-                    if (key.equals(UdeskConst.UdeskUserInfo.NICK_NAME)) {
-                        builder.append("&c_name=").append(userinfo.get(key));
-                    } else if (key.equals(UdeskConst.UdeskUserInfo.CELLPHONE)) {
-                        builder.append("&c_phone=").append(userinfo.get(key));
-                    } else if (key.equals(UdeskConst.UdeskUserInfo.EMAIL)) {
-                        builder.append("&c_email=").append(userinfo.get(key));
-                    } else if (key.equals(UdeskConst.UdeskUserInfo.DESCRIPTION)) {
-                        builder.append("&c_desc=").append(userinfo.get(key));
+        try {
+            builder.append("?sdk_token=").append(UdeskSDKManager.getInstance().getSdkToken(context))
+                    .append("&sdk_version=").append(UdeskConst.sdkversion).append("&app_id=").append(UdeskSDKManager.getInstance().getAppId(context));
+            if (!isZh(context)) {
+                builder.append("&language=en-us");
+            }
+            Map<String, String> userinfo = UdeskSDKManager.getInstance().getUdeskConfig().defualtUserInfo;
+            Map<String, String> textField = UdeskSDKManager.getInstance().getUdeskConfig().definedUserTextField;
+            if (userinfo != null && !userinfo.isEmpty()) {
+                Set<String> keySet = userinfo.keySet();
+                for (String key : keySet) {
+                    if (!TextUtils.isEmpty(userinfo.get(key))) {
+                        if (key.equals("sdk_token")) {
+                            continue;
+                        }
+                        if (key.equals(UdeskConst.UdeskUserInfo.NICK_NAME)) {
+                            builder.append("&c_name=").append(userinfo.get(key));
+                        } else if (key.equals(UdeskConst.UdeskUserInfo.CELLPHONE)) {
+                            builder.append("&c_phone=").append(userinfo.get(key));
+                        } else if (key.equals(UdeskConst.UdeskUserInfo.EMAIL)) {
+                            builder.append("&c_email=").append(userinfo.get(key));
+                        } else if (key.equals(UdeskConst.UdeskUserInfo.DESCRIPTION)) {
+                            builder.append("&c_desc=").append(userinfo.get(key));
+                        }
                     }
                 }
             }
-        }
-        if (textField != null && !textField.isEmpty()) {
-            Set<String> textFieldSet = textField.keySet();
-            for (String key : textFieldSet) {
-                if (!TextUtils.isEmpty(textField.get(key))) {
-                    builder.append("&c_cf_").append(key).append("=").append(textField.get(key));
+            if (textField != null && !textField.isEmpty()) {
+                Set<String> textFieldSet = textField.keySet();
+                for (String key : textFieldSet) {
+                    if (!TextUtils.isEmpty(textField.get(key))) {
+                        builder.append("&c_cf_").append(key).append("=").append(textField.get(key));
+                    }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return builder.toString();
     }
 
     public static String formatLongTypeTimeToString(Context context, long time) {
-        long OFFSET_DAY = 3600 * 24;
-        String timeYes = context.getString(R.string.udesk_im_time_format_yday);
-        String timeQt = context.getString(R.string.udesk_im_time_format_dby);
-        String timeDate = "yyyy/MM/dd";
-        Calendar calendar = Calendar.getInstance();
+
         StringBuilder build = new StringBuilder();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
-        // 解析需要转化时间
-        calendar.setTimeInMillis(time);
-        int year = calendar.get(Calendar.YEAR);
-        int day = calendar.get(Calendar.DAY_OF_YEAR);
+        try {
+            long OFFSET_DAY = 3600 * 24;
+            String timeYes = context.getString(R.string.udesk_im_time_format_yday);
+            String timeQt = context.getString(R.string.udesk_im_time_format_dby);
+            String timeDate = "yyyy/MM/dd";
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
-        // 拼接 转化结果
-        build.append(" ").append(sdf.format(calendar.getTime()));// 先添加
+            // 解析需要转化时间
+            calendar.setTimeInMillis(time);
+            int year = calendar.get(Calendar.YEAR);
+            int day = calendar.get(Calendar.DAY_OF_YEAR);
 
-        // 先解析当前时间。取出当前年，日 等信息
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        int nowYear = calendar.get(Calendar.YEAR);
-        int nowDay = calendar.get(Calendar.DAY_OF_YEAR);
+            // 拼接 转化结果
+            build.append(" ").append(sdf.format(calendar.getTime()));// 先添加
 
-        if (year != nowYear) {// 不是一年内
-            calendar.set(Calendar.HOUR_OF_DAY, 0); // 凌晨1点
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
+            // 先解析当前时间。取出当前年，日 等信息
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            int nowYear = calendar.get(Calendar.YEAR);
+            int nowDay = calendar.get(Calendar.DAY_OF_YEAR);
 
-            if ((calendar.getTimeInMillis() - time) <= OFFSET_DAY) {// 昨天
-                return timeYes;
-            } else if ((calendar.getTimeInMillis() - time) <= (OFFSET_DAY << 2)) {// 前天
-                // 。这里不用判断是否大于OFFSET_DAY
-                return timeQt;
-            } else {
-                sdf.applyLocalizedPattern(timeDate);
-                return sdf.format(time);
+            if (year != nowYear) {// 不是一年内
+                calendar.set(Calendar.HOUR_OF_DAY, 0); // 凌晨1点
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+
+                if ((calendar.getTimeInMillis() - time) <= OFFSET_DAY) {// 昨天
+                    return timeYes;
+                } else if ((calendar.getTimeInMillis() - time) <= (OFFSET_DAY << 2)) {// 前天
+                    // 。这里不用判断是否大于OFFSET_DAY
+                    return timeQt;
+                } else {
+                    sdf.applyLocalizedPattern(timeDate);
+                    return sdf.format(time);
+                }
+
+            } else if (day == nowDay) {// 这里是一年内的当天
+                // 当天的话 就不用管了
+            } else {// 一年内
+                int dayOffset = (nowDay - day);// nowDay要大一些
+                if (dayOffset == 0) {
+                    // 同一天不用 添加日期判断
+                } else if (dayOffset == 1) {// 1表示差一天，即昨天
+                    return timeYes;
+                } else if (dayOffset == 2) {// 1表示差两天，即前天
+                    return timeQt;
+                } else {
+                    timeDate = "MM/dd";
+                    sdf.applyLocalizedPattern(timeDate);
+                    return sdf.format(time);
+                }
             }
-
-        } else if (day == nowDay) {// 这里是一年内的当天
-            // 当天的话 就不用管了
-        } else {// 一年内
-            int dayOffset = (nowDay - day);// nowDay要大一些
-            if (dayOffset == 0) {
-                // 同一天不用 添加日期判断
-            } else if (dayOffset == 1) {// 1表示差一天，即昨天
-                return timeYes;
-            } else if (dayOffset == 2) {// 1表示差两天，即前天
-                return timeQt;
-            } else {
-                timeDate = "MM/dd";
-                sdf.applyLocalizedPattern(timeDate);
-                return sdf.format(time);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
         return build.toString();
     }
 
@@ -338,12 +351,17 @@ public class UdeskUtil {
         if (strTime == null) {
             return "";
         }
-        if (strTime.length() <= 10) {
-            return strTime;
+        try {
+            if (strTime.length() <= 10) {
+                return strTime;
+            }
+            long time = stringToLong(strTime);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            return sdf.format(new Date(time));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        long time = stringToLong(strTime);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        return sdf.format(new Date(time));
+        return "";
     }
 
     public static String parseEventTime(long time) {
@@ -375,11 +393,10 @@ public class UdeskUtil {
             formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         }
 
-
         try {
             date = formatter.parse(strTime);
         } catch (ParseException e) {
-            e.printStackTrace();
+            date = new Date();
         }
         return date;
     }
@@ -464,178 +481,205 @@ public class UdeskUtil {
         return null;
     }
 
-    public static void loadImage(Context context, final PhotoDraweeView mPhotoDraweeView,
-                                 Uri uri) {
-        File file = getFileFromDiskCache(context, uri);
-        if (file != null) {
-            uri = Uri.fromFile(file);
-        }
-        PipelineDraweeControllerBuilder controller = Fresco.newDraweeControllerBuilder();
-        controller.setUri(uri);
-        controller.setAutoPlayAnimations(true);
-        controller.setOldController(mPhotoDraweeView.getController());
-        controller.setControllerListener(new BaseControllerListener<ImageInfo>() {
-            @Override
-            public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
-                super.onFinalImageSet(id, imageInfo, animatable);
-                if (imageInfo == null) {
-                    return;
-                }
-                mPhotoDraweeView.update(imageInfo.getWidth(), imageInfo.getHeight());
+    public static void loadImage(Context context, final PhotoDraweeView mPhotoDraweeView, Uri uri) {
+
+        try {
+            File file = getFileFromDiskCache(context, uri);
+            if (file != null) {
+                uri = Uri.fromFile(file);
             }
-        });
-        mPhotoDraweeView.setController(controller.build());
+            PipelineDraweeControllerBuilder controller = Fresco.newDraweeControllerBuilder();
+            controller.setUri(uri);
+            controller.setAutoPlayAnimations(true);
+            controller.setOldController(mPhotoDraweeView.getController());
+            controller.setControllerListener(new BaseControllerListener<ImageInfo>() {
+                @Override
+                public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
+                    super.onFinalImageSet(id, imageInfo, animatable);
+                    if (imageInfo == null) {
+                        return;
+                    }
+                    mPhotoDraweeView.update(imageInfo.getWidth(), imageInfo.getHeight());
+                }
+            });
+            mPhotoDraweeView.setController(controller.build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void loadHeadView(Context context, SimpleDraweeView simpleDraweeView, Uri httpUri) {
-        File file = getFileFromDiskCache(context, httpUri);
-        if (file != null) {
-            httpUri = Uri.fromFile(file);
+
+        try {
+            File file = getFileFromDiskCache(context, httpUri);
+            if (file != null) {
+                httpUri = Uri.fromFile(file);
+            }
+            //初始化圆角圆形参数对象
+            RoundingParams rp = new RoundingParams();
+            //设置图像是否为圆形
+            rp.setRoundAsCircle(true);
+
+            final GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(context.getResources())
+                    .setRoundingParams(rp)
+                    .build();
+
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setUri(httpUri)
+                    .setTapToRetryEnabled(true)
+                    .setOldController(simpleDraweeView.getController())
+                    .build();
+            simpleDraweeView.setHierarchy(hierarchy);
+            simpleDraweeView.setController(controller);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        //初始化圆角圆形参数对象
-        RoundingParams rp = new RoundingParams();
-        //设置图像是否为圆形
-        rp.setRoundAsCircle(true);
-
-        final GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(context.getResources())
-                .setRoundingParams(rp)
-                .build();
-
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setUri(httpUri)
-                .setTapToRetryEnabled(true)
-                .setOldController(simpleDraweeView.getController())
-                .build();
-        simpleDraweeView.setHierarchy(hierarchy);
-        simpleDraweeView.setController(controller);
     }
 
     public static void loadFileFromSdcard(final Context context, final SimpleDraweeView draweeView, Uri loackUri, final int reqWidth, final int reqHeight) {
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(loackUri)
-                .setRotationOptions(RotationOptions.autoRotate())
-                .setLocalThumbnailPreviewsEnabled(true)
-                .setResizeOptions(new ResizeOptions(dip2px(context, 140), dip2px(context, 220)))
-                .build();
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setImageRequest(request)
-                .setOldController(draweeView.getController())
-                .setTapToRetryEnabled(true)
-                .setControllerListener(new BaseControllerListener<ImageInfo>() {
-                    @Override
-                    public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable anim) {
-                        if (imageInfo == null) {
-                            return;
-                        }
 
-                        ViewGroup.LayoutParams layoutParams = draweeView.getLayoutParams();
-                        int imgWidth = dip2px(context, 140);
-                        int imgHight = dip2px(context, 220);
-                        double bitScalew = getRatioSize(reqWidth, reqHeight, imgHight, imgWidth);
-                        if(bitScalew >=1){
-                            layoutParams.height = (int) (reqHeight / bitScalew);
-                            layoutParams.width = (int) (reqWidth / bitScalew);
-                        }else if (bitScalew >= 0.5){
-                            layoutParams.height = reqHeight;
-                            layoutParams.width = reqWidth;
-                        }else {
-                            layoutParams.height = imgWidth/2;
-                            layoutParams.width = imgWidth/2;
-                        }
+        try {
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(loackUri)
+                    .setRotationOptions(RotationOptions.autoRotate())
+                    .setLocalThumbnailPreviewsEnabled(true)
+                    .setResizeOptions(new ResizeOptions(dip2px(context, 140), dip2px(context, 220)))
+                    .build();
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setImageRequest(request)
+                    .setOldController(draweeView.getController())
+                    .setTapToRetryEnabled(true)
+                    .setControllerListener(new BaseControllerListener<ImageInfo>() {
+                        @Override
+                        public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable anim) {
+                            if (imageInfo == null) {
+                                return;
+                            }
 
-                        draweeView.requestLayout();
-                    }
-                })
-                .setAutoPlayAnimations(true)
-                .build();
-        draweeView.setController(controller);
+                            ViewGroup.LayoutParams layoutParams = draweeView.getLayoutParams();
+                            int imgWidth = dip2px(context, 140);
+                            int imgHight = dip2px(context, 220);
+                            double bitScalew = getRatioSize(reqWidth, reqHeight, imgHight, imgWidth);
+                            if (bitScalew >= 1) {
+                                layoutParams.height = (int) (reqHeight / bitScalew);
+                                layoutParams.width = (int) (reqWidth / bitScalew);
+                            } else if (bitScalew >= 0.5) {
+                                layoutParams.height = reqHeight;
+                                layoutParams.width = reqWidth;
+                            } else {
+                                layoutParams.height = imgWidth / 2;
+                                layoutParams.width = imgWidth / 2;
+                            }
+
+                            draweeView.requestLayout();
+                        }
+                    })
+                    .setAutoPlayAnimations(true)
+                    .build();
+            draweeView.setController(controller);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void loadImageView(final Context context, final SimpleDraweeView simpleDraweeView, Uri httpUri) {
-        File file = getFileFromDiskCache(context, httpUri);
-        if (file != null) {
-            httpUri = Uri.fromFile(file);
+
+        try {
+            File file = getFileFromDiskCache(context, httpUri);
+            if (file != null) {
+                httpUri = Uri.fromFile(file);
+            }
+            final ViewGroup.LayoutParams layoutParams = simpleDraweeView.getLayoutParams();
+            ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+                @Override
+                public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable anim) {
+                    if (imageInfo == null) {
+                        return;
+                    }
+                    int height = imageInfo.getHeight();
+                    int width = imageInfo.getWidth();
+                    int imgWidth = dip2px(context, 140);
+                    int imgHight = dip2px(context, 220);
+                    double bitScalew = getRatioSize(width, height, imgHight, imgWidth);
+                    if (bitScalew >= 1) {
+                        layoutParams.height = (int) (height / bitScalew);
+                        layoutParams.width = (int) (width / bitScalew);
+                    } else if (bitScalew >= 0.5) {
+                        layoutParams.height = height;
+                        layoutParams.width = width;
+                    } else {
+                        layoutParams.height = imgWidth / 2;
+                        layoutParams.width = imgWidth / 2;
+                    }
+                    simpleDraweeView.setLayoutParams(layoutParams);
+                    simpleDraweeView.invalidate();
+                }
+
+                @Override
+                public void onIntermediateImageSet(String id, ImageInfo imageInfo) {
+
+                }
+
+                @Override
+                public void onFailure(String id, Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+            };
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(httpUri).
+                    setProgressiveRenderingEnabled(true).
+                    setResizeOptions(new ResizeOptions(dip2px(context, 140), dip2px(context, 220))).
+                    setRotationOptions(RotationOptions.disableRotation()).build();
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setImageRequest(request)
+                    .setTapToRetryEnabled(true)
+                    .setOldController(simpleDraweeView.getController())
+                    .setAutoPlayAnimations(true)
+                    .setControllerListener(controllerListener)
+                    .build();
+            simpleDraweeView.setController(controller);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        final ViewGroup.LayoutParams layoutParams = simpleDraweeView.getLayoutParams();
-        ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
-            @Override
-            public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable anim) {
-                if (imageInfo == null) {
-                    return;
-                }
-                int height = imageInfo.getHeight();
-                int width = imageInfo.getWidth();
-                int imgWidth = dip2px(context, 140);
-                int imgHight = dip2px(context, 220);
-                double bitScalew = getRatioSize(width, height, imgHight, imgWidth);
-                if(bitScalew >=1){
-                    layoutParams.height = (int) (height / bitScalew);
-                    layoutParams.width = (int) (width / bitScalew);
-                }else if (bitScalew >= 0.5){
-                    layoutParams.height = height;
-                    layoutParams.width = width;
-                }else {
-                    layoutParams.height = imgWidth/2;
-                    layoutParams.width = imgWidth/2;
-                }
-                simpleDraweeView.setLayoutParams(layoutParams);
-                simpleDraweeView.invalidate();
-            }
-
-            @Override
-            public void onIntermediateImageSet(String id, ImageInfo imageInfo) {
-
-            }
-
-            @Override
-            public void onFailure(String id, Throwable throwable) {
-                throwable.printStackTrace();
-            }
-        };
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(httpUri).
-                setProgressiveRenderingEnabled(true).
-                setResizeOptions(new ResizeOptions(dip2px(context, 140), dip2px(context, 220))).
-                setRotationOptions(RotationOptions.disableRotation()).build();
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setImageRequest(request)
-                .setTapToRetryEnabled(true)
-                .setOldController(simpleDraweeView.getController())
-                .setAutoPlayAnimations(true)
-                .setControllerListener(controllerListener)
-                .build();
-        simpleDraweeView.setController(controller);
     }
 
     public static void loadNoChangeView(Context context, SimpleDraweeView simpleDraweeView, Uri httpUri) {
-        File file = getFileFromDiskCache(context, httpUri);
-        if (file != null) {
-            httpUri = Uri.fromFile(file);
+        try {
+            File file = getFileFromDiskCache(context, httpUri);
+            if (file != null) {
+                httpUri = Uri.fromFile(file);
+            }
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setUri(httpUri)
+                    .setTapToRetryEnabled(true)
+                    .setOldController(simpleDraweeView.getController())
+                    .build();
+            simpleDraweeView.setController(controller);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setUri(httpUri)
-                .setTapToRetryEnabled(true)
-                .setOldController(simpleDraweeView.getController())
-                .build();
-        simpleDraweeView.setController(controller);
     }
 
 
     public static void loadViewBySize(Context context, SimpleDraweeView simpleDraweeView, Uri httpUri, int width, int height) {
-        File file = getFileFromDiskCache(context, httpUri);
-        if (file != null) {
-            httpUri = Uri.fromFile(file);
+        try {
+            File file = getFileFromDiskCache(context, httpUri);
+            if (file != null) {
+                httpUri = Uri.fromFile(file);
+            }
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(httpUri)
+                    //根据View的尺寸放缩图片
+                    .setResizeOptions(new ResizeOptions(width, height))
+                    .build();
+
+
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setOldController(simpleDraweeView.getController())
+                    .setImageRequest(request)
+                    .setTapToRetryEnabled(true)
+                    .build();
+            simpleDraweeView.setController(controller);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(httpUri)
-                //根据View的尺寸放缩图片
-                .setResizeOptions(new ResizeOptions(width, height))
-                .build();
-
-
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setOldController(simpleDraweeView.getController())
-                .setImageRequest(request)
-                .setTapToRetryEnabled(true)
-                .build();
-        simpleDraweeView.setController(controller);
     }
 
     public static double getRatioSize(int bitWidth, int bitHeight, int imageHeight, int imageWidth) {
@@ -663,29 +707,33 @@ public class UdeskUtil {
 
     public static String getFilePath(Context context, Uri uri) {
         String path = "";
-        if ("content".equalsIgnoreCase(uri.getScheme())) {
-            Cursor cursor = null;
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    path = getPath(context, uri);
-                } else {
-                    String[] projection = {MediaStore.Images.Media.DATA};
-                    cursor = context.getContentResolver().query(uri, projection, null, null, null);
-                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                    cursor.moveToFirst();
-                    path = cursor.getString(column_index);
-                }
-            } catch (Exception e) {
-                return uri.getPath();
-            } finally {
+        try {
+            if ("content".equalsIgnoreCase(uri.getScheme())) {
+                Cursor cursor = null;
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        path = getPath(context, uri);
+                    } else {
+                        String[] projection = {MediaStore.Images.Media.DATA};
+                        cursor = context.getContentResolver().query(uri, projection, null, null, null);
+                        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                        cursor.moveToFirst();
+                        path = cursor.getString(column_index);
+                    }
+                } catch (Exception e) {
+                    return uri.getPath();
+                } finally {
 
-                if (cursor != null) {
-                    cursor.close();
+                    if (cursor != null) {
+                        cursor.close();
+                    }
                 }
             }
-        }
-        if (TextUtils.isEmpty(path.trim())) {
-            path = uri.getPath();
+            if (TextUtils.isEmpty(path.trim())) {
+                path = uri.getPath();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return path;
@@ -693,60 +741,64 @@ public class UdeskUtil {
 
     public static String getPath(final Context context, final Uri uri) {
 
-        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+        try {
+            final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 
-        // DocumentProvider
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-                // ExternalStorageProvider
-                if (isExternalStorageDocument(uri)) {
-                    final String docId = DocumentsContract.getDocumentId(uri);
-                    final String[] split = docId.split(":");
-                    final String type = split[0];
+            // DocumentProvider
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+                    // ExternalStorageProvider
+                    if (isExternalStorageDocument(uri)) {
+                        final String docId = DocumentsContract.getDocumentId(uri);
+                        final String[] split = docId.split(":");
+                        final String type = split[0];
 
-                    if ("primary".equalsIgnoreCase(type)) {
-                        return Environment.getExternalStorageDirectory() + "/" + split[1];
+                        if ("primary".equalsIgnoreCase(type)) {
+                            return Environment.getExternalStorageDirectory() + "/" + split[1];
+                        }
+
                     }
+                    // DownloadsProvider
+                    else if (isDownloadsDocument(uri)) {
 
-                }
-                // DownloadsProvider
-                else if (isDownloadsDocument(uri)) {
+                        final String id = DocumentsContract.getDocumentId(uri);
+                        final Uri contentUri = ContentUris.withAppendedId(
+                                Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
 
-                    final String id = DocumentsContract.getDocumentId(uri);
-                    final Uri contentUri = ContentUris.withAppendedId(
-                            Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-
-                    return getDataColumn(context, contentUri, null, null);
-                }
-                // MediaProvider
-                else if (isMediaDocument(uri)) {
-                    final String docId = DocumentsContract.getDocumentId(uri);
-                    final String[] split = docId.split(":");
-                    final String type = split[0];
-
-                    Uri contentUri = null;
-                    if ("image".equals(type)) {
-                        contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                    } else if ("video".equals(type)) {
-                        contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                    } else if ("audio".equals(type)) {
-                        contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                        return getDataColumn(context, contentUri, null, null);
                     }
+                    // MediaProvider
+                    else if (isMediaDocument(uri)) {
+                        final String docId = DocumentsContract.getDocumentId(uri);
+                        final String[] split = docId.split(":");
+                        final String type = split[0];
 
-                    final String selection = "_id=?";
-                    final String[] selectionArgs = new String[]{split[1]};
+                        Uri contentUri = null;
+                        if ("image".equals(type)) {
+                            contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                        } else if ("video".equals(type)) {
+                            contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                        } else if ("audio".equals(type)) {
+                            contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                        }
 
-                    return getDataColumn(context, contentUri, selection, selectionArgs);
+                        final String selection = "_id=?";
+                        final String[] selectionArgs = new String[]{split[1]};
+
+                        return getDataColumn(context, contentUri, selection, selectionArgs);
+                    }
+                }
+                // MediaStore (and general)
+                else if ("content".equalsIgnoreCase(uri.getScheme())) {
+                    return getDataColumn(context, uri, null, null);
+                }
+                // File
+                else if ("file".equalsIgnoreCase(uri.getScheme())) {
+                    return uri.getPath();
                 }
             }
-            // MediaStore (and general)
-            else if ("content".equalsIgnoreCase(uri.getScheme())) {
-                return getDataColumn(context, uri, null, null);
-            }
-            // File
-            else if ("file".equalsIgnoreCase(uri.getScheme())) {
-                return uri.getPath();
-            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
 
         return null;
@@ -838,7 +890,7 @@ public class UdeskUtil {
         if (dotIndex < 0) {
             return type;
         }
-    /* 获取文件的后缀名*/
+        /* 获取文件的后缀名*/
         String end = fName.substring(dotIndex, fName.length()).toLowerCase();
         if (end.equals("")) return type;
         //在MIME和文件类型的匹配表中找到对应的MIME类型。
@@ -849,27 +901,6 @@ public class UdeskUtil {
         return type;
     }
 
-//    public static void changeAppLanguage(Context context, Locale locale) {
-//
-//        Resources resources = context.getResources();
-//        DisplayMetrics metrics = resources.getDisplayMetrics();
-//        Configuration configuration = resources.getConfiguration();
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-//            configuration.setLocale(locale);
-//        } else {
-//            configuration.locale = locale;
-//        }
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            LocaleList localeList = new LocaleList(locale);
-//            LocaleList.setDefault(localeList);
-//            configuration.setLocales(localeList);
-//            context.createConfigurationContext(configuration);
-//        }
-//
-//
-//        Locale.setDefault(locale);
-//        resources.updateConfiguration(configuration, metrics);
-//    }
 
     public static final String[][] MIME_MapTable = {
             {".3gp", "video/3gpp"},
@@ -944,7 +975,7 @@ public class UdeskUtil {
     public final static int TYPE_AUDIO = 3;
 
     public static int isPictureType(String pictureType) {
-        if(TextUtils.isEmpty(pictureType)){
+        if (TextUtils.isEmpty(pictureType)) {
             return TYPE_IMAGE;
         }
         switch (pictureType) {
@@ -989,17 +1020,21 @@ public class UdeskUtil {
     public static void loadEmojiView(Context context, SimpleDraweeView simpleDraweeView, Uri uri, final int reqWidth, final int reqHeight) {
 
 
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                .setResizeOptions(new ResizeOptions(reqWidth, dip2px(context, reqHeight)))
-                .build();
+        try {
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                    .setResizeOptions(new ResizeOptions(reqWidth, dip2px(context, reqHeight)))
+                    .build();
 
-        DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setImageRequest(request)
-                .setTapToRetryEnabled(true)
-                .setOldController(simpleDraweeView.getController())
-                .build();
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setImageRequest(request)
+                    .setTapToRetryEnabled(true)
+                    .setOldController(simpleDraweeView.getController())
+                    .build();
 
-        simpleDraweeView.setController(controller);
+            simpleDraweeView.setController(controller);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static String getFileName(String url) {
@@ -1111,8 +1146,8 @@ public class UdeskUtil {
 
     public static Bitmap getVideoThumbnail(String url) {
         Bitmap bitmap = null;
-//MediaMetadataRetriever 是android中定义好的一个类，提供了统一
-//的接口，用于从输入的媒体文件中取得帧和元数据；
+       // MediaMetadataRetriever 是android中定义好的一个类，提供了统一
+       // 的接口，用于从输入的媒体文件中取得帧和元数据；
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
             retriever.setDataSource(url, new HashMap());
@@ -1167,7 +1202,7 @@ public class UdeskUtil {
     public static void setOrientation(Activity context) {
 
         String orientation = UdeskSDKManager.getInstance().getUdeskConfig().Orientation;
-        if ( orientation.equals(UdeskConfig.OrientationValue.portrait)) {
+        if (orientation.equals(UdeskConfig.OrientationValue.portrait)) {
             context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         } else if (orientation.equals(UdeskConfig.OrientationValue.landscape)) {
             context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);

@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.SpannedString;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
@@ -33,6 +34,9 @@ import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -51,6 +55,7 @@ import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.photoselect.PictureVideoPlayActivity;
 import cn.udesk.provider.UdeskFileProvider;
 import cn.udesk.widget.CircleProgressBar;
+import cn.udesk.widget.HtmlTagHandler;
 import udesk.core.UdeskConst;
 import udesk.core.model.MessageInfo;
 import udesk.core.utils.UdeskUtils;
@@ -78,8 +83,9 @@ public class MessageAdatper extends BaseAdapter {
             R.layout.udesk_chat_msg_item_location_r, //地理位置消息右
             R.layout.udesk_chat_msg_item_video_l, //视频消息左边
             R.layout.udesk_chat_msg_item_video_r, //视频消息右边
-            R.layout.udesk_chat_msg_item_smallvideo_l,
-            R.layout.udesk_chat_msg_item_smallvideo_r,
+            R.layout.udesk_chat_msg_item_smallvideo_l,//短视频消息左
+            R.layout.udesk_chat_msg_item_smallvideo_r,//短视频消息右
+            R.layout.udesk_chat_msg_item_product_r, //商品消息右
     };
 
     /**
@@ -139,6 +145,7 @@ public class MessageAdatper extends BaseAdapter {
     private static final int MSG_Video_Txt_R = 17;
     private static final int MSG_SMALL_VIDEO_L = 18;
     private static final int MSG_SMALL_VIDEO_R = 19;
+    private static final int MSG_PRODUCT_R = 20;
 
 
     //2条消息之间 时间间隔超过SPACE_TIME， 会话界面会显示出消息的收发时间
@@ -229,7 +236,10 @@ public class MessageAdatper extends BaseAdapter {
                     } else {
                         return MSG_Video_Txt_R;
                     }
-
+                case UdeskConst.ChatMsgTypeInt.TYPE_PRODUCT:
+                    if (message.getDirection() == UdeskConst.ChatMsgDirection.Send) {
+                        return MSG_PRODUCT_R;
+                    }
                 default:
                     return ILLEGAL;
             }
@@ -417,6 +427,15 @@ public class MessageAdatper extends BaseAdapter {
                         rtxtViewholder.tvMsg = (TextView) convertView.findViewById(R.id.udesk_tv_msg);
                         UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMRightTextColorResId, rtxtViewholder.tvMsg);
                         convertView.setTag(rtxtViewholder);
+                        break;
+                    case MSG_PRODUCT_R:
+                        ProductViewHolder productViewHolder = new ProductViewHolder();
+                        initItemNormalView(convertView, productViewHolder);
+                        productViewHolder.tvMsg = (TextView) convertView.findViewById(R.id.udesk_tv_msg);
+                        productViewHolder.product_name = (TextView) convertView.findViewById(R.id.product_name);
+                        productViewHolder.productView = convertView.findViewById(R.id.product_view);
+                        productViewHolder.imgView = (SimpleDraweeView) convertView.findViewById(R.id.udesk_product_icon);
+                        convertView.setTag(productViewHolder);
                         break;
                     case RICH_TEXT:
                         RichTextViewHolder richTextViewHolder = new RichTextViewHolder();
@@ -829,6 +848,91 @@ public class MessageAdatper extends BaseAdapter {
     }
 
     /**
+     * 展示商品消息
+     */
+    class ProductViewHolder extends BaseViewHolder {
+        TextView tvMsg;
+        TextView product_name;
+        View productView;
+        SimpleDraweeView imgView;
+        String productUrl;
+
+        @Override
+        void bind(Context context) {
+            try {
+                JSONObject jsonObject = new JSONObject(message.getMsgContent());
+                if (!TextUtils.isEmpty(jsonObject.optString("imgUrl"))) {
+                    imgView.setVisibility(View.VISIBLE);
+                    UdeskUtil.loadNoChangeView(context.getApplicationContext(), imgView, Uri.parse(jsonObject.optString("imgUrl")));
+                } else {
+                    imgView.setVisibility(View.GONE);
+                }
+                productUrl = jsonObject.optString("url");
+                product_name.setText(jsonObject.optString("name"));
+                if (!TextUtils.isEmpty(productUrl)) {
+                    product_name.setTextColor(mContext.getResources().getColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductNameLinkColorResId));
+                    product_name.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick != null) {
+                                UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick.txtMsgOnclick(productUrl);
+                            } else {
+                                Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
+                                intent.putExtra(UdeskConst.WELCOME_URL, productUrl);
+                                mContext.startActivity(intent);
+                            }
+                        }
+                    });
+                }
+
+                StringBuilder builder = new StringBuilder();
+                builder.append("<font></font>");
+                JSONArray jsonArray = jsonObject.getJSONArray("params");
+                if (jsonArray != null && jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject data = jsonArray.optJSONObject(i);
+                        if (TextUtils.isEmpty(data.optString("text"))) {
+                            continue;
+                        }
+                        String textStr = "<font color=" + data.optString("color") +
+                                "  size=" + 2 * data.optInt("size") + ">" + data.optString("text") + "</font>";
+                        if (data.optBoolean("fold")) {
+                            textStr = "<b>" + textStr + "</b>";
+                        }
+                        if (data.optBoolean("break")) {
+                            textStr = textStr + "<br>";
+                        }
+                        builder.append(textStr);
+                    }
+                }
+                String htmlString = builder.toString().replaceAll("font", HtmlTagHandler.TAG_FONT);
+                Spanned fromHtml = Html.fromHtml(htmlString, null, new HtmlTagHandler());
+                tvMsg.setText(fromHtml);
+//                //设置消息长按事件  复制文本
+//                tvMsg.setOnLongClickListener(new OnLongClickListener() {
+//
+//                    @Override
+//                    public boolean onLongClick(View v) {
+//                        ((UdeskChatActivity) mContext).handleText(message, v);
+//                        return false;
+//                    }
+//                });
+                //重发按钮点击事件
+                ivStatus.setOnClickListener(new OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        ((UdeskChatActivity) mContext).retrySendMsg(message);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    /**
      * 展示文件消息
      */
     class FileViewHolder extends BaseViewHolder {
@@ -842,15 +946,15 @@ public class MessageAdatper extends BaseAdapter {
         void bind(Context context) {
             try {
                 if (message.getDirection() == UdeskConst.ChatMsgDirection.Send) {
-                    if (TextUtils.isEmpty(message.getFilename())){
+                    if (TextUtils.isEmpty(message.getFilename())) {
                         fielTitle.setText(UdeskUtil.getFileName(message.getLocalPath()));
-                    }else {
+                    } else {
                         fielTitle.setText(message.getFilename());
                     }
 
-                    if (TextUtils.isEmpty(message.getFilesize())){
+                    if (TextUtils.isEmpty(message.getFilesize())) {
                         fielSize.setText(UdeskUtil.getFileSizeByLoaclPath(message.getLocalPath()));
-                    }else {
+                    } else {
                         fielSize.setText(message.getFilesize());
                     }
                     if (message.getSendFlag() == UdeskConst.SendFlag.RESULT_SUCCESS) {
@@ -1120,14 +1224,14 @@ public class MessageAdatper extends BaseAdapter {
         void bind(Context context) {
             try {
                 if (message.getSendFlag() == UdeskConst.SendFlag.RESULT_SUCCESS
-                        || message.getSendFlag() == UdeskConst.SendFlag.RESULT_FAIL){
+                        || message.getSendFlag() == UdeskConst.SendFlag.RESULT_FAIL) {
                     percent.setVisibility(View.GONE);
                 }
                 if (!TextUtils.isEmpty(message.getLocalPath()) && UdeskUtils.isExitFileByPath(message.getLocalPath())) {
                     int[] wh = UdeskUtil.getImageWH(message.getLocalPath());
                     UdeskUtil.loadFileFromSdcard(context, imgView, Uri.fromFile(new File(message.getLocalPath())), wh[0], wh[1]);
                 } else {
-                    String uRLEncoder = URLEncoder.encode(message.getMsgContent(),"utf-8").replaceAll("\\+", "%20");
+                    String uRLEncoder = URLEncoder.encode(message.getMsgContent(), "utf-8").replaceAll("\\+", "%20");
                     uRLEncoder = uRLEncoder.replaceAll("%3A", ":").replaceAll("%2F", "/");
                     UdeskUtil.loadImageView(context, imgView, Uri.parse(uRLEncoder));
                 }
@@ -1145,7 +1249,7 @@ public class MessageAdatper extends BaseAdapter {
                             imgUri = Uri.fromFile(new File(message.getLocalPath()));
                         } else if (!TextUtils.isEmpty(message.getMsgContent())) {
                             try {
-                                String uRLEncoder = URLEncoder.encode(message.getMsgContent(),"utf-8").replaceAll("\\+", "%20");
+                                String uRLEncoder = URLEncoder.encode(message.getMsgContent(), "utf-8").replaceAll("\\+", "%20");
                                 uRLEncoder = uRLEncoder.replaceAll("%3A", ":").replaceAll("%2F", "/");
                                 imgUri = Uri.parse(uRLEncoder);
                             } catch (Exception e) {
@@ -1567,7 +1671,7 @@ public class MessageAdatper extends BaseAdapter {
                         break;
                     case UdeskConst.StructBtnTypeString.sdkCallBack:
                         if (UdeskSDKManager.getInstance().getUdeskConfig().structMessageCallBack != null) {
-                            UdeskSDKManager.getInstance().getUdeskConfig().structMessageCallBack .structMsgCallBack(mContext, mStructBtn.getValue());
+                            UdeskSDKManager.getInstance().getUdeskConfig().structMessageCallBack.structMsgCallBack(mContext, mStructBtn.getValue());
                         }
                         break;
                 }
@@ -1727,7 +1831,7 @@ public class MessageAdatper extends BaseAdapter {
                 ImgViewHolder imgViewHolder = (ImgViewHolder) tag;
                 if (imgViewHolder.message != null && msgId.equals(imgViewHolder.message.getMsgId())) {
                     imgViewHolder.percent.setVisibility(View.VISIBLE);
-                    imgViewHolder.percent.setText(precent+"%");
+                    imgViewHolder.percent.setText(precent + "%");
                     if (precent == 100) {
                         imgViewHolder.percent.setVisibility(View.GONE);
                     }

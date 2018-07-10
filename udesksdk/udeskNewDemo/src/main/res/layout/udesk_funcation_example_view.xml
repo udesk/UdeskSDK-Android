@@ -445,6 +445,40 @@
             android:layout_height="50dp"
             android:orientation="horizontal">
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_use_prouct"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="left|center"
+                    android:text="发送商品信息"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
@@ -702,6 +736,17 @@
             android:hint="udesk 机器人配置欢迎语 对应的Id值"
             android:textColor="#333333"
             android:textColorHint="@color/udesk_color_999999"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/robpt_customer_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="@dimen/udesk_10"
+            android:gravity="left|center"
+            android:text="@string/rob_cus_info"
+            android:textColor="#333333"
             android:textSize="16sp" />
 
         <TextView
