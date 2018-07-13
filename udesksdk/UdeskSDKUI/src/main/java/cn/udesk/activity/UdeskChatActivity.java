@@ -70,6 +70,7 @@ import cn.udesk.emotion.EmotionKeyboard;
 import cn.udesk.emotion.EmotionLayout;
 import cn.udesk.emotion.IEmotionSelectedListener;
 import cn.udesk.emotion.LQREmotionKit;
+import cn.udesk.messagemanager.UdeskMessageManager;
 import cn.udesk.model.FunctionMode;
 import cn.udesk.model.SDKIMSetting;
 import cn.udesk.model.SurveyOptionsModel;
@@ -307,6 +308,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                         if (activity.mPresenter != null) {
                             activity.mPresenter.pullMessages(0, activity.mAgentInfo.getIm_sub_session_id());
                             activity.mPresenter.sendPrefilterMsg();
+                            activity.mPresenter.selfretrySendMsg();
                         }
                         activity.sendVideoMessage();
                         break;
@@ -729,7 +731,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
 
     }
 
-    private void showEmoji(){
+    private void showEmoji() {
         if (UdeskSDKManager.getInstance().getUdeskConfig().isUseEmotion && LQREmotionKit.getEmotionPath() != null) {
             mEmojiImg.setVisibility(View.VISIBLE);
         } else {
@@ -1029,7 +1031,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
             if (mPresenter != null) {
                 mPresenter.bindReqsurveyMsg();
             }
-            if (isInitComplete && !currentStatusIsOnline && !isSurvyOperate) {
+            if (isInitComplete && !isSurvyOperate && !UdeskMessageManager.getInstance().isConnection()) {
                 mPresenter.createIMCustomerInfo();
             }
             sendVideoMessage();
@@ -1462,6 +1464,26 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
         loadHistoryRecords(initViewMode);
     }
 
+    @Override
+    public int getAgentSeqNum() {
+
+        try {
+            if (mChatAdapter != null) {
+                List<MessageInfo> listMessages = mChatAdapter.getList();
+                for (int i = listMessages.size() - 1; i > 0; i--) {
+                    MessageInfo messageUI = listMessages.get(i);
+                    if (messageUI.getDirection() == UdeskConst.ChatMsgDirection.Recv) {
+                        return messageUI.getSeqNum();
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     /**
      * 读取数据库中的历史数据
      */
@@ -1731,7 +1753,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                         positiveLabel, negativeLabel, content,
                         new OnPopConfirmClick() {
                             public void onPositiveClick() {
-                                if (isupload && TextUtils.isEmpty(path)) {
+                                if (isupload && !TextUtils.isEmpty(path)) {
                                     sendFile(path);
                                 }
                                 if (!isupload && info != null && mPresenter != null) {
@@ -2634,7 +2656,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
         if (UdeskSDKManager.getInstance().getUdeskConfig().isUseVoice) {
             mAudioImg.setVisibility(vis);
         }
-       showEmoji();
+        showEmoji();
         if (UdeskSDKManager.getInstance().getUdeskConfig().isUseMore) {
             mMoreImg.setVisibility(vis);
         }
@@ -2822,8 +2844,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                         top = l[1],
                         bottom = top + v.getHeight(),
                         right = left + v.getWidth();
-                if (event.getX() > left && event.getX() < right
-                        && event.getY() > top && event.getY() < bottom) {
+                if ( event.getY() > top) {
                     // 点击EditText的事件，忽略它。
                     return false;
                 } else {
@@ -2837,7 +2858,6 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
         return false;
     }
 
-
     private void cleanSource() {
         if (isDestroyed) {
             return;
@@ -2845,6 +2865,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
         // 回收资源
         isDestroyed = true;
         try {
+            XPermissionUtils.destory();
             functionItems.clear();
             new MyUpdateMsgRead().start();
             recycleVoiceRes();
@@ -2852,6 +2873,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                 mPresenter.clearPreMsg();
                 mPresenter.quitQuenu();
                 mPresenter.unBind();
+                mPresenter.removeCallBack();
                 mPresenter = null;
             }
             if (mHandler != null && myRunnable != null) {

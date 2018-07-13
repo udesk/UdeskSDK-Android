@@ -563,7 +563,6 @@ public class CameraInterface implements Camera.PreviewCallback {
                 }
                 //每移动50个像素缩放一个级别
                 int scaleRate = (int) (zoom / 50);
-                Log.i("xxxx", "setZoom = " + scaleRate);
                 if (scaleRate < mParams.getMaxZoom()) {
                     nowScaleRate += scaleRate;
                     if (nowScaleRate < 0) {
@@ -572,10 +571,8 @@ public class CameraInterface implements Camera.PreviewCallback {
                         nowScaleRate = mParams.getMaxZoom();
                     }
                     mParams.setZoom(nowScaleRate);
-                    Log.i("xxxx", "setZoom = " + nowScaleRate);
                     mCamera.setParameters(mParams);
                 }
-                Log.i("udesksdk", "setZoom = " + nowScaleRate);
                 break;
         }
 

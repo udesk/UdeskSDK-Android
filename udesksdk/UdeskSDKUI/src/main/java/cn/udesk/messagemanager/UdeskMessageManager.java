@@ -23,7 +23,7 @@ public class UdeskMessageManager {
     private ExecutorService messageExecutor;
     public ReflectInvokeMethod event_OnNewMessage = new ReflectInvokeMethod(new Class<?>[]{Message.class, String.class,
             String.class, String.class, String.class, Long.class, String.class, String.class,
-            Integer.class,String.class,String.class});
+            Integer.class, String.class, String.class});
     public ReflectInvokeMethod eventui_OnMessageReceived = new ReflectInvokeMethod(new Class<?>[]{String.class});
     public ReflectInvokeMethod eventui_OnNewMessage = new ReflectInvokeMethod(new Class<?>[]{MessageInfo.class});
     public ReflectInvokeMethod eventui_OnNewPresence = new ReflectInvokeMethod(new Class<?>[]{String.class, Integer.class});
@@ -79,8 +79,8 @@ public class UdeskMessageManager {
         mUdeskXmppManager.sendVCCallMessage(type, to, text);
     }
 
-    public void sendMessage(String type, String text, String msgId, String to, long duration, String subsessionId, boolean noNeedSave, int seqNum,String fileName,String filesize) {
-        mUdeskXmppManager.sendMessage(type, text, msgId, to, duration, subsessionId, noNeedSave, seqNum,fileName,filesize);
+    public void sendMessage(String type, String text, String msgId, String to, long duration, String subsessionId, boolean noNeedSave, int seqNum, String fileName, String filesize) {
+        mUdeskXmppManager.sendMessage(type, text, msgId, to, duration, subsessionId, noNeedSave, seqNum, fileName, filesize);
     }
 
     public void sendComodityMessage(String text, String to) {
@@ -118,7 +118,7 @@ public class UdeskMessageManager {
 
 
     public void onNewMessage(final Message message, String agentJid, final String type, final String msgId, final String content,
-                             final Long duration, final String send_status, String imsessionId, Integer seqNum,String fileName,String fileSize) {
+                             final Long duration, final String send_status, String imsessionId, Integer seqNum, String fileName, String fileSize) {
         try {
             String jid[] = agentJid.split("/");
             MessageInfo msginfo = null;
@@ -131,14 +131,14 @@ public class UdeskMessageManager {
                         agentName = urlAndNick[1];
                     }
                     String buildrollBackMsg = agentName;
-                    msginfo = buildReceiveMessage(jid[0], UdeskConst.ChatMsgTypeString.TYPE_EVENT, msgId, buildrollBackMsg, duration, send_status, imsessionId, seqNum,fileName,fileSize);
+                    msginfo = buildReceiveMessage(jid[0], UdeskConst.ChatMsgTypeString.TYPE_EVENT, msgId, buildrollBackMsg, duration, send_status, imsessionId, seqNum, fileName, fileSize);
                 }
             } else {
                 //消息在本地数据库存在，则结束后续流程
                 if (UdeskDBManager.getInstance().hasReceviedMsg(msgId)) {
                     return;
                 }
-                msginfo = buildReceiveMessage(jid[0], type, msgId, content, duration, send_status, imsessionId, seqNum,fileName,fileSize);
+                msginfo = buildReceiveMessage(jid[0], type, msgId, content, duration, send_status, imsessionId, seqNum, fileName, fileSize);
             }
 
             if (!type.equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT)) {
@@ -173,7 +173,7 @@ public class UdeskMessageManager {
 
     public MessageInfo buildReceiveMessage(String agentJid, String msgType, String msgId,
                                            String content, long duration, String send_status,
-                                           String imsessionId, Integer seqNum,String fileName,String fileSize) {
+                                           String imsessionId, Integer seqNum, String fileName, String fileSize) {
         MessageInfo msg = new MessageInfo();
         msg.setMsgtype(msgType);
         msg.setTime(System.currentTimeMillis());

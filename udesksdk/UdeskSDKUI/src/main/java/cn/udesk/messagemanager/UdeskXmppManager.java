@@ -277,9 +277,10 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
             if (TextUtils.isEmpty(to)) {
                 return false;
             }
-            if (System.currentTimeMillis() - heartSpaceTime > 20000) {
+            if (System.currentTimeMillis() - heartSpaceTime > 20000 || !isConnection()) {
                 heartSpaceTime = System.currentTimeMillis();
                 reConnected();
+                return false;
             }
             xmppMsg = new Message(to, Message.Type.chat);
 
@@ -329,7 +330,6 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
-                reConnected();
                 return false;
             }
         }
