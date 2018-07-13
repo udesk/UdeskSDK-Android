@@ -76,7 +76,7 @@ public class UdeskConfig {
     //设置是否使用导航UI中的满意度评价UI rue表示使用 false表示不使用
     public boolean isUseNavigationSurvy = true;
     //设置是否需要小视频的功能 rue表示使用 false表示不使用
-    public boolean isUseSmallVideo = true;
+    public boolean isUseSmallVideo = false;
     //上传图片是否使用原图 还是缩率图
     public boolean isScaleImg = true;
     //缩放图 设置宽高最大值，如果超出则压缩，否则不压缩
@@ -264,7 +264,7 @@ public class UdeskConfig {
         //设置是否使用导航UI中的满意度评价UI rue表示使用 false表示不使用
         private boolean isUseNavigationSurvy = true;
         //设置是否需要小视频的功能 rue表示使用 false表示不使用
-        private boolean isUseSmallVideo = true;
+        private boolean isUseSmallVideo = false;
         //上传图片是否使用原图 还是缩率图
         private boolean isScaleImg = true;
         //缩放图 设置宽高最大值，如果超出则压缩，否则不压缩
