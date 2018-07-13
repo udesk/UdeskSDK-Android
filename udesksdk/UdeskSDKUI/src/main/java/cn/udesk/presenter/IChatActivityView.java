@@ -40,6 +40,8 @@ public interface IChatActivityView {
 
 	void initLoadData();
 
+	int getAgentSeqNum();
+
 
 
 }

@@ -15,6 +15,12 @@ public class XPermissionUtils {
     private static int mRequestCode = -1;
     private static OnPermissionListener mOnPermissionListener;
 
+    public static  void  destory(){
+        if (mOnPermissionListener != null){
+            mOnPermissionListener = null;
+        }
+    }
+
     public interface OnPermissionListener {
 
         void onPermissionGranted();

@@ -44,9 +44,9 @@ public class UdeskConfig {
     public int udeskIMTipTextColorResId = DEFAULT;
     // 返回箭头图标资源id
     public int udeskbackArrowIconResId = DEFAULT;
-    // 咨询商品item的背景颜色
+    // 商品咨询item的背景颜色
     public int udeskCommityBgResId = DEFAULT;
-    //    商品介绍Title的字样颜色
+    //    商品咨询介绍Title的字样颜色
     public int udeskCommityTitleColorResId = DEFAULT;
     //  商品咨询页面中，商品介绍子Title的字样颜色
     public int udeskCommitysubtitleColorResId = DEFAULT;
@@ -790,6 +790,12 @@ public class UdeskConfig {
             return this;
         }
 
+
+        /**
+         * 设置商品消息
+         * @param mProduct
+         * @return
+         */
         public Builder setProduct(Product mProduct) {
             this.mProduct = mProduct;
             return this;
