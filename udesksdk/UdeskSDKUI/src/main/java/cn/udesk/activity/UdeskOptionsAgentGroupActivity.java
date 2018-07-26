@@ -126,6 +126,7 @@ public class UdeskOptionsAgentGroupActivity extends UdeskBaseActivity implements
         try {
             Intent intent = new Intent(getApplicationContext(), UdeskChatActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
             finish();
         } catch (Exception e) {
             e.printStackTrace();
