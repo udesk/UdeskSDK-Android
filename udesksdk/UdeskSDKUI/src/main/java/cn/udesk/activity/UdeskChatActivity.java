@@ -433,7 +433,6 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                                 if (activity.mPresenter != null) {
                                     activity.mPresenter.addLeavMsgWeclome(UdeskSDKManager.getInstance().getImSetting().getLeave_message_guide());
                                 }
-                                activity.currentStatusIsOnline = false;
                                 activity.setTitlebar(activity.getString(R.string.udesk_ok), "off");
                             } else {
                                 if (activity.mAgentInfo != null) {
@@ -442,12 +441,12 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                                     activity.setTitlebar(activity.getResources().getString(
                                             R.string.udesk_label_customer_offline), "off");
                                 }
-                                if (activity.currentStatusIsOnline) {
-                                    activity.expandableLayout.startAnimation(false);
-                                    activity.currentStatusIsOnline = false;
-                                    activity.isNeedStartExpandabLyout = true;
-                                }
                                 activity.delayShowtips(this);
+                            }
+                            if (activity.currentStatusIsOnline) {
+                                activity.expandableLayout.startAnimation(false);
+                                activity.currentStatusIsOnline = false;
+                                activity.isNeedStartExpandabLyout = true;
                             }
                         }
                         break;
@@ -2659,6 +2658,9 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
         showEmoji();
         if (UdeskSDKManager.getInstance().getUdeskConfig().isUseMore) {
             mMoreImg.setVisibility(vis);
+            if (vis == View.GONE){
+                hideMoreLayout();
+            }
         }
         if (UdeskSDKManager.getInstance().getUdeskConfig().isUseNavigationRootView) {
             navigationRootView.setVisibility(vis);
