@@ -2669,7 +2669,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
 
     private boolean isleaveMessageTypeMsg() {
         SDKIMSetting sdkimSetting = UdeskSDKManager.getInstance().getImSetting();
-        return sdkimSetting != null && sdkimSetting.getLeave_message_type().equals("msg");
+        return sdkimSetting != null && sdkimSetting.getEnable_web_im_feedback() && sdkimSetting.getLeave_message_type().equals("msg");
     }
 
     @Override
