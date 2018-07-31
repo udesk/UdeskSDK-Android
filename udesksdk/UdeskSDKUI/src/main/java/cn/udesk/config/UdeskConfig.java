@@ -86,7 +86,7 @@ public class UdeskConfig {
     //设置默认屏幕显示习惯
     public String Orientation = OrientationValue.portrait;
     //在没有请求到管理员在后端对sdk使用配置下，在默认的情况下，是否需要表单留言，true需要， false 不需要
-    public boolean isUserForm = true;
+    public boolean isUserForm = false;
     //创建用户的基本信息
     public Map<String, String> defualtUserInfo;
     //创建自定义的文本信息
