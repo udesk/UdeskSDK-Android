@@ -230,12 +230,12 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                         Toast.makeText(getApplicationContext(), "对文本消息中的链接消息处理设置回调", Toast.LENGTH_SHORT).show();
                     }
                 })   //如果需要对文本消息中的链接消息处理可以设置该回调，点击事件的拦截回调。 包含表情的不会拦截回调。
-                .setFormCallBack(new IUdeskFormCallBack() {
-                    @Override
-                    public void toLuachForm(Context context) {
-                        Toast.makeText(getApplicationContext(), "不用udesk系统提供的留言功能", Toast.LENGTH_SHORT).show();
-                    }
-                })//离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
+//                .setFormCallBack(new IUdeskFormCallBack() {
+//                    @Override
+//                    public void toLuachForm(Context context) {
+//                        Toast.makeText(getApplicationContext(), "不用udesk系统提供的留言功能", Toast.LENGTH_SHORT).show();
+//                    }
+//                })//离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
                 .setStructMessageCallBack(new IUdeskStructMessageCallBack() {
 
                     @Override
