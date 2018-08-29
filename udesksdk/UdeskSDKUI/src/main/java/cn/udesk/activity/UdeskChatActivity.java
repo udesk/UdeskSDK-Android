@@ -2475,6 +2475,11 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
 
     //发送广告的连接地址消息
     public void sentLink(String linkMsg) {
+        if (!UdeskUtils.isNetworkConnected(this)) {
+            UdeskUtils.showToast(this,
+                    getResources().getString(R.string.udesk_has_wrong_net));
+            return;
+        }
         if (mPresenter != null) {
             if (currentStatusIsOnline) {
                 mPresenter.sendTxtMessage(linkMsg);
@@ -2501,6 +2506,11 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
     //重试发送消息
     public void retrySendMsg(MessageInfo message) {
         try {
+            if (!UdeskUtils.isNetworkConnected(this)) {
+                UdeskUtils.showToast(this,
+                        getResources().getString(R.string.udesk_has_wrong_net));
+                return;
+            }
             if (mPresenter != null && message != null) {
                 changeImState(message.getMsgId(), UdeskConst.SendFlag.RESULT_RETRY);
                 mPresenter.startRetryMsg(message);
@@ -2524,6 +2534,11 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
     //下载文件
     public void downLoadMsg(MessageInfo message) {
         try {
+            if (!UdeskUtils.isNetworkConnected(this)) {
+                UdeskUtils.showToast(this,
+                        getResources().getString(R.string.udesk_has_wrong_net));
+                return;
+            }
             if (mPresenter != null && message != null) {
                 if (UdeskUtil.isGpsNet(getApplicationContext())) {
                     toGpsNetView(false, message, null);
@@ -2538,6 +2553,11 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
 
     public synchronized void downLoadVideo(MessageInfo message) {
         try {
+            if (!UdeskUtils.isNetworkConnected(this)) {
+                UdeskUtils.showToast(this,
+                        getResources().getString(R.string.udesk_has_wrong_net));
+                return;
+            }
             if (mPresenter != null && message != null) {
                 mPresenter.downVideo(message);
             }

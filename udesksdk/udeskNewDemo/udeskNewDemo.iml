@@ -103,7 +103,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 26 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 24 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: __local_aars__:D.\github\UdeskSDK-Android\udesksdk\UdeskSDKUI\libs\udesk_sdk_4.0.3.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:animated-vector-drawable-26.1.0" level="project" />
@@ -144,5 +144,6 @@
     <orderEntry type="library" name="Gradle: android.arch.lifecycle:runtime-1.0.0" level="project" />
     <orderEntry type="module" module-name="udeskvideo" />
     <orderEntry type="module" module-name="UdeskSDKUI" />
+    <orderEntry type="library" name="Gradle: android-android-24" level="project" />
   </component>
 </module>
