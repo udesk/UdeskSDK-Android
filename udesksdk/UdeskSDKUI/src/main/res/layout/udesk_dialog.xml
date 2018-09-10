@@ -2,7 +2,8 @@
     android:layout_width="150dip"
     android:layout_height="150dip"
     android:gravity="center"
-    android:orientation="vertical" >
+    android:layoutDirection="ltr"
+    android:orientation="vertical">
 
     <ProgressBar
         android:id="@+id/udesk_progressbar"

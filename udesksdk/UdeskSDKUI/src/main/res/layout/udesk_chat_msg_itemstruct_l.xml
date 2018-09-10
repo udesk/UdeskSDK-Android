@@ -3,6 +3,7 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:layoutDirection="ltr"
     android:orientation="horizontal"
     android:paddingLeft="@dimen/udesk_chat_head_margin_left_or_right"
     android:paddingTop="@dimen/udesk_5">
@@ -25,9 +26,8 @@
         android:layout_below="@id/udesk_tv_time"
         android:layout_marginTop="@dimen/udesk_chat_head_margin"
         fresco:actualImageScaleType="centerCrop"
-        fresco:roundAsCircle="true"
         fresco:placeholderImage="@drawable/udesk_im_default_agent_avatar"
-        />
+        fresco:roundAsCircle="true" />
 
     <TextView
         android:id="@+id/udesk_nick_name"
@@ -44,10 +44,10 @@
 
     <LinearLayout
         android:id="@+id/udesk_rl_body"
-        android:layout_marginLeft="6dp"
         android:layout_width="@dimen/udesk_240"
         android:layout_height="wrap_content"
         android:layout_below="@id/udesk_nick_name"
+        android:layout_marginLeft="6dp"
         android:layout_marginRight="@dimen/udesk_chat_context_margin_other_derction"
         android:layout_toRightOf="@id/udesk_iv_head"
         android:background="@drawable/udesk_struct_bg"
@@ -57,8 +57,8 @@
             android:id="@+id/udesk_struct_img_container"
             android:layout_width="@dimen/udesk_220"
             android:layout_height="@dimen/udesk_120"
-            android:orientation="vertical"
             android:gravity="center"
+            android:orientation="vertical"
             android:padding="@dimen/udesk_5"
             android:visibility="gone">
 
@@ -70,16 +70,15 @@
                 fresco:failureImage="@drawable/udesk_defualt_failure"
                 fresco:failureImageScaleType="centerCrop"
                 fresco:placeholderImage="@drawable/udesk_defalut_image_loading"
-                fresco:placeholderImageScaleType="centerCrop"
-                />
+                fresco:placeholderImageScaleType="centerCrop" />
 
         </LinearLayout>
+
         <View
             android:id="@+id/image_line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/udesk_1"
-            android:background="@color/udesk_struct_bg_line_color"
-            />
+            android:background="@color/udesk_struct_bg_line_color" />
 
         <LinearLayout
             android:id="@+id/udesk_struct_text_container"
@@ -93,8 +92,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left|center"
-                android:textColor="#1f1f1f"
                 android:padding="@dimen/udesk_5"
+                android:textColor="#1f1f1f"
                 android:textSize="@dimen/udesk_sp16" />
 
             <TextView
@@ -102,16 +101,15 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left|center"
-                android:textColor="#999999"
                 android:padding="@dimen/udesk_5"
+                android:textColor="#999999"
                 android:textSize="@dimen/udesk_sp16" />
 
             <View
                 android:id="@+id/text_des_line"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/udesk_1"
-                android:background="@color/udesk_struct_bg_line_color"
-                />
+                android:background="@color/udesk_struct_bg_line_color" />
         </LinearLayout>
 
 

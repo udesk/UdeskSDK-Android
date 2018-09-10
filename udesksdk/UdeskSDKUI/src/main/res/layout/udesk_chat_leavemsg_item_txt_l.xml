@@ -4,6 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:layoutDirection="ltr"
     android:paddingLeft="@dimen/udesk_chat_head_margin_left_or_right"
     android:paddingTop="@dimen/udesk_5">
 

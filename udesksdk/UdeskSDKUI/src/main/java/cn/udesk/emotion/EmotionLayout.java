@@ -185,6 +185,8 @@ public class EmotionLayout extends LinearLayout implements View.OnClickListener 
     private void initTabs() {
         //默认添加一个表情tab
         try {
+            mLlTabContainer.removeAllViews();
+            mTabViewArray.clear();
             EmotionTab emojiTab = new EmotionTab(mContext, R.drawable.udesk_001);
             mLlTabContainer.addView(emojiTab);
             mTabViewArray.put(0, emojiTab);

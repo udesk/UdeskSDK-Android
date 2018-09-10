@@ -3,23 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/udesk_default_gray_bg"
-    android:orientation="vertical" >
+    android:layoutDirection="ltr"
+    android:orientation="vertical">
 
     <cn.udesk.widget.UdeskTitleBar
         android:id="@+id/udesktitlebar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    
+
 
     <TextView
-        android:visibility="gone"
-        android:textSize="@dimen/udesk_sp16"
-        android:textColor="#787878"
         android:id="@+id/udesk_title"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/udesk_50"
         android:gravity="left|center"
         android:paddingLeft="@dimen/udesk_15"
-        android:layout_width="fill_parent"
-        android:layout_height="@dimen/udesk_50" />
+        android:textColor="#787878"
+        android:textSize="@dimen/udesk_sp16"
+        android:visibility="gone" />
 
     <ListView
         android:id="@+id/udesk_options_listview"
@@ -30,9 +31,7 @@
         android:dividerHeight="@dimen/udesk_1"
         android:fadingEdge="none"
         android:scrollbars="none"
-        android:scrollingCache="false"
-        />
-    
-    
+        android:scrollingCache="false" />
+
 
 </LinearLayout>

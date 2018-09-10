@@ -6,6 +6,7 @@
     android:layout_margin="@dimen/udesk_7"
     android:ellipsize="end"
     android:gravity="center"
+    android:layoutDirection="ltr"
     android:singleLine="true"
     android:textColor="@color/udesk_color_666666"
     android:textSize="@dimen/udesk_sp12" />

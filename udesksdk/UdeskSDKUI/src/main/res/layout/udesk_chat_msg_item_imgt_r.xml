@@ -3,6 +3,7 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:layoutDirection="ltr"
     android:orientation="horizontal"
     android:paddingRight="@dimen/udesk_chat_head_margin_left_or_right"
     android:paddingTop="@dimen/udesk_5">
@@ -88,14 +89,14 @@
                 fresco:placeholderImageScaleType="centerCrop" />
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/udesk_precent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:background="@drawable/udesk_shape_oval"
                 android:gravity="center"
-                android:textSize="@dimen/udesk_sp14" />
+                android:textSize="@dimen/udesk_sp14"
+                android:visibility="gone" />
 
 
         </RelativeLayout>
