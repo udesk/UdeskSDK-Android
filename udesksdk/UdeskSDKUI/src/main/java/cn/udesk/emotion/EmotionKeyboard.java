@@ -305,7 +305,6 @@ public class EmotionKeyboard {
             int screenHeight = mActivity.getWindow().getDecorView().getRootView().getHeight();
             //计算软件盘的高度
             softInputHeight = screenHeight - r.bottom;
-            Log.i("xxxxx"," 计算软件盘的高度 softInputHeight = "+ softInputHeight);
             /**
              * 某些Android版本下，没有显示软键盘时减出来的高度总是144，而不是零，
              * 这是因为高度是包括了虚拟按键栏的(例如华为系列)，所以在API Level高于20时，
