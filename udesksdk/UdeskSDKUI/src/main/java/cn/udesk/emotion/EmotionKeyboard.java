@@ -190,7 +190,7 @@ public class EmotionKeyboard {
                 softInputHeight = mSp.getInt(SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, dip2Px(292));
             }
             hideSoftInput();
-            mEmotionLayout.getLayoutParams().height = softInputHeight >=  dip2Px(292) ? softInputHeight :  dip2Px(292);
+            mEmotionLayout.getLayoutParams().height = softInputHeight >=  dip2Px(240) ? softInputHeight :  dip2Px(292);
             mEmotionLayout.setVisibility(View.VISIBLE);
         } catch (Exception e) {
             e.printStackTrace();
@@ -305,6 +305,7 @@ public class EmotionKeyboard {
             int screenHeight = mActivity.getWindow().getDecorView().getRootView().getHeight();
             //计算软件盘的高度
             softInputHeight = screenHeight - r.bottom;
+            Log.i("xxxxx"," 计算软件盘的高度 softInputHeight = "+ softInputHeight);
             /**
              * 某些Android版本下，没有显示软键盘时减出来的高度总是144，而不是零，
              * 这是因为高度是包括了虚拟按键栏的(例如华为系列)，所以在API Level高于20时，
@@ -315,7 +316,7 @@ public class EmotionKeyboard {
                 softInputHeight = softInputHeight - getSoftButtonsBarHeight();
             }
             //存一份到本地
-            if (softInputHeight > dip2Px(292)) {
+            if (softInputHeight > 0) {
                 mSp.edit().putInt(SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, softInputHeight).apply();
             }
         } catch (Exception e) {
