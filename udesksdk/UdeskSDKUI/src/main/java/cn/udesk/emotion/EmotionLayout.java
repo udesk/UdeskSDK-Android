@@ -193,11 +193,16 @@ public class EmotionLayout extends LinearLayout implements View.OnClickListener 
 
             //添加所有的贴图tab
             List<StickerCategory> stickerCategories = StickerManager.getInstance().getStickerCategories();
-            for (int i = 0; i < stickerCategories.size(); i++) {
-                StickerCategory category = stickerCategories.get(i);
-                EmotionTab tab = new EmotionTab(mContext, category.getCoverImgPath());
-                mLlTabContainer.addView(tab);
-                mTabViewArray.put(i + 1, tab);
+            if (stickerCategories.size() >0){
+                mLlTabContainer.setVisibility(VISIBLE);
+                for (int i = 0; i < stickerCategories.size(); i++) {
+                    StickerCategory category = stickerCategories.get(i);
+                    EmotionTab tab = new EmotionTab(mContext, category.getCoverImgPath());
+                    mLlTabContainer.addView(tab);
+                    mTabViewArray.put(i + 1, tab);
+                }
+            }else {
+                mLlTabContainer.setVisibility(GONE);
             }
 
             //最后添加一个表情设置Tab
