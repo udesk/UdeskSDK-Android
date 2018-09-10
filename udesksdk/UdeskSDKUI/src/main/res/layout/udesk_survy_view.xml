@@ -4,6 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@color/udesk_color_bg_white"
+    android:layoutDirection="ltr"
     android:orientation="vertical">
 
 
@@ -70,8 +71,7 @@
         android:layout_marginLeft="@dimen/udesk_40"
         android:layout_marginRight="@dimen/udesk_40"
         android:layout_marginTop="@dimen/udesk_10"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/udesk_remark_rl"
@@ -107,11 +107,11 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/udesk_40"
         android:layout_marginRight="@dimen/udesk_40"
+        android:layout_marginTop="@dimen/udesk_5"
         android:gravity="left|center"
         android:text="@string/udesk_remark_must"
         android:textColor="@color/udesk_color_cd3f31"
         android:textSize="@dimen/udesk_sp10"
-        android:layout_marginTop="@dimen/udesk_5"
         android:visibility="gone" />
 
     <TextView

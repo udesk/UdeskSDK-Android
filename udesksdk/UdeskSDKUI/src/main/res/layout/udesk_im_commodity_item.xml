@@ -4,7 +4,8 @@
     android:id="@+id/commodity_rl"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/udesk_color_bg_white">
+    android:background="@color/udesk_color_bg_white"
+    android:layoutDirection="ltr">
 
     <TextView
         android:id="@+id/udesk_tv_time"

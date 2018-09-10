@@ -6,6 +6,7 @@
     android:layout_marginRight="@dimen/udesk_14"
     android:descendantFocusability="blocksDescendants"
     android:gravity="center"
+    android:layoutDirection="ltr"
     android:orientation="vertical"
     android:visibility="visible">
 

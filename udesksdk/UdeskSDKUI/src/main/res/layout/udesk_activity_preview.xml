@@ -3,6 +3,7 @@
     android:id="@+id/udesk_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layoutDirection="ltr"
     android:background="@color/udesk_black">
 
     <android.support.v7.widget.RecyclerView

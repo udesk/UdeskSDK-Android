@@ -2,4 +2,5 @@
 <ProgressBar xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="30dp"
     android:layout_height="30dp"
+    android:layoutDirection="ltr"
     android:indeterminateDrawable="@drawable/udesk_anim_progress" />

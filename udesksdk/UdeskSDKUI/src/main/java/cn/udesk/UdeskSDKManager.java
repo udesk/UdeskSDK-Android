@@ -73,6 +73,7 @@ public class UdeskSDKManager {
         this.domain = domain;
         app_Key = appkey;
         app_Id = appid;
+        UdeskConst.sdkversion = "4.0.4";
         if (UdeskConfig.isUseShare) {
             PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                     UdeskConst.SharePreParams.Udesk_Domain, domain);

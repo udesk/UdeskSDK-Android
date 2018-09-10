@@ -6,6 +6,7 @@
     android:orientation="horizontal"
     android:paddingRight="@dimen/udesk_chat_head_margin_left_or_right"
     android:paddingTop="@dimen/udesk_5"
+    android:layoutDirection="ltr"
    >
 
     <TextView

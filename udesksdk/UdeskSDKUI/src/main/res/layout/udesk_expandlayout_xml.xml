@@ -3,7 +3,7 @@
     android:id="@+id/expand_value"
     android:layout_width="fill_parent"
     android:layout_height="40dip"
-    >
+    android:layoutDirection="ltr">
 
     <TextView
         android:id="@+id/text_context"
@@ -11,8 +11,6 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:textColor="#ffffff"
-         >
-    </TextView>
+        android:textColor="#ffffff"></TextView>
 
 </RelativeLayout>

@@ -4,6 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/udesk_color_fof2f2"
+    android:layoutDirection="ltr"
     android:orientation="vertical">
 
     <cn.udesk.widget.UdeskTitleBar

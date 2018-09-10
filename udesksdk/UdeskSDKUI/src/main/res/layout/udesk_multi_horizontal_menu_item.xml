@@ -5,9 +5,10 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical|center_horizontal"
     android:gravity="center_horizontal|center_vertical"
+    android:layoutDirection="ltr"
+    android:paddingBottom="@dimen/udesk_5"
     android:paddingLeft="@dimen/udesk_15"
     android:paddingRight="@dimen/udesk_15"
     android:paddingTop="@dimen/udesk_5"
-    android:paddingBottom="@dimen/udesk_5"
     android:textColor="@android:color/white"
     android:textSize="@dimen/udesk_sp14" />

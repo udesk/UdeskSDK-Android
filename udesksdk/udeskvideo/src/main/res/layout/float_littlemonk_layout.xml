@@ -5,9 +5,9 @@
     android:layout_height="150dp"
     android:layout_alignParentRight="true"
     android:background="@android:color/darker_gray"
+    android:layoutDirection="ltr"
 
     >
-
 
 
 </FrameLayout>
