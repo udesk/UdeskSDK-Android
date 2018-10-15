@@ -76,7 +76,7 @@ public class UdeskConfig {
     //设置是否使用导航UI中的满意度评价UI rue表示使用 false表示不使用
     public boolean isUseNavigationSurvy = true;
     //设置是否需要小视频的功能 rue表示使用 false表示不使用
-    public boolean isUseSmallVideo = false;
+    public boolean isUseSmallVideo = true;
     //上传图片是否使用原图 还是缩率图
     public boolean isScaleImg = true;
     //缩放图 设置宽高最大值，如果超出则压缩，否则不压缩
@@ -208,7 +208,6 @@ public class UdeskConfig {
         this.mProduct = builder.mProduct;
     }
 
-    //s
     public static UdeskConfig createDefualt() {
         return new Builder().build();
     }
@@ -264,7 +263,7 @@ public class UdeskConfig {
         //设置是否使用导航UI中的满意度评价UI rue表示使用 false表示不使用
         private boolean isUseNavigationSurvy = true;
         //设置是否需要小视频的功能 rue表示使用 false表示不使用
-        private boolean isUseSmallVideo = false;
+        private boolean isUseSmallVideo = true;
         //上传图片是否使用原图 还是缩率图
         private boolean isScaleImg = true;
         //缩放图 设置宽高最大值，如果超出则压缩，否则不压缩
@@ -274,7 +273,7 @@ public class UdeskConfig {
         //设置默认屏幕显示习惯
         private String Orientation = OrientationValue.portrait;
         //在没有请求到管理员在后端对sdk使用配置下，在默认的情况下，是否需要表单留言，true需要， false 不需要
-        private boolean isUserForm = true;
+        private boolean isUserForm = false;
         //创建用户的基本信息
         private Map<String, String> defualtUserInfo;
         //创建自定义的文本信息

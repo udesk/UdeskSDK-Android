@@ -25,7 +25,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -55,6 +54,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import udesk.core.LocalManageUtil;
 import cn.udesk.PreferenceHelper;
 import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
@@ -210,6 +210,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
         public static final int Add_UdeskEvent = 21;
         public static final int ChangeFielProgress = 22;
         public static final int ChangeVideoThumbnail = 23;
+        public static final int Survey_Success = 24;
     }
 
     class ConnectivtyChangedReceiver extends BroadcastReceiver {
@@ -475,6 +476,10 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                         UdeskUtils.showToast(activity, activity.getResources()
                                 .getString(R.string.udesk_survey_error));
                         break;
+                    case MessageWhat.Survey_Success:
+                        UdeskUtils.showToast(activity, activity.getResources()
+                                .getString(R.string.udesk_thanks_survy));
+                        break;
                     case MessageWhat.redirectSuccess:
                         MessageInfo redirectSuccessmsg = (MessageInfo) msg.obj;
                         if (activity.mChatAdapter != null) {
@@ -508,6 +513,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LocalManageUtil.getSetLanguageLocale();
         UdeskUtil.setOrientation(this);
         if (!Fresco.hasBeenInitialized()) {
             UdeskUtil.frescoInit(this);
@@ -772,6 +778,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                 && UdeskSDKManager.getInstance().getUdeskConfig().extreFunctions.size() > 0) {
             functionItems.addAll(UdeskSDKManager.getInstance().getUdeskConfig().extreFunctions);
         }
+
         udeskFunctionAdapter.setFunctionItems(functionItems);
     }
 
@@ -1986,10 +1993,13 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                         new OnPopConfirmClick() {
                             public void onPositiveClick() {
                                 dismissFormWindow();
+                                if (UdeskSDKManager.getInstance().getUdeskConfig().formCallBack != null) {
+                                    UdeskSDKManager.getInstance().getUdeskConfig().formCallBack.toLuachForm(UdeskChatActivity.this);
+                                    return;
+                                }
                                 if (finalPositiveLabel.equals(UdeskChatActivity.this.getString(R.string.udesk_ok))) {
 
                                     if (isleaveMessageTypeMsg()) {
-
                                         //直接留言
                                         isWait = false;
                                         if (mHandler != null && myRunnable != null) {
@@ -2040,13 +2050,6 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
     protected void goToForm() {
         try {
             dismissFormWindow();
-            if (UdeskSDKManager.getInstance().getUdeskConfig().formCallBack != null) {
-                UdeskSDKManager.getInstance().getUdeskConfig().formCallBack.toLuachForm(UdeskChatActivity.this);
-                return;
-            }
-            if (UdeskSDKManager.getInstance().getImSetting() != null && !UdeskSDKManager.getInstance().getImSetting().getEnable_web_im_feedback()) {
-                return;
-            }
             UdeskSDKManager.getInstance().goToForm(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
         } catch (Exception e) {
             e.printStackTrace();
@@ -2678,7 +2681,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
         showEmoji();
         if (UdeskSDKManager.getInstance().getUdeskConfig().isUseMore) {
             mMoreImg.setVisibility(vis);
-            if (vis == View.GONE){
+            if (vis == View.GONE) {
                 hideMoreLayout();
             }
         }
@@ -2866,7 +2869,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                         top = l[1],
                         bottom = top + v.getHeight(),
                         right = left + v.getWidth();
-                if ( event.getY() > top) {
+                if (event.getY() > top) {
                     // 点击EditText的事件，忽略它。
                     return false;
                 } else {

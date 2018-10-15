@@ -23,7 +23,7 @@ public class Tag implements Serializable {
     }
 
     public String getText() {
-        return UdeskUtil.objectToString(text);
+        return UdeskUtils.objectToString(text);
     }
 
     public void setText(Object text) {

@@ -17,7 +17,9 @@
         android:id="@+id/udeskdemo_custome_edit"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/udesk_20"
         android:layout_marginLeft="@dimen/udesk_20"
+        android:layout_marginEnd="@dimen/udesk_20"
         android:layout_marginRight="@dimen/udesk_20"
         android:background="@drawable/udesk_edit_bg"
         android:textColor="@color/udesk_custom_dialog_des_color"
@@ -29,9 +31,11 @@
         android:id="@+id/udeskdemo_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/udesk_20"
         android:layout_marginLeft="@dimen/udesk_20"
+        android:layout_marginEnd="@dimen/udesk_20"
         android:layout_marginRight="@dimen/udesk_20"
-        android:gravity="left"
+        android:gravity="start"
         android:textColor="@color/udesk_custom_dialog_des_color"
         android:textSize="@dimen/udesk_sp15"
         android:visibility="gone" />
@@ -40,7 +44,9 @@
         android:id="@+id/udeskdemo_listview"
         android:layout_width="fill_parent"
         android:layout_height="80dip"
+        android:layout_marginStart="@dimen/udesk_20"
         android:layout_marginLeft="@dimen/udesk_20"
+        android:layout_marginEnd="@dimen/udesk_20"
         android:layout_marginRight="@dimen/udesk_20"
         android:background="@color/android:white"
         android:cacheColorHint="@android:color/transparent"
@@ -59,6 +65,7 @@
             android:id="@+id/udesk_check_ui_style_1"
             android:layout_width="17dp"
             android:layout_height="17dp"
+            android:layout_marginStart="24dp"
             android:layout_marginLeft="24dp"
             android:background="@drawable/udesk_checkbox_selector"
             android:button="@null"
@@ -69,8 +76,9 @@
             android:id="@+id/style1_name"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:layout_marginStart="24dp"
             android:layout_marginLeft="24dp"
-            android:gravity="left|center"
+            android:gravity="start|center"
             android:textColor="#666666"
             android:textSize="15sp" />
 
@@ -89,6 +97,7 @@
             android:id="@+id/udesk_check_ui_style_2"
             android:layout_width="17dp"
             android:layout_height="17dp"
+            android:layout_marginStart="24dp"
             android:layout_marginLeft="24dp"
             android:background="@drawable/udesk_checkbox_selector"
             android:button="@null"
@@ -99,8 +108,9 @@
             android:id="@+id/style2_name"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:layout_marginStart="24dp"
             android:layout_marginLeft="24dp"
-            android:gravity="left|center"
+            android:gravity="start|center"
             android:textColor="#666666"
             android:textSize="15sp" />
 
@@ -116,7 +126,9 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_marginEnd="@dimen/udesk_30"
             android:layout_marginRight="@dimen/udesk_30"
             android:orientation="horizontal">
 
@@ -124,6 +136,7 @@
                 android:id="@+id/udeskdemo_cancle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/udeskdemo_ok"
                 android:layout_toLeftOf="@+id/udeskdemo_ok"
                 android:gravity="center"
                 android:padding="10dip"

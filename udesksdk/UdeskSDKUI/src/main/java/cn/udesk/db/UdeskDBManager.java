@@ -14,6 +14,7 @@ import cn.udesk.UdeskUtil;
 import udesk.core.UdeskConst;
 import udesk.core.model.AgentInfo;
 import udesk.core.model.MessageInfo;
+import udesk.core.utils.UdeskUtils;
 
 
 public class UdeskDBManager {
@@ -55,16 +56,16 @@ public class UdeskDBManager {
         }
     }
 
-    public  boolean isNeedInit(String sdktoken){
+    public boolean isNeedInit(String sdktoken) {
 
         try {
-            if (mSdktoken != null  && mSdktoken.equals(sdktoken) && mDatabase != null){
+            if (mSdktoken != null && mSdktoken.equals(sdktoken) && mDatabase != null) {
                 return false;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return  true;
+        return true;
     }
 
     /**
@@ -142,7 +143,7 @@ public class UdeskDBManager {
                             msg.getmAgentJid(), msg.getCreatedTime(),
                             msg.getUpdateTime(), msg.getReplyUser(),
                             msg.getUser_avatar(), msg.getSubsessionid(),
-                            msg.getSeqNum(),msg.getFilename(),msg.getFilesize()
+                            msg.getSeqNum(), msg.getFilename(), msg.getFilesize()
                     });
             return true;
         } catch (SQLException e) {
@@ -277,8 +278,8 @@ public class UdeskDBManager {
                 String reply_userurl = cursor.getString(14);
                 String subsessionid = cursor.getString(15);
                 int seqNum = cursor.getInt(16);
-                String fileName = UdeskUtil.objectToString(cursor.getString(17));
-                String fileSize = UdeskUtil.objectToString(cursor.getString(18));
+                String fileName = UdeskUtils.objectToString(cursor.getString(17));
+                String fileSize = UdeskUtils.objectToString(cursor.getString(18));
                 msg = new MessageInfo(time, msgId, msgtype, msgContent,
                         readFlag, sendFlag, playFlag, direction, localPath,
                         duration, agentJid);
@@ -345,17 +346,17 @@ public class UdeskDBManager {
                 int direction = cursor.getInt(7);
                 String localPath = cursor.getString(8);
                 long duration = cursor.getLong(9);
-                String agentJid = UdeskUtil.objectToString(cursor.getString(10));
-                String createdTime = UdeskUtil.objectToString(cursor.getString(11));
-                String updatedTime = UdeskUtil.objectToString(cursor.getString(12));
-                String replyUser = UdeskUtil.objectToString(cursor.getString(13));
-                String reply_userurl = UdeskUtil.objectToString(cursor.getString(14));
-                String subSeessionId = UdeskUtil.objectToString(cursor.getString(15));
+                String agentJid = UdeskUtils.objectToString(cursor.getString(10));
+                String createdTime = UdeskUtils.objectToString(cursor.getString(11));
+                String updatedTime = UdeskUtils.objectToString(cursor.getString(12));
+                String replyUser = UdeskUtils.objectToString(cursor.getString(13));
+                String reply_userurl = UdeskUtils.objectToString(cursor.getString(14));
+                String subSeessionId = UdeskUtils.objectToString(cursor.getString(15));
                 int seqNum = cursor.getInt(16);
-                String fileName = UdeskUtil.objectToString(cursor.getString(17));
-                String fileSize = UdeskUtil.objectToString(cursor.getString(18));
+                String fileName = UdeskUtils.objectToString(cursor.getString(17));
+                String fileSize = UdeskUtils.objectToString(cursor.getString(18));
 
-                if (sendFlag == UdeskConst.SendFlag.RESULT_SEND && System.currentTimeMillis() -time > 30 * 1000) {
+                if (sendFlag == UdeskConst.SendFlag.RESULT_SEND && System.currentTimeMillis() - time > 30 * 1000) {
                     sendFlag = UdeskConst.SendFlag.RESULT_FAIL;
                 }
                 MessageInfo message = new MessageInfo(time, msgId, msgtype,
@@ -420,13 +421,13 @@ public class UdeskDBManager {
                 int direction = cursor.getInt(7);
                 String localPath = cursor.getString(8);
                 long duration = cursor.getLong(9);
-                String agentJid = UdeskUtil.objectToString(cursor.getString(10));
-                String replyUser = UdeskUtil.objectToString(cursor.getString(13));
-                String reply_userurl = UdeskUtil.objectToString(cursor.getString(14));
-                String subSeessionId = UdeskUtil.objectToString(cursor.getString(15));
+                String agentJid = UdeskUtils.objectToString(cursor.getString(10));
+                String replyUser = UdeskUtils.objectToString(cursor.getString(13));
+                String reply_userurl = UdeskUtils.objectToString(cursor.getString(14));
+                String subSeessionId = UdeskUtils.objectToString(cursor.getString(15));
                 int seqNum = cursor.getInt(16);
-                String fileName = UdeskUtil.objectToString(cursor.getString(17));
-                String fileSize = UdeskUtil.objectToString(cursor.getString(18));
+                String fileName = UdeskUtils.objectToString(cursor.getString(17));
+                String fileSize = UdeskUtils.objectToString(cursor.getString(18));
                 msgInfo = new MessageInfo(time, msgId, msgtype,
                         msgContent, readFlag, sendFlag, playFlag, direction,
                         localPath, duration, agentJid);
@@ -493,13 +494,13 @@ public class UdeskDBManager {
                 int direction = cursor.getInt(7);
                 String localPath = cursor.getString(8);
                 long duration = cursor.getLong(9);
-                String agentJid = UdeskUtil.objectToString(cursor.getString(10));
-                String replyUser = UdeskUtil.objectToString(cursor.getString(13));
-                String reply_userurl = UdeskUtil.objectToString(cursor.getString(14));
-                String subSeessionId = UdeskUtil.objectToString(cursor.getString(15));
+                String agentJid = UdeskUtils.objectToString(cursor.getString(10));
+                String replyUser = UdeskUtils.objectToString(cursor.getString(13));
+                String reply_userurl = UdeskUtils.objectToString(cursor.getString(14));
+                String subSeessionId = UdeskUtils.objectToString(cursor.getString(15));
                 int seqNum = cursor.getInt(16);
-                String fileName = UdeskUtil.objectToString(cursor.getString(17));
-                String fileSize = UdeskUtil.objectToString(cursor.getString(18));
+                String fileName = UdeskUtils.objectToString(cursor.getString(17));
+                String fileSize = UdeskUtils.objectToString(cursor.getString(18));
                 msgInfo = new MessageInfo(time, msgId, msgtype,
                         msgContent, readFlag, sendFlag, playFlag, direction,
                         localPath, duration, agentJid);
@@ -624,13 +625,14 @@ public class UdeskDBManager {
     }
 
     /**
-     * 获取5秒到半分钟之间都没发送成功的所有消息的MsgID
+     * message调用二次就可以了
+     * 获取5秒到半15之间都没发送成功的所有消息的MsgID
      *
      * @param currentTime
      * @return
      */
     public synchronized List<String> getNeedRetryMsg(long currentTime) {
-        String sql = "select MsgID from " + UdeskDBHelper.UdeskSendIngMsgs + " where (" + currentTime + " - Time >= 5000 )" + " And (" + currentTime + " - Time <= 30000 )";
+        String sql = "select MsgID from " + UdeskDBHelper.UdeskSendIngMsgs + " where (" + currentTime + " - Time >= 5000 )" + " And (" + currentTime + " - Time <= 15000 )";
         List<String> listItems = null;
         Cursor cursor = null;
         if (getSQLiteDatabase() == null) {

@@ -16,6 +16,7 @@ import cn.udesk.model.SDKIMSetting;
 import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
+import udesk.core.utils.UdeskUtils;
 
 public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
     private String h5Url = null;
@@ -52,7 +53,7 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
                         this, UdeskSDKManager.getInstance().getAppkey(this),
                         h5Url,
                         UdeskSDKManager.getInstance().getSdkToken(this));
-                url = url + "&udesk_sdk_features=show_transfer,go_chat";
+                url = url + "&udesk_sdk_features=show_transfer,go_chat,auto_transfer";
                 if (!UdeskUtil.isZh(this)) {
                     url = url + "&language=en-us";
                 }
@@ -105,7 +106,7 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
                 });
 
                 SDKIMSetting sdkimSetting = UdeskSDKManager.getInstance().getImSetting();
-                if (sdkimSetting != null && UdeskUtil.objectToInt(sdkimSetting.getShow_robot_times()) > 0) {
+                if (sdkimSetting != null && UdeskUtils.objectToInt(sdkimSetting.getShow_robot_times()) > 0) {
                     return;
                 }
                 settingTitleBarRight(tranfer);
@@ -160,6 +161,11 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
             UdeskRobotActivity.this.startActivity(intent);
         }
 
+    }
+
+    @Override
+    protected void autoTransfer() {
+        goChat();
     }
 
     @Override

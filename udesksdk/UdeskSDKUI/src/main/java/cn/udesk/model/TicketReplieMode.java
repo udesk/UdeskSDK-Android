@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import cn.udesk.UdeskUtil;
+import udesk.core.utils.UdeskUtils;
 
 /**
  * Created by user on 2017/4/24.
@@ -31,7 +32,7 @@ public class TicketReplieMode {
     private List<ContentsBean> contents;
 
     public int getStatus() {
-        return UdeskUtil.objectToInt(status);
+        return UdeskUtils.objectToInt(status);
     }
 
     public void setStatus(Object status) {
@@ -39,7 +40,7 @@ public class TicketReplieMode {
     }
 
     public String getMessage() {
-        return UdeskUtil.objectToString(message);
+        return UdeskUtils.objectToString(message);
     }
 
     public void setMessage(Object message) {
@@ -47,7 +48,7 @@ public class TicketReplieMode {
     }
 
     public int getSize() {
-        return UdeskUtil.objectToInt(size);
+        return UdeskUtils.objectToInt(size);
     }
 
     public void setSize(Object size) {
@@ -55,7 +56,7 @@ public class TicketReplieMode {
     }
 
     public int getTotal() {
-        return UdeskUtil.objectToInt(total);
+        return UdeskUtils.objectToInt(total);
     }
 
     public void setTotal(Object total) {
@@ -63,7 +64,7 @@ public class TicketReplieMode {
     }
 
     public int getTotal_pages() {
-        return UdeskUtil.objectToInt(total_pages);
+        return UdeskUtils.objectToInt(total_pages);
     }
 
     public void setTotal_pages(Object total_pages) {
@@ -102,7 +103,7 @@ public class TicketReplieMode {
         private Object reply_updated_at;
 
         public int getReply_id() {
-            return UdeskUtil.objectToInt(reply_id);
+            return UdeskUtils.objectToInt(reply_id);
         }
 
         public void setReply_id(Object reply_id) {
@@ -110,7 +111,7 @@ public class TicketReplieMode {
         }
 
         public String getUser_avatar() {
-            return UdeskUtil.objectToString(user_avatar);
+            return UdeskUtils.objectToString(user_avatar);
         }
 
         public void setUser_avatar(Object user_avatar) {
@@ -119,7 +120,7 @@ public class TicketReplieMode {
 
         public String getReply_content() {
             try {
-                JSONObject object = new JSONObject(UdeskUtil.objectToString(reply_content));
+                JSONObject object = new JSONObject(UdeskUtils.objectToString(reply_content));
                 if (object.has("data")) {
                     JSONObject dataObj = object.getJSONObject("data");
                     if (dataObj.has("content")) {
@@ -129,7 +130,7 @@ public class TicketReplieMode {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return UdeskUtil.objectToString(reply_content);
+            return UdeskUtils.objectToString(reply_content);
         }
 
         public void setReply_content(Object reply_content) {
@@ -137,7 +138,7 @@ public class TicketReplieMode {
         }
 
         public String getReply_content_type() {
-            return UdeskUtil.objectToString(reply_content_type);
+            return UdeskUtils.objectToString(reply_content_type);
         }
 
         public void setReply_content_type(Object reply_content_type) {
@@ -145,7 +146,7 @@ public class TicketReplieMode {
         }
 
         public String getReply_type() {
-            return UdeskUtil.objectToString(reply_type);
+            return UdeskUtils.objectToString(reply_type);
         }
 
         public void setReply_type(Object reply_type) {
@@ -153,7 +154,7 @@ public class TicketReplieMode {
         }
 
         public String getReply_user() {
-            return UdeskUtil.objectToString(reply_user);
+            return UdeskUtils.objectToString(reply_user);
         }
 
         public void setReply_user(Object reply_user) {
@@ -161,7 +162,7 @@ public class TicketReplieMode {
         }
 
         public String getReply_user_type() {
-            return UdeskUtil.objectToString(reply_user_type);
+            return UdeskUtils.objectToString(reply_user_type);
         }
 
         public void setReply_user_type(Object reply_user_type) {
@@ -169,7 +170,7 @@ public class TicketReplieMode {
         }
 
         public String getReply_created_at() {
-            return UdeskUtil.objectToString(reply_created_at);
+            return UdeskUtils.objectToString(reply_created_at);
         }
 
         public void setReply_created_at(Object reply_created_at) {
@@ -177,7 +178,7 @@ public class TicketReplieMode {
         }
 
         public String getReply_updated_at() {
-            return UdeskUtil.objectToString(reply_updated_at);
+            return UdeskUtils.objectToString(reply_updated_at);
         }
 
         public void setReply_updated_at(Object reply_updated_at) {

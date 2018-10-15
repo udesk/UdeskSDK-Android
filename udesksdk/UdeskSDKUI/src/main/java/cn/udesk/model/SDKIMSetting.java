@@ -60,7 +60,7 @@ public class SDKIMSetting {
 
     public String getLeave_message_type() {
 
-        return UdeskUtil.objectToString(leave_message_type);
+        return UdeskUtils.objectToString(leave_message_type);
     }
 
     public void setLeave_message_type(Object leave_message_type) {
@@ -210,7 +210,7 @@ public class SDKIMSetting {
     public String getAgora_app_id() {
 
 
-        return UdeskUtil.objectToString(agora_app_id);
+        return UdeskUtils.objectToString(agora_app_id);
     }
 
     public void setAgora_app_id(Object agora_app_id) {
@@ -218,7 +218,7 @@ public class SDKIMSetting {
     }
 
     public String getServer_url() {
-        return UdeskUtil.objectToString(server_url);
+        return UdeskUtils.objectToString(server_url);
     }
 
     public void setServer_url(Object server_url) {
@@ -252,7 +252,7 @@ public class SDKIMSetting {
     }
 
     public String getNo_reply_hint() {
-        return UdeskUtil.objectToString(no_reply_hint);
+        return UdeskUtils.objectToString(no_reply_hint);
     }
 
     public void setNo_reply_hint(Object no_reply_hint) {
@@ -261,7 +261,7 @@ public class SDKIMSetting {
 
     public String getRobot() {
 
-        return UdeskUtil.objectToString(robot);
+        return UdeskUtils.objectToString(robot);
     }
 
     public void setRobot(Object robot) {
@@ -269,7 +269,7 @@ public class SDKIMSetting {
     }
 
     public String getVcall_token_url() {
-        return UdeskUtil.objectToString(vcall_token_url);
+        return UdeskUtils.objectToString(vcall_token_url);
     }
 
     public void setVcall_token_url(Object vcall_token_url) {
@@ -277,7 +277,7 @@ public class SDKIMSetting {
     }
 
     public String getIm_survey_show_type() {
-        return UdeskUtil.objectToString(im_survey_show_type);
+        return UdeskUtils.objectToString(im_survey_show_type);
     }
 
     public void setIm_survey_show_type(Object im_survey_show_type) {
@@ -285,7 +285,7 @@ public class SDKIMSetting {
     }
 
     public String getLeave_message_guide() {
-        return UdeskUtil.objectToString(leave_message_guide);
+        return UdeskUtils.objectToString(leave_message_guide);
     }
 
     public void setLeave_message_guide(Object leave_message_guide) {

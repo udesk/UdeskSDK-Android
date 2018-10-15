@@ -32,6 +32,7 @@
                     android:id="@+id/set_sdkpush"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -40,9 +41,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="是否使用推送"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_has_push"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -58,6 +60,7 @@
                     android:id="@+id/set_usevoice"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -67,9 +70,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="是否使用录音"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_has_voice"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -93,6 +97,7 @@
                     android:id="@+id/set_usephoto"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -102,9 +107,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="是否使用相册"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_has_photo"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -120,6 +126,7 @@
                     android:id="@+id/set_usecamera"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -129,9 +136,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="是否使用拍照"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_has_camera"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -154,6 +162,7 @@
                     android:id="@+id/set_usemap"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -162,9 +171,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="是否使用发送位置"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_has_location"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -180,6 +190,7 @@
                     android:id="@+id/set_usefile"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -189,9 +200,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="是否使用上传文件"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_has_file"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -214,6 +226,7 @@
                     android:id="@+id/set_useemotion"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -223,9 +236,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="是否使用表情"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_has_emotion"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -241,6 +255,7 @@
                     android:id="@+id/set_usemore"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -250,9 +265,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="是否使用更多控件"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_has_more"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -275,6 +291,7 @@
                     android:id="@+id/set_use_navigation_view"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -283,9 +300,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="是否使用导航UI"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_has_navigation"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -301,6 +319,7 @@
                     android:id="@+id/set_use_navigation_survy"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -309,9 +328,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="是否使用导航中的满意度评价"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_has_navigation_survy"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -335,6 +355,7 @@
                     android:id="@+id/set_use_onlyrobot"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -343,9 +364,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="是否只使用机器人"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_has_only_robot"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -361,6 +383,7 @@
                     android:id="@+id/set_use_smallvideo"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -369,9 +392,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="设置是否需要小视频"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_has_only_smallvideo"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -395,6 +419,7 @@
                     android:id="@+id/set_use_isscaleimg"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -403,9 +428,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="传图是否压缩"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_has_use_isscaleimg"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -421,6 +447,7 @@
                     android:id="@+id/set_use_commodity"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -429,9 +456,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="配置商品链接"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_use_commodity"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -455,6 +483,7 @@
                     android:id="@+id/set_use_prouct"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -463,9 +492,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="发送商品信息"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_use_product"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -482,9 +512,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_marginStart="24dp"
                 android:layout_marginLeft="24dp"
-                android:gravity="left|center"
-                android:text="配置放弃排队策略"
+                android:gravity="start|center"
+                android:text="@string/udesk_quit_flag"
                 android:textColor="#666666"
                 android:textSize="15sp" />
 
@@ -497,6 +528,7 @@
                     android:id="@+id/mark"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="12dp"
                     android:layout_marginLeft="12dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -505,8 +537,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
+                    android:gravity="start|center"
                     android:text="mark"
                     android:textColor="#666666"
                     android:textSize="15sp" />
@@ -522,6 +555,7 @@
                     android:id="@+id/force_quit"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -530,8 +564,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
+                    android:gravity="start|center"
                     android:text="force_quit"
                     android:textColor="#666666"
                     android:textSize="15sp" />
@@ -543,9 +578,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
             android:layout_marginLeft="24dp"
-            android:gravity="left|center"
-            android:text="设置屏幕显示"
+            android:gravity="start|center"
+            android:text="@string/udesk_set_screen"
             android:textColor="#666666"
             android:textSize="15sp" />
 
@@ -563,6 +599,7 @@
                     android:id="@+id/portrait"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -572,8 +609,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
+                    android:gravity="start|center"
                     android:text="portrait"
                     android:textColor="#666666"
                     android:textSize="15sp" />
@@ -589,6 +627,7 @@
                     android:id="@+id/landscape"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -597,8 +636,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
+                    android:gravity="start|center"
                     android:text="landscape"
                     android:textColor="#666666"
                     android:textSize="15sp" />
@@ -614,6 +654,7 @@
                     android:id="@+id/user"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -622,8 +663,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
+                    android:gravity="start|center"
                     android:text="user"
                     android:textColor="#666666"
                     android:textSize="15sp" />
@@ -648,6 +690,7 @@
                     android:id="@+id/set_en"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -656,9 +699,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="设置英语"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_set_en"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -674,6 +718,7 @@
                     android:id="@+id/set_ch"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginLeft="24dp"
                     android:background="@drawable/often_messages_selector"
                     android:button="@null"
@@ -683,9 +728,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:gravity="left|center"
-                    android:text="设置中文"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_set_cn"
                     android:textColor="#666666"
                     android:textSize="15sp" />
 
@@ -696,9 +742,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
             android:layout_marginLeft="24dp"
-            android:gravity="left|center"
-            android:text="设置客户的头像地址"
+            android:gravity="start|center"
+            android:text="@string/udesk_set_customer_head_url"
             android:textColor="#666666"
             android:textSize="15sp" />
 
@@ -706,10 +753,11 @@
             android:id="@+id/customerUrl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="@dimen/udesk_10"
-            android:gravity="left|center"
-            android:text="http://img.taopic.com/uploads/allimg/110729/1830-110H916410651.jpg"
+            android:gravity="start|center"
+            android:text="http://qn-im.udesk.cn/QQ%E5%9B%BE%E7%89%8720180918095411_1539245227_643.jpg"
             android:textColor="#333333"
             android:textSize="16sp" />
 
@@ -718,10 +766,11 @@
             android:id="@+id/firstMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="@dimen/udesk_10"
-            android:gravity="left|center"
-            android:hint="设置带入一条消息 会话分配就发送给客服"
+            android:gravity="start|center"
+            android:hint="@string/udesk_set_message"
             android:textColor="#333333"
             android:textColorHint="@color/udesk_color_999999"
             android:textSize="16sp" />
@@ -730,10 +779,11 @@
             android:id="@+id/robot_modelKey"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="@dimen/udesk_10"
-            android:gravity="left|center"
-            android:hint="udesk 机器人配置欢迎语 对应的Id值"
+            android:gravity="start|center"
+            android:hint="@string/udesk_set_robot_id"
             android:textColor="#333333"
             android:textColorHint="@color/udesk_color_999999"
             android:textSize="16sp" />
@@ -742,9 +792,10 @@
             android:id="@+id/robpt_customer_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="@dimen/udesk_10"
-            android:gravity="left|center"
+            android:gravity="start|center"
             android:text="@string/rob_cus_info"
             android:textColor="#333333"
             android:textSize="16sp" />
@@ -752,16 +803,18 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="@dimen/udesk_10"
-            android:gravity="left|center"
-            android:text="创建用户的基本信息"
+            android:gravity="start|center"
+            android:text="@string/udesk_set_baseinfo"
             android:textColor="#333333"
             android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:orientation="vertical">
 
@@ -769,9 +822,10 @@
                 android:id="@+id/nick_name"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="@dimen/udesk_10"
-                android:gravity="left|center"
+                android:gravity="start|center"
                 android:hint="nick_name"
                 android:textColor="#333333"
                 android:textColorHint="@color/udesk_color_999999"
@@ -781,9 +835,10 @@
                 android:id="@+id/cellphone"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="@dimen/udesk_10"
-                android:gravity="left|center"
+                android:gravity="start|center"
                 android:hint="cellphone"
                 android:textColor="#333333"
                 android:textColorHint="@color/udesk_color_999999"
@@ -793,9 +848,10 @@
                 android:id="@+id/email"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="@dimen/udesk_10"
-                android:gravity="left|center"
+                android:gravity="start|center"
                 android:hint="email"
                 android:textColor="#333333"
                 android:textColorHint="@color/udesk_color_999999"
@@ -805,9 +861,10 @@
                 android:id="@+id/description"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="@dimen/udesk_10"
-                android:gravity="left|center"
+                android:gravity="start|center"
                 android:hint="description"
                 android:textColor="#333333"
                 android:textColorHint="@color/udesk_color_999999"
@@ -818,10 +875,11 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="@dimen/udesk_10"
-            android:gravity="left|center"
-            android:text="创建用户的自定义的文本信息"
+            android:gravity="start|center"
+            android:text="@string/udesk_set_basetextinfo"
             android:textColor="#333333"
             android:textSize="16sp" />
 
@@ -834,9 +892,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
-                android:gravity="left|center"
-                android:text="自定义字段的key"
+                android:gravity="start|center"
+                android:text="@string/udesk_set_info_key"
                 android:textColor="#333333"
                 android:textSize="16sp" />
 
@@ -845,9 +904,10 @@
                 android:id="@+id/textfiledkey"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
-                android:gravity="left|center"
-                android:hint="管理员后台找key"
+                android:gravity="start|center"
+                android:hint="@string/udesk_set_admin_info_key"
                 android:textColor="#333333"
                 android:textColorHint="@color/udesk_color_999999"
                 android:textSize="16sp" />
@@ -862,9 +922,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
-                android:gravity="left|center"
-                android:text="key对应的value"
+                android:gravity="start|center"
+                android:text="@string/udesk_set_key_map_value"
                 android:textColor="#333333"
                 android:textSize="16sp" />
 
@@ -873,9 +934,10 @@
                 android:id="@+id/textfiledvalue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
-                android:gravity="left|center"
-                android:hint="填写value"
+                android:gravity="start|center"
+                android:hint="@string/udesk_set_value"
                 android:textColor="#333333"
                 android:textColorHint="@color/udesk_color_999999"
                 android:textSize="16sp" />
@@ -884,16 +946,18 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="@dimen/udesk_10"
-            android:gravity="left|center"
-            android:text="更新用户的基本信息"
+            android:gravity="start|center"
+            android:text="@string/udesk_update_info"
             android:textColor="#333333"
             android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:orientation="vertical">
 
@@ -901,9 +965,10 @@
                 android:id="@+id/update_nick_name"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="@dimen/udesk_10"
-                android:gravity="left|center"
+                android:gravity="start|center"
                 android:hint="nick_name"
                 android:textColor="#333333"
                 android:textColorHint="@color/udesk_color_999999"
@@ -913,9 +978,10 @@
                 android:id="@+id/update_description"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="@dimen/udesk_10"
-                android:gravity="left|center"
+                android:gravity="start|center"
                 android:hint="description"
                 android:textColor="#333333"
                 android:textColorHint="@color/udesk_color_999999"
@@ -926,10 +992,11 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="@dimen/udesk_10"
-            android:gravity="left|center"
-            android:text="更新用户的自定义的文本信息"
+            android:gravity="start|center"
+            android:text="@string/udesk_update_text_info"
             android:textColor="#333333"
             android:textSize="16sp" />
 
@@ -942,9 +1009,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
-                android:gravity="left|center"
-                android:text="自定义字段的key"
+                android:gravity="start|center"
+                android:text="@string/udesk_set_info_key"
                 android:textColor="#333333"
                 android:textSize="16sp" />
 
@@ -953,9 +1021,10 @@
                 android:id="@+id/updatetextfiledkey"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
-                android:gravity="left|center"
-                android:hint="管理员后台找key"
+                android:gravity="start|center"
+                android:hint="@string/udesk_set_admin_info_key"
                 android:textColor="#333333"
                 android:textColorHint="@color/udesk_color_999999"
                 android:textSize="16sp" />
@@ -970,9 +1039,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
-                android:gravity="left|center"
-                android:text="key对应的value"
+                android:gravity="start|center"
+                android:text="@string/udesk_set_key_map_value"
                 android:textColor="#333333"
                 android:textSize="16sp" />
 
@@ -981,9 +1051,10 @@
                 android:id="@+id/updatetextfiledvalue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
-                android:gravity="left|center"
-                android:hint="填写value"
+                android:gravity="start|center"
+                android:hint="@string/udesk_set_value"
                 android:textColor="#333333"
                 android:textColorHint="@color/udesk_color_999999"
                 android:textSize="16sp" />
@@ -998,8 +1069,10 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -1012,6 +1085,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
                     android:gravity="center"
                     android:text="@string/udesk_conversion_tips"
@@ -1022,8 +1096,10 @@
             <ImageView
                 android:layout_width="8dip"
                 android:layout_height="15dip"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
+                android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:src="@mipmap/udesk_redict_img" />
         </RelativeLayout>
@@ -1031,6 +1107,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:background="#E4E7F0" />
 
@@ -1044,8 +1121,10 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -1058,6 +1137,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
                     android:gravity="center"
                     android:text="@string/udesk_from_agentid"
@@ -1068,8 +1148,10 @@
             <ImageView
                 android:layout_width="8dip"
                 android:layout_height="15dip"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
+                android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:src="@mipmap/udesk_redict_img" />
         </RelativeLayout>
@@ -1077,6 +1159,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:background="#E4E7F0" />
 
@@ -1089,8 +1172,10 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -1103,6 +1188,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
                     android:gravity="center"
                     android:text="@string/udesk_from_groupid"
@@ -1113,8 +1199,10 @@
             <ImageView
                 android:layout_width="8dip"
                 android:layout_height="15dip"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
+                android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:src="@mipmap/udesk_redict_img" />
         </RelativeLayout>
@@ -1122,6 +1210,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:background="#E4E7F0" />
 
@@ -1134,8 +1223,10 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -1148,6 +1239,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
                     android:gravity="center"
                     android:text="@string/udesk_unread_msg"
@@ -1158,8 +1250,10 @@
             <ImageView
                 android:layout_width="8dip"
                 android:layout_height="15dip"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
+                android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:src="@mipmap/udesk_redict_img" />
         </RelativeLayout>
@@ -1167,6 +1261,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:background="#E4E7F0" />
 
@@ -1179,8 +1274,10 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
                 android:gravity="center"
                 android:orientation="horizontal">
@@ -1193,6 +1290,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
                     android:gravity="center"
                     android:text="@string/udesk_unread_msgcount"
@@ -1203,8 +1301,10 @@
             <ImageView
                 android:layout_width="8dip"
                 android:layout_height="15dip"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
+                android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:src="@mipmap/udesk_redict_img" />
         </RelativeLayout>
@@ -1212,50 +1312,9 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="0.5dp"
+            android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:background="#E4E7F0" />
-
-
-        <!--<RelativeLayout-->
-            <!--android:id="@+id/udesk_en"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="62dip"-->
-            <!--android:onClick="onClick">-->
-
-            <!--<LinearLayout-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="fill_parent"-->
-                <!--android:layout_alignParentLeft="true"-->
-                <!--android:layout_centerVertical="true"-->
-                <!--android:layout_marginLeft="16dp"-->
-                <!--android:gravity="center"-->
-                <!--android:orientation="horizontal">-->
-
-
-                <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginLeft="16dp"-->
-                    <!--android:gravity="center"-->
-                    <!--android:text="@string/udesk_setting_en"-->
-                    <!--android:textColor="#333333"-->
-                    <!--android:textSize="16sp" />-->
-            <!--</LinearLayout>-->
-
-            <!--<ImageView-->
-                <!--android:layout_width="8dip"-->
-                <!--android:layout_height="15dip"-->
-                <!--android:layout_alignParentRight="true"-->
-                <!--android:layout_centerInParent="true"-->
-                <!--android:layout_marginRight="16dp"-->
-                <!--android:src="@mipmap/udesk_redict_img" />-->
-        <!--</RelativeLayout>-->
-
-        <!--<View-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="0.5dp"-->
-            <!--android:layout_marginLeft="16dp"-->
-            <!--android:background="#E4E7F0" />-->
 
     </LinearLayout>
 

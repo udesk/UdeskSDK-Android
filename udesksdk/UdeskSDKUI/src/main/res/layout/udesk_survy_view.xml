@@ -11,19 +11,19 @@
     <RelativeLayout
         android:id="@+id/top_rl"
         android:layout_width="fill_parent"
-        android:layout_height="@dimen/udesk_55">
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/udesk_55">
 
         <TextView
             android:id="@+id/udesk_title"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginLeft="@dimen/udesk_40"
             android:layout_marginRight="@dimen/udesk_20"
             android:layout_toLeftOf="@+id/udesk_survy_cancle"
-            android:ellipsize="end"
             android:gravity="center"
-            android:singleLine="true"
+            android:minHeight="@dimen/udesk_55"
             android:textColor="@color/udesk_color_333333"
             android:textSize="17sp" />
 

@@ -20,12 +20,12 @@ import udesk.sdk.demo.R;
 public class UdeskInitKeyActivity extends Activity {
 
 //    //替换成你们注册生成的域名
-//    private String UDESK_DOMAIN = "linapp.udeskt2.com";
+//    private String UDESK_DOMAIN = "udeskstest.udesk.cn";
 //    //替换成你们生成应用产生的appid
-//    private String AppId = "075c55fdc38508ce";
+//    private String AppId = "6f450be8a7653e6d";
 //    // 替换成你们在后台生成的密钥
-//    private String UDESK_SECRETKEY = "f71b983d30bb41a23cba209a5558cf8f";
-
+//    private String UDESK_SECRETKEY = "b99868f35007a4c9e56b2290c91b3584";
+//
     //替换成你们注册生成的域名
     private String UDESK_DOMAIN = "udesksdk.udesk.cn";
     //替换成你们生成应用产生的appid

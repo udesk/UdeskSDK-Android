@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import cn.udesk.UdeskUtil;
+import udesk.core.utils.UdeskUtils;
 
 public class SurveyOptionsModel implements Serializable {
 
@@ -26,7 +27,7 @@ public class SurveyOptionsModel implements Serializable {
     List<OptionsModel> options;
 
     public boolean getEnabled() {
-        return UdeskUtil.objectToBoolean(enabled);
+        return UdeskUtils.objectToBoolean(enabled);
     }
 
     public void setEnabled(Object enabled) {
@@ -34,7 +35,7 @@ public class SurveyOptionsModel implements Serializable {
     }
 
     public boolean getRemark_enabled() {
-        return UdeskUtil.objectToBoolean(remark_enabled);
+        return UdeskUtils.objectToBoolean(remark_enabled);
     }
 
     public void setRemark_enabled(Object remark_enabled) {
@@ -42,7 +43,7 @@ public class SurveyOptionsModel implements Serializable {
     }
 
     public String getRemark() {
-        return UdeskUtil.objectToString(remark);
+        return UdeskUtils.objectToString(remark);
     }
 
     public void setRemark(Object remark) {
@@ -50,7 +51,7 @@ public class SurveyOptionsModel implements Serializable {
     }
 
     public String getName() {
-        return UdeskUtil.objectToString(name);
+        return UdeskUtils.objectToString(name);
     }
 
     public void setName(Object name) {
@@ -58,7 +59,7 @@ public class SurveyOptionsModel implements Serializable {
     }
 
     public String getTitle() {
-        return UdeskUtil.objectToString(title);
+        return UdeskUtils.objectToString(title);
     }
 
     public void setTitle(Object title) {
@@ -66,7 +67,7 @@ public class SurveyOptionsModel implements Serializable {
     }
 
     public String getDesc() {
-        return UdeskUtil.objectToString(desc);
+        return UdeskUtils.objectToString(desc);
     }
 
     public void setDesc(Object desc) {
@@ -74,7 +75,7 @@ public class SurveyOptionsModel implements Serializable {
     }
 
     public String getType() {
-        return UdeskUtil.objectToString(show_type);
+        return UdeskUtils.objectToString(show_type);
     }
 
     public void setType(Object type) {
@@ -82,7 +83,7 @@ public class SurveyOptionsModel implements Serializable {
     }
 
     public int getDefault_option_id() {
-        return UdeskUtil.objectToInt(default_option_id);
+        return UdeskUtils.objectToInt(default_option_id);
     }
 
     public void setDefault_option_id(Object default_option_id) {

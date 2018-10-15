@@ -1,6 +1,8 @@
 package cn.udesk.adapter;
 
 import android.content.Context;
+import android.support.v4.text.TextUtilsCompat;
+import android.util.LayoutDirection;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import cn.udesk.R;
 import cn.udesk.model.FunctionMode;

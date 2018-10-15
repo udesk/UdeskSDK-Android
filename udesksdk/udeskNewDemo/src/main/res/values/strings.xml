@@ -29,4 +29,43 @@
     <string name="udesk_update_hint_des">请输入描述内容</string>
     <string name="rob_cus_info">&amp;c_name=zhanshang&amp;c_email=0091@163.com&amp;c_phone=18123451678&amp;c_desc=ssasdsff&amp;c_org=kakak&amp;c_tags=qq&amp;c_other_emails=1234@126.com,45678@163.com</string>
 
+    <string name="udesk_location">位置</string>
+    <string name="udesk_search_location">搜索地点</string>
+    <string name="udesk_search">搜索</string>
+    <string name="udesk_location_info">位置信息</string>
+    <string name="udesk_has_push">是否使用推送</string>
+    <string name="udesk_has_voice">是否使用录音</string>
+    <string name="udesk_has_photo">是否使用相册</string>
+    <string name="udesk_has_camera">是否使用拍照</string>
+    <string name="udesk_has_location">是否使用发送位置</string>
+    <string name="udesk_has_file">是否使用上传文件</string>
+    <string name="udesk_has_emotion">是否使用表情</string>
+    <string name="udesk_has_more">是否使用更多控件</string>
+    <string name="udesk_has_navigation">是否使用导航UI</string>
+    <string name="udesk_has_navigation_survy">是否使用导航中的满意度评价</string>
+    <string name="udesk_has_only_robot">是否只使用机器人</string>
+    <string name="udesk_has_only_smallvideo">设置是否需要小视频</string>
+    <string name="udesk_has_use_isscaleimg">传图是否压缩</string>
+    <string name="udesk_use_commodity">配置商品链接</string>
+    <string name="udesk_use_product">发送商品信息</string>
+    <string name="udesk_quit_flag">配置放弃排队策略</string>
+    <string name="udesk_set_screen">设置屏幕显示</string>
+    <string name="udesk_set_en">设置英语</string>
+    <string name="udesk_set_cn">设置中文</string>
+    <string name="udesk_set_customer_head_url">设置客户的头像地址</string>
+    <string name="udesk_set_message">设置带入一条消息 会话分配就发送给客服</string>
+    <string name="udesk_set_robot_id">udesk 机器人配置欢迎语 对应的Id值</string>
+    <string name="udesk_set_baseinfo">创建用户的基本信息</string>
+    <string name="udesk_set_basetextinfo">创建用户的自定义的文本信息</string>
+    <string name="udesk_set_info_key">自定义字段的key</string>
+    <string name="udesk_set_admin_info_key">管理员后台找key</string>
+    <string name="udesk_set_key_map_value">key对应的value</string>
+    <string name="udesk_set_value">填写value</string>
+    <string name="udesk_update_info">更新用户的基本信息</string>
+    <string name="udesk_update_text_info">更新用户的自定义的文本信息</string>
+    <string name="udesk_domain">域名</string>
+    <string name="udesk_start">开启</string>
+
+
+
 </resources>

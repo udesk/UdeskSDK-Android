@@ -3,7 +3,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--标题栏-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/ActionBarHeight"
@@ -29,7 +28,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="位置信息"
+            android:text="@string/udesk_location_info"
             android:textColor="@color/white"
             android:textSize="18sp" />
 
@@ -67,29 +66,12 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginBottom="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             android:src="@drawable/back_origin_normal" />
     </RelativeLayout>
-
-    <!--&lt;!&ndash;附近的地点&ndash;&gt;-->
-    <!--<RelativeLayout-->
-    <!--android:layout_weight="1"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:background="@color/positionAddressColor">-->
-
-
-    <!--<TextView-->
-    <!--android:id="@+id/id_locationValue"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_weight="1"-->
-    <!--android:text="位置信息"-->
-    <!--android:textColor="@color/white"-->
-    <!--android:textSize="18sp" />-->
-
-    <!--</RelativeLayout>-->
 
 </LinearLayout>

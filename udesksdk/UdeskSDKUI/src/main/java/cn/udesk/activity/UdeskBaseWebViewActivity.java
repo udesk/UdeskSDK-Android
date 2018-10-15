@@ -119,10 +119,10 @@ public class UdeskBaseWebViewActivity extends UdeskBaseActivity {
 
                 }
 
-                @Override
-                public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-                    handler.proceed();
-                }
+//                @Override
+//                public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+//                    handler.proceed();
+//                }
 
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -133,9 +133,11 @@ public class UdeskBaseWebViewActivity extends UdeskBaseActivity {
                     } else if (url.contains("show_transfer")) {
                         showTransfer();
                         return true;
-                    } else if (url.contains("go_chat")){
+                    } else if (url.contains("go_chat")) {
                         goChat();
-                    }else {
+                    } else if (url.contains("auto_transfer")) {
+                        autoTransfer();
+                    } else {
                         view.loadUrl(url);
                     }
                     return true;
@@ -150,7 +152,11 @@ public class UdeskBaseWebViewActivity extends UdeskBaseActivity {
 
     }
 
-    protected void goChat(){
+    protected void goChat() {
+
+    }
+
+    protected void autoTransfer() {
 
     }
 

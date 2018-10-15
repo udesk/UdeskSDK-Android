@@ -26,8 +26,9 @@
         android:layout_below="@id/udesk_tv_time"
         android:layout_marginTop="@dimen/udesk_chat_head_margin"
         fresco:actualImageScaleType="centerCrop"
+        fresco:roundAsCircle="true"
         fresco:placeholderImage="@drawable/udesk_im_default_agent_avatar"
-        fresco:roundAsCircle="true" />
+        />
 
     <TextView
         android:id="@+id/udesk_nick_name"
