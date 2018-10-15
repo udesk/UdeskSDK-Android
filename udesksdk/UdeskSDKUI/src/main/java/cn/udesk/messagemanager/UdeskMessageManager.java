@@ -79,9 +79,13 @@ public class UdeskMessageManager {
         mUdeskXmppManager.sendVCCallMessage(type, to, text);
     }
 
-    public void sendMessage(String type, String text, String msgId, String to, long duration, String subsessionId, boolean noNeedSave, int seqNum, String fileName, String filesize) {
-        mUdeskXmppManager.sendMessage(type, text, msgId, to, duration, subsessionId, noNeedSave, seqNum, fileName, filesize);
+    public  void sendMessage(MessageInfo messageInfo){
+        mUdeskXmppManager.sendMessage(messageInfo);
     }
+
+//    public void sendMessage(String type, String text, String msgId, String to, long duration, String subsessionId, boolean noNeedSave, int seqNum, String fileName, String filesize) {
+//        mUdeskXmppManager.sendMessage(type, text, msgId, to, duration, subsessionId, noNeedSave, seqNum, fileName, filesize);
+//    }
 
     public void sendComodityMessage(String text, String to) {
         mUdeskXmppManager.sendComodityMessage(text, to);

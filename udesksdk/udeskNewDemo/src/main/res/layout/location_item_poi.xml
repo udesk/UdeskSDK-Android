@@ -17,6 +17,7 @@
             android:id="@+id/tv_poi_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
             android:ellipsize="end"
             android:singleLine="true"
@@ -28,6 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_poi_name"
+            android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="4dp"
             android:ellipsize="end"
@@ -40,8 +42,10 @@
         android:id="@+id/img_cur_point"
         android:layout_width="16dp"
         android:layout_height="16dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:src="@null"/>
 

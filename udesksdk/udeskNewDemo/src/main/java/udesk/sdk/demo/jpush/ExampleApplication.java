@@ -7,7 +7,10 @@ import android.support.multidex.MultiDex;
 import android.util.Log;
 
 import cn.jpush.android.api.JPushInterface;
-import cn.udesk.LocalManageUtil;
+import udesk.core.LocalManageUtil;
+import cn.udesk.messagemanager.UdeskMessageManager;
+import cn.udesk.model.MsgNotice;
+import udesk.sdk.demo.activity.NotificationUtils;
 
 /**
  * For developer startup JPush SDK
@@ -27,20 +30,20 @@ public class ExampleApplication extends Application {
         JPushInterface.init(this);            // 初始化 JPush
 
 
-//        /**
-//         * 注册接收消息提醒事件
-//         */
-//        UdeskMessageManager.getInstance().event_OnNewMsgNotice.bind(this, "OnNewMsgNotice");
+        /**
+         * 注册接收消息提醒事件
+         */
+        UdeskMessageManager.getInstance().event_OnNewMsgNotice.bind(this, "OnNewMsgNotice");
     }
 
 
-//    public void OnNewMsgNotice(MsgNotice msgNotice) {
-//        if (msgNotice != null) {
-//            Log.i("xxx","UdeskCaseActivity 中收到msgNotice");
-//            NotificationUtils.getInstance().notifyMsg(this.getApplicationContext(), msgNotice.getContent());
-//        }
-//
-//    }
+    public void OnNewMsgNotice(MsgNotice msgNotice) {
+        if (msgNotice != null) {
+            Log.i("xxx","UdeskCaseActivity 中收到msgNotice");
+            NotificationUtils.getInstance().notifyMsg(this.getApplicationContext(), msgNotice.getContent());
+        }
+
+    }
 
     @Override
     protected void attachBaseContext(Context base) {

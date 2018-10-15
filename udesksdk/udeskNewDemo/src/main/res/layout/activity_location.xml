@@ -3,7 +3,7 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <!--标题栏-->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/ActionBarHeight"
@@ -29,7 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="位置"
+            android:text="λ��"
             android:textColor="@color/white"
             android:textSize="18sp"/>
 
@@ -55,15 +55,19 @@
                 android:id="@+id/tv_send"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:layout_marginLeft="4dp"
+                android:layout_marginEnd="4dp"
                 android:layout_marginRight="4dp"
                 android:background="@drawable/actionbar_tv_selector"
                 android:gravity="center"
                 android:paddingBottom="6dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
                 android:paddingTop="6dp"
-                android:text="发送"
+                android:text="@string/udesk_location"
                 android:textColor="@color/white"
                 android:textSize="14sp"/>
         </RelativeLayout>
@@ -98,7 +102,6 @@
 
     </RelativeLayout>
 
-    <!--附近的地点-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -61,6 +61,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -260,7 +261,7 @@ public class UdeskUtil {
     public static boolean isZh(Context context) {
         Locale locale = context.getResources().getConfiguration().locale;
         String language = locale.getLanguage();
-        return language.endsWith("zh");
+        return language.startsWith("zh");
     }
 
 
@@ -277,74 +278,6 @@ public class UdeskUtil {
         return appName;
     }
 
-    public static int toInt(String str) {
-        try {
-            return Integer.parseInt(str);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    public static int objectToInt(Object obj) {
-        if (obj == null) {
-            return 0;
-        }
-        if (obj instanceof Integer) {
-            return (int) obj;
-        }
-        if (obj instanceof Double) {
-            return Double.valueOf((Double) obj).intValue();
-        }
-        if (obj instanceof Float) {
-            return Float.valueOf((Float) obj).intValue();
-        }
-        if (isNumeric(obj.toString())) {
-            return toInt(obj.toString());
-        }
-        return 0;
-    }
-
-    public static boolean isNumeric(String str) {
-        if (TextUtils.isEmpty(str)) {
-            return false;
-        }
-        Pattern pattern = Pattern.compile("[0-9]*");
-        Matcher isNum = pattern.matcher(str);
-        return isNum.matches();
-    }
-
-    public static String objectToString(Object obj) {
-        if (obj == null) {
-            return "";
-        }
-        String string = "";
-        if (obj instanceof String) {
-            string = (String) obj;
-        }
-        try {
-            string = String.valueOf(obj);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (string.equals("null")) {
-            string = "";
-        }
-        return string;
-    }
-
-    public static boolean objectToBoolean(Object obj) {
-        if (obj instanceof Boolean) {
-            return (boolean) obj;
-        }
-        if (obj instanceof String) {
-            String string = (String) obj;
-            if (string.equals("true")) {
-                return true;
-            }
-        }
-        return false;
-    }
 
 
     public static String parseEventTime(String strTime) {
@@ -1255,6 +1188,5 @@ public class UdeskUtil {
             Fresco.initialize(context);
         }
     }
-
 
 }

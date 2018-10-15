@@ -3,8 +3,8 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layoutDirection="ltr"
     android:orientation="horizontal"
+    android:layoutDirection="ltr"
     android:paddingLeft="@dimen/udesk_chat_head_margin_left_or_right"
     android:paddingTop="@dimen/udesk_5">
 
@@ -26,8 +26,9 @@
         android:layout_below="@id/udesk_tv_time"
         android:layout_marginTop="@dimen/udesk_chat_head_margin"
         fresco:actualImageScaleType="centerCrop"
+        fresco:roundAsCircle="true"
         fresco:placeholderImage="@drawable/udesk_im_default_agent_avatar"
-        fresco:roundAsCircle="true" />
+        />
 
     <TextView
         android:id="@+id/udesk_nick_name"
@@ -51,6 +52,10 @@
         android:layout_toRightOf="@id/udesk_iv_head">
 
         <TextView
+            android:text="12345667"
+            android:paddingLeft="@dimen/udesk_15"
+            android:drawablePadding="@dimen/udesk_10"
+            android:drawableLeft="@drawable/udesk_video_item_img"
             android:id="@+id/udesk_tv_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,12 +65,8 @@
             android:layout_marginTop="@dimen/udesk_chat_head_margin"
             android:autoLink="phone|web"
             android:background="@drawable/udesk_im_item_bg_left"
-            android:drawableLeft="@drawable/udesk_video_item_img"
-            android:drawablePadding="@dimen/udesk_10"
             android:gravity="left|center_vertical"
             android:lineSpacingExtra="3dip"
-            android:paddingLeft="@dimen/udesk_15"
-            android:text="12345667"
             android:textColor="@color/udesk_color_im_text_left1"
             android:textColorLink="@color/udesk_color_im_text_left1"
             android:textSize="@dimen/udesk_sp16" />

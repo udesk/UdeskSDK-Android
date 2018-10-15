@@ -3,8 +3,8 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layoutDirection="ltr"
     android:orientation="horizontal"
+    android:layoutDirection="ltr"
     android:paddingTop="@dimen/udesk_5">
 
     <TextView
@@ -38,7 +38,8 @@
         android:layout_marginTop="@dimen/udesk_chat_head_margin"
         android:visibility="gone"
         fresco:actualImageScaleType="centerCrop"
-        fresco:roundAsCircle="true" />
+        fresco:roundAsCircle="true"
+         />
 
     <TextView
         android:id="@+id/udesk_nick_name"

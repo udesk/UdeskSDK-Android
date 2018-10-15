@@ -779,10 +779,16 @@ public class MessageAdatper extends BaseAdapter {
             try {
                 if (UdeskSDKManager.getInstance().getUdeskConfig().txtMessageClick != null) {
                     UdeskSDKManager.getInstance().getUdeskConfig().txtMessageClick.txtMsgOnclick(mUrl);
-                } else {
+                } else if (WEB_URL.matcher(mUrl).find()) {
                     Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
                     intent.putExtra(UdeskConst.WELCOME_URL, mUrl);
                     mContext.startActivity(intent);
+                } else if (PHONE.matcher(mUrl).find()) {
+                    String phone = mUrl.toLowerCase();
+                    if (!phone.startsWith("tel:")) {
+                        phone = "tel:" + mUrl;
+                    }
+                    ((UdeskChatActivity) mContext).callphone(phone);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1231,9 +1237,7 @@ public class MessageAdatper extends BaseAdapter {
                     int[] wh = UdeskUtil.getImageWH(message.getLocalPath());
                     UdeskUtil.loadFileFromSdcard(context, imgView, Uri.fromFile(new File(message.getLocalPath())), wh[0], wh[1]);
                 } else {
-                    String uRLEncoder = URLEncoder.encode(message.getMsgContent(), "utf-8").replaceAll("\\+", "%20");
-                    uRLEncoder = uRLEncoder.replaceAll("%3A", ":").replaceAll("%2F", "/");
-                    UdeskUtil.loadImageView(context, imgView, Uri.parse(uRLEncoder));
+                    UdeskUtil.loadImageView(context, imgView, Uri.parse(UdeskUtils.uRLEncoder(message.getMsgContent())));
                 }
 
                 imgView.setTag(message.getTime());
@@ -1249,9 +1253,7 @@ public class MessageAdatper extends BaseAdapter {
                             imgUri = Uri.fromFile(new File(message.getLocalPath()));
                         } else if (!TextUtils.isEmpty(message.getMsgContent())) {
                             try {
-                                String uRLEncoder = URLEncoder.encode(message.getMsgContent(), "utf-8").replaceAll("\\+", "%20");
-                                uRLEncoder = uRLEncoder.replaceAll("%3A", ":").replaceAll("%2F", "/");
-                                imgUri = Uri.parse(uRLEncoder);
+                                imgUri = Uri.parse(UdeskUtils.uRLEncoder(message.getMsgContent()));
                             } catch (Exception e) {
                                 imgUri = Uri.parse(message.getMsgContent());
                             }

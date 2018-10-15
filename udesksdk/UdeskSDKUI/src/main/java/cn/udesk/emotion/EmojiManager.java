@@ -7,8 +7,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.text.TextUtilsCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.LayoutDirection;
+import android.util.Log;
 import android.util.LruCache;
 import android.util.Xml;
 
@@ -19,8 +22,10 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -127,7 +132,8 @@ public class EmojiManager {
             //补充最后一页少的表情
             int tmp = mDefaultEntries.size() % EmotionLayout.EMOJI_PER_PAGE;
             if (tmp != 0) {
-                int tmp2 = EmotionLayout.EMOJI_PER_PAGE - (mDefaultEntries.size() - (mDefaultEntries.size() / EmotionLayout.EMOJI_PER_PAGE) * EmotionLayout.EMOJI_PER_PAGE);
+                int tmp2 = EmotionLayout.EMOJI_PER_PAGE - (mDefaultEntries.size() -
+                        (mDefaultEntries.size() / EmotionLayout.EMOJI_PER_PAGE) * EmotionLayout.EMOJI_PER_PAGE);
                 for (int i = 0; i < tmp2; i++) {
                     mDefaultEntries.add(new Entry("", ""));
                 }

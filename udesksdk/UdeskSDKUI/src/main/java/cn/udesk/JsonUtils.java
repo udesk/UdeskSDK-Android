@@ -184,7 +184,7 @@ public class JsonUtils {
 
                             if (data.has("tags")) {
                                 List<Tag> tags = new ArrayList<Tag>();
-                                String tagStirng = UdeskUtil.objectToString(data.opt("tags"));
+                                String tagStirng = UdeskUtils.objectToString(data.opt("tags"));
                                 if (!TextUtils.isEmpty(tagStirng)) {
                                     String[] tagsArray = tagStirng.split(",");
                                     for (int k = 0; k < tagsArray.length; k++) {

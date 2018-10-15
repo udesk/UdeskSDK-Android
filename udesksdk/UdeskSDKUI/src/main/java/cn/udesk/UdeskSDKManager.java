@@ -31,16 +31,16 @@ public class UdeskSDKManager {
     /**
      * 注册udesk系统生成的二级域名
      */
-    private String domain = "";
+    public static String domain = "";
     /**
      * udesk系统创建应用生成的App Id
      */
-    private String app_Id = "";
+    public static String app_Id = "";
 
     /**
      * udesk系统创建应用生成的App Key
      */
-    private String app_Key = "";
+    public static String app_Key = "";
 
     /**
      * 用户唯一的标识
@@ -70,9 +70,9 @@ public class UdeskSDKManager {
      * @param appid   udesk系统创建应用生成的App ID
      */
     public void initApiKey(Context context, String domain, String appkey, String appid) {
-        this.domain = domain;
-        app_Key = appkey;
-        app_Id = appid;
+        UdeskSDKManager.domain = domain;
+        UdeskSDKManager.app_Key = appkey;
+        UdeskSDKManager.app_Id = appid;
         if (UdeskConfig.isUseShare) {
             PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                     UdeskConst.SharePreParams.Udesk_Domain, domain);
@@ -132,8 +132,8 @@ public class UdeskSDKManager {
 
     //进入会话唯一入口,必须配置,根据配置展示会话
     public void entryChat(Context context, UdeskConfig udeskConfig, String sdktoken) {
-        if (udeskConfig == null){
-            Toast.makeText(context,"UdeskConfig is null",Toast.LENGTH_LONG).show();
+        if (udeskConfig == null) {
+            Toast.makeText(context, "UdeskConfig is null", Toast.LENGTH_LONG).show();
             return;
         }
         if (TextUtils.isEmpty(getAppId(context))) {
@@ -158,8 +158,8 @@ public class UdeskSDKManager {
             }
             disConnectXmpp();
         }
-        if (udeskConfig.defualtUserInfo != null){
-            udeskConfig.defualtUserInfo.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN,sdktoken);
+        if (udeskConfig.defualtUserInfo != null) {
+            udeskConfig.defualtUserInfo.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdktoken);
         }
         initDB(context, sdkToken);
         PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
@@ -459,44 +459,56 @@ public class UdeskSDKManager {
     }
 
     public String getDomain(Context context) {
-        if (!TextUtils.isEmpty(domain)) {
-            return domain;
+        if (!TextUtils.isEmpty(UdeskSDKManager.domain)) {
+            return UdeskSDKManager.domain;
         }
         if (UdeskConfig.isUseShare) {
-            return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_Domain);
+            UdeskSDKManager.domain = PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_Domain);
+            return  UdeskSDKManager.domain;
         } else {
             return "";
         }
     }
 
     public String getAppkey(Context context) {
-        if (!TextUtils.isEmpty(app_Key)) {
-            return app_Key;
+        if (!TextUtils.isEmpty(UdeskSDKManager.app_Key)) {
+            return UdeskSDKManager.app_Key;
         }
         if (UdeskConfig.isUseShare) {
-            return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Key);
+            UdeskSDKManager.app_Key =  PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Key);
+            return UdeskSDKManager.app_Key;
         } else {
             return "";
         }
     }
 
     public String getAppId() {
-        if (!TextUtils.isEmpty(app_Id)) {
-            return app_Id;
+        if (!TextUtils.isEmpty(UdeskSDKManager.app_Id)) {
+            return UdeskSDKManager.app_Id;
         }
         return "";
     }
 
     public String getAppId(Context context) {
-        if (!TextUtils.isEmpty(app_Id)) {
-            return app_Id;
+        if (!TextUtils.isEmpty(UdeskSDKManager.app_Id)) {
+            return UdeskSDKManager.app_Id;
         }
         if (UdeskConfig.isUseShare) {
-            return PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Id);
+            UdeskSDKManager.app_Id = PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Id);
+            return UdeskSDKManager.app_Id;
         } else {
             return "";
         }
     }
+
+    //如果确定不要使用上次groupId的缓存，则需主动清理缓存
+    //在某些场景下，会出现没法传入groupid，如果通过推送消息系统推送的消息取值，没有
+    // 会话存在的时候，不会直接进入对话界面，会话界面后，客服关闭会话，重新发起会话
+    public void cleanCacheGroupId(Context context) {
+        PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                UdeskConst.SharePreParams.Udesk_Group_Id, "");
+    }
+
 
     public SDKIMSetting getImSetting() {
         return imSetting;

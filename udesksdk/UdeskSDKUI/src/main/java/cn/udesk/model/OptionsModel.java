@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import cn.udesk.UdeskUtil;
+import udesk.core.utils.UdeskUtils;
 
 public class OptionsModel implements Serializable {
 
@@ -22,7 +23,7 @@ public class OptionsModel implements Serializable {
 
 
     public int getId() {
-        return UdeskUtil.objectToInt(id);
+        return UdeskUtils.objectToInt(id);
     }
 
     public void setId(Object id) {
@@ -30,7 +31,7 @@ public class OptionsModel implements Serializable {
     }
 
     public boolean getEnabled() {
-        return UdeskUtil.objectToBoolean(enabled);
+        return UdeskUtils.objectToBoolean(enabled);
     }
 
     public void setEnabled(Object enabled) {
@@ -38,7 +39,7 @@ public class OptionsModel implements Serializable {
     }
 
     public String getText() {
-        return UdeskUtil.objectToString(text);
+        return UdeskUtils.objectToString(text);
     }
 
     public void setText(Object text) {
@@ -46,7 +47,7 @@ public class OptionsModel implements Serializable {
     }
 
     public String getDesc() {
-        return UdeskUtil.objectToString(desc);
+        return UdeskUtils.objectToString(desc);
     }
 
     public void setDesc(Object desc) {
@@ -54,7 +55,7 @@ public class OptionsModel implements Serializable {
     }
 
     public String getRemark_option() {
-        return UdeskUtil.objectToString(remark_option);
+        return UdeskUtils.objectToString(remark_option);
     }
 
     public void setRemark_option(Object remark_option) {

@@ -2,17 +2,22 @@ package cn.udesk.messagemanager;
 
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
 import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
+import udesk.core.model.MessageInfo;
 import udesk.core.xmpp.XmppInfo;
 import udesk.org.jivesoftware.smack.ConnectionConfiguration;
 import udesk.org.jivesoftware.smack.ConnectionListener;
@@ -44,6 +49,36 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
 
     volatile boolean isConnecting = false;
     private static long heartSpaceTime = 0;
+
+    /**
+     * 基于插入和删除元素是不会产生和销毁额外的对象实例
+     * 并且 在此处场景 插入和删除就是互斥的， xmpp正常使用的时候是会不加入的
+     * 缓存30条了， 如果太大了几乎就是是xmpp服务出问题了，在缓存反而让费内存
+     */
+    private ArrayBlockingQueue<MessageInfo> queue = new ArrayBlockingQueue(30);
+
+    //xmpp没有连接或连接上 或 发送异常加入队列
+    private void addQueue(MessageInfo messageInfo) {
+        queue.add(messageInfo);
+    }
+
+    //xmpp 链接上后调用
+    private void xmppConnectionRetrySend() {
+
+        while (sendQueueMessage(queue.poll()))
+            ;
+
+    }
+
+    private boolean sendQueueMessage(MessageInfo msg) {
+        if (msg == null) {
+            return false;
+        } else {
+            sendMessage(msg);
+            return true;
+        }
+    }
+
 
     public UdeskXmppManager() {
 
@@ -139,6 +174,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
                 if (handler != null) {
                     handler.post(runnable);
                 }
+                xmppConnectionRetrySend();
             }
         } catch (Exception e) {
             return false;
@@ -265,23 +301,31 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
 
     }
 
-    /**
-     * @param type     消息类型   文本 :message ;图片:image;语音:audio
-     * @param text     消息内容语音和图片是个链接地址
-     * @param msgId    消息的id
-     * @param to       发给客服的jid
-     * @param duration 时长  默认传0,语音的发送语音的时长
-     */
-    public synchronized boolean sendMessage(String type, String text, String msgId, String to, long duration, String im_sub_session_id, boolean no_need_save, int seqNum, String fileName, String filesize) {
+
+    public synchronized void sendMessage(MessageInfo msg) {
         try {
+            String type = msg.getMsgtype();
+            String text = msg.getMsgContent();
+            String msgId = msg.getMsgId();
+            String to = msg.getmAgentJid();
+            long duration = msg.getDuration();
+            String im_sub_session_id = msg.getSubsessionid();
+            boolean no_need_save = msg.isNoNeedSave();
+            int seqNum = msg.getSeqNum();
+            String fileName = msg.getFilename();
+            String filesize = msg.getFilesize();
+
             if (TextUtils.isEmpty(to)) {
-                return false;
+                return;
             }
-            if (System.currentTimeMillis() - heartSpaceTime > 20000 || !isConnection()) {
+            if (System.currentTimeMillis() - heartSpaceTime > 30 * 1000 || !isConnection()) {
                 heartSpaceTime = System.currentTimeMillis();
+                addQueue(msg);
                 reConnected();
-                return false;
+                InvokeEventContainer.getInstance().event_OnSendMessageFail.invoke(msg);
+                return;
             }
+
             xmppMsg = new Message(to, Message.Type.chat);
 
             xmppMsg.setPacketID(msgId);
@@ -317,23 +361,22 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
             }
             json.put("no_need_save", no_need_save);
             json.put("seq_num", seqNum);
-
             xmppMsg.setBody(json.toString());
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
         if (xmppConnection != null) {
             try {
                 DeliveryReceiptManager.addDeliveryReceiptRequest(xmppMsg);
                 xmppConnection.sendPacket(xmppMsg);
-                return true;
             } catch (Exception e) {
                 e.printStackTrace();
-                return false;
+                addQueue(msg);
             }
+        } else {
+            addQueue(msg);
         }
-        return true;
+
     }
 
     private void processPresence(Presence pre) {
