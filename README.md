@@ -2,7 +2,7 @@
 
 ## 快速接入
  
-  ###  1.初始管理员后台创建应用是生成的对应app key 和 app id
+  ### 1.初始管理员后台创建应用是生成的对应app key 和 app id
    
    ``` java
       UdeskSDKManager.getInstance().initApiKey(context, "you domain","App Key","App Id");
@@ -10,7 +10,7 @@
       注意：域名不要带有http://部分，加入注册生成的域名是"http://udesksdk.udesk.cn/" ,只要传入"udesksdk.udesk.cn"
    ```
       
-   ###  2.设置UdeskConfig配置信息。
+### 2.设置UdeskConfig配置信息。
    
    **说明：配置的功能根据你们实际的需要进行选择，都有默认行为。 最基本设置用户的基本信息 setDefualtUserInfo**
   ``` java 
@@ -290,7 +290,7 @@
 -keep class io.agora.**{*;}
 
 ```
- ### 5：  如果需要设置咨询对象，参照如下设置：
+### 5. 如果需要设置咨询对象，参照如下设置
   ``` java
       UdeskCommodityItem item = new UdeskCommodityItem();
         item.setTitle("木林森男鞋新款2016夏季透气网鞋男士休闲鞋网面韩版懒人蹬潮鞋子");// 商品主标题
@@ -303,27 +303,27 @@
   
   **更多功参考demo。**
   
- 
 
+### demo下载
 
+![扫一扫下载](http://qn-im.udesk.cn/%E4%BA%8C%E7%BB%B4%E7%A0%81_1540878014_252.png)
 
-## SDK中功能项说明
+### SDK中功能项说明
 
-
- ### 设置自定义表情的说明：
+ ###  设置自定义表情的说明
      
 	1，自定义表情必须在assets下建立udeskemotion目录，当程序启动时，会自动将assets的udeskemotion目录下所有的贴图复制到贴图的存放位置；
 	2，udeskemotion目录下必须是 一个tab图标+一个贴图文件夹，两者必须同名 
 	具体参考demo
    
 	 
- ###  IM中聊天功能 如果场景需要进入会话界面,先配置一条消息发送给客服可以如下:
+### IM中聊天功能 如果场景需要进入会话界面,先配置一条消息发送给客服可以如下
       每次进入会话界面前，调用如下方法传值：
 ``` java
       UdeskSDKManager.getInstance().setFirstMessage(String message);
   ```
 	
- ###  IM中聊天功能 集成发送地理位置的信息说明:
+### IM中聊天功能 集成发送地理位置的信息说明
      
 	 android 接入的第三方选择性比较多等原因，没有直接在SDK中内嵌地图SDK，由客户根据实际需要选择是否集成发送地理位置信息。
 	 提供集成地图的demo例子有：百度地图（见baidumapdemo 这个module），高德地图（gaodemapdemo）腾讯地图（tenxunmapdemo）
@@ -373,7 +373,7 @@
                     }
                 })
        
-###  IM 使用视频功能:
+### IM 使用视频功能
 
     注意：需要使用视频功能，一定需要使用UdeskSDKUI IM中功能 ,但可以单独使用UdeskSDKUI功能  
 	在你的app中 在依赖udeskvideo 模块。
@@ -843,6 +843,179 @@ RedirectViewHolder  显示转移提示语信息；
 | to_token     | string   | 接收者 sdk_token(唯一标识)                      |
 | type         | string   | 消息类型，'event' 为事件，'message'为消息            |
 | event        | string   | 事件类型，'redirect' 客服转接，'close'对话关闭，'survey'发送满意度调查 |
+
+
+### 更新日志
+
+### 4.0.5+ 
+1. 消息发送优化;
+2. 支持机器人key;
+3. 机器人SDK自动转人工事件
+
+### 4.0.4+ 
+1. 优化消息id的生成
+
+### 4.0.3+
+1. rtl的优化
+
+### 4.0.1+
+1. 支持商品消息
+
+### 4.0.0+
+1. SDK组片图件优化;  
+
+2. SDK支持小视频;
+
+3. 支持自定义表情包;
+
+4. 支持无消息对话过滤;
+
+5. 输入区优化;
+
+6. 满意度优化;
+
+7. SDK留言引导文案显示优化;
+
+8. SDK横屏兼容性优化;
+
+9. SDK支持机器人转人工按钮在x条消息后显示;
+
+10. SDK支持给机器人传modelKey值;
+
+11. IM图片查看支持点击返回;
+
+12. SDK多语言支持优化;
+
+13. 重构SDK中的各种设置;
+
+14. 机器人传客户信息;
+
+15. 8.0 设置方向和设置透明属性的适配;
+
+16. SDK（安卓）部分问题优化;
+
+17. SDK支持消息转人工按钮;
+
+18. sdk 发送图片加上图片后缀;
+
+### 3,9+ 
+1. 消息到达率优化 
+2. 支持视频聊天
+
+### 3.8.0+
+1. 支持发送地理位置信息
+
+### 3.7.1+
+1. 欢迎语显示优化
+
+### 3.7.0+
+1. 支持离线直接留言;
+2. SDK支持返回满意度调查和支持开关设置;
+3. SDK支持接收和发送GIF;
+4. SDK支持接收和发送视频;
+5. SDK支持客服消息撤回
+
+### 3.6.0+
+1. sdk增加显示结构化消息
+2. 增加黑名单提示语
+
+### 3.5.0 + 
+1. sdk初始化的方法修改为 initApiKey(Context context, String domain, String appkey, String appid)
+2. 接入会话的方式修改 统一调用entryChat(Context context)，内部处理了根据管理员在后台设置进行相应的业务流程跳转
+3. 之前提供的一些接入会话方式接口删除，统一使用见entryChat(Context context) 
+
+### 3.4.0 +
+1. 支持推送，
+2. 支持多应用
+
+### 3.3.2+
+1. http协议换成https
+
+2. 增加sdk端 客户主动放弃满意度调查
+
+### 3.3.1+
+1. 适配android7.0
+
+### 3.3+ 
+1. 适配中英文，
+2. 增加UI配置，
+3. 修改连接会话的逻辑，
+4. 增加头像的配置，
+5. 界面UI的修改
+
+### 3.2.1+
+1. 支持黑名单的设置;
+2. 客服在线状态优化;
+3. 修复已离线的客户在手机端显示在线的；
+4. 支持客服头像， 支持显示发送每条消息的客服昵称；
+5. 支持更新用户的信息；
+
+### 3.2.0 +
+1. 增加发送商品链接，
+2. 增加消息通知
+3. 增加未读消息的接口
+4. 增加android 6.0 运行权限
+
+### 3.1+ 
+1. 支持欢迎语设置链接
+2. 支持后台设置自定义链接
+3. 支持指定客服 id 进行分配
+4. 指定客服组 id 进行分配
+
+### 3.0+
+1. 新增客服转移和邀请评价功能
+
+
+### 部分功能截图说明
+
+##### 机器人功能示意图
+
+<img src="http://qn-im.udesk.cn/%E6%9C%BA%E5%99%A8%E4%BA%BA_1540869480_806.png"/>
+
+##### 导航配置示意图
+
+<img  src="http://qn-im.udesk.cn/%E5%AF%BC%E8%88%AA%E8%AE%BE%E7%BD%AE_1540870908_976.png"/>
+
+##### 无消息对话过滤示意图
+
+
+<img src="http://qn-im.udesk.cn/%E6%97%A0%E6%B6%88%E6%81%AF%E5%AF%B9%E8%AF%9D%E8%BF%87%E6%BB%A4_1540881672_329.png"/>
+
+
+##### 消息对话示意图
+
+<img src="http://qn-im.udesk.cn/%E5%8A%9F%E8%83%BD%E5%9B%BE%E7%89%87_1540881751_124.png"/>
+
+
+<img  src="http://qn-im.udesk.cn/%E5%8A%9F%E8%83%BD2_1540870974_781.png"/>
+
+
+<img src="http://qn-im.udesk.cn/%E5%8A%9F%E8%83%BD3_1540870997_368.png"/>
+
+##### 自定义表情
+<img src="http://qn-im.udesk.cn/%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A1%A8%E6%83%85_1540871031_250.png"/>
+
+
+##### 自定义按钮
+
+<img src="http://qn-im.udesk.cn/%E6%94%AF%E6%8C%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%89%E9%92%AE_1540881846_830.png"/>
+
+
+
+##### 满意度评价示意图
+
+<img  src="http://qn-im.udesk.cn/%E6%BB%A1%E6%84%8F%E5%BA%A6%E8%AF%84%E4%BB%B7_1540881195_147.png"/>
+
+
+
+##### 留言示意图
+
+<img  src="http://qn-im.udesk.cn/%E8%A1%A8%E5%8D%95%E7%95%99%E8%A8%80_1540871121_461.png"/>
+
+<img  src="http://qn-im.udesk.cn/%E7%9B%B4%E6%8E%A5%E7%95%99%E8%A8%80_1540871126_218.png"/>
+
+
+
 
 
 
