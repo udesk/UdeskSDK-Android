@@ -311,6 +311,15 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                             activity.mPresenter.sendPrefilterMsg();
                             activity.mPresenter.selfretrySendMsg();
                         }
+                        if (!activity.hasSendCommodity) {
+                            activity.hasSendCommodity = true;
+                            activity.sendCommodityMsg(UdeskSDKManager.getInstance().getUdeskConfig().commodity);
+                            activity.sendProduct(UdeskSDKManager.getInstance().getUdeskConfig().mProduct);
+                        }
+                        if (!activity.hasSendFirstMessage) {
+                            activity.hasSendFirstMessage = true;
+                            activity.sendDefualtMessage();
+                        }
                         activity.sendVideoMessage();
                         break;
                     case MessageWhat.WaitAgent:
@@ -408,15 +417,6 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                             activity.showOnlieStatus(activity.mAgentInfo);
                             if (activity.popWindow != null) {
                                 activity.popWindow.cancle();
-                            }
-                            if (!activity.hasSendCommodity) {
-                                activity.hasSendCommodity = true;
-                                activity.sendCommodityMsg(UdeskSDKManager.getInstance().getUdeskConfig().commodity);
-                                activity.sendProduct(UdeskSDKManager.getInstance().getUdeskConfig().mProduct);
-                            }
-                            if (!activity.hasSendFirstMessage) {
-                                activity.hasSendFirstMessage = true;
-                                activity.sendDefualtMessage();
                             }
                         } else if (onlineflag == UdeskConst.OFFLINEFLAG) {
                             if (activity.mPresenter != null) {

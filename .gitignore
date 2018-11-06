@@ -30,3 +30,5 @@ proguard/
 
 # Android Studio captures folder
 captures/
+udesksdk/.idea/misc.xml
+udesksdk/udeskvideo/udeskvideo.iml

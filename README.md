@@ -316,13 +316,6 @@
 	2，udeskemotion目录下必须是 一个tab图标+一个贴图文件夹，两者必须同名 
 	具体参考demo
    
-	 
-### IM中聊天功能 如果场景需要进入会话界面,先配置一条消息发送给客服可以如下
-      每次进入会话界面前，调用如下方法传值：
-``` java
-      UdeskSDKManager.getInstance().setFirstMessage(String message);
-  ```
-	
 ### IM中聊天功能 集成发送地理位置的信息说明
      
 	 android 接入的第三方选择性比较多等原因，没有直接在SDK中内嵌地图SDK，由客户根据实际需要选择是否集成发送地理位置信息。
