@@ -553,6 +553,13 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                 groupId = intent.getStringExtra(UdeskConst.UDESKGROUPID);
                 agentId = intent.getStringExtra(UdeskConst.UDESKAGENTID);
             }
+            //重导航传入groupid的优先级 高于设置的groupid
+            if (TextUtils.isEmpty(groupId) && !TextUtils.isEmpty(UdeskSDKManager.getInstance().getUdeskConfig().groupId)) {
+                groupId = UdeskSDKManager.getInstance().getUdeskConfig().groupId;
+            }
+            if (TextUtils.isEmpty(agentId) && !TextUtils.isEmpty(UdeskSDKManager.getInstance().getUdeskConfig().agentId)) {
+                agentId = UdeskSDKManager.getInstance().getUdeskConfig().agentId;
+            }
             if (!TextUtils.isEmpty(groupId)) {
                 PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                         UdeskConst.SharePreParams.Udesk_Group_Id, groupId);

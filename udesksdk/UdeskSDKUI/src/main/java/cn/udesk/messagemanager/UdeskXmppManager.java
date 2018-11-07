@@ -372,9 +372,11 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
             } catch (Exception e) {
                 e.printStackTrace();
                 addQueue(msg);
+                InvokeEventContainer.getInstance().event_OnSendMessageFail.invoke(msg);
             }
         } else {
             addQueue(msg);
+            InvokeEventContainer.getInstance().event_OnSendMessageFail.invoke(msg);
         }
 
     }
