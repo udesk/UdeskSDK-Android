@@ -96,6 +96,7 @@
             android:name="cn.udesk.camera.UdeskCameraActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:screenOrientation="portrait"
+            android:theme="@style/Udesk_Theme"
             />
 
         <provider
