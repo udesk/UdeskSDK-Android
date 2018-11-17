@@ -71,7 +71,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
             landscape,
             user;
 
-    private EditText nick_name, cellphone, email, description,
+    private EditText nick_name, cellphone, email, description, customer_token, channel,
             textfiledkey, textfiledvalue,
             update_nick_name, update_description,
             updatetextfiledkey, updatetextfiledvalue,
@@ -134,6 +134,8 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         cellphone = (EditText) findViewById(R.id.cellphone);
         email = (EditText) findViewById(R.id.email);
         description = (EditText) findViewById(R.id.description);
+        customer_token = (EditText) findViewById(R.id.customer_token);
+        channel = (EditText) findViewById(R.id.channel);
         textfiledkey = (EditText) findViewById(R.id.textfiledkey);
         textfiledvalue = (EditText) findViewById(R.id.textfiledvalue);
         update_nick_name = (EditText) findViewById(R.id.update_nick_name);
@@ -208,11 +210,11 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                             UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
                             mPresenter.sendTxtMessage("打开帮助中心");
                         } else if (id == 22) {
-                            mPresenter.sendTxtMessage("打开表单留言");
-                            UdeskSDKManager.getInstance().goToForm(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
+                            mPresenter.sendCommodityMessage( createCommodity());
                         } else if (id == 23) {
-                            Toast.makeText(getApplicationContext(), "将要断开xmpp链接！", Toast.LENGTH_LONG).show();
                             UdeskSDKManager.getInstance().disConnectXmpp();
+                        }else if (id == 24){
+                            mPresenter.sendProductMessage(createProduct());
                         }
                     }
                 })//在more 展开面板中设置额外的功能按钮
@@ -246,6 +248,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                         Toast.makeText(getApplicationContext(), "结构化消息控件点击事件回调", Toast.LENGTH_SHORT).show();
                     }
                 })//设置结构化消息控件点击事件回调接口.
+                .setChannel(channel.getText().toString())
         ;
 
         return builder;
@@ -254,11 +257,13 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
     private List<FunctionMode> getExtraFunctions() {
         List<FunctionMode> modes = new ArrayList<>();
         FunctionMode functionMode1 = new FunctionMode("帮助中心", 21, R.mipmap.udesk_help_tip);
-        FunctionMode functionMode2 = new FunctionMode("表单留言", 22, R.mipmap.udesk_form_table);
+        FunctionMode functionMode2 = new FunctionMode("发送咨询对象", 22, R.mipmap.udesk_form_table);
         FunctionMode functionMode3 = new FunctionMode("断开xmpp连接", 23, R.mipmap.udesk_form_table);
+        FunctionMode functionMode4 = new FunctionMode("发送商品消息", 24, R.mipmap.udesk_form_table);
         modes.add(functionMode1);
         modes.add(functionMode2);
         modes.add(functionMode3);
+        modes.add(functionMode4);
         return modes;
     }
 
@@ -284,6 +289,9 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         }
         if (!TextUtils.isEmpty(description.getText().toString())) {
             defualtInfos.put(UdeskConst.UdeskUserInfo.DESCRIPTION, description.getText().toString());
+        }
+        if (!TextUtils.isEmpty(customer_token.getText().toString())) {
+            defualtInfos.put(UdeskConst.UdeskUserInfo.CUSTOMER_TOKEN, customer_token.getText().toString());
         }
         return defualtInfos;
     }

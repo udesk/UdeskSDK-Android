@@ -52,6 +52,7 @@ import cn.udesk.db.UdeskDBManager;
 import cn.udesk.emotion.MoonUtils;
 import cn.udesk.model.StructModel;
 import cn.udesk.model.UdeskCommodityItem;
+import cn.udesk.model.UdeskQueueItem;
 import cn.udesk.photoselect.PictureVideoPlayActivity;
 import cn.udesk.provider.UdeskFileProvider;
 import cn.udesk.widget.CircleProgressBar;
@@ -77,7 +78,7 @@ public class MessageAdatper extends BaseAdapter {
             R.layout.udesk_chat_msg_itemstruct_l, //显示结构化消息
             R.layout.udesk_chat_leavemsg_item_txt_l,//显示留言发送消息
             R.layout.udesk_chat_leavemsg_item_txt_r, // 显示收到留言消息的回复
-            R.layout.udesk_chat_event_item, // 显示收到留言消息的回复
+            R.layout.udesk_chat_event_item, // 显示事件消息
             R.layout.udesk_chat_msg_item_file_l,// 文件消息左
             R.layout.udesk_chat_msg_item_file_r, //文件消息右
             R.layout.udesk_chat_msg_item_location_r, //地理位置消息右
@@ -86,6 +87,7 @@ public class MessageAdatper extends BaseAdapter {
             R.layout.udesk_chat_msg_item_smallvideo_l,//短视频消息左
             R.layout.udesk_chat_msg_item_smallvideo_r,//短视频消息右
             R.layout.udesk_chat_msg_item_product_r, //商品消息右
+            R.layout.udesk_chat_in_line_item, //排队中消息提示
     };
 
     /**
@@ -146,6 +148,7 @@ public class MessageAdatper extends BaseAdapter {
     private static final int MSG_SMALL_VIDEO_L = 18;
     private static final int MSG_SMALL_VIDEO_R = 19;
     private static final int MSG_PRODUCT_R = 20;
+    private static final int MSG_IN_THE_LINE = 21;
 
 
     //2条消息之间 时间间隔超过SPACE_TIME， 会话界面会显示出消息的收发时间
@@ -181,6 +184,9 @@ public class MessageAdatper extends BaseAdapter {
             }
             if (message instanceof UdeskCommodityItem) {
                 return COMMODITY;
+            }
+            if (message instanceof UdeskQueueItem){
+                return MSG_IN_THE_LINE;
             }
             switch (UdeskConst.parseTypeForMessage(message.getMsgtype())) {
                 case UdeskConst.ChatMsgTypeInt.TYPE_IMAGE:
@@ -261,6 +267,18 @@ public class MessageAdatper extends BaseAdapter {
         return super.getViewTypeCount();
     }
 
+    void removeQueueMessage(MessageInfo message){
+        if (message == null) {
+            return;
+        }
+        try {
+            list.contains(message);
+            list.remove(message);
+            notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 添加一条消息
@@ -546,6 +564,13 @@ public class MessageAdatper extends BaseAdapter {
                         UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMRightTextColorResId, videoTxtViewHolder.tvMsg);
                         convertView.setTag(videoTxtViewHolder);
                         break;
+                    case MSG_IN_THE_LINE:
+                        UdeskInLineViewHolder lineViewHolder = new UdeskInLineViewHolder();
+                        initItemNormalView(convertView, lineViewHolder);
+                        lineViewHolder.leaveingMsg = (TextView) convertView.findViewById(R.id.udesk_leaveing_msg);
+                        lineViewHolder.queueContext = convertView.findViewById(R.id.udesk_queue_context);
+                        convertView.setTag(lineViewHolder);
+                        break;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -628,7 +653,10 @@ public class MessageAdatper extends BaseAdapter {
          */
         void showStatusOrProgressBar() {
             try {
-                if (itemType == COMMODITY || itemType == Udesk_Event || itemType == MSG_SMALL_VIDEO_R) {
+                if (itemType == COMMODITY
+                        || itemType == Udesk_Event
+                        || itemType == MSG_SMALL_VIDEO_R
+                        || itemType == MSG_IN_THE_LINE) {
                     return;
                 }
                 if (itemType == MSG_TXT_L
@@ -1570,6 +1598,37 @@ public class MessageAdatper extends BaseAdapter {
         }
     }
 
+
+    /**
+     * 排队消息提醒
+     */
+    public class UdeskInLineViewHolder extends BaseViewHolder {
+
+        TextView queueContext;
+        TextView leaveingMsg;
+
+        @Override
+        void bind(Context context) {
+            try {
+                final UdeskQueueItem item = (UdeskQueueItem) message;
+                queueContext.setText(item.getQueueContent());
+                if (item.isEnableLeaveMsg()){
+                    leaveingMsg.setVisibility(View.VISIBLE);
+                    leaveingMsg.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ((UdeskChatActivity) mContext).leaveMessage();
+                        }
+                    });
+                }else {
+                    leaveingMsg.setVisibility(View.GONE);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void showStructImg(Context context, StructModel structModel, View structImgView, SimpleDraweeView structImg) {
         try {
             final String imgUrl = structModel.getImg_url();
@@ -1707,6 +1766,9 @@ public class MessageAdatper extends BaseAdapter {
             if (info instanceof UdeskCommodityItem) {
                 holder.tvTime.setVisibility(View.VISIBLE);
                 holder.tvTime.setText(UdeskUtil.formatLongTypeTimeToString(mContext, System.currentTimeMillis()));
+            }else if (info instanceof  UdeskQueueItem) {
+                holder.tvTime.setVisibility(View.VISIBLE);
+                holder.tvTime.setText(UdeskUtil.formatLongTypeTimeToString(mContext, System.currentTimeMillis()));
             } else if (info.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_EVENT)) {
                 holder.tvTime.setVisibility(View.GONE);
             } else if (needShowTime(position)) {
@@ -1820,7 +1882,7 @@ public class MessageAdatper extends BaseAdapter {
                 }
             } else if (tag != null && tag instanceof SmallVideoViewHolder) {
                 SmallVideoViewHolder smallVideo = (SmallVideoViewHolder) tag;
-                if (smallVideo.message != null && msgId.equals(smallVideo.message.getMsgId())) {
+                if (smallVideo.message != null && msgId.contains(smallVideo.message.getMsgId())) {
                     smallVideo.circleProgressBar.setPercent(precent);
                     if (precent == 100) {
                         smallVideo.cancleImg.setVisibility(View.GONE);
@@ -1831,7 +1893,7 @@ public class MessageAdatper extends BaseAdapter {
                 }
             } else if (tag != null && tag instanceof ImgViewHolder) {
                 ImgViewHolder imgViewHolder = (ImgViewHolder) tag;
-                if (imgViewHolder.message != null && msgId.equals(imgViewHolder.message.getMsgId())) {
+                if (imgViewHolder.message != null && msgId.contains(imgViewHolder.message.getMsgId())) {
                     imgViewHolder.percent.setVisibility(View.VISIBLE);
                     imgViewHolder.percent.setText(precent + "%");
                     if (precent == 100) {

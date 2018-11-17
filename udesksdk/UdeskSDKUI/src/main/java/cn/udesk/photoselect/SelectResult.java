@@ -13,6 +13,17 @@ public class SelectResult {
     public static ArrayList<LocalMedia> allLocalMedia = new ArrayList<>();
     public static ArrayList<LocalMedia> selectLocalMedia = new ArrayList<>();
 
+    public static boolean isSelected(LocalMedia photo) {
+        if (photos.size() > 0) {
+            for (LocalMedia localMedia : photos) {
+                if (photo.getPath().equals(localMedia.getPath())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static void addPhoto(LocalMedia photo) {
         try {
             photo.setSelected(true);
@@ -74,7 +85,17 @@ public class SelectResult {
      * @return 选择器应该显示的数字
      */
     public static String getSelectorNumber(LocalMedia photo) {
-        return String.valueOf(photos.indexOf(photo) + 1);
+        try {
+            for (int i = 0; i < photos.size(); i++) {
+                if (photos.get(i).getPath().equals(photo.getPath())) {
+                    return String.valueOf(i + 1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+
     }
 
     public static String getPhotoPath(int position) {

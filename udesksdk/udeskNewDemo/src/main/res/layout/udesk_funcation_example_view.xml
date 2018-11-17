@@ -870,6 +870,32 @@
                 android:textColorHint="@color/udesk_color_999999"
                 android:textSize="16sp" />
 
+            <EditText
+                android:id="@+id/customer_token"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="@dimen/udesk_10"
+                android:gravity="start|center"
+                android:hint="customer_token"
+                android:textColor="#333333"
+                android:textColorHint="@color/udesk_color_999999"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/channel"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="@dimen/udesk_10"
+                android:gravity="start|center"
+                android:hint="channel"
+                android:textColor="#333333"
+                android:textColorHint="@color/udesk_color_999999"
+                android:textSize="16sp" />
+
         </LinearLayout>
 
         <TextView

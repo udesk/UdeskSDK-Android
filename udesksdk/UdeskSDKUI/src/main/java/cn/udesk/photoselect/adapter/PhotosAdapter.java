@@ -67,7 +67,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final LocalMedia image = images.get(position);
         try {
             if (image != null) {
-                updateSelector(contentHolder.check, contentHolder.v_selector, image.isSelected(), image);
+                updateSelector(contentHolder.check, contentHolder.v_selector, SelectResult.isSelected(image), image);
                 contentHolder.ll_check.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -77,17 +77,14 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         }
                         image.setSelected(!image.isSelected());
                         if (image.isSelected()) {
-                            contentHolder.v_selector.setVisibility(View.VISIBLE);
                             SelectResult.addPhoto(image);
-                            contentHolder.check.setBackgroundResource(R.drawable.udesk_checkphoto_bg_select_true);
-                            contentHolder.check.setText(String.valueOf(SelectResult.count()));
                         } else {
-                            contentHolder.v_selector.setVisibility(View.GONE);
                             SelectResult.removePhoto(image);
-                            contentHolder.check.setBackgroundResource(R.drawable.udesk_checkphoto_bg_select_false);
-                            contentHolder.check.setText("");
                         }
+
+                        notifyDataSetChanged();
                         imageSelectChangedListener.onSelectorChanged();
+
                     }
                 });
                 final String path = image.getPath();
@@ -143,7 +140,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         SimpleDraweeView iv_picture;
         TextView check;
         TextView tv_duration;
-        View contentView,ll_check ,v_selector;
+        View contentView, ll_check, v_selector;
 
         public ViewHolder(View itemView) {
             super(itemView);

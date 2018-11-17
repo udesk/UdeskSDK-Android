@@ -94,7 +94,9 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
                     mTitlebar.getUdeskBackImg().setImageResource(UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId);
                 }
                 mTitlebar
-                        .setLeftTextSequence(getString(R.string.udesk_robot_title));
+                        .setLeftTextSequence(UdeskSDKManager.getInstance().getImSetting() != null && UdeskSDKManager.getInstance().getImSetting().getRobot_name() != null
+                                ? UdeskUtils.objectToString(UdeskSDKManager.getInstance().getImSetting().getRobot_name())
+                                : getString(R.string.udesk_robot_title));
                 mTitlebar.setLeftLinearVis(View.VISIBLE);
                 mTitlebar.setLeftViewClick(new OnClickListener() {
 

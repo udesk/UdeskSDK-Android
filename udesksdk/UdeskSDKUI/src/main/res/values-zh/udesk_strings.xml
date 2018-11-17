@@ -63,7 +63,7 @@
     <string name="udesk_survey_error"> 抱歉，暂时无法使用!</string>
     <string name="udesk_service_line"> 客服上线了</string>
     <string name="udesk_service_offline"> 客服离线了</string>
-    <string name="udesk_api_error">出错了，请稍后联系客服</string>
+    <string name="udesk_api_error">请稍后联系客服</string>
     <string name="udesk_upload_img_error">上传图片失败，请重试</string>
     <string name="udesk_customer_leavemsg">客户留言</string>
     <string name="udesk_offline_reply_msg">留言工单离线回复</string>
@@ -118,6 +118,8 @@
     <string name="camera_view_tips">轻触拍照，长按摄像</string>
     <string name="udesk_too_short">录制时间过短,请重新录制</string>
     <string name="udesk_audio_permission_error">请检查是否开启了应用的录音权限</string>
-
-
+    <string name="udesk_can_not_be_evaluated">还未分配客服，不能进行评价</string>
+    <string name="udesk_can_not_be_video">还未分配客服，不能发起视频</string>
+    <string name="udesk_in_the_line">排队中</string>
+    <string name="udesk_in_the_line_max_send">排队中最多允许发送二十条消息</string>
 </resources>

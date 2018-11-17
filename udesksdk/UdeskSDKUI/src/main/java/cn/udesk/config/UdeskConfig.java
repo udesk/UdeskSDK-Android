@@ -141,9 +141,10 @@ public class UdeskConfig {
     public boolean isOnlyUseRobot = false;
     //配置本地化语言
     public Locale locale;
-
     //商品消息
     public Product mProduct;
+    //SDK支持自定义渠道
+    public String channel;
 
 
     UdeskConfig(Builder builder) {
@@ -206,6 +207,8 @@ public class UdeskConfig {
         this.isOnlyUseRobot = builder.isOnlyUseRobot;
         this.locale = builder.locale;
         this.mProduct = builder.mProduct;
+        this.channel = builder.channel;
+
     }
 
     public static UdeskConfig createDefualt() {
@@ -328,6 +331,8 @@ public class UdeskConfig {
         //配置本地化语言
         private Locale locale;
         private Product mProduct;
+        //SDK支持自定义渠道
+        private String channel;
 
         public Builder() {
 
@@ -445,6 +450,7 @@ public class UdeskConfig {
 
         /**
          * 设置商品信息 带链接时显示的颜色
+         *
          * @param udeskProductNameLinkColorResId
          * @return
          */
@@ -649,6 +655,7 @@ public class UdeskConfig {
 
         /**
          * udesk 用于机器人页面收集客户信息
+         *
          * @param concatRobotUrlWithCustomerInfo
          * @return
          */
@@ -792,6 +799,7 @@ public class UdeskConfig {
 
         /**
          * 设置商品消息
+         *
          * @param mProduct
          * @return
          */
@@ -799,6 +807,12 @@ public class UdeskConfig {
             this.mProduct = mProduct;
             return this;
         }
+
+        public Builder setChannel(String channel) {
+            this.channel = channel;
+            return this;
+        }
+
 
         public UdeskConfig build() {
             return new UdeskConfig(this);

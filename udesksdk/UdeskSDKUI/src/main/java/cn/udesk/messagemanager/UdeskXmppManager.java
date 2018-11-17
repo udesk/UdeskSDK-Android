@@ -34,6 +34,7 @@ import udesk.org.jivesoftware.smack.packet.Presence;
 import udesk.org.jivesoftware.smack.provider.ProviderManager;
 import udesk.org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import udesk.org.jivesoftware.smack.util.StringUtils;
+import udesk.org.jivesoftware.smackx.delay.packet.DelayInfo;
 import udesk.org.jivesoftware.smackx.receipts.DeliveryReceipt;
 import udesk.org.jivesoftware.smackx.receipts.DeliveryReceiptManager;
 
@@ -428,6 +429,11 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
         if (id == null || TextUtils.isEmpty(id.trim())) {
             return;
         }
+        DelayInfo delayInfo = null;
+        if (message.getExtension("delay", "urn:xmpp:delay") == null) {
+//            MIA-558 SDK客户查看离线消息显示实际时间
+            delayInfo = message.getExtension("delay", "urn:xmpp:delay");
+        }
         if (message.getBody() != null) {
             String type = "";
             String content = "";
@@ -437,7 +443,10 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
             int seq_num = 0;
             String fileName = "";
             String fileSize = "";
+            //离线消息设置服务端带过来的时间， 在线消息，以手机时间为准
+            long receiveMsgTime = 0;
             try {
+                receiveMsgTime = delayInfo != null ? delayInfo.getStamp().getTime() : System.currentTimeMillis();
                 JSONObject json = new JSONObject(message.getBody());
                 if (json.has("type")) {
                     type = json.optString("type");
@@ -478,7 +487,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
 
             if (!TextUtils.isEmpty(type) && !TextUtils.isEmpty(content)) {
                 UdeskMessageManager.getInstance().event_OnNewMessage.invoke(message, message.getFrom(), type, id, content,
-                        duration, send_status, im_sub_session_id, seq_num, fileName, fileSize);
+                        duration, send_status, im_sub_session_id, seq_num, fileName, fileSize,receiveMsgTime);
             }
         }
     }

@@ -9,19 +9,6 @@ import udesk.core.utils.UdeskUtils;
 
 public class SDKIMSetting {
 
-    //    {"code"=>"1000",
-//            "message"=>"success",
-//            "result"=>
-//        {"enable_im_group"=>false,
-//                "im_session_closed"=>false,
-//                "is_worktime"=>true,
-//                "has_robot"=>true,
-//                "enable_robot"=>false,
-//                "enable_sdk_robot"=>false,
-//                "enable_agent"=>false,
-//                "investigation_when_leave"=>false,
-//                "enable_web_im_feedback"=>false,
-//                "no_reply_hint"=>"对不起，当前无客户在线"}}
     private Object code;
     private Object message;
 
@@ -52,6 +39,7 @@ public class SDKIMSetting {
     private Object im_survey_show_type;
     private Object leave_message_guide;
     private Object show_robot_times;
+    private Object  robot_name;
 
 //    "vcall":true,
 //            "vc_app_id":"fbcc5d3df6dfa25c418910a3611020eb",
@@ -298,5 +286,13 @@ public class SDKIMSetting {
 
     public void setShow_robot_times(Object show_robot_times) {
         this.show_robot_times = show_robot_times;
+    }
+
+    public Object getRobot_name() {
+        return robot_name;
+    }
+
+    public void setRobot_name(Object robot_name) {
+        this.robot_name = robot_name;
     }
 }
