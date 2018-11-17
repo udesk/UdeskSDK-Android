@@ -1,4 +1,16 @@
-# UdeskSDK Android 4.0.0+ 开发者文档
+# UdeskSDK Android 4.1.0+ 开发者文档
+
+### 4.1.0 更新的内容
+1. 支持排队时发送消息
+2. 替换表情
+3. 支持机器人  管理员配置名称
+4. 支持自定义渠道 
+5. 支持设置 全局客户唯一性customer_token
+6. 支持离线消息显示实际发送时间
+7. 修改录音文件格式wav，提高客服语音转文字的准确率
+8. 优化无消息对话过滤消息保存
+
+![下载地址](https://github.com/udesk/UdeskSDK-Android/tree/master)
 
 ## 快速接入
  
@@ -106,6 +118,7 @@
 | isOnlyUseRobot                         | setOnlyUseRobot                                            | 设置是否只使用机器人 不用其它功能                                 | 
 | locale                                | setLocale                                                   | 设置本地化语言                    | 
 | mProduct                                | setProduct                                                   | 设置商品消息         
+| channel                                | setChannel                                                   | SDK支持自定义渠道（只支持字符数字，不支持特殊支持）        
 
 
 **一个完整的参考例子**
@@ -306,7 +319,7 @@
 
 ### demo下载
 
-![扫一扫下载](http://qn-im.udesk.cn/%E4%BA%8C%E7%BB%B4%E7%A0%81_1540878014_252.png)
+![扫一扫下载](http://qn-im.udesk.cn/%E4%BA%8C%E7%BB%B4%E7%A0%81_1542445970_407.png)
 
 ### SDK中功能项说明
 
@@ -506,6 +519,7 @@
      
     5.h5接入参考例子
     https://github.com/udesk/udesk_android_sdk_h5
+	
    
   
 ``` 
@@ -524,13 +538,16 @@ dependencies {
 ### 初始化客户逻辑
 
 ``` java
-1使用主键 sdk_token email cellphone 依次查找用户,找到转1.1
+1使用主键 sdk_token customer_token email cellphone 依次查找用户,找到转1.1
      1.1 设找到的用户为customer
      1.2 如果有 sdk_token 参数并且不与 customer中原有的sdk_token相同, go 1.2.1
      1.2.1 更新用户主键及附加信息
      1.3 更新 device
 2创建用户 email 没有会默认生成
 3创建用户 device
+4如果转入 customer_token 但以当前 customer.open_api_token 不同,也不与其它客户冲突,更新 customer_token 到客户 open_api_token 字段
+
+
 创建用户失败返回的常见错误
    wrong_subdomain: {code: "2001" , message: "子域名错误"},
    no_sdktoken: {code: "2003" , message: "用户token错误"},
@@ -567,6 +584,7 @@ info.put(UdeskConst.UdeskUserInfo.EMAIL,"0631@163.com");
 //更新后的手机号
 info.put(UdeskConst.UdeskUserInfo.CELLPHONE,"15651818750");
 info.put(UdeskConst.UdeskUserInfo.DESCRIPTION,"更新后的描述信息")
+info.put(UdeskConst.UdeskUserInfo.CUSTOMER_TOKEN,"对应的custom_token 不要乱传")
 
 //传入需要更新的Udesk系统默认字段
 注意更新邮箱或者手机号码，如果在后端有同样的手机号或邮箱，则会更新失败     
@@ -839,6 +857,16 @@ RedirectViewHolder  显示转移提示语信息；
 
 
 ### 更新日志
+
+### 4.1.0+
+1. 支持排队时发送消息
+2. 替换表情
+3. 支持机器人  管理员配置名称
+4. 支持自定义渠道 
+5. 支持设置 全局客户唯一性customer_token
+6. 支持离线消息显示实际发送时间
+7. 修改录音文件格式wav，提高客服语音转文字的准确率
+8. 优化无消息对话过滤消息保存
 
 ### 4.0.5+ 
 1. 消息发送优化;
