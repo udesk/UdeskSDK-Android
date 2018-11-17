@@ -10,7 +10,7 @@
 7. 修改录音文件格式wav，提高客服语音转文字的准确率
 8. 优化无消息对话过滤消息保存
 
-![下载地址](https://github.com/udesk/UdeskSDK-Android/tree/master)
+[下载地址](https://github.com/udesk/UdeskSDK-Android/tree/master)
 
 ## 快速接入
  
