@@ -341,6 +341,9 @@ public class JsonUtils {
                     if (resultJson.has("show_robot_times")){
                         sdkimSetting.setShow_robot_times(resultJson.opt("show_robot_times"));
                     }
+                    if (resultJson.has("robot_name")){
+                        sdkimSetting.setRobot_name(resultJson.opt("robot_name"));
+                    }
                 }
             }
 

@@ -31,7 +31,9 @@
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="Udesk_Theme" parent="Theme.AppCompat.NoActionBar" />
+    <style name="Udesk_Theme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/white</item>
+    </style>
 
 
     <style name="Theme_Audio_Record_Button">

@@ -125,5 +125,8 @@
     <string name="camera_view_tips">Tap to take phone and hold to record video</string>
     <string name="udesk_too_short"> Message too short</string>
     <string name="udesk_audio_permission_error">Allow app to access your microphone</string>
-
+    <string name="udesk_can_not_be_evaluated">Customer service has not been assigned and cannot be evaluated</string>
+    <string name="udesk_can_not_be_video">No customer service has been assigned yet, no video can be initiated</string>
+    <string name="udesk_in_the_line">in the queue</string>
+    <string name="udesk_in_the_line_max_send">Up to 20 messages can be sent in the queue</string>
 </resources>

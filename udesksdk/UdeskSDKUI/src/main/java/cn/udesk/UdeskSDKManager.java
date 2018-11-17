@@ -250,7 +250,7 @@ public class UdeskSDKManager {
             UdeskHttpFacade.getInstance().setUserInfo(context, getDomain(context),
                     getAppkey(context), getSdkToken(context),
                     getUdeskConfig().defualtUserInfo, getUdeskConfig().definedUserTextField,
-                    getUdeskConfig().definedUserRoplist, getAppId(context), new UdeskCallBack() {
+                    getUdeskConfig().definedUserRoplist,getAppId(context),getUdeskConfig().channel, new UdeskCallBack() {
 
                         @Override
                         public void onSuccess(String string) {
@@ -520,4 +520,8 @@ public class UdeskSDKManager {
     }
 
 
+    //先预留开关，当后期管理员可配置时，方便修改
+    public boolean getEnableSendMessageWhenQueue(){
+        return  true;
+    }
 }

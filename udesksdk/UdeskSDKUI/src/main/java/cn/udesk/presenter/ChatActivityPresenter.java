@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,7 +41,9 @@ import cn.udesk.JsonUtils;
 import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
+import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.activity.UdeskChatActivity.MessageWhat;
+import cn.udesk.config.UdeskConfig;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.messagemanager.Concurrents;
 import cn.udesk.messagemanager.UdeskMessageManager;
@@ -316,9 +319,6 @@ public class ChatActivityPresenter {
                 if (isJsonStr) {
                     JSONObject resultJson = new JSONObject(string);
                     customerId = JsonUtils.parserCustomers(resultJson);
-                    if (!TextUtils.isEmpty(customerId)) {
-                        updateUserInfo(customerId);
-                    }
                     if (UdeskSDKManager.getInstance().getImSetting() != null && !UdeskSDKManager.getInstance().getImSetting().getIn_session()) {
                         boolean isShowPression = false;
                         String preTitle = "";
@@ -334,11 +334,12 @@ public class ChatActivityPresenter {
                             handlerMsg.obj = preTitle;
                             mChatView.getHandler().sendMessage(handlerMsg);
                             getPressionInfo();
+                            updateUserInfo(customerId, false);
                         } else {
-                            getAgentInfo(null);
+                            updateUserInfo(customerId, true);
                         }
                     } else {
-                        getAgentInfo(null);
+                        updateUserInfo(customerId, true);
                     }
                 }
                 if (!TextUtils.isEmpty(customerId)) {
@@ -348,7 +349,6 @@ public class ChatActivityPresenter {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            mChatView.showFailToast(string);
         }
     }
 
@@ -366,7 +366,7 @@ public class ChatActivityPresenter {
                     UdeskSDKManager.getInstance().getUdeskConfig().defualtUserInfo,
                     UdeskSDKManager.getInstance().getUdeskConfig().definedUserTextField,
                     UdeskSDKManager.getInstance().getUdeskConfig().definedUserRoplist,
-                    UdeskSDKManager.getInstance().getAppId(mContext), null);
+                    UdeskSDKManager.getInstance().getAppId(mContext), UdeskSDKManager.getInstance().getUdeskConfig().channel, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -413,7 +413,7 @@ public class ChatActivityPresenter {
     }
 
     //请求分配客服信息
-    public void getAgentInfo(String preSessionId) {
+    public void getAgentInfo(String preSessionId, JSONObject preMessage) {
         try {
             UdeskHttpFacade.getInstance().getAgentInfo(
                     UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
@@ -421,7 +421,7 @@ public class ChatActivityPresenter {
                     UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
                     mChatView.getAgentId(), mChatView.getGroupId(), false,
                     UdeskSDKManager.getInstance().getAppId(mChatView.getContext()), preSessionId,
-                    new UdeskCallBack() {
+                    preMessage, new UdeskCallBack() {
 
                         @Override
                         public void onSuccess(String message) {
@@ -522,7 +522,7 @@ public class ChatActivityPresenter {
                     UdeskSDKManager.getInstance().getAppkey(mChatView.getContext()),
                     UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
                     agent_id, group_id, true, UdeskSDKManager.getInstance().getAppId(mChatView.getContext()), null,
-                    new UdeskCallBack() {
+                    null, new UdeskCallBack() {
 
                         @Override
                         public void onSuccess(String message) {
@@ -557,7 +557,7 @@ public class ChatActivityPresenter {
                                 if (messageInfos != null && mChatView.getHandler() != null) {
                                     Message msg = Message.obtain();
                                     msg.what = MessageWhat.loadHistoryDBMsg;
-                                    msg.arg1 = 3;
+                                    msg.arg1 = UdeskChatActivity.PullEventModel;
                                     msg.obj = messageInfos;
                                     mChatView.getHandler().sendMessage(msg);
                                 }
@@ -610,34 +610,49 @@ public class ChatActivityPresenter {
     }
 
     //更新用户信息
-    private void updateUserInfo(final String userId) {
+    private void updateUserInfo(final String userId, final boolean isNeedGetAgent) {
         try {
-            if ((UdeskSDKManager.getInstance().getUdeskConfig().updateDefualtUserInfo != null
-                    && UdeskSDKManager.getInstance().getUdeskConfig().updateDefualtUserInfo.size() > 0)
-                    || (UdeskSDKManager.getInstance().getUdeskConfig().updatedefinedUserTextField != null
-                    && UdeskSDKManager.getInstance().getUdeskConfig().updatedefinedUserTextField.size() > 0)
-                    || (UdeskSDKManager.getInstance().getUdeskConfig().updatedefinedUserRoplist != null
-                    && UdeskSDKManager.getInstance().getUdeskConfig().updatedefinedUserRoplist.size() > 0)) {
-                UdeskHttpFacade.getInstance().updateUserInfo(UdeskSDKManager.getInstance().getUdeskConfig().updateDefualtUserInfo,
-                        UdeskSDKManager.getInstance().getUdeskConfig().updatedefinedUserTextField,
-                        UdeskSDKManager.getInstance().getUdeskConfig().updatedefinedUserRoplist, userId,
+            if (TextUtils.isEmpty(userId)) {
+                if (isNeedGetAgent) {
+                    getAgentInfo(null, null);
+                }
+                return;
+            }
+            UdeskConfig config = UdeskSDKManager.getInstance().getUdeskConfig();
+            if (config.updateDefualtUserInfo != null
+                    || config.updatedefinedUserTextField != null
+                    || config.updatedefinedUserRoplist != null) {
+                UdeskHttpFacade.getInstance().updateUserInfo(config.updateDefualtUserInfo,
+                        config.updatedefinedUserTextField,
+                        config.updatedefinedUserRoplist, userId,
                         UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
                         UdeskSDKManager.getInstance().getAppkey(mChatView.getContext()),
                         UdeskSDKManager.getInstance().getAppId(mChatView.getContext()),
                         new UdeskCallBack() {
                             @Override
                             public void onSuccess(String message) {
-
+                                if (isNeedGetAgent) {
+                                    getAgentInfo(null, null);
+                                }
                             }
 
                             @Override
                             public void onFail(String message) {
-
+                                if (isNeedGetAgent) {
+                                    getAgentInfo(null, null);
+                                }
                             }
                         });
+            } else {
+                if (isNeedGetAgent) {
+                    getAgentInfo(null, null);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
+            if (isNeedGetAgent) {
+                getAgentInfo(null, null);
+            }
         }
 
     }
@@ -836,7 +851,7 @@ public class ChatActivityPresenter {
     }
 
     private boolean isNeedAddCachePre(MessageInfo msg) {
-        if (mChatView.getPressionStatus()) {
+        if (mChatView.getPressionStatus(msg)) {
             cachePreMsg.add(msg);
             return true;
         }
@@ -855,9 +870,11 @@ public class ChatActivityPresenter {
             if (isNeedAddCachePre(msg)) {
                 return;
             }
+            if (mChatView.isNeedQueueMessageSave()){
+                queueMessageSave(msg);
+                return;
+            }
             messageSave(msg);
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -905,29 +922,11 @@ public class ChatActivityPresenter {
             if (isNeedAddCachePre(msg)) {
                 return;
             }
+            if (mChatView.isNeedQueueMessageSave()){
+                queueMessageSave(msg);
+                return;
+            }
             messageSave(msg);
-
-//            List<Product.ParamsBean> params = mProduct.getParams();
-//            StringBuilder builder = new StringBuilder();
-//            if(params != null && params.size()>0){
-//
-//                for (Product.ParamsBean paramsBean : params){
-//
-//                    if (TextUtils.isEmpty(paramsBean.getText())){
-//                        continue;
-//                    }
-//                    String textStr = "<font color=" + paramsBean.getColor() +
-//                            "size=" + paramsBean.getSize() + ">" + paramsBean.getText()+"</font>";
-//                    if (paramsBean.isFold()){
-//                        textStr = "<b>"+ textStr + "</b>"
-//                    }
-//                    if (paramsBean.isBreakX()){
-//                        textStr = textStr + "</br>";
-//                    }
-//                    builder.append(textStr);
-//                }
-//
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1008,7 +1007,7 @@ public class ChatActivityPresenter {
             if (TextUtils.isEmpty(filepath)) {
                 return;
             }
-            String fileName = (UdeskUtils.getFileName(filepath, UdeskConst.File_File));
+            String fileName = (UdeskUtils.getFileName(filepath, msgType));
             String fileSzie = UdeskUtils.getFileSizeByLoaclPath(filepath);
             MessageInfo msg = buildSendMessage(
                     msgType,
@@ -1046,6 +1045,10 @@ public class ChatActivityPresenter {
             if (isNeedAddCachePre(msg)) {
                 return;
             }
+            if (mChatView.isNeedQueueMessageSave()){
+                queueMessageSave(msg);
+                return;
+            }
             messageSave(msg);
         } catch (Exception e) {
             e.printStackTrace();
@@ -1056,9 +1059,10 @@ public class ChatActivityPresenter {
     // 发送录音信息
     public void sendRecordAudioMsg(String audiopath, long duration) {
         try {
+            String fileName = (UdeskUtils.getFileName(audiopath, UdeskConst.FileAduio));
             MessageInfo msg = buildSendMessage(
                     UdeskConst.ChatMsgTypeString.TYPE_AUDIO,
-                    System.currentTimeMillis(), "", audiopath, "", "");
+                    System.currentTimeMillis(), "", audiopath, fileName, "");
             duration = duration / 1000 + 1;
             msg.setDuration(duration);
             saveMessage(msg);
@@ -1256,6 +1260,69 @@ public class ChatActivityPresenter {
         }
     }
 
+
+
+    //htpp 方式保存消息到后台
+    public void queueMessageSave(final MessageInfo msg) {
+        try {
+            if (TextUtils.isEmpty(customerId)) {
+                return;
+            }
+
+            UdeskHttpFacade.getInstance().queueMessageSave(UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+                    UdeskSDKManager.getInstance().getAppkey(mChatView.getContext()),
+                    UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
+                    UdeskSDKManager.getInstance().getAppId(mChatView.getContext()),
+                    customerId, msg.getMsgtype(), msg.getMsgContent(), msg.getMsgId(),
+                    msg.getDuration(), msg.getSeqNum(), msg.getFilename(), msg.getFilesize(), new UdeskCallBack() {
+                        @Override
+                        public void onSuccess(String message) {
+
+                            try {
+                                JSONObject resultJson = new JSONObject(message);
+                                if (resultJson.has("code")) {
+                                    int status = resultJson.getInt("code");
+                                    if (status == 1000) {
+                                        //保存成功
+                                        UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(), UdeskConst.SendFlag.RESULT_SUCCESS);
+                                        onMessageReceived(msg.getMsgId());
+                                    }else if (status == 9200){
+                                        String tipMsg = resultJson.getString("message");
+                                        mChatView.isMoreThan(true,tipMsg);
+                                        updateFailureStatus(msg);
+                                    }else {
+                                        updateFailureStatus(msg);
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
+
+                        }
+
+                        @Override
+                        public void onFail(String error) {
+
+                            updateFailureStatus(msg);
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void  updateFailureStatus(MessageInfo msg){
+        UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(), UdeskConst.SendFlag.RESULT_FAIL);
+        if (mChatView.getHandler() != null) {
+            Message message = mChatView.getHandler().obtainMessage(
+                    MessageWhat.changeImState);
+            message.obj = msg.getMsgId();
+            message.arg1 = UdeskConst.SendFlag.RESULT_FAIL;
+            mChatView.getHandler().sendMessage(message);
+        }
+    }
 
     //构建消息模型
     public MessageInfo buildSendMessage(String msgType, long time, String text,
@@ -1492,7 +1559,6 @@ public class ChatActivityPresenter {
 //        } else {
         try {
 
-
             if (isCancleUpLoad.containsKey(message.getMsgId())) {
                 isCancleUpLoad.put(message.getMsgId(), false);
                 return;
@@ -1525,9 +1591,12 @@ public class ChatActivityPresenter {
                 mMyUpCompletionHandler = new MyUpCompletionHandler();
             }
             String key = message.getMsgId();
-            if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_IMAGE) && !TextUtils.isEmpty(message.getFilename())) {
-                key = key + "_" + message.getFilename();
-            }
+//            if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_IMAGE) && !TextUtils.isEmpty(message.getFilename())) {
+//                key = key + "_" + message.getFilename();
+//            }
+            key = key + "_" + message.getFilename();
+
+            Log.i("xxxxxxxxxx","key = " + key);
             mMyUpCompletionHandler.putCacheMessage(key, message);
             uploadManager.put(filePath, key,
                     XmppInfo.getInstance().getQiniuToken(),
@@ -1573,6 +1642,7 @@ public class ChatActivityPresenter {
                             MessageWhat.ChangeFielProgress);
                     message.obj = key;
                     message.arg1 = new Double(percent * 100).intValue();
+                    Log.i("xxxxxxxxxx","key = " + key + "; percent = " + new Double(percent * 100).intValue());
                     mChatView.getHandler().sendMessage(message);
                 }
             } catch (Exception e) {
@@ -1614,8 +1684,13 @@ public class ChatActivityPresenter {
                     UdeskDBManager.getInstance().updateMsgContent(msg.getMsgId(),
                             qiniuUrl);
                     msg.setMsgContent(qiniuUrl);
-                    messageSave(msg);
                     mToMsgMap.remove(key);
+                    if (mChatView.isNeedQueueMessageSave()){
+                        queueMessageSave(msg);
+                        return;
+                    }
+                    messageSave(msg);
+
                 } else {
                     if (mChatView.getHandler() != null) {
                         Message message = mChatView.getHandler().obtainMessage(
@@ -1650,6 +1725,10 @@ public class ChatActivityPresenter {
     public void startRetryMsg(MessageInfo message) {
         try {
             if (isNeedAddCachePre(message)) {
+                return;
+            }
+            if (mChatView.isNeedQueueMessageSave()){
+                queueMessageSave(message);
                 return;
             }
             if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_TEXT) || message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_Location)) {
