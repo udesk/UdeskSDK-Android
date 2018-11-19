@@ -45,9 +45,14 @@ public class LQREmotionKit {
         copyStickerToStickerPath(EMOTION_NAME_IN_ASSETS);
     }
 
-    public static void init(Context context) {
+    public static void init(final Context context) {
         try {
-            init(context, UdeskUtils.getDirectoryPath(context,UdeskConst.FileEmotion));
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    init(context, UdeskUtils.getDirectoryPath(context,UdeskConst.FileEmotion));
+                }
+            }).start();
         } catch (Exception e) {
             e.printStackTrace();
         }
