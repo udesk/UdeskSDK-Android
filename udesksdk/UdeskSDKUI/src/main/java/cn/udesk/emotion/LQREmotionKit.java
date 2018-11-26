@@ -53,6 +53,7 @@ public class LQREmotionKit {
                     init(context, UdeskUtils.getDirectoryPath(context,UdeskConst.FileEmotion));
                 }
             }).start();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

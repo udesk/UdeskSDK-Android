@@ -40,6 +40,7 @@
     <string name="call_denied">拒绝了呼叫电话，无法呼叫</string>
     <string name="aduido_denied">拒绝了录音权限，无法录音</string>
     <string name="camera_denied">拒绝了拍照权限，无法拍照</string>
+    <string name="location_denied">拒绝了地图需要的权限，无法使用发送位置功能</string>
     <string name="photo_denied">拒绝了存储卡读取权限，无法获取图片</string>
     <string name="add_bolcked_tips">抱歉，你已经被加入了黑名单</string>
     <string name="udesk_agent_connecting">客服连接中&#8230;</string>

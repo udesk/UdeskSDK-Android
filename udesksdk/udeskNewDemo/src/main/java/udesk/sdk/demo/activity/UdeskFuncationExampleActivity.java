@@ -31,6 +31,7 @@ import cn.udesk.callback.ITxtMessageWebonCliclk;
 import cn.udesk.callback.IUdeskFormCallBack;
 import cn.udesk.callback.IUdeskStructMessageCallBack;
 import cn.udesk.config.UdeskConfig;
+import cn.udesk.messagemanager.UdeskXmppManager;
 import cn.udesk.model.FunctionMode;
 import cn.udesk.model.NavigationMode;
 import cn.udesk.model.UdeskCommodityItem;
@@ -205,15 +206,11 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 .setExtreFunctions(getExtraFunctions(), new IFunctionItemClickCallBack() {
                     @Override
                     public void callBack(Context context, ChatActivityPresenter mPresenter, int id, String name) {
-
-                        if (id == 21) {
-                            UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
-                            mPresenter.sendTxtMessage("打开帮助中心");
-                        } else if (id == 22) {
-                            mPresenter.sendCommodityMessage( createCommodity());
+                        if (id == 22) {
+                            mPresenter.sendCommodityMessage(createCommodity());
                         } else if (id == 23) {
                             UdeskSDKManager.getInstance().disConnectXmpp();
-                        }else if (id == 24){
+                        } else if (id == 24) {
                             mPresenter.sendProductMessage(createProduct());
                         }
                     }
@@ -235,12 +232,12 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                         Toast.makeText(getApplicationContext(), "对文本消息中的链接消息处理设置回调", Toast.LENGTH_SHORT).show();
                     }
                 })   //如果需要对文本消息中的链接消息处理可以设置该回调，点击事件的拦截回调。 包含表情的不会拦截回调。
-                .setFormCallBack(new IUdeskFormCallBack() {
-                    @Override
-                    public void toLuachForm(Context context) {
-                        Toast.makeText(getApplicationContext(), "不用udesk系统提供的留言功能", Toast.LENGTH_SHORT).show();
-                    }
-                })//离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
+//                .setFormCallBack(new IUdeskFormCallBack() {
+//                    @Override
+//                    public void toLuachForm(Context context) {
+//                        Toast.makeText(getApplicationContext(), "不用udesk系统提供的留言功能", Toast.LENGTH_SHORT).show();
+//                    }
+//                })//离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
                 .setStructMessageCallBack(new IUdeskStructMessageCallBack() {
 
                     @Override
@@ -256,11 +253,9 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
 
     private List<FunctionMode> getExtraFunctions() {
         List<FunctionMode> modes = new ArrayList<>();
-        FunctionMode functionMode1 = new FunctionMode("帮助中心", 21, R.mipmap.udesk_help_tip);
         FunctionMode functionMode2 = new FunctionMode("发送咨询对象", 22, R.mipmap.udesk_form_table);
         FunctionMode functionMode3 = new FunctionMode("断开xmpp连接", 23, R.mipmap.udesk_form_table);
         FunctionMode functionMode4 = new FunctionMode("发送商品消息", 24, R.mipmap.udesk_form_table);
-        modes.add(functionMode1);
         modes.add(functionMode2);
         modes.add(functionMode3);
         modes.add(functionMode4);
