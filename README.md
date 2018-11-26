@@ -333,7 +333,7 @@
 
 ### demo下载
 
-![扫一扫下载](http://qn-im.udesk.cn/%E4%BA%8C%E7%BB%B4%E7%A0%81_1542445970_407.png)
+[demo下载](https://s.beta.myapp.com/myapp/rdmexp/exp/file2/2018/11/26/udesksdkdemo_1.0_032e649f-e3ce-568d-8524-46fd7cb55fbe.apk)
 
 ### SDK中功能项说明
 
