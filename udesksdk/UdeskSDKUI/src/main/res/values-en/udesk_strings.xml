@@ -19,36 +19,28 @@
     <string name="udesk_cancel">Cancel</string>
     <string name="udesk_sure">Sure</string>
     <string name="udesk_ok">Leave message</string>
-
     <string name="udesk_msg_offline_to_form">Agent is offline,submitting list to inform us</string>
     <string name="udesk_msg_busyline_to_form">Customer service is busy now, please press button to leave message</string>
     <string name="udesk_msg_busyline_to_wait">Customer service is busy now,please wait a moment</string>
     <string name="udesk_msg_busy_default_to_form">No Agents available right now. Please contacting us at our working hours</string>
     <string name="udesk_label_search_fail">Can not search your content?</string>
     <string name="udesk_label_no_sd">SD out of work, please check</string>
-
-
     <string name="udesk_im_record_error">Errors of recording, please check your authority of voice record on your application</string>
-
-
     <string name="udesk_im_time_format_yday">"Yesterday"</string>
     <string name="udesk_im_time_format_dby">"The day before yesterday"</string>
     <string name="udesk_label_customer_offline">Agent is offline</string>
-
     <!-- 商品咨询界面，链接按钮的展示文字 -->
     <string name="udesk_label_send_commondity_link">"Send links"</string>
     <string name="udesk_transfer_persion">Operator</string>
     <string name="udesk_robot_title">Intelligent robot</string>
-
     <string name="udesk_has_not_open_robot">You did not open intelligent robot service on your app</string>
     <string name="udesk_has_wrong_net">Network error, please checking you network setting!</string>
-
-
     <string name="udesk_options_agentgroup">Please choose agent group</string>
     <string name="file_denied">Refused storage authrity, can not tak a file </string>
     <string name="call_denied">Refused call authrity, can not tak a call</string>
     <string name="aduido_denied">Refused voice record authority, can not take a voice record</string>
     <string name="camera_denied">Refused photo authrity, can not tak a photo </string>
+    <string name="location_denied">Refused map authrity，can not send location</string>
     <string name="photo_denied">Refused storage authrity, can not get your photos</string>
     <string name="add_bolcked_tips">Sorry, you are in blacklist</string>
     <string name="udesk_agent_connecting">Aagent connecting&#8230;</string>
@@ -57,7 +49,7 @@
 
     <string name="udesk_edit_hint_msg">Typing...</string>
     <string name="udesk_voice_init">Hold to talk</string>
-    <string name="udesk_voice_cancle">Release to cancel</string>
+    <string name="udesk_label_hint_cancel">Release to cancel</string>
     <string name="udesk_thanks_survy">Thanks for your comment！</string>
     <string name="udesk_transfer_success">Successfully tansfer to agent</string>
     <string name="udesk_service">Service</string>
@@ -90,7 +82,6 @@
 
 
     <string name="press_record">Hold to Talk</string>
-    <string name="udesk_label_hint_recording">Slide up to cancel</string>
     <string name="release_end">Release to Send</string>
     <string name="move_up_cancel">Slide up to cancel</string>
     <string name="release_cancel">Release to cancel</string>

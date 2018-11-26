@@ -139,8 +139,6 @@ public class UdeskConfig {
     public boolean isOnlyByAgentId = false;
     //配置是否只使用机器人功能 只使用机器人功能,只使用机器人功能;  其它功能不使用。
     public boolean isOnlyUseRobot = false;
-    //配置本地化语言
-    public Locale locale;
     //商品消息
     public Product mProduct;
     //SDK支持自定义渠道
@@ -205,7 +203,6 @@ public class UdeskConfig {
         this.agentId = builder.agentId;
         this.isOnlyByAgentId = builder.isOnlyByAgentId;
         this.isOnlyUseRobot = builder.isOnlyUseRobot;
-        this.locale = builder.locale;
         this.mProduct = builder.mProduct;
         this.channel = builder.channel;
 
@@ -328,8 +325,6 @@ public class UdeskConfig {
         private boolean isOnlyByAgentId = false;
         //配置是否只使用机器人功能 只使用机器人功能,只使用机器人功能;  其它功能不使用。
         private boolean isOnlyUseRobot = false;
-        //配置本地化语言
-        private Locale locale;
         private Product mProduct;
         //SDK支持自定义渠道
         private String channel;
@@ -784,18 +779,6 @@ public class UdeskConfig {
             isOnlyUseRobot = onlyUseRobot;
             return this;
         }
-
-        /**
-         * '
-         *
-         * @param locale 设置本地化语言
-         * @return
-         */
-        public Builder setLocale(Locale locale) {
-            this.locale = locale;
-            return this;
-        }
-
 
         /**
          * 设置商品消息

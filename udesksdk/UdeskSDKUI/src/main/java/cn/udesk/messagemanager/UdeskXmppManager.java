@@ -18,6 +18,7 @@ import cn.udesk.config.UdeskConfig;
 import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.model.MessageInfo;
+import udesk.core.utils.UdeskUtils;
 import udesk.core.xmpp.XmppInfo;
 import udesk.org.jivesoftware.smack.ConnectionConfiguration;
 import udesk.org.jivesoftware.smack.ConnectionListener;
@@ -108,6 +109,8 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
     public synchronized boolean startLoginXmpp(String loginName,
                                                String loginPassword, String loginServer, int loginPort) {
         if (!isConnecting) {
+            UdeskUtils.resetTime();
+            UdeskConst.sdk_xmpp_statea = UdeskConst.CONNECTING;
             if (loginName.contains("@" + loginServer)) {
                 int index = loginName.indexOf("@");
                 loginName = loginName.substring(0, index);
@@ -175,10 +178,14 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
                 if (handler != null) {
                     handler.post(runnable);
                 }
+                UdeskUtils.resetTime();
+                UdeskConst.sdk_xmpp_statea = UdeskConst.ALREADY_CONNECTED;
                 xmppConnectionRetrySend();
             }
         } catch (Exception e) {
+            UdeskConst.sdk_xmpp_statea = UdeskConst.CONNECTION_FAILED;
             return false;
+
         }
         return true;
     }
@@ -230,6 +237,8 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
                 xmppConnection.sendPacket(xmppMsg);
             } catch (Exception e) {
                 e.printStackTrace();
+                UdeskUtils.resetTime();
+                UdeskConst.sdk_xmpp_statea = UdeskConst.CONNECTING;
                 reConnected();
             }
         }
@@ -302,7 +311,6 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
 
     }
 
-
     public synchronized void sendMessage(MessageInfo msg) {
         try {
             String type = msg.getMsgtype();
@@ -323,6 +331,8 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
                 heartSpaceTime = System.currentTimeMillis();
                 addQueue(msg);
                 reConnected();
+                UdeskUtils.resetTime();
+                UdeskConst.sdk_xmpp_statea = UdeskConst.CONNECTING;
                 InvokeEventContainer.getInstance().event_OnSendMessageFail.invoke(msg);
                 return;
             }
@@ -487,7 +497,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
 
             if (!TextUtils.isEmpty(type) && !TextUtils.isEmpty(content)) {
                 UdeskMessageManager.getInstance().event_OnNewMessage.invoke(message, message.getFrom(), type, id, content,
-                        duration, send_status, im_sub_session_id, seq_num, fileName, fileSize,receiveMsgTime);
+                        duration, send_status, im_sub_session_id, seq_num, fileName, fileSize, receiveMsgTime);
             }
         }
     }
@@ -504,6 +514,8 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                UdeskUtils.resetTime();
+                UdeskConst.sdk_xmpp_statea = UdeskConst.CONNECTING;
                 reConnected();
             }
         }

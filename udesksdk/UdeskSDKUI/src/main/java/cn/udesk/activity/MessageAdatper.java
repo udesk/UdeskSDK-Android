@@ -612,6 +612,8 @@ public class MessageAdatper extends BaseAdapter {
                     case MSG_FILE_R:
                     case MSG_LOCATION_R:
                     case MSG_Video_Txt_R:
+                    case MSG_SMALL_VIDEO_R:
+                    case MSG_PRODUCT_R:
                         this.isLeft = false;
                         if (!TextUtils.isEmpty(UdeskSDKManager.getInstance().getUdeskConfig().customerUrl)) {
                             UdeskUtil.loadHeadView(mContext, ivHeader, Uri.parse(UdeskSDKManager.getInstance().getUdeskConfig().customerUrl));
@@ -1171,7 +1173,7 @@ public class MessageAdatper extends BaseAdapter {
                 int max = UdeskUtils.getScreenWidth(mContext) * 3 / 5;
                 int step = (int) ((duration < 10) ? duration : (duration / 10 + 9));
                 record_item_content.getLayoutParams().width = (step == 0) ? min
-                        : (min + (max - min) / 15 * step);
+                        : (min + (max - min) / 17 * step); //计算17份  2份是给背景图尖角预留位置
             } catch (Exception e) {
                 e.printStackTrace();
             } catch (OutOfMemoryError error) {

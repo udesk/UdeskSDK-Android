@@ -17,7 +17,7 @@ import udesk.core.UdeskConst;
 public class AudioRecordManager {
 
     private static AudioRecordManager instance;
-    private MediaRecorder mMediaRecorder;
+    //    private MediaRecorder mMediaRecorder;
     private String mAudioDir;
     private String mCurrentFilePath;
     private OnAudioStateListener mStateListener;
@@ -41,15 +41,10 @@ public class AudioRecordManager {
     //录音的开始时间
     private long startTime;
 
-
-    /*
-     *
-     * Method used for recording.
-     */
     private AudioRecord.OnRecordPositionUpdateListener updateListener = new AudioRecord.OnRecordPositionUpdateListener() {
         public void onPeriodicNotification(AudioRecord recorder) {
-            audioRecorder.read(buffer, 0, buffer.length); // Fill buffer
             try {
+                audioRecorder.read(buffer, 0, buffer.length); // Fill buffer
                 randomAccessWriter.write(buffer); // Write buffer to file
                 payloadSize += buffer.length;
                 if (samples == 16) {
@@ -110,7 +105,7 @@ public class AudioRecordManager {
                     if (!dir.exists()) {
                         dir.mkdirs();
                     }
-                    mMediaRecorder = new MediaRecorder();
+//                    mMediaRecorder = new MediaRecorder();
                     String fileName = UUID.randomUUID().toString() + UdeskConst.AUDIO_SUF_WAV;
                     File file = new File(dir, fileName);
                     mCurrentFilePath = file.getAbsolutePath();
@@ -246,12 +241,19 @@ public class AudioRecordManager {
 //        }
 //        mMediaRecorder.release();
 //        mMediaRecorder = null;
-        stop();
-        if (audioRecorder != null) {
-            audioRecorder.setRecordPositionUpdateListener(null);
-            audioRecorder.release();
+        try {
+            stop();
+            if (audioRecorder != null) {
+                audioRecorder.setRecordPositionUpdateListener(null);
+                audioRecorder.release();
+            }
+            hasPrepare = false;
+        } catch (Exception e) {
+            if (mStateListener != null) {
+                mStateListener.prepareError("AudioRecord initialization failed");
+            }
+            e.printStackTrace();
         }
-        hasPrepare = false;
     }
 
     public void cancelAudio() {
@@ -268,6 +270,9 @@ public class AudioRecordManager {
             }).start();
         } catch (Exception e) {
             e.printStackTrace();
+            if (mStateListener != null) {
+                mStateListener.prepareError("AudioRecord initialization failed");
+            }
         }
 
     }
@@ -278,8 +283,12 @@ public class AudioRecordManager {
      */
     public int stop() {
 
-        audioRecorder.stop();
+
         try {
+            if (audioRecorder.getState() == AudioRecord.STATE_UNINITIALIZED) {
+                return 0;
+            }
+            audioRecorder.stop();
             randomAccessWriter.seek(4); // Write size to RIFF header
             randomAccessWriter.writeInt(Integer.reverseBytes(36 + payloadSize));
 
@@ -301,6 +310,9 @@ public class AudioRecordManager {
                 return 0;
             }
         } catch (IOException e) {
+            if (mStateListener != null) {
+                mStateListener.prepareError("AudioRecord initialization failed");
+            }
             return 0;
         }
     }

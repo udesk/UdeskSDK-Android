@@ -14,6 +14,7 @@ import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.event.ReflectInvokeMethod;
 import udesk.core.model.MessageInfo;
+import udesk.core.utils.UdeskUtils;
 import udesk.org.jivesoftware.smack.packet.Message;
 
 
@@ -65,6 +66,8 @@ public class UdeskMessageManager {
                 @Override
                 public void run() {
                     if (mUdeskXmppManager != null) {
+                        UdeskUtils.resetTime();
+                        UdeskConst.sdk_xmpp_statea = UdeskConst.CONNECTING;
                         mUdeskXmppManager.cancel();
                         mUdeskXmppManager.startLoginXmpp();
                     }
@@ -79,8 +82,22 @@ public class UdeskMessageManager {
         mUdeskXmppManager.sendVCCallMessage(type, to, text);
     }
 
-    public void sendMessage(MessageInfo messageInfo) {
-        mUdeskXmppManager.sendMessage(messageInfo);
+    public void sendMessage(final MessageInfo messageInfo) {
+
+        try {
+            ensureMessageExecutor();
+            messageExecutor.submit(new Runnable() {
+                @Override
+                public void run() {
+                    if (mUdeskXmppManager != null) {
+                        mUdeskXmppManager.sendMessage(messageInfo);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 //    public void sendMessage(String type, String text, String msgId, String to, long duration, String subsessionId, boolean noNeedSave, int seqNum, String fileName, String filesize) {
@@ -91,8 +108,21 @@ public class UdeskMessageManager {
         mUdeskXmppManager.sendComodityMessage(text, to);
     }
 
-    public void sendPreMsg(String type, String text, String to) {
-        mUdeskXmppManager.sendPreMessage(type, text, to);
+    public void sendPreMsg(final String type, final String text, final String to) {
+        //防止堵塞 导致anr 无须关注结果
+        try {
+            ensureMessageExecutor();
+            messageExecutor.submit(new Runnable() {
+                @Override
+                public void run() {
+                    if (mUdeskXmppManager != null) {
+                        mUdeskXmppManager.sendPreMessage(type, text, to);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void bindEvent() {
@@ -111,7 +141,7 @@ public class UdeskMessageManager {
                 @Override
                 public void run() {
                     UdeskDBManager.getInstance().updateMsgSendFlag(msgId, UdeskConst.SendFlag.RESULT_SUCCESS);
-                    UdeskDBManager.getInstance().deleteSendingMsg(msgId);
+//                    UdeskDBManager.getInstance().deleteSendingMsg(msgId);
                     eventui_OnMessageReceived.invoke(msgId);
                 }
             });
@@ -249,6 +279,8 @@ public class UdeskMessageManager {
 
     public void cancleXmpp() {
         try {
+            UdeskUtils.resetTime();
+            UdeskConst.sdk_xmpp_statea = UdeskConst.CONNECTION_FAILED;
             ensureMessageExecutor();
             messageExecutor.submit(new Runnable() {
                 @Override

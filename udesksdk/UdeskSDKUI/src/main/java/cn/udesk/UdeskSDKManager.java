@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import java.util.Date;
 import java.util.List;
 
 import cn.udesk.activity.UdeskChatActivity;
@@ -18,10 +19,12 @@ import cn.udesk.db.UdeskDBManager;
 import cn.udesk.emotion.LQREmotionKit;
 import cn.udesk.messagemanager.UdeskMessageManager;
 import cn.udesk.model.SDKIMSetting;
+import cn.udesk.presenter.MessageCache;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
 import udesk.core.model.MessageInfo;
+import udesk.core.utils.UdeskUtils;
 
 
 public class UdeskSDKManager {
@@ -250,7 +253,7 @@ public class UdeskSDKManager {
             UdeskHttpFacade.getInstance().setUserInfo(context, getDomain(context),
                     getAppkey(context), getSdkToken(context),
                     getUdeskConfig().defualtUserInfo, getUdeskConfig().definedUserTextField,
-                    getUdeskConfig().definedUserRoplist,getAppId(context),getUdeskConfig().channel, new UdeskCallBack() {
+                    getUdeskConfig().definedUserRoplist, getAppId(context), getUdeskConfig().channel, new UdeskCallBack() {
 
                         @Override
                         public void onSuccess(String string) {
@@ -381,6 +384,7 @@ public class UdeskSDKManager {
      * 退出后的 资源释放
      */
     public void logoutUdesk() {
+        MessageCache.getInstance().clear();
         releaseDB();
         disConnectXmpp();
         destroyUdeskConfig();
@@ -469,7 +473,7 @@ public class UdeskSDKManager {
         }
         if (UdeskConfig.isUseShare) {
             UdeskSDKManager.domain = PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_Domain);
-            return  UdeskSDKManager.domain;
+            return UdeskSDKManager.domain;
         } else {
             return "";
         }
@@ -480,7 +484,7 @@ public class UdeskSDKManager {
             return UdeskSDKManager.app_Key;
         }
         if (UdeskConfig.isUseShare) {
-            UdeskSDKManager.app_Key =  PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Key);
+            UdeskSDKManager.app_Key = PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Key);
             return UdeskSDKManager.app_Key;
         } else {
             return "";
@@ -521,7 +525,9 @@ public class UdeskSDKManager {
 
 
     //先预留开关，当后期管理员可配置时，方便修改
-    public boolean getEnableSendMessageWhenQueue(){
-        return  true;
+    public boolean getEnableSendMessageWhenQueue() {
+        return true;
     }
+
+
 }

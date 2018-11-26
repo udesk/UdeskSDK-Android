@@ -1,7 +1,13 @@
 # UdeskSDK Android 4.1.0+ 开发者文档
 
 
-# 注意注意注意 4.1.0的版本  有小问题， 在11/27 会发布修复。 请稍等更新版本。
+### 4.1.1 修复内容
+1. 修复sdk排队中点击留言还在排队中；
+2. 修复排队发送文本消息后，更多得按钮隐藏了；
+3. 修复发送商品消息在客服端没显示；
+4. 优化消息的发送到达；（离开会话界面，有未收到回执的消息，会放入单例中发送）
+
+
 ### 4.1.0 更新的内容
 1. 支持排队时发送消息
 2. 替换表情
@@ -118,7 +124,6 @@
 | agentId                                | setAgentId                                                 | 设置指订客服id，每次进入都必须重新指定                           | 
 | isOnlyByAgentId                        | setAgentId                                                 | 是否仅仅指定客服进入                                              | 
 | isOnlyUseRobot                         | setOnlyUseRobot                                            | 设置是否只使用机器人 不用其它功能                                 | 
-| locale                                | setLocale                                                   | 设置本地化语言                    | 
 | mProduct                                | setProduct                                                   | 设置商品消息         
 | channel                                | setChannel                                                   | SDK支持自定义渠道（只支持字符数字，不支持特殊支持）        
 
@@ -314,6 +319,13 @@
         item.setCommodityUrl("https://detail.tmall.com/item.htm?spm=a1z10.3746-b.w4946-14396547293.1.4PUcgZ&id=529634221064&sku_properties=-1:-1");// 商品网络链接
         UdeskSDKManager.getInstance().setCommodity(item);
        在进入会话界面前调用 。
+  ```
+  
+### 6. 多语言设置
+  
+  ``` java
+  LocalManageUtil.saveSelectLanguage
+  
   ```
   
   **更多功参考demo。**
