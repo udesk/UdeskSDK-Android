@@ -147,7 +147,6 @@ public class MessageCache {
         if (sendMsgQueue != null) {
             sendMsgQueue.clear();
         }
-        instance = null;
     }
 
 
