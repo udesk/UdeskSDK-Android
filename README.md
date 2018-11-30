@@ -1,5 +1,20 @@
 # UdeskSDK Android 4.1.0+ 开发者文档
 
+# 特别注意
+```
+   如果你的项目打包指定了so库的加载配置了，
+     ndk{
+            abiFilters "armeabi"
+     }
+     
+    你需要特别注意fresco版本号 在fresco 1.9.0 以后的的 Application.mk APP_ABI := armeabi-v7a armeabi arm64-v8a x86 x86_64,
+    不在包含armeabi 
+    
+    在UdeskSDKUI下的build.gradle文件下  修改dependencies fresco版本号
+    建议1.3.0  
+    implementation 'com.facebook.fresco:fresco:1.3.0'
+    implementation 'com.facebook.fresco:animated-gif:1.3.0'
+```
 
 ### 4.1.1 修复内容
 1. 修复sdk排队中点击留言还在排队中；
