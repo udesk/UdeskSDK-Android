@@ -16,6 +16,8 @@
     implementation 'com.facebook.fresco:animated-gif:1.3.0'
 ```
 
+### customer_token， sdk_token 仅支持字母、数字及下划线,禁用特殊字符
+
 ### 4.1.1 修复内容
 1. 修复sdk排队中点击留言还在排队中；
 2. 修复排队发送文本消息后，更多得按钮隐藏了；
