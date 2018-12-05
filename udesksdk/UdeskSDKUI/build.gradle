@@ -33,8 +33,8 @@ dependencies {
     api 'com.qiniu:qiniu-android-sdk:7.3.+'
     api 'com.android.support:appcompat-v7:26.1.0'
     api 'com.android.support:recyclerview-v7:26.1.0'
-    implementation 'com.facebook.fresco:fresco:1.11.0'
-    implementation 'com.facebook.fresco:animated-gif:1.11.0'
+    implementation 'com.facebook.fresco:fresco:1.3.0'
+    implementation 'com.facebook.fresco:animated-gif:1.3.0'
     implementation 'me.relex:photodraweeview:1.1.3'
-    implementation files('libs/udesk_sdk_4.1.2.jar')
+    implementation files('libs/udesk_sdk_4.1.3.jar')
 }
