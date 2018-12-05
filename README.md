@@ -1,6 +1,6 @@
 # UdeskSDK Android 4.1.0+ 开发者文档
 
-# 特别注意
+# 特别x提醒
 ```
    如果你的项目打包指定了so库的加载配置了，
      ndk{
@@ -10,10 +10,8 @@
     你需要特别注意fresco版本号 在fresco 1.9.0 以后的的 Application.mk APP_ABI := armeabi-v7a armeabi arm64-v8a x86 x86_64,
     不在包含armeabi 
     
-    在UdeskSDKUI下的build.gradle文件下  修改dependencies fresco版本号
-    建议1.3.0  
-    implementation 'com.facebook.fresco:fresco:1.3.0'
-    implementation 'com.facebook.fresco:animated-gif:1.3.0'
+    在UdeskSDKUI下的build.gradle文件下  修改dependencies fresco版本号 不能根据androidstudio提示更新到最新
+    
 ```
 
 ### customer_token， sdk_token 仅支持字母、数字及下划线,禁用特殊字符
