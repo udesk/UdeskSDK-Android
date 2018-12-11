@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -43,7 +44,9 @@ public class PictureVideoPlayActivity extends AppCompatActivity implements Media
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         try {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            }
             super.onCreate(savedInstanceState);
             UdeskUtil.setOrientation(this);
             setContentView(R.layout.udesk_activity_picture_videoplay);

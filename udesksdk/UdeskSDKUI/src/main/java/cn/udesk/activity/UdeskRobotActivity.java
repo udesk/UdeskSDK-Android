@@ -26,9 +26,13 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UdeskUtil.setOrientation(this);
-        initData();
-        loadingView();
+        try {
+            UdeskUtil.setOrientation(this);
+            initData();
+            loadingView();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initData() {
@@ -153,14 +157,18 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
 
     @Override
     protected void goChat() {
-        if (isTranferByImGroup) {
-            Intent intent = new Intent(getApplicationContext(), UdeskOptionsAgentGroupActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } else {
-            Intent intent = new Intent(UdeskRobotActivity.this, UdeskChatActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            UdeskRobotActivity.this.startActivity(intent);
+        try {
+            if (isTranferByImGroup) {
+                Intent intent = new Intent(getApplicationContext(), UdeskOptionsAgentGroupActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(UdeskRobotActivity.this, UdeskChatActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                UdeskRobotActivity.this.startActivity(intent);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }

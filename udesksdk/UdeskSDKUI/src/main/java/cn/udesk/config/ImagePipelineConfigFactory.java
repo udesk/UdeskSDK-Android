@@ -58,24 +58,28 @@ public class ImagePipelineConfigFactory {
      * Configures disk and memory cache not to exceed common limits
      */
     private static void configureCaches(ImagePipelineConfig.Builder configBuilder, Context context) {
-        final MemoryCacheParams bitmapCacheParams = new MemoryCacheParams(
-                MAX_MEMORY_CACHE_SIZE, // Max total size of elements in the cache
-                Integer.MAX_VALUE,                     // Max entries in the cache
-                MAX_MEMORY_CACHE_SIZE, // Max total size of elements in eviction queue
-                Integer.MAX_VALUE,                     // Max length of eviction queue
-                Integer.MAX_VALUE);                    // Max cache entry size
-        configBuilder
-                .setBitmapMemoryCacheParamsSupplier(
-                        new Supplier<MemoryCacheParams>() {
-                            public MemoryCacheParams get() {
-                                return bitmapCacheParams;
-                            }
-                        })
-                .setMainDiskCacheConfig(DiskCacheConfig.newBuilder(context)
-                        .setBaseDirectoryPath(getExternalCacheDir(context))
-                        .setBaseDirectoryName(IMAGE_PIPELINE_CACHE_DIR)
-                        .setMaxCacheSize(MAX_DISK_CACHE_SIZE)
-                        .build());
+        try {
+            final MemoryCacheParams bitmapCacheParams = new MemoryCacheParams(
+                    MAX_MEMORY_CACHE_SIZE, // Max total size of elements in the cache
+                    Integer.MAX_VALUE,                     // Max entries in the cache
+                    MAX_MEMORY_CACHE_SIZE, // Max total size of elements in eviction queue
+                    Integer.MAX_VALUE,                     // Max length of eviction queue
+                    Integer.MAX_VALUE);                    // Max cache entry size
+            configBuilder
+                    .setBitmapMemoryCacheParamsSupplier(
+                            new Supplier<MemoryCacheParams>() {
+                                public MemoryCacheParams get() {
+                                    return bitmapCacheParams;
+                                }
+                            })
+                    .setMainDiskCacheConfig(DiskCacheConfig.newBuilder(context)
+                            .setBaseDirectoryPath(getExternalCacheDir(context))
+                            .setBaseDirectoryName(IMAGE_PIPELINE_CACHE_DIR)
+                            .setMaxCacheSize(MAX_DISK_CACHE_SIZE)
+                            .build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static File getExternalCacheDir(final Context context) {

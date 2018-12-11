@@ -394,20 +394,24 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
 
     private void processPresence(Presence pre) {
 
-        if (pre.getType().equals(Presence.Type.subscribe)) {
-            Presence presencePacket = new Presence(Presence.Type.subscribed);
-            presencePacket.setTo(pre.getFrom());
-            try {
-                if (xmppConnection != null) {
-                    xmppConnection.sendPacket(presencePacket);
+        try {
+            if (pre.getType().equals(Presence.Type.subscribe)) {
+                Presence presencePacket = new Presence(Presence.Type.subscribed);
+                presencePacket.setTo(pre.getFrom());
+                try {
+                    if (xmppConnection != null) {
+                        xmppConnection.sendPacket(presencePacket);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } else if (pre.getType().equals(Presence.Type.unavailable)) {
+                InvokeEventContainer.getInstance().event_OnNewPresence.invoke(pre.getFrom(), UdeskConst.OFFLINEFLAG);
+            } else if (!TextUtils.isEmpty(pre.getStatus())) {
+                InvokeEventContainer.getInstance().event_OnNewPresence.invoke(pre.getFrom(), UdeskConst.ONLINEFLAG);
             }
-        } else if (pre.getType().equals(Presence.Type.unavailable)) {
-            InvokeEventContainer.getInstance().event_OnNewPresence.invoke(pre.getFrom(), UdeskConst.OFFLINEFLAG);
-        } else if (!TextUtils.isEmpty(pre.getStatus())) {
-            InvokeEventContainer.getInstance().event_OnNewPresence.invoke(pre.getFrom(), UdeskConst.ONLINEFLAG);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -601,14 +605,18 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
 
     @Override
     public void processPacket(Packet packet) throws SmackException.NotConnectedException {
-        heartSpaceTime = System.currentTimeMillis();
-        if (packet instanceof Message) {
-            Message message = (Message) packet;
-            processMessage(message);
+        try {
+            heartSpaceTime = System.currentTimeMillis();
+            if (packet instanceof Message) {
+                Message message = (Message) packet;
+                processMessage(message);
 
-        } else if (packet instanceof Presence) {
-            Presence pre = (Presence) packet;
-            processPresence(pre);
+            } else if (packet instanceof Presence) {
+                Presence pre = (Presence) packet;
+                processPresence(pre);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -618,8 +626,12 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
      * @return
      */
     public synchronized boolean isConnection() {
-        if (xmppConnection != null) {
-            return (xmppConnection.isConnected() && xmppConnection.isAuthenticated());
+        try {
+            if (xmppConnection != null) {
+                return (xmppConnection.isConnected() && xmppConnection.isAuthenticated());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }

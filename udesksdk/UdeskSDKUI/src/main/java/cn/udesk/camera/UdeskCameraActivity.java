@@ -31,19 +31,26 @@ public class UdeskCameraActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (Build.VERSION.SDK_INT >= 19) {
-            View decorView = getWindow().getDecorView();
-            decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        } else {
-            View decorView = getWindow().getDecorView();
-            int option = View.SYSTEM_UI_FLAG_FULLSCREEN;
-            decorView.setSystemUiVisibility(option);
+        try {
+            if (Build.VERSION.SDK_INT >= 19) {
+                View decorView = getWindow().getDecorView();
+                decorView.setSystemUiVisibility(
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    View decorView = getWindow().getDecorView();
+                    int option = 0; option = View.SYSTEM_UI_FLAG_FULLSCREEN;
+                    decorView.setSystemUiVisibility(option);
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.udesk_activity_small_camera);
@@ -52,91 +59,111 @@ public class UdeskCameraActivity extends Activity {
 
 
     private void initView() {
-        udeskCameraView = (UdeskCameraView) findViewById(R.id.udesk_cameraview);
-        //设置视频保存路径
-        udeskCameraView.setSaveVideoPath(UdeskUtils.getDirectoryPath(getApplicationContext(), UdeskConst.FileVideo));
-        //设置只能录像或只能拍照或两种都可以（默认两种都可以）
-        udeskCameraView.setFeatures(UdeskCameraView.BUTTON_STATE_BOTH);
+        try {
+            udeskCameraView = (UdeskCameraView) findViewById(R.id.udesk_cameraview);
+            //设置视频保存路径
+            udeskCameraView.setSaveVideoPath(UdeskUtils.getDirectoryPath(getApplicationContext(), UdeskConst.FileVideo));
+            //设置只能录像或只能拍照或两种都可以（默认两种都可以）
+            udeskCameraView.setFeatures(UdeskCameraView.BUTTON_STATE_BOTH);
 
-        udeskCameraView.setErrorLisenter(new ErrorListener() {
-            @Override
-            public void onError() {
-                Log.i("udesksdk", "open camera error");
+            udeskCameraView.setErrorLisenter(new ErrorListener() {
+                @Override
+                public void onError() {
+                    Log.i("udesksdk", "open camera error");
 
-                Intent mIntent = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putBoolean(UdeskConst.Camera_Error, true);
-                mIntent.putExtra(UdeskConst.SEND_BUNDLE, bundle);
-                UdeskCameraActivity.this.setResult(Activity.RESULT_OK, mIntent);
-                UdeskCameraActivity.this.finish();
-            }
-
-            @Override
-            public void AudioPermissionError() {
-                Log.i("udesksdk", "AudioPermissionError");
-                Toast.makeText(UdeskCameraActivity.this.getApplicationContext(), getString(R.string.udesk_audio_permission_error), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        udeskCameraView.setCameraLisenter(new UdeskCameraListener() {
-            @Override
-            public void captureSuccess(Bitmap bitmap) {
-
-                if (bitmap != null) {
-                    String path = UdeskUtils.saveBitmap(UdeskCameraActivity.this.getApplicationContext(), bitmap);
-                    finishActivity(null, path);
-                } else {
-                    finish();
+                    Intent mIntent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(UdeskConst.Camera_Error, true);
+                    mIntent.putExtra(UdeskConst.SEND_BUNDLE, bundle);
+                    UdeskCameraActivity.this.setResult(Activity.RESULT_OK, mIntent);
+                    UdeskCameraActivity.this.finish();
                 }
 
-            }
+                @Override
+                public void AudioPermissionError() {
+                    Log.i("udesksdk", "AudioPermissionError");
+                    Toast.makeText(UdeskCameraActivity.this.getApplicationContext(), getString(R.string.udesk_audio_permission_error), Toast.LENGTH_SHORT).show();
+                }
+            });
 
-            @Override
-            public void recordSuccess(String url, Bitmap firstFrame) {
-                finishActivity(url, null);
-            }
-        });
+            udeskCameraView.setCameraLisenter(new UdeskCameraListener() {
+                @Override
+                public void captureSuccess(Bitmap bitmap) {
 
-        udeskCameraView.setCloseListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+                    if (bitmap != null) {
+                        String path = UdeskUtils.saveBitmap(UdeskCameraActivity.this.getApplicationContext(), bitmap);
+                        finishActivity(null, path);
+                    } else {
+                        finish();
+                    }
+
+                }
+
+                @Override
+                public void recordSuccess(String url, Bitmap firstFrame) {
+                    finishActivity(url, null);
+                }
+            });
+
+            udeskCameraView.setCloseListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        udeskCameraView.onResume();
+        try {
+            udeskCameraView.onResume();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onPause() {
-        udeskCameraView.onPause();
+        try {
+            udeskCameraView.onPause();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         super.onPause();
 
     }
 
 
     private void finishActivity(String url, String picturepath) {
-        Intent mIntent = new Intent();
-        Bundle bundle = new Bundle();
-        if (!TextUtils.isEmpty(url)) {
-            bundle.putString(UdeskConst.SEND_SMALL_VIDEO, UdeskConst.SMALL_VIDEO);
-            bundle.putString(UdeskConst.PREVIEW_Video_Path, url);
-        } else if (!TextUtils.isEmpty(picturepath)) {
-            bundle.putString(UdeskConst.SEND_SMALL_VIDEO, UdeskConst.PICTURE);
-            bundle.putString(UdeskConst.BitMapData, picturepath);
+        try {
+            Intent mIntent = new Intent();
+            Bundle bundle = new Bundle();
+            if (!TextUtils.isEmpty(url)) {
+                bundle.putString(UdeskConst.SEND_SMALL_VIDEO, UdeskConst.SMALL_VIDEO);
+                bundle.putString(UdeskConst.PREVIEW_Video_Path, url);
+            } else if (!TextUtils.isEmpty(picturepath)) {
+                bundle.putString(UdeskConst.SEND_SMALL_VIDEO, UdeskConst.PICTURE);
+                bundle.putString(UdeskConst.BitMapData, picturepath);
+            }
+            mIntent.putExtra(UdeskConst.SEND_BUNDLE, bundle);
+            UdeskCameraActivity.this.setResult(Activity.RESULT_OK, mIntent);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        mIntent.putExtra(UdeskConst.SEND_BUNDLE, bundle);
-        UdeskCameraActivity.this.setResult(Activity.RESULT_OK, mIntent);
         finish();
     }
 
     @Override
     protected void onDestroy() {
-        udeskCameraView.ondestory();
+        try {
+            udeskCameraView.ondestory();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         super.onDestroy();
     }
 }

@@ -73,19 +73,23 @@ public class UdeskSDKManager {
      * @param appid   udesk系统创建应用生成的App ID
      */
     public void initApiKey(Context context, String domain, String appkey, String appid) {
-        UdeskSDKManager.domain = domain;
-        UdeskSDKManager.app_Key = appkey;
-        UdeskSDKManager.app_Id = appid;
-        if (UdeskConfig.isUseShare) {
-            PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-                    UdeskConst.SharePreParams.Udesk_Domain, domain);
-            PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-                    UdeskConst.SharePreParams.Udesk_App_Key, app_Key);
-            PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-                    UdeskConst.SharePreParams.Udesk_App_Id, app_Id);
+        try {
+            UdeskSDKManager.domain = domain;
+            UdeskSDKManager.app_Key = appkey;
+            UdeskSDKManager.app_Id = appid;
+            if (UdeskConfig.isUseShare) {
+                PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                        UdeskConst.SharePreParams.Udesk_Domain, domain);
+                PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                        UdeskConst.SharePreParams.Udesk_App_Key, app_Key);
+                PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                        UdeskConst.SharePreParams.Udesk_App_Id, app_Id);
+            }
+            LQREmotionKit.init(context.getApplicationContext());
+            UdeskUtil.frescoInit(context);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        LQREmotionKit.init(context.getApplicationContext());
-        UdeskUtil.frescoInit(context);
     }
 
     //如果没有传入UdeskConfig  则使用Udesk提供的默认配置
@@ -96,79 +100,83 @@ public class UdeskSDKManager {
         return udeskConfig;
     }
 
-    //销毁UdeskConfig
-    public void destroyUdeskConfig() {
-        if (this.udeskConfig != null) {
-            this.udeskConfig = null;
-        }
-    }
-
     /**
      * 直接进入帮助中心页面
      *
      * @param context
      */
     public void toLanuchHelperAcitivty(Context context, UdeskConfig udeskConfig) {
-        if (this.udeskConfig == null) {
-            this.udeskConfig = udeskConfig;
+        try {
+            if (this.udeskConfig == null) {
+                this.udeskConfig = udeskConfig;
+            }
+            Intent intent = new Intent(context.getApplicationContext(), UdeskHelperActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.getApplicationContext().startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        Intent intent = new Intent(context.getApplicationContext(), UdeskHelperActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.getApplicationContext().startActivity(intent);
     }
 
     //启动留言界面
     public void goToForm(Context context, UdeskConfig udeskConfig) {
-        if (this.udeskConfig == null) {
-            this.udeskConfig = udeskConfig;
+        try {
+            if (this.udeskConfig == null) {
+                this.udeskConfig = udeskConfig;
+            }
+            if (udeskConfig.formCallBack != null) {
+                udeskConfig.formCallBack.toLuachForm(context);
+                return;
+            }
+            Intent intent = new Intent(context,
+                    UdeskFormActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (udeskConfig.formCallBack != null) {
-            udeskConfig.formCallBack.toLuachForm(context);
-            return;
-        }
-        Intent intent = new Intent(context,
-                UdeskFormActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
     }
 
 
     //进入会话唯一入口,必须配置,根据配置展示会话
     public void entryChat(Context context, UdeskConfig udeskConfig, String sdktoken) {
-        if (udeskConfig == null) {
-            Toast.makeText(context, "UdeskConfig is null", Toast.LENGTH_LONG).show();
-            return;
-        }
-        if (TextUtils.isEmpty(getAppId(context))) {
-            showConversationByImGroup(context);
-            return;
-        }
-        if (TextUtils.isEmpty(sdktoken)) {
-            Toast.makeText(context.getApplicationContext(), context.getString(R.string.udesk_no_sdktoken), Toast.LENGTH_SHORT).show();
-            return;
-        }
-        destroyUdeskConfig();
-        this.udeskConfig = udeskConfig;
-        String cacheToken = getSdkToken(context);
-        sdkToken = UdeskUtil.stringFilter(sdktoken);
-        if ((cacheToken == null)) {
-            disConnectXmpp();
-        } else if (!cacheToken.equals(sdkToken)) {
-            // 一个应用内切换用户，的关闭上个用户的推送
-            if (!TextUtils.isEmpty(UdeskBaseInfo.registerId) && getUdeskConfig().isUserSDkPush) {
-                setSdkPushStatus(getDomain(context), getAppkey(context), getSdkToken(context),
-                        UdeskConfig.UdeskPushFlag.OFF, UdeskBaseInfo.registerId, getAppId(context));
+        try {
+            if (udeskConfig == null) {
+                Toast.makeText(context, "UdeskConfig is null", Toast.LENGTH_LONG).show();
+                return;
             }
-            disConnectXmpp();
+            if (TextUtils.isEmpty(getAppId(context))) {
+                showConversationByImGroup(context);
+                return;
+            }
+            if (TextUtils.isEmpty(sdktoken)) {
+                Toast.makeText(context.getApplicationContext(), context.getString(R.string.udesk_no_sdktoken), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            this.udeskConfig = udeskConfig;
+            String cacheToken = getSdkToken(context);
+            sdkToken = UdeskUtil.stringFilter(sdktoken);
+            if ((cacheToken == null)) {
+                disConnectXmpp();
+            } else if (!cacheToken.equals(sdkToken)) {
+                // 一个应用内切换用户，的关闭上个用户的推送
+                if (!TextUtils.isEmpty(UdeskBaseInfo.registerId) && getUdeskConfig().isUserSDkPush) {
+                    setSdkPushStatus(getDomain(context), getAppkey(context), getSdkToken(context),
+                            UdeskConfig.UdeskPushFlag.OFF, UdeskBaseInfo.registerId, getAppId(context));
+                }
+                disConnectXmpp();
+            }
+            if (udeskConfig.defualtUserInfo != null) {
+                udeskConfig.defualtUserInfo.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdktoken);
+            }
+            initDB(context, sdkToken);
+            PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                    UdeskConst.SharePreParams.Udesk_SdkToken, sdkToken);
+            UdeskUtil.initCrashReport(context);
+            getSDKImSetting(context);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (udeskConfig.defualtUserInfo != null) {
-            udeskConfig.defualtUserInfo.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdktoken);
-        }
-        initDB(context, sdkToken);
-        PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-                UdeskConst.SharePreParams.Udesk_SdkToken, sdkToken);
-        UdeskUtil.initCrashReport(context);
-        getSDKImSetting(context);
     }
 
     /**
@@ -182,27 +190,35 @@ public class UdeskSDKManager {
                     getAppId(context), new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
-                            imSetting = JsonUtils.parserIMSettingJson(message);
-                            switchBySetting(context, imSetting);
-                            countSettingReq = 0;
+                            try {
+                                imSetting = JsonUtils.parserIMSettingJson(message);
+                                switchBySetting(context, imSetting);
+                                countSettingReq = 0;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         @Override
                         public void onFail(String message) {
-                            if (countSettingReq >= 2) {
-                                countSettingReq = 0;
-                                if (imSetting != null) {
-                                    switchBySetting(context, imSetting);
-                                } else {
-                                    if (!getUdeskConfig().isOnlyUseRobot) {
-                                        showConversationByImGroup(context);
+                            try {
+                                if (countSettingReq >= 2) {
+                                    countSettingReq = 0;
+                                    if (imSetting != null) {
+                                        switchBySetting(context, imSetting);
                                     } else {
-                                        Toast.makeText(context.getApplicationContext(), context.getApplicationContext().getString(R.string.udesk_has_bad_net), Toast.LENGTH_SHORT).show();
+                                        if (!getUdeskConfig().isOnlyUseRobot) {
+                                            showConversationByImGroup(context);
+                                        } else {
+                                            Toast.makeText(context.getApplicationContext(), context.getApplicationContext().getString(R.string.udesk_has_bad_net), Toast.LENGTH_SHORT).show();
+                                        }
                                     }
+                                } else {
+                                    countSettingReq++;
+                                    getSDKImSetting(context);
                                 }
-                            } else {
-                                countSettingReq++;
-                                getSDKImSetting(context);
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                     });
@@ -219,25 +235,29 @@ public class UdeskSDKManager {
      * @param imSetting
      */
     private void switchBySetting(Context context, SDKIMSetting imSetting) {
-        if (imSetting != null) {
-            if (getUdeskConfig().isOnlyUseRobot) {
-                if (imSetting.getEnable_robot()) {
-                    showRobotByConfigSetting(context, imSetting);
-                    return;
+        try {
+            if (imSetting != null) {
+                if (getUdeskConfig().isOnlyUseRobot) {
+                    if (imSetting.getEnable_robot()) {
+                        showRobotByConfigSetting(context, imSetting);
+                        return;
+                    }
+                } else {
+                    if (imSetting.getIn_session() || getUdeskConfig().isOnlyByAgentId || getUdeskConfig().isOnlyByGroupId) {
+                        toLanuchChatAcitvity(context);
+                        return;
+                    }
+                    if (imSetting.getEnable_robot()) {
+                        showRobotByConfigSetting(context, imSetting);
+                        return;
+                    }
+                    showConversationByImGroup(context);
                 }
             } else {
-                if (imSetting.getIn_session() || getUdeskConfig().isOnlyByAgentId || getUdeskConfig().isOnlyByGroupId) {
-                    toLanuchChatAcitvity(context);
-                    return;
-                }
-                if (imSetting.getEnable_robot()) {
-                    showRobotByConfigSetting(context, imSetting);
-                    return;
-                }
-                showConversationByImGroup(context);
+                Toast.makeText(context, context.getString(R.string.udesk_has_bad_net), Toast.LENGTH_SHORT).show();
             }
-        } else {
-            Toast.makeText(context, context.getString(R.string.udesk_has_bad_net), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -257,24 +277,32 @@ public class UdeskSDKManager {
 
                         @Override
                         public void onSuccess(String string) {
-                            if (getUdeskConfig().isOnlyUseRobot) {
+                            try {
+                                if (getUdeskConfig().isOnlyUseRobot) {
 
-                                if (!TextUtils.isEmpty(imSetting.getRobot())) {
-                                    toLanuchRobotAcitivty(context, imSetting.getRobot(), "false", false);
-                                }
-                            } else {
-                                if (!TextUtils.isEmpty(imSetting.getRobot())) {
-                                    toLanuchRobotAcitivty(context, imSetting.getRobot(), imSetting.getEnable_agent(), imSetting.getEnable_im_group());
+                                    if (!TextUtils.isEmpty(imSetting.getRobot())) {
+                                        toLanuchRobotAcitivty(context, imSetting.getRobot(), "false", false);
+                                    }
                                 } else {
-                                    showConversationByImGroup(context);
+                                    if (!TextUtils.isEmpty(imSetting.getRobot())) {
+                                        toLanuchRobotAcitivty(context, imSetting.getRobot(), imSetting.getEnable_agent(), imSetting.getEnable_im_group());
+                                    } else {
+                                        showConversationByImGroup(context);
+                                    }
                                 }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
 
                         @Override
                         public void onFail(String string) {
-                            if (!getUdeskConfig().isOnlyUseRobot) {
-                                showConversationByImGroup(context);
+                            try {
+                                if (!getUdeskConfig().isOnlyUseRobot) {
+                                    showConversationByImGroup(context);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                     });
@@ -292,12 +320,16 @@ public class UdeskSDKManager {
      * @param isTransferByImGroup 转人工是否通过导航页进入  true表示是 false 表示不是
      */
     private void toLanuchRobotAcitivty(Context context, String url, String tranfer, boolean isTransferByImGroup) {
-        Intent intent = new Intent(context, UdeskRobotActivity.class);
-        intent.putExtra(UdeskConst.UDESKTRANSFER, tranfer);
-        intent.putExtra(UdeskConst.UDESKHTMLURL, url);
-        intent.putExtra(UdeskConst.UDESKISTRANFERSESSION, isTransferByImGroup);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        try {
+            Intent intent = new Intent(context, UdeskRobotActivity.class);
+            intent.putExtra(UdeskConst.UDESKTRANSFER, tranfer);
+            intent.putExtra(UdeskConst.UDESKHTMLURL, url);
+            intent.putExtra(UdeskConst.UDESKISTRANFERSESSION, isTransferByImGroup);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -306,19 +338,23 @@ public class UdeskSDKManager {
      * @param context
      */
     private void showConversationByImGroup(Context context) {
-        if (getUdeskConfig().isOnlyByAgentId || getUdeskConfig().isOnlyByGroupId) {
-            toLanuchChatAcitvity(context);
-        } else if (imSetting != null && imSetting.getEnable_im_group()) {
-            Intent intent = new Intent(context, UdeskOptionsAgentGroupActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-        } else {
-            //没有开启导航组进入，得清楚groupid,agentid
-            PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-                    UdeskConst.SharePreParams.Udesk_Group_Id, "");
-            PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-                    UdeskConst.SharePreParams.Udesk_Agent_Id, "");
-            toLanuchChatAcitvity(context);
+        try {
+            if (getUdeskConfig().isOnlyByAgentId || getUdeskConfig().isOnlyByGroupId) {
+                toLanuchChatAcitvity(context);
+            } else if (imSetting != null && imSetting.getEnable_im_group()) {
+                Intent intent = new Intent(context, UdeskOptionsAgentGroupActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            } else {
+                //没有开启导航组进入，得清楚groupid,agentid
+                PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                        UdeskConst.SharePreParams.Udesk_Group_Id, "");
+                PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                        UdeskConst.SharePreParams.Udesk_Agent_Id, "");
+                toLanuchChatAcitvity(context);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -328,23 +364,32 @@ public class UdeskSDKManager {
      * @param context
      */
     private void toLanuchChatAcitvity(Context context) {
-        Intent intent = new Intent(context, UdeskChatActivity.class);
-        if (!TextUtils.isEmpty(getUdeskConfig().groupId)) {
-            intent.putExtra(UdeskConst.UDESKGROUPID, getUdeskConfig().groupId);
+        try {
+            Intent intent = new Intent(context, UdeskChatActivity.class);
+            if (!TextUtils.isEmpty(getUdeskConfig().groupId)) {
+                intent.putExtra(UdeskConst.UDESKGROUPID, getUdeskConfig().groupId);
+            }
+            if (!TextUtils.isEmpty(getUdeskConfig().agentId)) {
+                intent.putExtra(UdeskConst.UDESKAGENTID, getUdeskConfig().agentId);
+            }
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (!TextUtils.isEmpty(getUdeskConfig().agentId)) {
-            intent.putExtra(UdeskConst.UDESKAGENTID, getUdeskConfig().agentId);
-        }
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
     }
 
     /**
      * 获取当前会话未读消息的记录
      */
     public int getCurrentConnectUnReadMsgCount(Context context, String sdkToken) {
-        initDB(context.getApplicationContext(), sdkToken);
-        return UdeskDBManager.getInstance().getUnReadMessageCount();
+        try {
+            initDB(context.getApplicationContext(), sdkToken);
+            return UdeskDBManager.getInstance().getUnReadMessageCount();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     /**
@@ -373,9 +418,13 @@ public class UdeskSDKManager {
      */
     public void initDB(Context context, String sdkToken) {
 
-        if (UdeskDBManager.getInstance().isNeedInit(sdkToken)) {
-            releaseDB();
-            UdeskDBManager.getInstance().init(context, sdkToken);
+        try {
+            if (UdeskDBManager.getInstance().isNeedInit(sdkToken)) {
+                releaseDB();
+                UdeskDBManager.getInstance().init(context, sdkToken);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -384,42 +433,61 @@ public class UdeskSDKManager {
      * 退出后的 资源释放
      */
     public void logoutUdesk() {
-        MessageCache.getInstance().clear();
-        releaseDB();
-        disConnectXmpp();
-        destroyUdeskConfig();
-        imSetting = null;
-        udeskConfig = null;
+        try {
+            if (MessageCache.getInstance() != null){
+                MessageCache.getInstance().clear();
+            }
+            releaseDB();
+            disConnectXmpp();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * 销毁DB
      */
     public void releaseDB() {
-        UdeskDBManager.getInstance().release();
+        try {
+            UdeskDBManager.getInstance().release();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * 断开xmpp连接
      */
     public void disConnectXmpp() {
-        UdeskMessageManager.getInstance().cancleXmpp();
+        try {
+            UdeskMessageManager.getInstance().cancleXmpp();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
     //获取注册推送的唯一ID
     public String getRegisterId(Context context) {
-        if (TextUtils.isEmpty(UdeskBaseInfo.registerId)) {
-            return PreferenceHelper.readString(context, UdeskConst.SharePreParams.RegisterIdName, UdeskConst.SharePreParams.Udesk_Push_RegisterId);
+        try {
+            if (TextUtils.isEmpty(UdeskBaseInfo.registerId)) {
+                return PreferenceHelper.readString(context, UdeskConst.SharePreParams.RegisterIdName, UdeskConst.SharePreParams.Udesk_Push_RegisterId);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return UdeskBaseInfo.registerId;
     }
 
     //保存注册推送的的唯一ID
     public void setRegisterId(Context context, String registerId) {
-        UdeskBaseInfo.registerId = registerId;
-        PreferenceHelper.write(context, UdeskConst.SharePreParams.RegisterIdName,
-                UdeskConst.SharePreParams.Udesk_Push_RegisterId, registerId);
+        try {
+            UdeskBaseInfo.registerId = registerId;
+            PreferenceHelper.write(context, UdeskConst.SharePreParams.RegisterIdName,
+                    UdeskConst.SharePreParams.Udesk_Push_RegisterId, registerId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -432,7 +500,11 @@ public class UdeskSDKManager {
      * @param callBack
      */
     public void setSdkPushStatus(String domain, String key, String sdkToken, String status, String registrationID, String appid, UdeskCallBack callBack) {
-        UdeskHttpFacade.getInstance().sdkPushStatus(domain, key, sdkToken, status, registrationID, appid, callBack);
+        try {
+            UdeskHttpFacade.getInstance().sdkPushStatus(domain, key, sdkToken, status, registrationID, appid, callBack);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -445,7 +517,11 @@ public class UdeskSDKManager {
      */
 
     public void setSdkPushStatus(String domain, String key, String sdkToken, String status, String registrationID, String appid) {
-        setSdkPushStatus(domain, key, sdkToken, status, registrationID, appid, null);
+        try {
+            setSdkPushStatus(domain, key, sdkToken, status, registrationID, appid, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -468,54 +544,71 @@ public class UdeskSDKManager {
     }
 
     public String getDomain(Context context) {
-        if (!TextUtils.isEmpty(UdeskSDKManager.domain)) {
-            return UdeskSDKManager.domain;
+        try {
+            if (!TextUtils.isEmpty(UdeskSDKManager.domain)) {
+                return UdeskSDKManager.domain;
+            }
+            if (UdeskConfig.isUseShare) {
+                UdeskSDKManager.domain = PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_Domain);
+                return UdeskSDKManager.domain;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (UdeskConfig.isUseShare) {
-            UdeskSDKManager.domain = PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_Domain);
-            return UdeskSDKManager.domain;
-        } else {
-            return "";
-        }
+        return "";
     }
 
     public String getAppkey(Context context) {
-        if (!TextUtils.isEmpty(UdeskSDKManager.app_Key)) {
-            return UdeskSDKManager.app_Key;
+        try {
+            if (!TextUtils.isEmpty(UdeskSDKManager.app_Key)) {
+                return UdeskSDKManager.app_Key;
+            }
+            if (UdeskConfig.isUseShare) {
+                UdeskSDKManager.app_Key = PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Key);
+                return UdeskSDKManager.app_Key;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (UdeskConfig.isUseShare) {
-            UdeskSDKManager.app_Key = PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Key);
-            return UdeskSDKManager.app_Key;
-        } else {
-            return "";
-        }
+        return "";
     }
 
     public String getAppId() {
-        if (!TextUtils.isEmpty(UdeskSDKManager.app_Id)) {
-            return UdeskSDKManager.app_Id;
+        try {
+            if (!TextUtils.isEmpty(UdeskSDKManager.app_Id)) {
+                return UdeskSDKManager.app_Id;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return "";
     }
 
     public String getAppId(Context context) {
-        if (!TextUtils.isEmpty(UdeskSDKManager.app_Id)) {
-            return UdeskSDKManager.app_Id;
+        try {
+            if (!TextUtils.isEmpty(UdeskSDKManager.app_Id)) {
+                return UdeskSDKManager.app_Id;
+            }
+            if (UdeskConfig.isUseShare) {
+                UdeskSDKManager.app_Id = PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Id);
+                return UdeskSDKManager.app_Id;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (UdeskConfig.isUseShare) {
-            UdeskSDKManager.app_Id = PreferenceHelper.readString(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Id);
-            return UdeskSDKManager.app_Id;
-        } else {
-            return "";
-        }
+        return "";
     }
 
     //如果确定不要使用上次groupId的缓存，则需主动清理缓存
     //在某些场景下，会出现没法传入groupid，如果通过推送消息系统推送的消息取值，没有
     // 会话存在的时候，不会直接进入对话界面，会话界面后，客服关闭会话，重新发起会话
     public void cleanCacheGroupId(Context context) {
-        PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-                UdeskConst.SharePreParams.Udesk_Group_Id, "");
+        try {
+            PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                    UdeskConst.SharePreParams.Udesk_Group_Id, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

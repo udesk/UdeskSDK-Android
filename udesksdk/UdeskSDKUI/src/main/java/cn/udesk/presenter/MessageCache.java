@@ -101,38 +101,41 @@ public class MessageCache {
                     msg.getFilesize(), 0, "global_cache" + UdeskConst.sdk_page_status, new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
-                            msg.setCount();
+                            try {
+                                msg.setCount();
 //                       messagesave发送2次成功，有服务端代发通知客服,消息发送成功，更新db状态
-                            if (msg.getCount() >= 2) {
-                                UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(),
-                                        UdeskConst.SendFlag.RESULT_SUCCESS);
-                            } else {
-                                //继续加入队列
-                                try {
+                                if (msg.getCount() >= 2) {
+                                    UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(),
+                                            UdeskConst.SendFlag.RESULT_SUCCESS);
+                                } else {
+                                    //继续加入队列
                                     sendMsgQueue.put(msg);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+
                                 }
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
                         }
 
                         @Override
                         public void onFail(String message) {
 
-                            //失败的次数会加1
-                            msg.setFailureCount();
-                            //messagesave 失败超过3次，计算服务异常，更新消息发送失败
-                            //小于3次 继续加入队列
-                            if (msg.getFailureCount() > 3) {
-                                UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(),
-                                        UdeskConst.SendFlag.RESULT_FAIL);
-                            } else {
-                                //继续加入队列
-                                try {
+                            try {
+                                //失败的次数会加1
+                                msg.setFailureCount();
+                                //messagesave 失败超过3次，计算服务异常，更新消息发送失败
+                                //小于3次 继续加入队列
+                                if (msg.getFailureCount() > 3) {
+                                    UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(),
+                                            UdeskConst.SendFlag.RESULT_FAIL);
+                                } else {
+                                    //继续加入队列
+
                                     sendMsgQueue.put(msg);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+
                                 }
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
 
                         }
@@ -144,10 +147,13 @@ public class MessageCache {
 
 
     public void clear() {
-        if (sendMsgQueue != null) {
-            sendMsgQueue.clear();
+        try {
+            if (sendMsgQueue != null) {
+                sendMsgQueue.clear();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
-
 
 }

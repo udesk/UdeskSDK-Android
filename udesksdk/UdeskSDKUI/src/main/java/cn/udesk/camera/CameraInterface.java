@@ -102,18 +102,22 @@ public class CameraInterface implements Camera.PreviewCallback {
     }
 
     private void findAvailableCameras() {
-        Camera.CameraInfo info = new Camera.CameraInfo();
-        int cameraNum = Camera.getNumberOfCameras();
-        for (int i = 0; i < cameraNum; i++) {
-            Camera.getCameraInfo(i, info);
-            switch (info.facing) {
-                case Camera.CameraInfo.CAMERA_FACING_FRONT:
-                    CAMERA_FRONT_POSITION = info.facing;
-                    break;
-                case Camera.CameraInfo.CAMERA_FACING_BACK:
-                    CAMERA_POST_POSITION = info.facing;
-                    break;
+        try {
+            Camera.CameraInfo info = new Camera.CameraInfo();
+            int cameraNum = Camera.getNumberOfCameras();
+            for (int i = 0; i < cameraNum; i++) {
+                Camera.getCameraInfo(i, info);
+                switch (info.facing) {
+                    case Camera.CameraInfo.CAMERA_FACING_FRONT:
+                        CAMERA_FRONT_POSITION = info.facing;
+                        break;
+                    case Camera.CameraInfo.CAMERA_FACING_BACK:
+                        CAMERA_POST_POSITION = info.facing;
+                        break;
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -189,23 +193,23 @@ public class CameraInterface implements Camera.PreviewCallback {
     }
 
     public void handleFocus(final Context context, final float x, final float y, final FocusCallback callback) {
-        if (mCamera == null) {
-            return;
-        }
-        final Camera.Parameters params = mCamera.getParameters();
-        Rect focusRect = calculateTapArea(x, y, 1f, context);
-        mCamera.cancelAutoFocus();
-        if (params.getMaxNumFocusAreas() > 0) {
-            List<Camera.Area> focusAreas = new ArrayList<>();
-            focusAreas.add(new Camera.Area(focusRect, 800));
-            params.setFocusAreas(focusAreas);
-        } else {
-            Log.i(TAG, "focus areas not supported");
-            callback.focusSuccess();
-            return;
-        }
-        final String currentFocusMode = params.getFocusMode();
+
         try {
+            if (mCamera == null) {
+                return;
+            }
+            final Camera.Parameters params = mCamera.getParameters();
+            Rect focusRect = calculateTapArea(x, y, 1f, context);
+            mCamera.cancelAutoFocus();
+            if (params.getMaxNumFocusAreas() > 0) {
+                List<Camera.Area> focusAreas = new ArrayList<>();
+                focusAreas.add(new Camera.Area(focusRect, 800));
+                params.setFocusAreas(focusAreas);
+            } else {
+                callback.focusSuccess();
+                return;
+            }
+            final String currentFocusMode = params.getFocusMode();
             params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
             mCamera.setParameters(params);
             mCamera.autoFocus(new Camera.AutoFocusCallback() {
@@ -230,23 +234,25 @@ public class CameraInterface implements Camera.PreviewCallback {
 
 
     public synchronized void switchCamera(SurfaceHolder holder, float screenProp) {
-        if (SELECTED_CAMERA == CAMERA_POST_POSITION) {
-            SELECTED_CAMERA = CAMERA_FRONT_POSITION;
-        } else {
-            SELECTED_CAMERA = CAMERA_POST_POSITION;
-        }
-        doDestroyCamera();
-        Log.i("udesksdk", "open start");
-        openCamera(SELECTED_CAMERA);
-        if (Build.VERSION.SDK_INT > 17 && this.mCamera != null) {
-            try {
-                this.mCamera.enableShutterSound(false);
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            if (SELECTED_CAMERA == CAMERA_POST_POSITION) {
+                SELECTED_CAMERA = CAMERA_FRONT_POSITION;
+            } else {
+                SELECTED_CAMERA = CAMERA_POST_POSITION;
             }
+            doDestroyCamera();
+            openCamera(SELECTED_CAMERA);
+            if (Build.VERSION.SDK_INT > 17 && this.mCamera != null) {
+                try {
+                    this.mCamera.enableShutterSound(false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            doStartPreview(holder, screenProp);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        Log.i("udeskskd", "open end");
-        doStartPreview(holder, screenProp);
     }
 
 
@@ -330,41 +336,44 @@ public class CameraInterface implements Camera.PreviewCallback {
     private int nowAngle;
 
     public void takePicture(final TakePictureCallback callback) {
-        if (mCamera == null) {
-            return;
-        }
-        switch (cameraAngle) {
-            case 90:
-                nowAngle = Math.abs(angle + cameraAngle) % 360;
-                break;
-            case 270:
-                nowAngle = Math.abs(cameraAngle - angle);
-                break;
-        }
+        try {
+            if (mCamera == null) {
+                return;
+            }
+            switch (cameraAngle) {
+                case 90:
+                    nowAngle = Math.abs(angle + cameraAngle) % 360;
+                    break;
+                case 270:
+                    nowAngle = Math.abs(cameraAngle - angle);
+                    break;
+            }
 
-        Log.i("udesksdk", angle + " = " + cameraAngle + " = " + nowAngle);
-        mCamera.takePicture(null, null, new Camera.PictureCallback() {
-            @Override
-            public void onPictureTaken(byte[] data, Camera camera) {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-                Matrix matrix = new Matrix();
-                if (SELECTED_CAMERA == CAMERA_POST_POSITION) {
-                    matrix.setRotate(nowAngle);
-                } else if (SELECTED_CAMERA == CAMERA_FRONT_POSITION) {
-                    matrix.setRotate(360 - nowAngle);
-                    matrix.postScale(-1, 1);
-                }
+            mCamera.takePicture(null, null, new Camera.PictureCallback() {
+                @Override
+                public void onPictureTaken(byte[] data, Camera camera) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    Matrix matrix = new Matrix();
+                    if (SELECTED_CAMERA == CAMERA_POST_POSITION) {
+                        matrix.setRotate(nowAngle);
+                    } else if (SELECTED_CAMERA == CAMERA_FRONT_POSITION) {
+                        matrix.setRotate(360 - nowAngle);
+                        matrix.postScale(-1, 1);
+                    }
 
-                bitmap = createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                if (callback != null) {
-                    if (nowAngle == 90 || nowAngle == 270) {
-                        callback.captureResult(bitmap, true);
-                    } else {
-                        callback.captureResult(bitmap, false);
+                    bitmap = createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                    if (callback != null) {
+                        if (nowAngle == 90 || nowAngle == 270) {
+                            callback.captureResult(bitmap, true);
+                        } else {
+                            callback.captureResult(bitmap, false);
+                        }
                     }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     interface ErrorCallback {
@@ -497,83 +506,90 @@ public class CameraInterface implements Camera.PreviewCallback {
 
     //停止录像
     public void stopRecord(boolean isShort, StopRecordCallback callback) {
-        if (!isRecorder) {
-            return;
-        }
-        if (mediaRecorder != null) {
-            mediaRecorder.setOnErrorListener(null);
-            mediaRecorder.setOnInfoListener(null);
-            mediaRecorder.setPreviewDisplay(null);
-            try {
-                mediaRecorder.stop();
-            } catch (RuntimeException e) {
-                e.printStackTrace();
-                mediaRecorder = null;
-                mediaRecorder = new MediaRecorder();
-            } finally {
-                if (mediaRecorder != null) {
-                    mediaRecorder.release();
-                }
-                mediaRecorder = null;
-                isRecorder = false;
-            }
-            if (isShort) {
-                if (UdeskUtils.deleteFile(videoFileAbsPath)) {
-                    callback.recordResult(null, null);
-                }
+        try {
+            if (!isRecorder) {
                 return;
             }
-            doStopPreview();
-            String fileName = saveVideoPath + File.separator + videoFileName;
-            callback.recordResult(fileName, videoFirstFrame);
+            if (mediaRecorder != null) {
+                mediaRecorder.setOnErrorListener(null);
+                mediaRecorder.setOnInfoListener(null);
+                mediaRecorder.setPreviewDisplay(null);
+                try {
+                    mediaRecorder.stop();
+                } catch (RuntimeException e) {
+                    e.printStackTrace();
+                    mediaRecorder = null;
+                    mediaRecorder = new MediaRecorder();
+                } finally {
+                    if (mediaRecorder != null) {
+                        mediaRecorder.release();
+                    }
+                    mediaRecorder = null;
+                    isRecorder = false;
+                }
+                if (isShort) {
+                    if (UdeskUtils.deleteFile(videoFileAbsPath)) {
+                        callback.recordResult(null, null);
+                    }
+                    return;
+                }
+                doStopPreview();
+                String fileName = saveVideoPath + File.separator + videoFileName;
+                callback.recordResult(fileName, videoFirstFrame);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
 
     public void setZoom(float zoom, int type) {
-        if (mCamera == null) {
-            return;
-        }
-        if (mParams == null) {
-            mParams = mCamera.getParameters();
-        }
-        if (!mParams.isZoomSupported() && !mParams.isSmoothZoomSupported()) {
-            return;
-        }
-        Log.i("xxx", "type = " + type);
-        switch (type) {
-            case TYPE_RECORDER:
-                //如果不是录制视频中，上滑不会缩放
-                if (!isRecorder) {
-                    return;
-                }
-                if (zoom >= 0) {
+        try {
+            if (mCamera == null) {
+                return;
+            }
+            if (mParams == null) {
+                mParams = mCamera.getParameters();
+            }
+            if (!mParams.isZoomSupported() && !mParams.isSmoothZoomSupported()) {
+                return;
+            }
+            switch (type) {
+                case TYPE_RECORDER:
+                    //如果不是录制视频中，上滑不会缩放
+                    if (!isRecorder) {
+                        return;
+                    }
+                    if (zoom >= 0) {
+                        //每移动50个像素缩放一个级别
+                        int scaleRate = (int) (zoom / 40);
+                        if (scaleRate <= mParams.getMaxZoom() && scaleRate >= nowScaleRate && recordScleRate != scaleRate) {
+                            mParams.setZoom(scaleRate);
+                            mCamera.setParameters(mParams);
+                            recordScleRate = scaleRate;
+                        }
+                    }
+                    break;
+                case TYPE_CAPTURE:
+                    if (isRecorder) {
+                        return;
+                    }
                     //每移动50个像素缩放一个级别
-                    int scaleRate = (int) (zoom / 40);
-                    if (scaleRate <= mParams.getMaxZoom() && scaleRate >= nowScaleRate && recordScleRate != scaleRate) {
-                        mParams.setZoom(scaleRate);
+                    int scaleRate = (int) (zoom / 50);
+                    if (scaleRate < mParams.getMaxZoom()) {
+                        nowScaleRate += scaleRate;
+                        if (nowScaleRate < 0) {
+                            nowScaleRate = 0;
+                        } else if (nowScaleRate > mParams.getMaxZoom()) {
+                            nowScaleRate = mParams.getMaxZoom();
+                        }
+                        mParams.setZoom(nowScaleRate);
                         mCamera.setParameters(mParams);
-                        recordScleRate = scaleRate;
                     }
-                }
-                break;
-            case TYPE_CAPTURE:
-                if (isRecorder) {
-                    return;
-                }
-                //每移动50个像素缩放一个级别
-                int scaleRate = (int) (zoom / 50);
-                if (scaleRate < mParams.getMaxZoom()) {
-                    nowScaleRate += scaleRate;
-                    if (nowScaleRate < 0) {
-                        nowScaleRate = 0;
-                    } else if (nowScaleRate > mParams.getMaxZoom()) {
-                        nowScaleRate = mParams.getMaxZoom();
-                    }
-                    mParams.setZoom(nowScaleRate);
-                    mCamera.setParameters(mParams);
-                }
-                break;
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -619,64 +635,68 @@ public class CameraInterface implements Camera.PreviewCallback {
 
     //切换摄像头icon跟随手机角度进行旋转
     private void rotationAnimation() {
-        if (mSwitchView == null) {
-            return;
-        }
-        if (rotation != angle) {
-            int start_rotaion = 0;
-            int end_rotation = 0;
-            switch (rotation) {
-                case 0:
-                    start_rotaion = 0;
-                    switch (angle) {
-                        case 90:
-                            end_rotation = -90;
-                            break;
-                        case 270:
-                            end_rotation = 90;
-                            break;
-                    }
-                    break;
-                case 90:
-                    start_rotaion = -90;
-                    switch (angle) {
-                        case 0:
-                            end_rotation = 0;
-                            break;
-                        case 180:
-                            end_rotation = -180;
-                            break;
-                    }
-                    break;
-                case 180:
-                    start_rotaion = 180;
-                    switch (angle) {
-                        case 90:
-                            end_rotation = 270;
-                            break;
-                        case 270:
-                            end_rotation = 90;
-                            break;
-                    }
-                    break;
-                case 270:
-                    start_rotaion = 90;
-                    switch (angle) {
-                        case 0:
-                            end_rotation = 0;
-                            break;
-                        case 180:
-                            end_rotation = 180;
-                            break;
-                    }
-                    break;
+        try {
+            if (mSwitchView == null) {
+                return;
             }
-            ObjectAnimator animC = ObjectAnimator.ofFloat(mSwitchView, "rotation", start_rotaion, end_rotation);
-            AnimatorSet set = new AnimatorSet();
-            set.playTogether(animC);
-            set.setDuration(500);
-            set.start();
-            rotation = angle;
+            if (rotation != angle) {
+                int start_rotaion = 0;
+                int end_rotation = 0;
+                switch (rotation) {
+                    case 0:
+                        start_rotaion = 0;
+                        switch (angle) {
+                            case 90:
+                                end_rotation = -90;
+                                break;
+                            case 270:
+                                end_rotation = 90;
+                                break;
+                        }
+                        break;
+                    case 90:
+                        start_rotaion = -90;
+                        switch (angle) {
+                            case 0:
+                                end_rotation = 0;
+                                break;
+                            case 180:
+                                end_rotation = -180;
+                                break;
+                        }
+                        break;
+                    case 180:
+                        start_rotaion = 180;
+                        switch (angle) {
+                            case 90:
+                                end_rotation = 270;
+                                break;
+                            case 270:
+                                end_rotation = 90;
+                                break;
+                        }
+                        break;
+                    case 270:
+                        start_rotaion = 90;
+                        switch (angle) {
+                            case 0:
+                                end_rotation = 0;
+                                break;
+                            case 180:
+                                end_rotation = 180;
+                                break;
+                        }
+                        break;
+                }
+                ObjectAnimator animC = ObjectAnimator.ofFloat(mSwitchView, "rotation", start_rotaion, end_rotation);
+                AnimatorSet set = new AnimatorSet();
+                set.playTogether(animC);
+                set.setDuration(500);
+                set.start();
+                rotation = angle;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -709,10 +729,14 @@ public class CameraInterface implements Camera.PreviewCallback {
 
 
     void setSaveVideoPath(String saveVideoPath) {
-        this.saveVideoPath = saveVideoPath;
-        File file = new File(saveVideoPath);
-        if (!file.exists()) {
-            file.mkdirs();
+        try {
+            this.saveVideoPath = saveVideoPath;
+            File file = new File(saveVideoPath);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

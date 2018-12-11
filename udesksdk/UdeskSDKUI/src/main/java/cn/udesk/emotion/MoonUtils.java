@@ -60,8 +60,8 @@ public class MoonUtils {
         SpannableString spannable = new SpannableString(string);
         Matcher matcher = EmojiManager.getPattern().matcher(string);
         while (matcher.find()) {
-            int from = 0 + matcher.start();
-            int to = 0 + matcher.end();
+            int from = matcher.start();
+            int to =  matcher.end();
             String emot = string.subSequence(from, to).toString();
             Drawable d = getEmotDrawable(context, emot, textSize);
             if (d != null) {

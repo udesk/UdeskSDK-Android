@@ -368,6 +368,7 @@ public class PhotoSelectorActivity extends FragmentActivity implements View.OnCl
                     } else {
                         if (photosAdapter != null) {
                             photosAdapter.notifyDataSetChanged();
+                            setViewEneable();
                         }
                     }
 

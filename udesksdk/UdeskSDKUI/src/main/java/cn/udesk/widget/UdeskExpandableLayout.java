@@ -52,41 +52,53 @@ public class UdeskExpandableLayout extends LinearLayout {
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		if (this.mContentHeight == 0) {
-			this.mContentView.measure(widthMeasureSpec, 0);
-			this.mContentHeight = this.mContentView.getMeasuredHeight();
+		try {
+			if (this.mContentHeight == 0) {
+				this.mContentView.measure(widthMeasureSpec, 0);
+				this.mContentHeight = this.mContentView.getMeasuredHeight();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}
 
 	public void startAnimation(final boolean isLine){
-		clearAnimation();
-		if (animationDown == null) {
-			animationDown = new DropDownAnim(mContentView,txt,
-					mContentHeight, true);
-			animationDown.setDuration(1000);
-		}
-		animationDown.setLine(isLine);
-		startAnimation(animationDown);
-		postDelayed(new Runnable() {
-			
-			@Override
-			public void run() {
-				stopAnimation();
+		try {
+			clearAnimation();
+			if (animationDown == null) {
+				animationDown = new DropDownAnim(mContentView,txt,
+						mContentHeight, true);
+				animationDown.setDuration(1000);
 			}
-		}, 1500);
+			animationDown.setLine(isLine);
+			startAnimation(animationDown);
+			postDelayed(new Runnable() {
+
+				@Override
+				public void run() {
+					stopAnimation();
+				}
+			}, 1500);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void stopAnimation(){
-		
-		clearAnimation();
-		if (animationUp == null) {
-			animationUp = new DropDownAnim(mContentView,txt,
-					mContentHeight, false);
-			animationUp.setDuration(200); 
+
+		try {
+			clearAnimation();
+			if (animationUp == null) {
+				animationUp = new DropDownAnim(mContentView,txt,
+						mContentHeight, false);
+				animationUp.setDuration(200);
+			}
+			startAnimation(animationUp);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		startAnimation(animationUp);
-		
+
 	}
 	
 	class DropDownAnim extends Animation {

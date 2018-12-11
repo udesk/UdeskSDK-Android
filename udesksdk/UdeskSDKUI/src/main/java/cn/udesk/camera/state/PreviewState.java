@@ -23,25 +23,41 @@ class PreviewState implements State {
 
     @Override
     public void start(SurfaceHolder holder, float screenProp) {
-        CameraInterface.getInstance().doStartPreview(holder, screenProp);
+        try {
+            CameraInterface.getInstance().doStartPreview(holder, screenProp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void stop() {
-        CameraInterface.getInstance().doStopPreview();
+        try {
+            CameraInterface.getInstance().doStopPreview();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Override
     public void foucs(float x, float y, FocusCallback callback) {
-        if (machine.getView().handlerFoucs(x, y)) {
-            CameraInterface.getInstance().handleFocus(machine.getContext(), x, y, callback);
+        try {
+            if (machine.getView().handlerFoucs(x, y)) {
+                CameraInterface.getInstance().handleFocus(machine.getContext(), x, y, callback);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void swtich(SurfaceHolder holder, float screenProp) {
-        CameraInterface.getInstance().switchCamera(holder, screenProp);
+        try {
+            CameraInterface.getInstance().switchCamera(holder, screenProp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -51,33 +67,45 @@ class PreviewState implements State {
 
     @Override
     public void capture() {
-        CameraInterface.getInstance().takePicture(new TakePictureCallback() {
-            @Override
-            public void captureResult(Bitmap bitmap, boolean isVertical) {
-                machine.getView().showPicture(bitmap, isVertical);
-                machine.setState(machine.getBorrowPictureState());
-            }
-        });
+        try {
+            CameraInterface.getInstance().takePicture(new TakePictureCallback() {
+                @Override
+                public void captureResult(Bitmap bitmap, boolean isVertical) {
+                    machine.getView().showPicture(bitmap, isVertical);
+                    machine.setState(machine.getBorrowPictureState());
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void record(Context context,Surface surface, float screenProp) {
-        CameraInterface.getInstance().startRecord(context,surface, screenProp, null);
+        try {
+            CameraInterface.getInstance().startRecord(context,surface, screenProp, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void stopRecord(final boolean isShort, long time) {
-        CameraInterface.getInstance().stopRecord(isShort, new StopRecordCallback() {
-            @Override
-            public void recordResult(String url, Bitmap firstFrame) {
-                if (isShort) {
-                    machine.getView().resetState(UdeskCameraView.TYPE_SHORT);
-                } else {
-                    machine.getView().playVideo(firstFrame, url);
-                    machine.setState(machine.getBorrowVideoState());
+        try {
+            CameraInterface.getInstance().stopRecord(isShort, new StopRecordCallback() {
+                @Override
+                public void recordResult(String url, Bitmap firstFrame) {
+                    if (isShort) {
+                        machine.getView().resetState(UdeskCameraView.TYPE_SHORT);
+                    } else {
+                        machine.getView().playVideo(firstFrame, url);
+                        machine.setState(machine.getBorrowVideoState());
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -92,8 +120,11 @@ class PreviewState implements State {
 
     @Override
     public void zoom(float zoom, int type) {
-        Log.i("udesksdk", "zoom");
-        CameraInterface.getInstance().setZoom(zoom, type);
+        try {
+            CameraInterface.getInstance().setZoom(zoom, type);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

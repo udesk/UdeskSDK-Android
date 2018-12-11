@@ -20,8 +20,12 @@ public class BorrowVideoState implements State {
 
     @Override
     public void start(SurfaceHolder holder, float screenProp) {
-        CameraInterface.getInstance().doStartPreview(holder, screenProp);
-        machine.setState(machine.getPreviewState());
+        try {
+            CameraInterface.getInstance().doStartPreview(holder, screenProp);
+            machine.setState(machine.getPreviewState());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -62,19 +66,27 @@ public class BorrowVideoState implements State {
 
     @Override
     public void cancle(SurfaceHolder holder, float screenProp) {
-        machine.getView().resetState(UdeskCameraView.TYPE_VIDEO);
-        machine.setState(machine.getPreviewState());
+        try {
+            machine.getView().resetState(UdeskCameraView.TYPE_VIDEO);
+            machine.setState(machine.getPreviewState());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void confirm() {
-        machine.getView().confirmState(UdeskCameraView.TYPE_VIDEO);
-        machine.setState(machine.getPreviewState());
+        try {
+            machine.getView().confirmState(UdeskCameraView.TYPE_VIDEO);
+            machine.setState(machine.getPreviewState());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void zoom(float zoom, int type) {
-        Log.i("udesksdk", "zoom");
+
     }
 
 

@@ -22,14 +22,17 @@ public class HtmlTagHandler implements Html.TagHandler {
 
     @Override
     public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
-        processAttributes(xmlReader);
-
-        if(tag.equalsIgnoreCase(TAG_FONT)){
-            if(opening){
-                startFont(tag, output, xmlReader);
-            }else{
-                endFont(tag, output, xmlReader);
+        try {
+            processAttributes(xmlReader);
+            if(tag.equalsIgnoreCase(TAG_FONT)){
+                if(opening){
+                    startFont(tag, output, xmlReader);
+                }else{
+                    endFont(tag, output, xmlReader);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -38,18 +41,22 @@ public class HtmlTagHandler implements Html.TagHandler {
     }
 
     public void endFont(String tag, Editable output, XMLReader xmlReader){
-        stopIndex = output.length();
+        try {
+            stopIndex = output.length();
 
-        String color = attributes.get("color");
-        String size = attributes.get("size");
-        if (size != null){
-            size = size.split("px")[0];
-        }
-        if(!TextUtils.isEmpty(color) && !TextUtils.isEmpty(size)){
-            output.setSpan(new ForegroundColorSpan(Color.parseColor(color)), startIndex, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        if(!TextUtils.isEmpty(size)){
-            output.setSpan(new AbsoluteSizeSpan(Integer.parseInt(size)), startIndex, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            String color = attributes.get("color");
+            String size = attributes.get("size");
+            if (size != null){
+                size = size.split("px")[0];
+            }
+            if(!TextUtils.isEmpty(color) && !TextUtils.isEmpty(size)){
+                output.setSpan(new ForegroundColorSpan(Color.parseColor(color)), startIndex, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            if(!TextUtils.isEmpty(size)){
+                output.setSpan(new AbsoluteSizeSpan(Integer.parseInt(size)), startIndex, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
     }
 

@@ -60,8 +60,12 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
     public AudioRecordButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         // 初始化按钮样式
-        setBackgroundResource(R.drawable.udesk_record_button_normal);
-        setText(getResources().getString(R.string.press_record));
+        try {
+            setBackgroundResource(R.drawable.udesk_record_button_normal);
+            setText(getResources().getString(R.string.press_record));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -288,9 +292,14 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
         if (TextUtils.isEmpty(mAudioFilePath)) {
             return 0;
         }
-        File file = new File(mAudioFilePath);
-        long length = file.length();
-        return length;
+        try {
+            File file = new File(mAudioFilePath);
+            long length = file.length();
+            return length;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     private void changeState(int state) {

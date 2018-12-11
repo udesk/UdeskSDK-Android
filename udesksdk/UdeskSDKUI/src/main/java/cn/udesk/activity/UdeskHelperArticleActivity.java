@@ -30,9 +30,9 @@ public class UdeskHelperArticleActivity extends UdeskBaseActivity {
 		@Override
 		protected void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			UdeskUtil.setOrientation(this);
-			setContentView(R.layout.udesk_articleactivity_view);
 			try {
+				UdeskUtil.setOrientation(this);
+				setContentView(R.layout.udesk_articleactivity_view);
 				settingTitlebar();
 				udeskLoading = findViewById(R.id.udesk_loading);
 				udeskSubject = (TextView) findViewById(R.id.udesk_subject);

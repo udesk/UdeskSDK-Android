@@ -21,13 +21,17 @@ public class CameraMachine implements State {
     private State borrowVideoState;   //浏览视频
 
     public CameraMachine(Context context, CameraView view) {
-        this.context = context;
-        previewState = new PreviewState(this);
-        borrowPictureState = new BorrowPictureState(this);
-        borrowVideoState = new BorrowVideoState(this);
-        //默认设置为空闲状态
-        this.state = previewState;
-        this.view = view;
+        try {
+            this.context = context;
+            previewState = new PreviewState(this);
+            borrowPictureState = new BorrowPictureState(this);
+            borrowVideoState = new BorrowVideoState(this);
+            //默认设置为空闲状态
+            this.state = previewState;
+            this.view = view;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public CameraView getView() {
