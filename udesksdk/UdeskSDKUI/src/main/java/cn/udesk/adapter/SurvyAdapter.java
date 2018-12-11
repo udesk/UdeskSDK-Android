@@ -47,28 +47,36 @@ public class SurvyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public SurvyAdapter(Context context, List<OptionsModel> datas, int type, int defualtId) {
-        this.mContext = context;
-        this.viewType = type;
-        if (viewType == UdeskConst.UdeskSurvyShowType.STAR) {
-            width = UdeskUtils.getScreenWidth(context) - UdeskUtil.dip2px(mContext, 155);
-            width = width / 5;
-            if (datas.get(0).getDesc().equals(fiveStar)) {
-                Collections.reverse(datas);
+        try {
+            this.mContext = context;
+            this.viewType = type;
+            if (viewType == UdeskConst.UdeskSurvyShowType.STAR) {
+                width = UdeskUtils.getScreenWidth(context) - UdeskUtil.dip2px(mContext, 155);
+                width = width / 5;
+                if (datas.get(0).getDesc().equals(fiveStar)) {
+                    Collections.reverse(datas);
+                }
+            } else if (viewType == UdeskConst.UdeskSurvyShowType.EXPRESSION) {
+                width = UdeskUtils.getScreenWidth(context) - UdeskUtil.dip2px(mContext, 108);
+                width = width / 3;
             }
-        } else if (viewType == UdeskConst.UdeskSurvyShowType.EXPRESSION) {
-            width = UdeskUtils.getScreenWidth(context) - UdeskUtil.dip2px(mContext, 108);
-            width = width / 3;
+            this.optionsModels = datas;
+            this.checkId = defualtId;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        this.optionsModels = datas;
-        this.checkId = defualtId;
     }
 
     @Override
     public void onClick(View view) {
-        if (mOnItemClickListener != null) {
-            //注意这里使用getTag方法获取数据
-            int postion = (int) view.getTag();
-            mOnItemClickListener.onItemClick(view, postion, viewType, optionsModels.get(postion));
+        try {
+            if (mOnItemClickListener != null) {
+                //注意这里使用getTag方法获取数据
+                int postion = (int) view.getTag();
+                mOnItemClickListener.onItemClick(view, postion, viewType, optionsModels.get(postion));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

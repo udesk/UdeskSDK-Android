@@ -1,6 +1,7 @@
 package cn.udesk.config;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
@@ -16,21 +17,25 @@ public class UdekConfigUtil {
      * @param textViews
      */
     public static void setUITextColor( int codeResId, TextView... textViews) {
-        Context context = null;
-        if (textViews != null && textViews.length > 0) {
-            context = textViews[0].getContext();
-        }
-        if (context != null) {
-            if (UdeskConfig.DEFAULT != codeResId) {
-                int color = context.getResources().getColor(codeResId);
-                if (textViews != null) {
-                    for (TextView textView : textViews) {
-                        if (textView != null){
-                            textView.setTextColor(color);
+        try {
+            Context context = null;
+            if (textViews != null && textViews.length > 0) {
+                context = textViews[0].getContext();
+            }
+            if (context != null) {
+                if (UdeskConfig.DEFAULT != codeResId) {
+                    int color = context.getResources().getColor(codeResId);
+                    if (textViews != null) {
+                        for (TextView textView : textViews) {
+                            if (textView != null){
+                                textView.setTextColor(color);
+                            }
                         }
                     }
                 }
             }
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
         }
     }
 
@@ -42,19 +47,27 @@ public class UdekConfigUtil {
      * @param codeResId     通过java代码的方式自定义的id
      */
     public static void setUIbgDrawable( int codeResId , View view) {
-        Context context = view.getContext();
-        if (UdeskConfig.DEFAULT != codeResId) {
-            Drawable drawable=context.getResources().getDrawable(codeResId);
-            setBackground(view, drawable);
+        try {
+            Context context = view.getContext();
+            if (UdeskConfig.DEFAULT != codeResId) {
+                Drawable drawable=context.getResources().getDrawable(codeResId);
+                setBackground(view, drawable);
+            }
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
         }
 
     }
 
     private static void setBackground(View v, Drawable bgDrawable) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            v.setBackground(bgDrawable);
-        } else {
-            v.setBackgroundDrawable(bgDrawable);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                v.setBackground(bgDrawable);
+            } else {
+                v.setBackgroundDrawable(bgDrawable);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

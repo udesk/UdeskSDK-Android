@@ -4,6 +4,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -101,141 +102,173 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
     }
 
     private void initData() {
-        layout_width = UdeskUtils.getScreenWidth(mContext);
-        //缩放梯度
-        zoomGradient = (int) (layout_width / 16f);
-        Log.i("udesksdk","zoom = " + zoomGradient);
-        machine = new CameraMachine(getContext(), this);
+        try {
+            layout_width = UdeskUtils.getScreenWidth(mContext);
+            //缩放梯度
+            zoomGradient = (int) (layout_width / 16f);
+            Log.i("udesksdk","zoom = " + zoomGradient);
+            machine = new CameraMachine(getContext(), this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initView() {
-        setWillNotDraw(false);
-        View view = LayoutInflater.from(mContext).inflate(R.layout.udesk_camera_view, this);
-        mVideoView = (VideoView) view.findViewById(R.id.video_preview);
-        mPhoto = (ImageView) view.findViewById(R.id.image_photo);
-        mSwitchCamera = (ImageView) view.findViewById(R.id.image_switch);
-        mCloseView = view.findViewById(R.id.udesk_image_close);
-        mCaptureLayout = (CaptureLayout) view.findViewById(R.id.capture_layout);
-        mFoucsView = (FoucsView) view.findViewById(R.id.fouce_view);
-        mVideoView.getHolder().addCallback(this);
-        //切换摄像头
-        mSwitchCamera.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                machine.swtich(mVideoView.getHolder(), screenProp);
-            }
-        });
-        //拍照 录像
-        mCaptureLayout.setCaptureLisenter(new CaptureListener() {
-            @Override
-            public void takePictures() {
-                mSwitchCamera.setVisibility(INVISIBLE);
-                mCloseView.setVisibility(INVISIBLE);
-                machine.capture();
-            }
-
-            @Override
-            public void recordStart() {
-                mSwitchCamera.setVisibility(INVISIBLE);
-                mCloseView.setVisibility(INVISIBLE);
-                machine.record(mContext,mVideoView.getHolder().getSurface(), screenProp);
-            }
-
-            @Override
-            public void recordShort(final long time) {
-                mCaptureLayout.setTooShortWithAnimation(getResources().getString(R.string.udesk_too_short));
-                mSwitchCamera.setVisibility(VISIBLE);
-                mCloseView.setVisibility(VISIBLE);
-                postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        machine.stopRecord(true, time);
-                    }
-                }, 500);
-            }
-
-            @Override
-            public void recordEnd(long time) {
-                machine.stopRecord(false, time);
-            }
-
-            @Override
-            public void recordZoom(float zoom) {
-                machine.zoom(zoom, CameraInterface.TYPE_RECORDER);
-            }
-
-            @Override
-            public void recordError() {
-                if (errorLisenter != null) {
-                    errorLisenter.AudioPermissionError();
+        try {
+            setWillNotDraw(false);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.udesk_camera_view, this);
+            mVideoView = (VideoView) view.findViewById(R.id.video_preview);
+            mPhoto = (ImageView) view.findViewById(R.id.image_photo);
+            mSwitchCamera = (ImageView) view.findViewById(R.id.image_switch);
+            mCloseView = view.findViewById(R.id.udesk_image_close);
+            mCaptureLayout = (CaptureLayout) view.findViewById(R.id.capture_layout);
+            mFoucsView = (FoucsView) view.findViewById(R.id.fouce_view);
+            mVideoView.getHolder().addCallback(this);
+            //切换摄像头
+            mSwitchCamera.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    machine.swtich(mVideoView.getHolder(), screenProp);
                 }
-            }
+            });
+            //拍照 录像
+            mCaptureLayout.setCaptureLisenter(new CaptureListener() {
+                @Override
+                public void takePictures() {
+                    mSwitchCamera.setVisibility(INVISIBLE);
+                    mCloseView.setVisibility(INVISIBLE);
+                    machine.capture();
+                }
 
-            @Override
-            public void recordTime(long time) {
+                @Override
+                public void recordStart() {
+                    mSwitchCamera.setVisibility(INVISIBLE);
+                    mCloseView.setVisibility(INVISIBLE);
+                    machine.record(mContext,mVideoView.getHolder().getSurface(), screenProp);
+                }
 
-            }
-        });
-        //确认 取消
-        mCaptureLayout.setTypeLisenter(new TypeListener() {
-            @Override
-            public void cancel() {
+                @Override
+                public void recordShort(final long time) {
+                    mCaptureLayout.setTooShortWithAnimation(getResources().getString(R.string.udesk_too_short));
+                    mSwitchCamera.setVisibility(VISIBLE);
+                    mCloseView.setVisibility(VISIBLE);
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            machine.stopRecord(true, time);
+                        }
+                    }, 500);
+                }
 
-                mCaptureLayout.setTextWithAnimation(getResources().getString(R.string.camera_view_tips));
-                machine.cancle(mVideoView.getHolder(), screenProp);
-            }
+                @Override
+                public void recordEnd(long time) {
+                    machine.stopRecord(false, time);
+                }
 
-            @Override
-            public void confirm() {
-                machine.confirm();
-            }
-        });
+                @Override
+                public void recordZoom(float zoom) {
+                    machine.zoom(zoom, CameraInterface.TYPE_RECORDER);
+                }
+
+                @Override
+                public void recordError() {
+                    if (errorLisenter != null) {
+                        errorLisenter.AudioPermissionError();
+                    }
+                }
+
+                @Override
+                public void recordTime(long time) {
+
+                }
+            });
+            //确认 取消
+            mCaptureLayout.setTypeLisenter(new TypeListener() {
+                @Override
+                public void cancel() {
+
+                    mCaptureLayout.setTextWithAnimation(getResources().getString(R.string.camera_view_tips));
+                    machine.cancle(mVideoView.getHolder(), screenProp);
+                }
+
+                @Override
+                public void confirm() {
+                    machine.confirm();
+                }
+            });
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        float widthSize = mVideoView.getMeasuredWidth();
-        float heightSize = mVideoView.getMeasuredHeight();
-        if (screenProp == 0) {
-            screenProp = heightSize / widthSize;
+        try {
+            float widthSize = mVideoView.getMeasuredWidth();
+            float heightSize = mVideoView.getMeasuredHeight();
+            if (screenProp == 0) {
+                screenProp = heightSize / widthSize;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void cameraHasOpened() {
-        CameraInterface.getInstance().doStartPreview(mVideoView.getHolder(), screenProp);
+        try {
+            CameraInterface.getInstance().doStartPreview(mVideoView.getHolder(), screenProp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //生命周期onResume
     public void onResume() {
-        resetState(TYPE_DEFAULT); //重置状态
-        CameraInterface.getInstance().registerSensorManager(mContext);
-        CameraInterface.getInstance().setSwitchView(mSwitchCamera);
-        machine.start(mVideoView.getHolder(), screenProp);
+        try {
+            resetState(TYPE_DEFAULT); //重置状态
+            CameraInterface.getInstance().registerSensorManager(mContext);
+            CameraInterface.getInstance().setSwitchView(mSwitchCamera);
+            machine.start(mVideoView.getHolder(), screenProp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //生命周期onPause
     public void onPause() {
-        stopVideo();
-        resetState(TYPE_PICTURE);
-        CameraInterface.getInstance().isPreview(false);
-        CameraInterface.getInstance().unregisterSensorManager(mContext);
+        try {
+            stopVideo();
+            resetState(TYPE_PICTURE);
+            CameraInterface.getInstance().isPreview(false);
+            CameraInterface.getInstance().unregisterSensorManager(mContext);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void ondestory(){
-        CameraInterface.getInstance().doDestroyCamera();
-        CameraInterface.getInstance().destroyCameraInterface();
+        try {
+            CameraInterface.getInstance().doDestroyCamera();
+            CameraInterface.getInstance().destroyCameraInterface();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //SurfaceView生命周期
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        Log.i("udesksdk","CameraView SurfaceCreated");
+
         new Thread() {
             @Override
             public void run() {
-                CameraInterface.getInstance().doOpenCamera(UdeskCameraView.this);
+                try {
+                    CameraInterface.getInstance().doOpenCamera(UdeskCameraView.this);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }.start();
     }
@@ -246,72 +279,87 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.i("udesksdk","CameraView SurfaceDestroyed");
-        CameraInterface.getInstance().doDestroyCamera();
+        try {
+            CameraInterface.getInstance().doDestroyCamera();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (event.getPointerCount() == 1) {
-                    //显示对焦指示器
-                    setFocusViewWidthAnimation(event.getX(), event.getY());
-                }
-                if (event.getPointerCount() == 2) {
-                    Log.i("udesksdk", "ACTION_DOWN = " + 2);
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (event.getPointerCount() == 1) {
-                    firstTouch = true;
-                }
-                if (event.getPointerCount() == 2) {
-                    //第一个点
-                    float point_1_X = event.getX(0);
-                    float point_1_Y = event.getY(0);
-                    //第二个点
-                    float point_2_X = event.getX(1);
-                    float point_2_Y = event.getY(1);
-
-                    float result = (float) Math.sqrt(Math.pow(point_1_X - point_2_X, 2) + Math.pow(point_1_Y -
-                            point_2_Y, 2));
-
-                    if (firstTouch) {
-                        firstTouchLength = result;
-                        firstTouch = false;
+        try {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (event.getPointerCount() == 1) {
+                        //显示对焦指示器
+                        setFocusViewWidthAnimation(event.getX(), event.getY());
                     }
-                    if ((int) (result - firstTouchLength) / zoomGradient != 0) {
+                    if (event.getPointerCount() == 2) {
+                        Log.i("udesksdk", "ACTION_DOWN = " + 2);
+                    }
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (event.getPointerCount() == 1) {
                         firstTouch = true;
-                        machine.zoom(result - firstTouchLength, CameraInterface.TYPE_CAPTURE);
                     }
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                firstTouch = true;
-                break;
+                    if (event.getPointerCount() == 2) {
+                        //第一个点
+                        float point_1_X = event.getX(0);
+                        float point_1_Y = event.getY(0);
+                        //第二个点
+                        float point_2_X = event.getX(1);
+                        float point_2_Y = event.getY(1);
+
+                        float result = (float) Math.sqrt(Math.pow(point_1_X - point_2_X, 2) + Math.pow(point_1_Y -
+                                point_2_Y, 2));
+
+                        if (firstTouch) {
+                            firstTouchLength = result;
+                            firstTouch = false;
+                        }
+                        if ((int) (result - firstTouchLength) / zoomGradient != 0) {
+                            firstTouch = true;
+                            machine.zoom(result - firstTouchLength, CameraInterface.TYPE_CAPTURE);
+                        }
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    firstTouch = true;
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return true;
     }
 
     //对焦框指示器动画
     private void setFocusViewWidthAnimation(float x, float y) {
-        machine.foucs(x, y, new FocusCallback() {
-            @Override
-            public void focusSuccess() {
-                mFoucsView.setVisibility(INVISIBLE);
-            }
-        });
+        try {
+            machine.foucs(x, y, new FocusCallback() {
+                @Override
+                public void focusSuccess() {
+                    mFoucsView.setVisibility(INVISIBLE);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateVideoViewSize(float videoWidth, float videoHeight) {
-        if (videoWidth > videoHeight) {
-            LayoutParams videoViewParam;
-            int height = (int) ((videoHeight / videoWidth) * getWidth());
-            videoViewParam = new LayoutParams(LayoutParams.MATCH_PARENT, height);
-            videoViewParam.gravity = Gravity.CENTER;
-            mVideoView.setLayoutParams(videoViewParam);
+        try {
+            if (videoWidth > videoHeight) {
+                LayoutParams videoViewParam;
+                int height = (int) ((videoHeight / videoWidth) * getWidth());
+                videoViewParam = new LayoutParams(LayoutParams.MATCH_PARENT, height);
+                videoViewParam.gravity = Gravity.CENTER;
+                mVideoView.setLayoutParams(videoViewParam);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -320,7 +368,11 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
      **************************************************/
 
     public void setSaveVideoPath(String path) {
-        CameraInterface.getInstance().setSaveVideoPath(path);
+        try {
+            CameraInterface.getInstance().setSaveVideoPath(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -331,18 +383,30 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
 
     //启动Camera错误回调
     public void setErrorLisenter(ErrorListener errorLisenter) {
-        this.errorLisenter = errorLisenter;
-        CameraInterface.getInstance().setErrorLinsenter(errorLisenter);
+        try {
+            this.errorLisenter = errorLisenter;
+            CameraInterface.getInstance().setErrorLinsenter(errorLisenter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //设置CaptureButton功能（拍照和录像）
     public void setFeatures(int state) {
-        this.mCaptureLayout.setButtonFeatures(state);
+        try {
+            this.mCaptureLayout.setButtonFeatures(state);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //设置录制质量
     public void setMediaQuality(int quality) {
-        CameraInterface.getInstance().setMediaQuality(quality);
+        try {
+            CameraInterface.getInstance().setMediaQuality(quality);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setCloseListener(OnClickListener listener) {
@@ -353,66 +417,78 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
 
     @Override
     public void resetState(int type) {
-        switch (type) {
-            case TYPE_VIDEO:
-                stopVideo();    //停止播放
-                //初始化VideoView
-                UdeskUtils.deleteFile(videoUrl);
-                mVideoView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-                machine.start(mVideoView.getHolder(), screenProp);
-//                mCaptureLayout.setTextWithAnimation(getResources().getString(R.string.camera_view_tips));
-                break;
-            case TYPE_PICTURE:
-                mPhoto.setVisibility(INVISIBLE);
-                break;
-            case TYPE_SHORT:
-                break;
-            case TYPE_DEFAULT:
-                mVideoView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-                break;
+        try {
+            switch (type) {
+                case TYPE_VIDEO:
+                    stopVideo();    //停止播放
+                    //初始化VideoView
+                    UdeskUtils.deleteFile(videoUrl);
+                    mVideoView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                    machine.start(mVideoView.getHolder(), screenProp);
+    //                mCaptureLayout.setTextWithAnimation(getResources().getString(R.string.camera_view_tips));
+                    break;
+                case TYPE_PICTURE:
+                    mPhoto.setVisibility(INVISIBLE);
+                    break;
+                case TYPE_SHORT:
+                    break;
+                case TYPE_DEFAULT:
+                    mVideoView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                    break;
+            }
+            mSwitchCamera.setVisibility(VISIBLE);
+            mCloseView.setVisibility(VISIBLE);
+            mCaptureLayout.resetCaptureLayout();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        mSwitchCamera.setVisibility(VISIBLE);
-        mCloseView.setVisibility(VISIBLE);
-        mCaptureLayout.resetCaptureLayout();
     }
 
     @Override
     public void confirmState(int type) {
-        switch (type) {
-            case TYPE_VIDEO:
-                stopVideo();    //停止播放
-                mVideoView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-                machine.start(mVideoView.getHolder(), screenProp);
-                if (cameraLisenter != null) {
-                    cameraLisenter.recordSuccess(videoUrl, firstFrame);
-                }
-                break;
-            case TYPE_PICTURE:
-                mPhoto.setVisibility(INVISIBLE);
-                if (cameraLisenter != null) {
-                    cameraLisenter.captureSuccess(captureBitmap);
-                }
-                break;
-            case TYPE_SHORT:
-                break;
-            case TYPE_DEFAULT:
-                break;
+        try {
+            switch (type) {
+                case TYPE_VIDEO:
+                    stopVideo();    //停止播放
+                    mVideoView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                    machine.start(mVideoView.getHolder(), screenProp);
+                    if (cameraLisenter != null) {
+                        cameraLisenter.recordSuccess(videoUrl, firstFrame);
+                    }
+                    break;
+                case TYPE_PICTURE:
+                    mPhoto.setVisibility(INVISIBLE);
+                    if (cameraLisenter != null) {
+                        cameraLisenter.captureSuccess(captureBitmap);
+                    }
+                    break;
+                case TYPE_SHORT:
+                    break;
+                case TYPE_DEFAULT:
+                    break;
+            }
+            mCaptureLayout.resetCaptureLayout();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        mCaptureLayout.resetCaptureLayout();
     }
 
     @Override
     public void showPicture(Bitmap bitmap, boolean isVertical) {
-        if (isVertical) {
-            mPhoto.setScaleType(ImageView.ScaleType.FIT_XY);
-        } else {
-            mPhoto.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        try {
+            if (isVertical) {
+                mPhoto.setScaleType(ImageView.ScaleType.FIT_XY);
+            } else {
+                mPhoto.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            }
+            captureBitmap = bitmap;
+            mPhoto.setImageBitmap(bitmap);
+            mPhoto.setVisibility(VISIBLE);
+            mCaptureLayout.startAlphaAnimation();
+            mCaptureLayout.startTypeBtnAnimator();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        captureBitmap = bitmap;
-        mPhoto.setImageBitmap(bitmap);
-        mPhoto.setVisibility(VISIBLE);
-        mCaptureLayout.startAlphaAnimation();
-        mCaptureLayout.startTypeBtnAnimator();
     }
 
     @SuppressLint("NewApi")
@@ -460,51 +536,67 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
 
     @Override
     public void stopVideo() {
-        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-            mMediaPlayer.stop();
-            mMediaPlayer.release();
-            mMediaPlayer = null;
+        try {
+            if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                mMediaPlayer.stop();
+                mMediaPlayer.release();
+                mMediaPlayer = null;
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void setTip(String tip) {
-        mCaptureLayout.setTip(tip);
+        try {
+            mCaptureLayout.setTip(tip);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void startPreviewCallback() {
-        Log.i("udesksdk","startPreviewCallback");
-        handlerFoucs(mFoucsView.getWidth() / 2, mFoucsView.getHeight() / 2);
+
+        try {
+            handlerFoucs(mFoucsView.getWidth() / 2, mFoucsView.getHeight() / 2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public boolean handlerFoucs(float x, float y) {
-        if (y > mCaptureLayout.getTop()) {
-            return false;
+        try {
+            if (y > mCaptureLayout.getTop()) {
+                return false;
+            }
+            mFoucsView.setVisibility(VISIBLE);
+            if (x < mFoucsView.getWidth() / 2) {
+                x = mFoucsView.getWidth() / 2;
+            }
+            if (x > layout_width - mFoucsView.getWidth() / 2) {
+                x = layout_width - mFoucsView.getWidth() / 2;
+            }
+            if (y < mFoucsView.getWidth() / 2) {
+                y = mFoucsView.getWidth() / 2;
+            }
+            if (y > mCaptureLayout.getTop() - mFoucsView.getWidth() / 2) {
+                y = mCaptureLayout.getTop() - mFoucsView.getWidth() / 2;
+            }
+            mFoucsView.setX(x - mFoucsView.getWidth() / 2);
+            mFoucsView.setY(y - mFoucsView.getHeight() / 2);
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(mFoucsView, "scaleX", 1, 0.6f);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(mFoucsView, "scaleY", 1, 0.6f);
+            ObjectAnimator alpha = ObjectAnimator.ofFloat(mFoucsView, "alpha", 1f, 0.4f, 1f, 0.4f, 1f, 0.4f, 1f);
+            AnimatorSet animSet = new AnimatorSet();
+            animSet.play(scaleX).with(scaleY).before(alpha);
+            animSet.setDuration(400);
+            animSet.start();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        mFoucsView.setVisibility(VISIBLE);
-        if (x < mFoucsView.getWidth() / 2) {
-            x = mFoucsView.getWidth() / 2;
-        }
-        if (x > layout_width - mFoucsView.getWidth() / 2) {
-            x = layout_width - mFoucsView.getWidth() / 2;
-        }
-        if (y < mFoucsView.getWidth() / 2) {
-            y = mFoucsView.getWidth() / 2;
-        }
-        if (y > mCaptureLayout.getTop() - mFoucsView.getWidth() / 2) {
-            y = mCaptureLayout.getTop() - mFoucsView.getWidth() / 2;
-        }
-        mFoucsView.setX(x - mFoucsView.getWidth() / 2);
-        mFoucsView.setY(y - mFoucsView.getHeight() / 2);
-        ObjectAnimator scaleX = ObjectAnimator.ofFloat(mFoucsView, "scaleX", 1, 0.6f);
-        ObjectAnimator scaleY = ObjectAnimator.ofFloat(mFoucsView, "scaleY", 1, 0.6f);
-        ObjectAnimator alpha = ObjectAnimator.ofFloat(mFoucsView, "alpha", 1f, 0.4f, 1f, 0.4f, 1f, 0.4f, 1f);
-        AnimatorSet animSet = new AnimatorSet();
-        animSet.play(scaleX).with(scaleY).before(alpha);
-        animSet.setDuration(400);
-        animSet.start();
         return true;
     }
 

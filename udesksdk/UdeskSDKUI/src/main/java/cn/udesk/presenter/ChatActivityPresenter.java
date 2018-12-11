@@ -27,6 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -96,11 +97,15 @@ public class ChatActivityPresenter {
     }
 
     public void clearMsg() {
-        if (cachePreMsg != null){
-            cachePreMsg.clear();
-        }
-        if (sendingMsgCache != null){
-            sendingMsgCache.clear();
+        try {
+            if (cachePreMsg != null) {
+                cachePreMsg.clear();
+            }
+            if (sendingMsgCache != null) {
+                sendingMsgCache.clear();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -135,14 +140,12 @@ public class ChatActivityPresenter {
         UdeskMessageManager.getInstance().event_OnTicketReplayNotice.unBind(this);
         InvokeEventContainer.getInstance().event_OnVideoEventReceived.unBind(this);
         InvokeEventContainer.getInstance().event_OnSendMessageFail.unBind(this);
-        mChatView = null;
     }
 
-    public void onSendMessageFail(final MessageInfo msg) {
-
+    public synchronized void onSendMessageFail(final MessageInfo msg) {
 //        xmpp发送失败后 再次调用messageSave  触发后端代发xmpp
         try {
-            if (TextUtils.isEmpty(customerId)) {
+            if (TextUtils.isEmpty(customerId) || msg == null) {
                 return;
             }
 
@@ -158,10 +161,14 @@ public class ChatActivityPresenter {
                     UdeskConst.sdk_page_status + UdeskConst.sdk_xmpp_statea, new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
-                            MessageInfo cacheMsg = sendingMsgCache.get(msg.getMsgId());
+                            try {
+                                MessageInfo cacheMsg = sendingMsgCache.get(msg.getMsgId());
 //                       发送2次也算成功，有服务端代发通知客服
-                            if (cacheMsg != null && (cacheMsg.getCount() + 1) >= 2) {
-                                onMessageReceived(msg.getMsgId());
+                                if (cacheMsg != null && (cacheMsg.getCount() + 1) >= 2) {
+                                    onMessageReceived(msg.getMsgId());
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
 
@@ -334,8 +341,12 @@ public class ChatActivityPresenter {
 
     public void onTicketReplay(Boolean isTicketRepaly) {
         //拉取工单回复的消息
-        if (TextUtils.isEmpty(customerId)) {
-            getTicketReplies(customerId, 1, UdeskConst.UDESK_HISTORY_COUNT, "");
+        try {
+            if (!TextUtils.isEmpty(customerId)) {
+                getTicketReplies(customerId, 1, UdeskConst.UDESK_HISTORY_COUNT, "");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -435,7 +446,11 @@ public class ChatActivityPresenter {
                         @Override
                         public void onFail(String message) {
                             // 失败给出错误提示 结束流程
-                            mChatView.showFailToast(message);
+                            try {
+                                mChatView.showFailToast(message);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
         } catch (Exception e) {
@@ -457,23 +472,31 @@ public class ChatActivityPresenter {
 
                         @Override
                         public void onSuccess(String message) {
-                            AgentInfo agentInfo = JsonUtils.parseAgentResult(message);
-                            if (agentInfo.getAgentCode() == 2000) {
-                                getIMStatus(agentInfo);
-                            } else {
-                                mChatView.dealAgentInfo(agentInfo);
-                                mChatView.updatePreSessionStatus("");
-                            }
-                            if (!UdeskMessageManager.getInstance().isConnection()) {
-                                UdeskMessageManager.getInstance().connection();
+                            try {
+                                AgentInfo agentInfo = JsonUtils.parseAgentResult(message);
+                                if (agentInfo.getAgentCode() == 2000) {
+                                    getIMStatus(agentInfo);
+                                } else {
+                                    mChatView.dealAgentInfo(agentInfo);
+                                    mChatView.updatePreSessionStatus("");
+                                }
+                                if (!UdeskMessageManager.getInstance().isConnection()) {
+                                    UdeskMessageManager.getInstance().connection();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
 
                         @Override
                         public void onFail(String message) {
-                            // 失败给出错误提示 结束流程
-                            mChatView.showFailToast(message);
-                            mChatView.updatePreSessionStatus("");
+                            try {
+                                // 失败给出错误提示 结束流程
+                                mChatView.showFailToast(message);
+                                mChatView.updatePreSessionStatus("");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
         } catch (Exception e) {
@@ -507,36 +530,44 @@ public class ChatActivityPresenter {
                         public void onSuccess(String string) {
                             String imStatus = "off";
                             try {
-                                JSONObject resultJson = new JSONObject(string);
-                                if (resultJson.has("status")) {
-                                    imStatus = resultJson.getString("status");
+                                try {
+                                    JSONObject resultJson = new JSONObject(string);
+                                    if (resultJson.has("status")) {
+                                        imStatus = resultJson.getString("status");
+                                    }
+                                } catch (Exception e) {
+                                    imStatus = "off";
                                 }
-                            } catch (Exception e) {
-                                imStatus = "off";
-                            }
-                            if (imStatus.equals("on")) {
-                                mChatView.dealAgentInfo(agentInfo);
+                                if (imStatus.equals("on")) {
+                                    mChatView.dealAgentInfo(agentInfo);
+                                    mChatView.updatePreSessionStatus("");
+                                    return;
+                                }
+                                mChatView.setAgentInfo(agentInfo);
+                                if (mChatView.getHandler() != null) {
+                                    Message message = mChatView.getHandler().obtainMessage(
+                                            MessageWhat.IM_STATUS);
+                                    message.obj = imStatus;
+                                    mChatView.getHandler().sendMessage(message);
+                                }
                                 mChatView.updatePreSessionStatus("");
-                                return;
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                            mChatView.setAgentInfo(agentInfo);
-                            if (mChatView.getHandler() != null) {
-                                Message message = mChatView.getHandler().obtainMessage(
-                                        MessageWhat.IM_STATUS);
-                                message.obj = imStatus;
-                                mChatView.getHandler().sendMessage(message);
-                            }
-                            mChatView.updatePreSessionStatus("");
                         }
 
                         @Override
                         public void onFail(String s) {
-                            if (mChatView.getHandler() != null) {
-                                Message message = mChatView.getHandler().obtainMessage(
-                                        MessageWhat.IM_STATUS);
-                                message.obj = "off";
-                                mChatView.getHandler().sendMessage(message);
-                                mChatView.updatePreSessionStatus("");
+                            try {
+                                if (mChatView.getHandler() != null) {
+                                    Message message = mChatView.getHandler().obtainMessage(
+                                            MessageWhat.IM_STATUS);
+                                    message.obj = "off";
+                                    mChatView.getHandler().sendMessage(message);
+                                    mChatView.updatePreSessionStatus("");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                     }
@@ -559,14 +590,22 @@ public class ChatActivityPresenter {
                         @Override
                         public void onSuccess(String message) {
                             // 获取客户成功，显示在线客服的信息，连接xmpp，进行会话
-                            AgentInfo agentInfo = JsonUtils.parseAgentResult(message);
-                            mChatView.dealRedirectAgentInfo(agentInfo);
+                            try {
+                                AgentInfo agentInfo = JsonUtils.parseAgentResult(message);
+                                mChatView.dealRedirectAgentInfo(agentInfo);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         @Override
                         public void onFail(String message) {
                             // 失败给出错误提示 结束流程
-                            mChatView.showFailToast(message);
+                            try {
+                                mChatView.showFailToast(message);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
         } catch (Exception e) {
@@ -583,16 +622,20 @@ public class ChatActivityPresenter {
                     new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
-                            TicketReplieMode replieMode = JsonUtils.parserTicketReplie(message);
-                            if (replieMode != null && replieMode.getContents() != null) {
-                                List<MessageInfo> messageInfos = buildLeaveMsgByTicketReplies(replieMode.getContents());
-                                if (messageInfos != null && mChatView.getHandler() != null) {
-                                    Message msg = Message.obtain();
-                                    msg.what = MessageWhat.loadHistoryDBMsg;
-                                    msg.arg1 = UdeskChatActivity.PullEventModel;
-                                    msg.obj = messageInfos;
-                                    mChatView.getHandler().sendMessage(msg);
+                            try {
+                                TicketReplieMode replieMode = JsonUtils.parserTicketReplie(message);
+                                if (replieMode != null && replieMode.getContents() != null) {
+                                    List<MessageInfo> messageInfos = buildLeaveMsgByTicketReplies(replieMode.getContents());
+                                    if (messageInfos != null && mChatView.getHandler() != null) {
+                                        Message msg = Message.obtain();
+                                        msg.what = MessageWhat.loadHistoryDBMsg;
+                                        msg.arg1 = UdeskChatActivity.PullEventModel;
+                                        msg.obj = messageInfos;
+                                        mChatView.getHandler().sendMessage(msg);
+                                    }
                                 }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
 
                         }
@@ -619,19 +662,27 @@ public class ChatActivityPresenter {
                         @Override
                         public void onSuccess(String message) {
                             //修改消息状态
-                            UdeskDBManager.getInstance().updateMsgSendFlag(msgId, UdeskConst.SendFlag.RESULT_SUCCESS);
-                            onMessageReceived(msgId);
+                            try {
+                                UdeskDBManager.getInstance().updateMsgSendFlag(msgId, UdeskConst.SendFlag.RESULT_SUCCESS);
+                                onMessageReceived(msgId);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         @Override
                         public void onFail(String msg) {
-                            UdeskDBManager.getInstance().updateMsgSendFlag(msgId, UdeskConst.SendFlag.RESULT_FAIL);
-                            if (mChatView.getHandler() != null) {
-                                Message message = mChatView.getHandler().obtainMessage(
-                                        MessageWhat.changeImState);
-                                message.obj = msgId;
-                                message.arg1 = UdeskConst.SendFlag.RESULT_FAIL;
-                                mChatView.getHandler().sendMessage(message);
+                            try {
+                                UdeskDBManager.getInstance().updateMsgSendFlag(msgId, UdeskConst.SendFlag.RESULT_FAIL);
+                                if (mChatView.getHandler() != null) {
+                                    Message message = mChatView.getHandler().obtainMessage(
+                                            MessageWhat.changeImState);
+                                    message.obj = msgId;
+                                    message.arg1 = UdeskConst.SendFlag.RESULT_FAIL;
+                                    mChatView.getHandler().sendMessage(message);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                     }
@@ -663,15 +714,23 @@ public class ChatActivityPresenter {
                         new UdeskCallBack() {
                             @Override
                             public void onSuccess(String message) {
-                                if (isNeedGetAgent) {
-                                    getAgentInfo(null, null);
+                                try {
+                                    if (isNeedGetAgent) {
+                                        getAgentInfo(null, null);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
                             }
 
                             @Override
                             public void onFail(String message) {
-                                if (isNeedGetAgent) {
-                                    getAgentInfo(null, null);
+                                try {
+                                    if (isNeedGetAgent) {
+                                        getAgentInfo(null, null);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
                             }
                         });
@@ -749,11 +808,15 @@ public class ChatActivityPresenter {
 
                         @Override
                         public void onFail(String message) {
-                            if (hasSurvyCallBack != null) {
-                                hasSurvyCallBack.hasSurvy(true);
-                            } else {
-                                //出错给提示
-                                sendSurveyerror();
+                            try {
+                                if (hasSurvyCallBack != null) {
+                                    hasSurvyCallBack.hasSurvy(true);
+                                } else {
+                                    //出错给提示
+                                    sendSurveyerror();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                     }
@@ -775,25 +838,33 @@ public class ChatActivityPresenter {
 
                         @Override
                         public void onSuccess(String message) {
-                            SurveyOptionsModel model = JsonUtils.parseSurveyOptions(message);
-                            if (model != null && (model.getOptions() == null || model.getOptions().isEmpty()) && hasSurvyCallBack != null) {
-                                hasSurvyCallBack.hasSurvy(true);
-                            } else if (mChatView.getHandler() != null) {
-                                Message messge = mChatView.getHandler().obtainMessage(
-                                        MessageWhat.surveyNotify);
-                                messge.obj = model;
-                                mChatView.getHandler().sendMessage(messge);
-                            } else if (hasSurvyCallBack != null) {
-                                hasSurvyCallBack.hasSurvy(true);
+                            try {
+                                SurveyOptionsModel model = JsonUtils.parseSurveyOptions(message);
+                                if (model != null && (model.getOptions() == null || model.getOptions().isEmpty()) && hasSurvyCallBack != null) {
+                                    hasSurvyCallBack.hasSurvy(true);
+                                } else if (mChatView.getHandler() != null) {
+                                    Message messge = mChatView.getHandler().obtainMessage(
+                                            MessageWhat.surveyNotify);
+                                    messge.obj = model;
+                                    mChatView.getHandler().sendMessage(messge);
+                                } else if (hasSurvyCallBack != null) {
+                                    hasSurvyCallBack.hasSurvy(true);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
 
                         @Override
                         public void onFail(String message) {
-                            if (hasSurvyCallBack != null) {
-                                hasSurvyCallBack.hasSurvy(true);
-                            } else {
-                                sendSurveyerror();
+                            try {
+                                if (hasSurvyCallBack != null) {
+                                    hasSurvyCallBack.hasSurvy(true);
+                                } else {
+                                    sendSurveyerror();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
 
                         }
@@ -811,7 +882,11 @@ public class ChatActivityPresenter {
     //提交调查选项内容
     public void putIMSurveyResult(String optionId, String show_type, String survey_remark, String tags) {
         if (TextUtils.isEmpty(customerId)) {
-            mChatView.setIsPermmitSurvy(true);
+            try {
+                mChatView.setIsPermmitSurvy(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return;
         }
         try {
@@ -826,9 +901,13 @@ public class ChatActivityPresenter {
 
                         @Override
                         public void onSuccess(String string) {
-                            Message message = mChatView.getHandler().obtainMessage(
-                                    MessageWhat.Survey_Success);
-                            mChatView.getHandler().sendMessage(message);
+                            try {
+                                Message message = mChatView.getHandler().obtainMessage(
+                                        MessageWhat.Survey_Success);
+                                mChatView.getHandler().sendMessage(message);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         @Override
@@ -883,9 +962,13 @@ public class ChatActivityPresenter {
     }
 
     private boolean isNeedAddCachePre(MessageInfo msg) {
-        if (mChatView.getPressionStatus(msg)) {
-            cachePreMsg.add(msg);
-            return true;
+        try {
+            if (mChatView.getPressionStatus(msg)) {
+                cachePreMsg.add(msg);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -1012,9 +1095,6 @@ public class ChatActivityPresenter {
                         System.currentTimeMillis(), "", scaleImageFile.getPath(), "", "");
                 saveMessage(msg);
                 mChatView.addMessage(msg);
-                if (isNeedAddCachePre(msg)) {
-                    return;
-                }
                 upLoadFile(msg.getLocalPath(), msg);
             }
 
@@ -1046,9 +1126,6 @@ public class ChatActivityPresenter {
                     System.currentTimeMillis(), "", filepath, fileName, fileSzie);
             saveMessage(msg);
             mChatView.addMessage(msg);
-            if (isNeedAddCachePre(msg)) {
-                return;
-            }
             upLoadFile(filepath, msg);
         } catch (Exception e) {
             e.printStackTrace();
@@ -1066,9 +1143,9 @@ public class ChatActivityPresenter {
      * @param bitmapDir
      */
     public void sendLocationMessage(double lat, double longitude, String localvalue, String bitmapDir) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(lat).append(";").append(longitude).append(";").append("16;").append(localvalue);
         try {
+            StringBuilder builder = new StringBuilder();
+            builder.append(lat).append(";").append(longitude).append(";").append("16;").append(localvalue);
             MessageInfo msg = buildSendMessage(
                     UdeskConst.ChatMsgTypeString.TYPE_Location,
                     System.currentTimeMillis(), builder.toString(), bitmapDir, "", "");
@@ -1099,9 +1176,6 @@ public class ChatActivityPresenter {
             msg.setDuration(duration);
             saveMessage(msg);
             mChatView.addMessage(msg);
-            if (isNeedAddCachePre(msg)) {
-                return;
-            }
             upLoadFile(audiopath, msg);
         } catch (Exception e) {
             e.printStackTrace();
@@ -1110,16 +1184,20 @@ public class ChatActivityPresenter {
 
     //发送商品链接广告
     public void sendCommodityMessage(UdeskCommodityItem commodityItem) {
-        UdeskMessageManager.getInstance().sendComodityMessage(buildCommodityMessage(commodityItem),
-                mChatView.getAgentInfo().getAgentJid());
+        try {
+            UdeskMessageManager.getInstance().sendComodityMessage(buildCommodityMessage(commodityItem),
+                    mChatView.getAgentInfo().getAgentJid());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //构造广告消息的格式
     private String buildCommodityMessage(UdeskCommodityItem item) {
         JSONObject root = new JSONObject();
-        JSONObject dataJson = new JSONObject();
-        JSONObject paramsJson = new JSONObject();
         try {
+            JSONObject dataJson = new JSONObject();
+            JSONObject paramsJson = new JSONObject();
             paramsJson.put("detail", item.getSubTitle());
             dataJson.put("url", item.getCommodityUrl());
             dataJson.put("image", item.getThumbHttpUrl());
@@ -1237,9 +1315,9 @@ public class ChatActivityPresenter {
 
 
     //htpp 方式保存消息到后台
-    public void messageSave(final MessageInfo msg) {
+    public synchronized void messageSave(final MessageInfo msg) {
         try {
-            if (TextUtils.isEmpty(customerId)) {
+            if (TextUtils.isEmpty(customerId) || msg == null) {
                 return;
             }
             msg.setmAgentJid(mChatView.getAgentInfo().getAgentJid());
@@ -1260,9 +1338,6 @@ public class ChatActivityPresenter {
                                 MessageInfo messageInfo = sendingMsgCache.get(msg.getMsgId());
                                 if (messageInfo != null) {
                                     messageInfo.setCount();
-                                    if (messageInfo.getCount() >= 2) {
-                                        onMessageReceived(msg.getMsgId());
-                                    }
                                 }
                                 // 发给当前的客服
                                 msg.setNoNeedSave(true);
@@ -1284,9 +1359,8 @@ public class ChatActivityPresenter {
                         @Override
                         public void onFail(String message) {
                             // 发给当前的客服
-                            // 发给当前的客服
                             try {
-                                if (mChatView != null && mChatView.getAgentInfo() != null){
+                                if (mChatView != null && mChatView.getAgentInfo() != null) {
                                     msg.setmAgentJid(mChatView.getAgentInfo().getAgentJid());
                                 }
                                 msg.setNoNeedSave(false);
@@ -1497,25 +1571,29 @@ public class ChatActivityPresenter {
     }
 
     public void addLeavMsgWeclome(String content) {
-        if (TextUtils.isEmpty(content)) {
-            return;
+        try {
+            if (TextUtils.isEmpty(content)) {
+                return;
+            }
+            MessageInfo msg = new MessageInfo();
+            msg.setMsgtype(UdeskConst.ChatMsgTypeString.TYPE_RICH);
+            if (TextUtils.isEmpty(leavMsgId)) {
+                leavMsgId = UdeskIdBuild.buildMsgId();
+            } else {
+                return;
+            }
+            msg.setTime(System.currentTimeMillis());
+            msg.setMsgId(leavMsgId);
+            msg.setDirection(UdeskConst.ChatMsgDirection.Recv);
+            msg.setSendFlag(UdeskConst.SendFlag.RESULT_SUCCESS);
+            msg.setReadFlag(UdeskConst.ChatMsgReadFlag.read);
+            msg.setMsgContent(content);
+            msg.setPlayflag(UdeskConst.PlayFlag.NOPLAY);
+            //本地伪装成收到一条直接留言的欢迎语
+            onNewMessage(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        MessageInfo msg = new MessageInfo();
-        msg.setMsgtype(UdeskConst.ChatMsgTypeString.TYPE_RICH);
-        if (TextUtils.isEmpty(leavMsgId)) {
-            leavMsgId = UdeskIdBuild.buildMsgId();
-        } else {
-            return;
-        }
-        msg.setTime(System.currentTimeMillis());
-        msg.setMsgId(leavMsgId);
-        msg.setDirection(UdeskConst.ChatMsgDirection.Recv);
-        msg.setSendFlag(UdeskConst.SendFlag.RESULT_SUCCESS);
-        msg.setReadFlag(UdeskConst.ChatMsgReadFlag.read);
-        msg.setMsgContent(content);
-        msg.setPlayflag(UdeskConst.PlayFlag.NOPLAY);
-        //本地伪装成收到一条直接留言的欢迎语
-        onNewMessage(msg);
     }
 
     private void addEventMsg(MessageInfo msgInfo) {
@@ -1533,7 +1611,11 @@ public class ChatActivityPresenter {
 
     //保存消息
     public void saveMessage(MessageInfo msg) {
-        UdeskDBManager.getInstance().addMessageInfo(msg);
+        try {
+            UdeskDBManager.getInstance().addMessageInfo(msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 //    private void uploadFileByStrategy(String filePath, final MessageInfo message) {
@@ -1729,6 +1811,9 @@ public class ChatActivityPresenter {
                             qiniuUrl);
                     msg.setMsgContent(qiniuUrl);
                     mToMsgMap.remove(key);
+                    if (isNeedAddCachePre(msg)) {
+                        return;
+                    }
                     if (mChatView.isNeedQueueMessageSave()) {
                         queueMessageSave(msg);
                         return;
@@ -1745,6 +1830,9 @@ public class ChatActivityPresenter {
                     }
                     UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(),
                             UdeskConst.SendFlag.RESULT_FAIL);
+                    if (info != null && info.error != null && info.error.equals("file or data size is zero")) {
+                        mChatView.showFailToast(info.error);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1755,10 +1843,14 @@ public class ChatActivityPresenter {
     }
 
     //发送对话过滤消息
-    public void sendPrefilterMsg() {
+    public void sendPrefilterMsg(boolean isRetry) {
         if (cachePreMsg.size() > 0) {
             for (MessageInfo messageInfo : cachePreMsg) {
-                startRetryMsg(messageInfo);
+                if (isRetry) {
+                    startRetryMsg(messageInfo);
+                } else {
+                    updateFailureStatus(messageInfo);
+                }
             }
             cachePreMsg.clear();
         }
@@ -1830,7 +1922,11 @@ public class ChatActivityPresenter {
 
                 @Override
                 public void onSuccess(byte[] t) {
-                    UdeskDBManager.getInstance().updateMsgLoaclUrl(info.getMsgId(), file.getAbsolutePath());
+                    try {
+                        UdeskDBManager.getInstance().updateMsgLoaclUrl(info.getMsgId(), file.getAbsolutePath());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
@@ -1952,15 +2048,20 @@ public class ChatActivityPresenter {
      * @throws Exception
      */
     private byte[] readStream(InputStream inStream) throws Exception {
-        byte[] buffer = new byte[1024];
-        int len;
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        while ((len = inStream.read(buffer)) != -1) {
-            outStream.write(buffer, 0, len);
+        byte[] data = new byte[0];
+        try {
+            byte[] buffer = new byte[1024];
+            int len;
+            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+            while ((len = inStream.read(buffer)) != -1) {
+                outStream.write(buffer, 0, len);
+            }
+            data = outStream.toByteArray();
+            outStream.close();
+            inStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        byte[] data = outStream.toByteArray();
-        outStream.close();
-        inStream.close();
         return data;
 
     }

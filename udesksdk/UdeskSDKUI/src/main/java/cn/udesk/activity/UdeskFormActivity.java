@@ -17,8 +17,12 @@ public class UdeskFormActivity extends UdeskBaseWebViewActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UdeskUtil.setOrientation(this);
-        loadingView();
+        try {
+            UdeskUtil.setOrientation(this);
+            loadingView();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadingView() {

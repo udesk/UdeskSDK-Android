@@ -30,8 +30,8 @@ public class UdeskZoomImageActivty extends UdeskBaseActivity implements
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
-        UdeskUtil.setOrientation(this);
         try {
+            UdeskUtil.setOrientation(this);
             if (!Fresco.hasBeenInitialized()) {
                 UdeskUtil.frescoInit(this);
             }

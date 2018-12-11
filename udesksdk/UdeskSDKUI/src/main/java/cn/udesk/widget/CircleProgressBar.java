@@ -46,53 +46,65 @@ public class CircleProgressBar extends View {
     }
 
     private void init() {
-        backCirclePaint = new Paint();
-        backCirclePaint.setStyle(Paint.Style.STROKE);
-        backCirclePaint.setAntiAlias(true);
-        backCirclePaint.setColor(0xFFFFFFFF);
-        backCirclePaint.setStrokeWidth(circleBorderWidth);
+        try {
+            backCirclePaint = new Paint();
+            backCirclePaint.setStyle(Paint.Style.STROKE);
+            backCirclePaint.setAntiAlias(true);
+            backCirclePaint.setColor(0xFFFFFFFF);
+            backCirclePaint.setStrokeWidth(circleBorderWidth);
 
 
-        circlePaint = new Paint();
-        circlePaint.setStyle(Paint.Style.FILL);
-        circlePaint.setAntiAlias(true);
-        circlePaint.setColor(0x80333333);
+            circlePaint = new Paint();
+            circlePaint.setStyle(Paint.Style.FILL);
+            circlePaint.setAntiAlias(true);
+            circlePaint.setColor(0x80333333);
 
 
-        textPaint = new Paint();
-        textPaint.setAntiAlias(true);
-        textPaint.setTextSize(textSize);
-        textPaint.setColor(0xFFFFFFFF);
+            textPaint = new Paint();
+            textPaint.setAntiAlias(true);
+            textPaint.setTextSize(textSize);
+            textPaint.setColor(0xFFFFFFFF);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int measureWidth = MeasureSpec.getSize(widthMeasureSpec);
-        int measureHeight = MeasureSpec.getSize(heightMeasureSpec);
-        setMeasuredDimension(Math.min(measureWidth, measureHeight), Math.min(measureWidth, measureHeight));
+        try {
+            int measureWidth = MeasureSpec.getSize(widthMeasureSpec);
+            int measureHeight = MeasureSpec.getSize(heightMeasureSpec);
+            setMeasuredDimension(Math.min(measureWidth, measureHeight), Math.min(measureWidth, measureHeight));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        //半径
-        float radius = (getMeasuredWidth() - circlePadding * 3) / 2;
-        //X轴中点坐标
-        int centerX = getMeasuredWidth() / 2;
-        //画圆
-        canvas.drawCircle(centerX, centerX, radius, circlePaint);
+        try {
+            //半径
+            float radius = (getMeasuredWidth() - circlePadding * 3) / 2;
+            //X轴中点坐标
+            int centerX = getMeasuredWidth() / 2;
+            //画圆
+            canvas.drawCircle(centerX, centerX, radius, circlePaint);
 
-        //画圆弧
-        canvas.drawArc(
-                new RectF(centerX - (radius - circleBorderWidth / 2), centerX - (radius - circleBorderWidth / 2),
-                        centerX + (radius - circleBorderWidth / 2), centerX + (radius - circleBorderWidth / 2)),
-                -90, (float) (progress * 3.6), false, backCirclePaint);
+            //画圆弧
+            canvas.drawArc(
+                    new RectF(centerX - (radius - circleBorderWidth / 2), centerX - (radius - circleBorderWidth / 2),
+                            centerX + (radius - circleBorderWidth / 2), centerX + (radius - circleBorderWidth / 2)),
+                    -90, (float) (progress * 3.6), false, backCirclePaint);
 
-        //4.绘制文字
-        float textWidth = textPaint.measureText(progress + "%");
-        int textHeight = (int) (Math.ceil(textPaint.getFontMetrics().descent - textPaint.getFontMetrics().ascent) + 2);
-        canvas.drawText(progress + "%", centerX - textWidth / 2, centerX + textHeight / 4, textPaint);
+            //4.绘制文字
+            float textWidth = textPaint.measureText(progress + "%");
+            int textHeight = (int) (Math.ceil(textPaint.getFontMetrics().descent - textPaint.getFontMetrics().ascent) + 2);
+            canvas.drawText(progress + "%", centerX - textWidth / 2, centerX + textHeight / 4, textPaint);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -101,13 +113,17 @@ public class CircleProgressBar extends View {
      * @param percent
      */
     public void setPercent(float percent) {
-        if (percent < 0) {
-            percent = 0;
-        } else if (percent > 100) {
-            percent = 100;
+        try {
+            if (percent < 0) {
+                percent = 0;
+            } else if (percent > 100) {
+                percent = 100;
+            }
+            this.progress = percent;
+            invalidate();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        this.progress = percent;
-        invalidate();
     }
 
     public float getPercent(){

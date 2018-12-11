@@ -47,10 +47,14 @@ public class UdeskOptionsAgentGroupActivity extends UdeskBaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UdeskUtil.setOrientation(this);
-        setContentView(R.layout.udesk_options_agentgroup_view);
-        initView();
-        getImGroupInfo();
+        try {
+            UdeskUtil.setOrientation(this);
+            setContentView(R.layout.udesk_options_agentgroup_view);
+            initView();
+            getImGroupInfo();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initView() {

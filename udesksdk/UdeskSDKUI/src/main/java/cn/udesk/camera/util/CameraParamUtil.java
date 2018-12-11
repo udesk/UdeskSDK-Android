@@ -90,18 +90,15 @@ public class CameraParamUtil {
                 return true;
             }
         }
-        Log.i("udesksdk", "FocusMode not supported " + focusMode);
         return false;
     }
 
     public boolean isSupportedPictureFormats(List<Integer> supportedPictureFormats, int jpeg) {
         for (int i = 0; i < supportedPictureFormats.size(); i++) {
             if (jpeg == supportedPictureFormats.get(i)) {
-                Log.i("udesksdk", "Formats supported " + jpeg);
                 return true;
             }
         }
-        Log.i("udesksdk", "Formats not supported " + jpeg);
         return false;
     }
 

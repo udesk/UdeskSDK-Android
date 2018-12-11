@@ -185,7 +185,7 @@ public class MessageAdatper extends BaseAdapter {
             if (message instanceof UdeskCommodityItem) {
                 return COMMODITY;
             }
-            if (message instanceof UdeskQueueItem){
+            if (message instanceof UdeskQueueItem) {
                 return MSG_IN_THE_LINE;
             }
             switch (UdeskConst.parseTypeForMessage(message.getMsgtype())) {
@@ -267,7 +267,7 @@ public class MessageAdatper extends BaseAdapter {
         return super.getViewTypeCount();
     }
 
-    void removeQueueMessage(MessageInfo message){
+    void removeQueueMessage(MessageInfo message) {
         if (message == null) {
             return;
         }
@@ -305,7 +305,7 @@ public class MessageAdatper extends BaseAdapter {
 
                 }
             }
-            if (message.getDirection() == UdeskConst.ChatMsgDirection.Recv && !message.getSend_status().equals("rollback")) {
+            if (!TextUtils.isEmpty(message.getSubsessionid()) && message.getDirection() == UdeskConst.ChatMsgDirection.Recv && !message.getSend_status().equals("rollback")) {
                 isNeedLoadMessage(message);
             }
             list.add(message);
@@ -324,17 +324,12 @@ public class MessageAdatper extends BaseAdapter {
             }
             for (int i = list.size() - 1; i > 0; i--) {
                 MessageInfo messageUI = list.get(i);
-                if (messageUI.getDirection() == UdeskConst.ChatMsgDirection.Recv) {
-                    if (messageUI.getSubsessionid().equals(message.getSubsessionid())) {
-                        if (message.getSeqNum() - messageUI.getSeqNum() != 1) {
-                            ((UdeskChatActivity) mContext).pullByJumpOrder(messageUI.getSeqNum(), messageUI.getSubsessionid());
-                            return;
-                        } else {
-                            return;
-                        }
-                    } else {
-                        return;
-                    }
+                if (!TextUtils.isEmpty(messageUI.getSubsessionid())
+                        && messageUI.getSubsessionid().equals(message.getSubsessionid())
+                        && messageUI.getDirection() == UdeskConst.ChatMsgDirection.Recv
+                        && message.getSeqNum() - messageUI.getSeqNum() != 1) {
+                    ((UdeskChatActivity) mContext).pullByJumpOrder(messageUI.getSeqNum(), messageUI.getSubsessionid());
+                    return;
                 }
             }
         } catch (Exception e) {
@@ -1173,7 +1168,7 @@ public class MessageAdatper extends BaseAdapter {
                 int max = UdeskUtils.getScreenWidth(mContext) * 3 / 5;
                 int step = (int) ((duration < 10) ? duration : (duration / 10 + 9));
                 record_item_content.getLayoutParams().width = (step == 0) ? min
-                        : (min + (max - min) / 17 * step); //计算17份  2份是给背景图尖角预留位置
+                        : (min + (max - min) / 17 * step);//计算17份  2份是给背景图尖角预留位置
             } catch (Exception e) {
                 e.printStackTrace();
             } catch (OutOfMemoryError error) {
@@ -1614,7 +1609,7 @@ public class MessageAdatper extends BaseAdapter {
             try {
                 final UdeskQueueItem item = (UdeskQueueItem) message;
                 queueContext.setText(item.getQueueContent());
-                if (item.isEnableLeaveMsg()){
+                if (item.isEnableLeaveMsg()) {
                     leaveingMsg.setVisibility(View.VISIBLE);
                     leaveingMsg.setOnClickListener(new OnClickListener() {
                         @Override
@@ -1622,7 +1617,7 @@ public class MessageAdatper extends BaseAdapter {
                             ((UdeskChatActivity) mContext).leaveMessage();
                         }
                     });
-                }else {
+                } else {
                     leaveingMsg.setVisibility(View.GONE);
                 }
             } catch (Exception e) {
@@ -1768,7 +1763,7 @@ public class MessageAdatper extends BaseAdapter {
             if (info instanceof UdeskCommodityItem) {
                 holder.tvTime.setVisibility(View.VISIBLE);
                 holder.tvTime.setText(UdeskUtil.formatLongTypeTimeToString(mContext, System.currentTimeMillis()));
-            }else if (info instanceof  UdeskQueueItem) {
+            } else if (info instanceof UdeskQueueItem) {
                 holder.tvTime.setVisibility(View.VISIBLE);
                 holder.tvTime.setText(UdeskUtil.formatLongTypeTimeToString(mContext, System.currentTimeMillis()));
             } else if (info.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_EVENT)) {

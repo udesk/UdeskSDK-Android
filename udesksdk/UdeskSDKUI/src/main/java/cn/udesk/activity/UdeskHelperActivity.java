@@ -45,9 +45,13 @@ public class UdeskHelperActivity extends UdeskBaseActivity implements OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UdeskUtil.setOrientation(this);
-        setContentView(R.layout.udesk_activity_base);
-        initView();
+        try {
+            UdeskUtil.setOrientation(this);
+            setContentView(R.layout.udesk_activity_base);
+            initView();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initView() {

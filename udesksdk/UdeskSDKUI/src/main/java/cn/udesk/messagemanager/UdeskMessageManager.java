@@ -212,22 +212,26 @@ public class UdeskMessageManager {
                                            String content, long duration, String send_status,
                                            String imsessionId, Integer seqNum, String fileName, String fileSize, Long receiveMsgTime) {
         MessageInfo msg = new MessageInfo();
-        msg.setMsgtype(msgType);
-        msg.setTime(receiveMsgTime);
-        msg.setMsgId(msgId);
-        msg.setDirection(UdeskConst.ChatMsgDirection.Recv);
-        msg.setSendFlag(UdeskConst.SendFlag.RESULT_SUCCESS);
-        msg.setReadFlag(UdeskConst.ChatMsgReadFlag.unread);
-        msg.setMsgContent(content);
-        msg.setPlayflag(UdeskConst.PlayFlag.NOPLAY);
-        msg.setLocalPath("");
-        msg.setDuration(duration);
-        msg.setmAgentJid(agentJid);
-        msg.setSend_status(send_status);
-        msg.setSubsessionid(imsessionId);
-        msg.setSeqNum(seqNum);
-        msg.setFilename(fileName);
-        msg.setFilesize(fileSize);
+        try {
+            msg.setMsgtype(msgType);
+            msg.setTime(receiveMsgTime);
+            msg.setMsgId(msgId);
+            msg.setDirection(UdeskConst.ChatMsgDirection.Recv);
+            msg.setSendFlag(UdeskConst.SendFlag.RESULT_SUCCESS);
+            msg.setReadFlag(UdeskConst.ChatMsgReadFlag.unread);
+            msg.setMsgContent(content);
+            msg.setPlayflag(UdeskConst.PlayFlag.NOPLAY);
+            msg.setLocalPath("");
+            msg.setDuration(duration);
+            msg.setmAgentJid(agentJid);
+            msg.setSend_status(send_status);
+            msg.setSubsessionid(imsessionId);
+            msg.setSeqNum(seqNum);
+            msg.setFilename(fileName);
+            msg.setFilesize(fileSize);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return msg;
     }
 

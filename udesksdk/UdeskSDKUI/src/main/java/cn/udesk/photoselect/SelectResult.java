@@ -103,7 +103,12 @@ public class SelectResult {
     }
 
     public static String getPhotoType(int position) {
-        return photos.get(position).getPictureType();
+        try {
+            return photos.get(position).getPictureType();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
 

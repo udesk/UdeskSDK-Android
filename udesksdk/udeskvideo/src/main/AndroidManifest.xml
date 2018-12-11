@@ -22,16 +22,6 @@
             />
 
 
-        <receiver android:name="udesk.udeskvideo.receive.UdeskSDKReceiver"
-            android:exported="true">
-
-            <intent-filter>
-                <action android:name="com.udesk.udesksdk.event" />
-                <action android:name="com.udesk.startvideo.event" />
-            </intent-filter>
-
-        </receiver>
-
         <service android:name="udesk.udeskvideo.floatview.service.FloatMonkService"
             />
 
