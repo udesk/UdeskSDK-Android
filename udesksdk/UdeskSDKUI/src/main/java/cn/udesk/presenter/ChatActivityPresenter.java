@@ -1284,9 +1284,16 @@ public class ChatActivityPresenter {
                         @Override
                         public void onFail(String message) {
                             // 发给当前的客服
-                            msg.setmAgentJid(mChatView.getAgentInfo().getAgentJid());
-                            msg.setNoNeedSave(false);
-                            UdeskMessageManager.getInstance().sendMessage(msg);
+                            // 发给当前的客服
+                            try {
+                                if (mChatView != null && mChatView.getAgentInfo() != null){
+                                    msg.setmAgentJid(mChatView.getAgentInfo().getAgentJid());
+                                }
+                                msg.setNoNeedSave(false);
+                                UdeskMessageManager.getInstance().sendMessage(msg);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
         } catch (Exception e) {
