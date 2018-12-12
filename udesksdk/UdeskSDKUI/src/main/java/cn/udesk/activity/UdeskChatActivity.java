@@ -428,13 +428,13 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                                         activity.mAgentInfo.setAgentJid(msgInfo.getmAgentJid());
                                         activity.mPresenter.createIMCustomerInfo();
                                     }
-                                } else if (activity.mAgentInfo != null && activity.mAgentInfo.getAgentCode() == UdeskConst.AgentReponseCode.WaitAgent) {
+                                } else if ( !TextUtils.isEmpty(msgInfo.getmAgentJid()) && activity.mAgentInfo != null && activity.mAgentInfo.getAgentCode() == UdeskConst.AgentReponseCode.WaitAgent) {
                                     if (activity.myRunnable != null) {
                                         this.removeCallbacks(activity.myRunnable);
                                         this.post(activity.myRunnable);
                                     }
                                 }else{
-                                    if (activity.mPresenter != null) {
+                                    if (activity.mPresenter != null && !TextUtils.isEmpty(msgInfo.getmAgentJid())) {
                                         activity.mPresenter.getAgentInfo(activity.pre_session_id, null);
                                     }
                                 }
