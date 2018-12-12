@@ -23,9 +23,9 @@
 	不能共用同一个Map，  创建用户信息必须设置sdktoken，二更新用户信息不能设置sdktoken。并且更新用户信息如果设置了电话和邮箱，udesk系统存在，
 	会导致更新失败， 建议自定义字段来采集用户的邮箱和电话信息。
 	
+	demo中的 NotificationUtils，状态通知栏没有做 Android O通知栏适配， 你在实现targetSdkVersion 大于26时， 必须做对应的通知栏适配，
+	不可以用NotificationUtils  处理方式
 	
-
-
 
 ### 4.1.4 修复内容 
     1.排队场景 发送图片 客服显示问题修复
