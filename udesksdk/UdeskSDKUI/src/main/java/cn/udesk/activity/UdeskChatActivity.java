@@ -3283,6 +3283,11 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
             unRegister();
             UdeskHttpFacade.getInstance().cancel();
             InvokeEventContainer.getInstance().event_IsOver.unBind(this);
+            if (mBtnAudio != null){
+                mBtnAudio.setRecordingListener(null);
+                mBtnAudio.destoryRelease();
+            }
+            XPermissionUtils.destory();
         } catch (Exception e) {
             e.printStackTrace();
         }

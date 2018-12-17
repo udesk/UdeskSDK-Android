@@ -88,7 +88,7 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
             // 初始化 dialog 管理器
             mDialogManager = new RecordDialogManager(getContext());
             // 获取音频管理，以申请音频焦点
-            mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+            mAudioManager = (AudioManager) getContext().getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
             // 初始化录音管理器
             mAudioRecordManager = AudioRecordManager.getInstance(mAudioSaveDir);
 
@@ -387,6 +387,18 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
          * @param message 错误提示
          */
         void recordError(String message);
+    }
+
+    public void destoryRelease(){
+        try {
+            reset();
+            if (mAudioRecordManager != null){
+                mAudioRecordManager.setAudioStateListener(null);
+                mAudioRecordManager = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
