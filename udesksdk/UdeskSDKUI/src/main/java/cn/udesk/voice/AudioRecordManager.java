@@ -3,7 +3,6 @@ package cn.udesk.voice;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
-import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -143,6 +142,7 @@ public class AudioRecordManager {
                     audioRecorder = new AudioRecord(audioSource, sampleRate, channelConfig, audioFormat, bufferSize);
                     if (audioRecorder.getState() != AudioRecord.STATE_INITIALIZED) {
                         if (mStateListener != null) {
+                            releaseAudio();
                             mStateListener.prepareError("AudioRecord initialization failed");
                         }
                         return;
@@ -193,6 +193,13 @@ public class AudioRecordManager {
                     }
                     payloadSize = 0;
                     audioRecorder.startRecording();
+                    if (audioRecorder.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING){
+                        if (mStateListener != null) {
+                            releaseAudio();
+                            mStateListener.prepareError("AudioRecord initialization failed");
+                        }
+                        return;
+                    }
                     audioRecorder.read(buffer, 0, buffer.length);
                     startTime = (new Date()).getTime();
                     hasPrepare = true;
@@ -277,7 +284,6 @@ public class AudioRecordManager {
 
     }
 
-
     /**
      * @return 录音的时间
      */
@@ -285,7 +291,7 @@ public class AudioRecordManager {
 
 
         try {
-            if (audioRecorder.getState() == AudioRecord.STATE_UNINITIALIZED) {
+            if (audioRecorder == null || audioRecorder.getState() == AudioRecord.STATE_UNINITIALIZED) {
                 return 0;
             }
             audioRecorder.stop();

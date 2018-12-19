@@ -2,7 +2,6 @@ package cn.udesk.voice;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Resources;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
@@ -48,6 +47,7 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
     private OnRecordingListener mRecordingListener;
     private String mAudioFilePath;
     private boolean hasInit = false;
+    private volatile boolean isActionUp = false;
 
     public AudioRecordButton(Context context) {
         this(context, null);
@@ -98,6 +98,7 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
             setOnLongClickListener(new OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    isActionUp = false;
                     if (mRecordingListener != null) {
                         mRecordingListener.recordStart();
                     }
@@ -131,6 +132,7 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
                     Thread.sleep(100);
                     mRecordTime += 100;
                     if (mRecordTime >= 59 * 1000) {
+                        isRecording = false;
                         mHandler.sendEmptyMessage(MSG_VOICE_FINISHED);
                     } else {
                         if (mRecordTime >= 200 && mRecordingListener != null && getRecordAudioLength() < 20) {
@@ -138,7 +140,17 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
                             isRecording = false;
                             mHandler.sendEmptyMessage(MSG_VOICE_ERROR);
                         } else {
-                            mHandler.sendEmptyMessage(MSG_VOICE_CHANGE);
+                            if (isActionUp){
+                                isRecording = false;
+                                if (mRecordTime<1000){
+                                    mDialogManager.dismissDialog();
+                                    mAudioRecordManager.releaseAudio();
+                                }else {
+                                    mHandler.sendEmptyMessage(MSG_VOICE_FINISHED);
+                                }
+                            }else {
+                                mHandler.sendEmptyMessage(MSG_VOICE_CHANGE);
+                            }
                         }
                     }
                 } catch (Exception e) {
@@ -251,6 +263,7 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
                 case MotionEvent.ACTION_UP:
                     // 未触发 longClick,直接重置
                     if (!isReady) {
+                        isActionUp = true;
                         reset();
                         return super.onTouchEvent(event);
                     }
@@ -267,6 +280,7 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
                         if (mAudioManager != null) {
                             mAudioManager.abandonAudioFocus(null);
                         }
+                        isActionUp = true;
                         break;
                     } else if (mCurrentState == STATE_RECORDING) {
                         mDialogManager.dismissDialog();
@@ -279,6 +293,7 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
                         mDialogManager.dismissDialog();
                         mAudioRecordManager.cancelAudio();
                     }
+                    isActionUp = true;
                     reset();
                     break;
             }
@@ -348,7 +363,9 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
             isRecording = false;
             mRecordTime = 0;
             changeState(STATE_NORMAL);
-
+            if (mDialogManager != null){
+                mDialogManager.dismissDialog();
+            }
             // 释放焦点
             if (mAudioManager != null) {
                 mAudioManager.abandonAudioFocus(null);
