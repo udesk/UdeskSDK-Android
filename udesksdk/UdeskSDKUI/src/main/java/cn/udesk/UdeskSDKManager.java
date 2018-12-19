@@ -346,11 +346,13 @@ public class UdeskSDKManager {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             } else {
-                //没有开启导航组进入，得清楚groupid,agentid
-                PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-                        UdeskConst.SharePreParams.Udesk_Group_Id, "");
-                PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-                        UdeskConst.SharePreParams.Udesk_Agent_Id, "");
+                //没有开启导航组进入，得清除groupid,agentid
+                if (imSetting != null && !imSetting.getEnable_im_group()){
+                    PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                            UdeskConst.SharePreParams.Udesk_Group_Id, "");
+                    PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                            UdeskConst.SharePreParams.Udesk_Agent_Id, "");
+                }
                 toLanuchChatAcitvity(context);
             }
         } catch (Exception e) {
