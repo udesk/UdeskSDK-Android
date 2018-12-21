@@ -1,6 +1,9 @@
 # UdeskSDK Android 4.1.0+ 开发者文档
 
 # 特别提醒
+
+###SDK还未完成适配9.0系统测试 。请targetSdkVersion 设置值小于28  小于28  小于28 
+
 ```
    如果你的项目打包指定了so库的加载配置了，
      ndk{
