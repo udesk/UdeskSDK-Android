@@ -124,13 +124,13 @@ public class PhotoSelectorActivity extends FragmentActivity implements View.OnCl
             picture_recycler.setLayoutManager(new GridLayoutManager(this, 4));
             // 解决调用 notifyItemChanged 闪烁问题,取消默认动画
             ((SimpleItemAnimator) picture_recycler.getItemAnimator()).setSupportsChangeAnimations(false);
-            photosAdapter = new PhotosAdapter(getApplicationContext(), this, disPlayWidth, disPlayHeghit);
+            photosAdapter = new PhotosAdapter(PhotoSelectorActivity.this, this, disPlayWidth, disPlayHeghit);
             picture_recycler.setAdapter(photosAdapter);
 
             rootViewAllItems = (RelativeLayout) findViewById(R.id.udesk_root_view_album_items);
             allfolderRc = (RecyclerView) findViewById(R.id.udesk_album_items);
             allfolderRc.setLayoutManager(new LinearLayoutManager(this));
-            folderAdapter = new FolderAdapter(this, this);
+            folderAdapter = new FolderAdapter(getApplicationContext(), this);
             allfolderRc.setAdapter(folderAdapter);
 
             localMedialLoader = new LocalMedialLoader();

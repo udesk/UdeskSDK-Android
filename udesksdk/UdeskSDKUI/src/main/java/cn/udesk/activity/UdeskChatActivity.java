@@ -219,6 +219,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
         public static final int ChangeFielProgress = 22;
         public static final int ChangeVideoThumbnail = 23;
         public static final int Survey_Success = 24;
+        public static final int RECREATE_CUSTOMER_INFO = 25;
     }
 
     class ConnectivtyChangedReceiver extends BroadcastReceiver {
@@ -428,13 +429,13 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                                         activity.mAgentInfo.setAgentJid(msgInfo.getmAgentJid());
                                         activity.mPresenter.createIMCustomerInfo();
                                     }
-                                } else if ( !TextUtils.isEmpty(msgInfo.getmAgentJid()) && activity.mAgentInfo != null && activity.mAgentInfo.getAgentCode() == UdeskConst.AgentReponseCode.WaitAgent) {
+                                } else if (!TextUtils.isEmpty(msgInfo.getmAgentJid()) && activity.mAgentInfo != null && activity.mAgentInfo.getAgentCode() == UdeskConst.AgentReponseCode.WaitAgent) {
                                     if (activity.myRunnable != null) {
                                         this.removeCallbacks(activity.myRunnable);
                                         this.post(activity.myRunnable);
                                     }
                                 }else{
-                                    if (activity.mPresenter != null && !TextUtils.isEmpty(msgInfo.getmAgentJid())) {
+                                    if (!TextUtils.isEmpty(msgInfo.getmAgentJid()) && activity.mPresenter != null) {
                                         activity.mPresenter.getAgentInfo(activity.pre_session_id, null);
                                     }
                                 }
@@ -556,7 +557,9 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                             activity.mChatAdapter.addItem(eventMsg);
                         }
                         break;
-
+                    case MessageWhat.RECREATE_CUSTOMER_INFO:
+                        activity.reCreateIMCustomerInfo();
+                        break;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -2145,11 +2148,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                 return true;
             }
             if (isOverConversation) {
-                UdeskUtils.showToast(getApplicationContext(),
-                        getResources().getString(R.string.udesk_agent_inti));
-                isInitComplete = false;
-                isOverConversation = false;
-                mPresenter.createIMCustomerInfo();
+                reCreateIMCustomerInfo();
                 return false;
             }
             if (!currentStatusIsOnline && !isleaveMessageTypeMsg()) {
@@ -2161,6 +2160,17 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
         }
 
         return true;
+    }
+
+    /**
+     * 重新创建会话
+     */
+    private void reCreateIMCustomerInfo() {
+        UdeskUtils.showToast(getApplicationContext(),
+                getResources().getString(R.string.udesk_agent_inti));
+        isInitComplete = false;
+        isOverConversation = false;
+        mPresenter.createIMCustomerInfo();
     }
 
     private boolean isOpenLeaveMsg() {
@@ -3280,14 +3290,14 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
             if (queueItem != null) {
                 queueItem = null;
             }
-            unRegister();
-            UdeskHttpFacade.getInstance().cancel();
-            InvokeEventContainer.getInstance().event_IsOver.unBind(this);
             if (mBtnAudio != null){
                 mBtnAudio.setRecordingListener(null);
                 mBtnAudio.destoryRelease();
             }
             XPermissionUtils.destory();
+            unRegister();
+            UdeskHttpFacade.getInstance().cancel();
+            InvokeEventContainer.getInstance().event_IsOver.unBind(this);
         } catch (Exception e) {
             e.printStackTrace();
         }

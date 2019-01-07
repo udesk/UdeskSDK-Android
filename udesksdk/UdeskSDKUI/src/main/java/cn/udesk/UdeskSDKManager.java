@@ -346,7 +346,7 @@ public class UdeskSDKManager {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             } else {
-                //没有开启导航组进入，得清除groupid,agentid
+                //没有开启导航组进入，得清除缓存的groupid,agentid
                 if (imSetting != null && !imSetting.getEnable_im_group()){
                     PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                             UdeskConst.SharePreParams.Udesk_Group_Id, "");

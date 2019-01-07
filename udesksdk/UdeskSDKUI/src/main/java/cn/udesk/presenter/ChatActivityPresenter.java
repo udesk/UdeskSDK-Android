@@ -143,6 +143,7 @@ public class ChatActivityPresenter {
     }
 
     public synchronized void onSendMessageFail(final MessageInfo msg) {
+
 //        xmpp发送失败后 再次调用messageSave  触发后端代发xmpp
         try {
             if (TextUtils.isEmpty(customerId) || msg == null) {
@@ -1360,6 +1361,14 @@ public class ChatActivityPresenter {
                         public void onFail(String message) {
                             // 发给当前的客服
                             try {
+                                if (TextUtils.equals("8002", message)) {
+                                    sendingMsgCache.remove(msg.getMsgId());
+                                    updateFailureStatus(msg);
+                                    if (mChatView.getHandler() != null) {
+                                        mChatView.getHandler().sendEmptyMessage(MessageWhat.RECREATE_CUSTOMER_INFO);
+                                    }
+                                    return;
+                                }
                                 if (mChatView != null && mChatView.getAgentInfo() != null) {
                                     msg.setmAgentJid(mChatView.getAgentInfo().getAgentJid());
                                 }
@@ -1525,7 +1534,7 @@ public class ChatActivityPresenter {
         try {
             for (LogMessage logMessage : logMessages) {
                 if (UdeskUtils.objectToString(logMessage.getSend_status()).equals("rollback") || UdeskUtils.objectToString(logMessage.getStatus()).equals("system")) {
-                    break;
+                    continue;
                 }
                 MessageInfo messageInfo = new MessageInfo();
                 messageInfo.setMsgtype(UdeskUtils.objectToString(logMessage.getType()));
