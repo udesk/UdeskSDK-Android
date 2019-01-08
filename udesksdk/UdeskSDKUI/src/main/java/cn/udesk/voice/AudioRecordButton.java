@@ -260,6 +260,7 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
                         }
                     }
                     break;
+                case MotionEvent.ACTION_CANCEL:
                 case MotionEvent.ACTION_UP:
                     // 未触发 longClick,直接重置
                     if (!isReady) {
