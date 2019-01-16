@@ -4,6 +4,7 @@
 
 ### SDK还未完成适配9.0系统测试 。请targetSdkVersion 设置值小于28  小于28  小于28 
 
+### fresco版本问题
 ```
    如果你的项目打包指定了so库的加载配置了，
      ndk{
@@ -16,6 +17,10 @@
     在UdeskSDKUI下的build.gradle文件下  修改dependencies fresco版本号 不能根据androidstudio提示更新到最新
     
 ```
+### okhttp的版本
+
+'com.qiniu:qiniu-android-sdk:7.3.+' 采用7.3.+的方式  okhttp需要大于当前七牛依赖的okhttp版本号， 而不能选择小的。
+
 
 ### customer_token， sdk_token 仅支持字母、数字及下划线,禁用特殊字符
 
