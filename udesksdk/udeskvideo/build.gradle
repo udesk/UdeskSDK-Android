@@ -29,8 +29,7 @@ android {
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-
-    api 'com.squareup.okhttp3:okhttp:3.9.1'
+    api 'com.squareup.okhttp3:okhttp:3.11.0'
     api 'org.greenrobot:eventbus:3.0.0'
     api files('libs/agora-rtc-sdk.jar')
     api project(':UdeskSDKUI')
