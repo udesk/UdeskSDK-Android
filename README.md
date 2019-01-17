@@ -21,6 +21,8 @@
 
 'com.qiniu:qiniu-android-sdk:7.3.+' 采用7.3.+的方式  okhttp需要大于当前七牛依赖的okhttp版本号， 而不能选择小的。
 
+打包时会下载最新版本, 需要集成方在打包时注意测试上传图片和语言文件的功能,看你们app使用的okhttp和七牛依赖的需要的okhttp是否兼容.
+
 
 ### customer_token， sdk_token 仅支持字母、数字及下划线,禁用特殊字符
 
