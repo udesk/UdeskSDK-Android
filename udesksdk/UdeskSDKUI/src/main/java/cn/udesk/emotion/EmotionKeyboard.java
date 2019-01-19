@@ -31,6 +31,9 @@ public class EmotionKeyboard {
     private EditText mEditText;
     private View mContentView;//内容布局view,即除了表情布局或者软键盘布局以外的布局，用于固定bar的高度，防止跳闪
 
+    //9.0系统 底部的虚拟bar高度
+    private int bottomBarheight;
+
     public EmotionKeyboard() {
     }
 
@@ -186,10 +189,16 @@ public class EmotionKeyboard {
         try {
             int softInputHeight = getSupportSoftInputHeight();
             if (softInputHeight == 0) {
-                softInputHeight = mSp.getInt(SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, dip2Px(292));
+                if (Build.VERSION.SDK_INT >= 28){
+                    softInputHeight = mSp.getInt(SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, dip2Px(310));
+                }else {
+                    softInputHeight = mSp.getInt(SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, dip2Px(292));
+                }
             }
+            softInputHeight += bottomBarheight;
             hideSoftInput();
-            mEmotionLayout.getLayoutParams().height = softInputHeight >=  dip2Px(240) ? softInputHeight :  dip2Px(292);
+            mEmotionLayout.getLayoutParams().height = softInputHeight >=  dip2Px(240) ? softInputHeight
+                    : ( bottomBarheight > 0 ? dip2Px(292) : dip2Px(310));
             mEmotionLayout.setVisibility(View.VISIBLE);
         } catch (Exception e) {
             e.printStackTrace();
@@ -283,7 +292,7 @@ public class EmotionKeyboard {
      * @return
      */
     public boolean isSoftInputShown() {
-        return getSupportSoftInputHeight() != 0;
+        return getSupportSoftInputHeight() > 0;
     }
 
     /**
@@ -312,6 +321,12 @@ public class EmotionKeyboard {
             if (Build.VERSION.SDK_INT >= 20 && softInputHeight>0 ) {
                 // When SDK Level >= 20 (Android L), the softInputHeight will contain the height of softButtonsBar (if has)
                 softInputHeight = softInputHeight - getSoftButtonsBarHeight();
+            }
+            if (softInputHeight < 0){
+                bottomBarheight = Math.abs(softInputHeight);
+            }
+            if (softInputHeight == 0){
+                bottomBarheight = 0 ;
             }
             //存一份到本地
             if (softInputHeight > 0) {
