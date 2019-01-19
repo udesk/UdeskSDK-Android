@@ -406,6 +406,9 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                         break;
                     case MessageWhat.onNewMessage:
                         MessageInfo msgInfo = (MessageInfo) msg.obj;
+                        if (msgInfo == null){
+                            return;
+                        }
                         if (msgInfo.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT)) {
                             try {
                                 if (activity.mPresenter != null) {
@@ -435,7 +438,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                                         this.post(activity.myRunnable);
                                     }
                                 }else{
-                                    if (!TextUtils.isEmpty(msgInfo.getmAgentJid()) && activity.mPresenter != null) {
+                                    if ( activity.mAgentInfo != null && !TextUtils.isEmpty(msgInfo.getmAgentJid()) && activity.mPresenter != null) {
                                         activity.mPresenter.getAgentInfo(activity.pre_session_id, null);
                                     }
                                 }

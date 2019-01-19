@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.Configuration;
@@ -27,13 +26,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -1321,7 +1318,14 @@ public class ChatActivityPresenter {
             if (TextUtils.isEmpty(customerId) || msg == null) {
                 return;
             }
-            msg.setmAgentJid(mChatView.getAgentInfo().getAgentJid());
+            if (mChatView != null && mChatView.getAgentInfo() != null){
+                if (!TextUtils.isEmpty(mChatView.getAgentInfo().getAgentJid())){
+                    msg.setmAgentJid(mChatView.getAgentInfo().getAgentJid());
+                }
+                if (!TextUtils.isEmpty(mChatView.getAgentInfo().getIm_sub_session_id())){
+                    msg.setSubsessionid(mChatView.getAgentInfo().getIm_sub_session_id());
+                }
+            }
             sendingMsgCache.put(msg.getMsgId(), msg);
             UdeskHttpFacade.getInstance().messageSave(UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
                     UdeskSDKManager.getInstance().getAppkey(mChatView.getContext()),
