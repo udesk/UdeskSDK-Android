@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="udesk.udeskasr">
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <application>
+        <activity
+            android:name=".activity.UdeskASRActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".activity.UdeskEditActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar" />
+
+        <meta-data
+            android:name="com.baidu.speech.APP_ID"
+            android:value="15374923" />
+        <meta-data
+            android:name="com.baidu.speech.API_KEY"
+            android:value="mRkRFz9LdVWMA9gP7UDhTu4Q" />
+        <meta-data
+            android:name="com.baidu.speech.SECRET_KEY"
+            android:value="cqowkkvNGVQD2ZPiRrEeD0rIsLSGQCp6" />
+
+        <service
+            android:name="com.baidu.speech.VoiceRecognitionService"
+            android:exported="false" />
+
+    </application>
+
+</manifest>

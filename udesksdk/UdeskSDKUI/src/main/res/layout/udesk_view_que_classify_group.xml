@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="@dimen/udesk_310"
+    android:layout_height="@dimen/udesk_40"
+    android:paddingTop="@dimen/udesk_10"
+    android:paddingBottom="@dimen/udesk_10"
+    android:paddingLeft="@dimen/udesk_14"
+    android:paddingRight="@dimen/udesk_10">
+    <TextView
+        android:id="@+id/udesk_robot_que_group_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/udesk_sp15"
+        android:maxWidth="@dimen/udesk_260"
+        android:textColor="@color/udesk_color_555555"/>
+    <ImageView
+        android:id="@+id/udesk_robot_que_group_arrow"
+        android:layout_width="@dimen/udesk_20"
+        android:layout_height="@dimen/udesk_20"
+        android:layout_alignParentRight="true"
+        />
+</RelativeLayout>

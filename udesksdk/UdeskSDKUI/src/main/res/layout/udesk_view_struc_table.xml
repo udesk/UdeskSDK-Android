@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/udesk_50"
+        android:gravity="center"
+        >
+        <TextView
+            android:id="@+id/udesk_view_struc_table_brand"
+            android:layout_width="@dimen/udesk_87"
+            android:layout_height="@dimen/udesk_40"
+            android:background="@drawable/udesk_struc_table_bg"
+            android:gravity="center"
+            android:textColor="@color/udesk_color_307AE8"
+            android:textSize="@dimen/udesk_sp16"
+            />
+    </LinearLayout>
+</LinearLayout>

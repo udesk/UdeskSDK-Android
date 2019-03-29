@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_robot_item_txt"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/udesk_im_txt_left_default"
+    android:orientation="vertical"
+    android:gravity="center|left"
+    android:paddingTop="@dimen/udesk_8"
+    android:paddingBottom="@dimen/udesk_8"
+    >
+
+    <cn.udesk.rich.XRichText
+        android:id="@+id/udesk_robot_tv_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:paddingLeft="@dimen/udesk_14"
+        android:paddingRight="@dimen/udesk_14"
+        android:gravity="left|center"
+        android:lineSpacingExtra="3dip"
+        android:maxWidth="@dimen/udesk_310"
+        android:autoLink="phone|web"
+        android:textColor="@color/udesk_color_212121"
+        android:textColorLink="@color/udesk_color_im_text_left1"
+        android:textSize="@dimen/udesk_sp15" />
+
+    <RelativeLayout
+        android:id="@+id/udesl_robot_rl_fold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/udesk_10"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/udesk_tv_fold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/udesk_sp15"
+            android:textColor="@color/udesk_color_227BF0" />
+
+        <ImageView
+            android:id="@+id/udesk_img_fold"
+            android:layout_width="@dimen/udesk_15"
+            android:layout_height="@dimen/udesk_15"
+            android:layout_marginLeft="@dimen/udesk_6"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/udesk_tv_fold" />
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/udesk_container_txt"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

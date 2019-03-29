@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_item_video"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/udesk_im_item_bg_left"
+    android:orientation="vertical"
+    android:visibility="gone"
+    >
+    <TextView
+        android:id="@+id/udesk_video_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoLink="phone|web"
+        android:drawableLeft="@drawable/udesk_video_item_img"
+        android:drawablePadding="@dimen/udesk_10"
+        android:gravity="left|center_vertical"
+        android:lineSpacingExtra="3dip"
+        android:paddingLeft="@dimen/udesk_14"
+        android:paddingRight="@dimen/udesk_14"
+        android:text="12345667"
+        android:textColor="@color/udesk_color_im_text_left1"
+        android:textColorLink="@color/udesk_color_im_text_left1"
+        android:textSize="@dimen/udesk_sp16"
+        android:maxWidth="@dimen/udesk_310"
+        />
+    <LinearLayout
+        android:id="@+id/udesk_container_video"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

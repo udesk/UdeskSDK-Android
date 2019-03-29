@@ -1,0 +1,951 @@
+package cn.udesk.itemview;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.URLSpan;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.facebook.drawee.view.SimpleDraweeView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.util.List;
+
+import cn.udesk.JsonUtils;
+import cn.udesk.R;
+import cn.udesk.UdeskSDKManager;
+import cn.udesk.UdeskUtil;
+import cn.udesk.activity.UdeskChatActivity;
+import cn.udesk.activity.UdeskWebViewUrlAcivity;
+import cn.udesk.config.UdekConfigUtil;
+import cn.udesk.emotion.MoonUtils;
+import cn.udesk.fragment.UdeskResendDialog;
+import cn.udesk.model.SpanModel;
+import cn.udesk.photoselect.PictureVideoPlayActivity;
+import cn.udesk.provider.UdeskFileProvider;
+import cn.udesk.rich.XRichText;
+import cn.udesk.widget.CircleProgressBar;
+import cn.udesk.widget.HtmlTagHandler;
+import udesk.core.UdeskConst;
+import udesk.core.model.InfoListBean;
+import udesk.core.model.ProductListBean;
+import udesk.core.utils.UdeskUtils;
+
+public class RightViewHolder extends BaseViewHolder {
+
+    private ImageView ivStatus;
+    private ProgressBar pbWait;
+    private TextView videoMsg;
+    private RelativeLayout itemAudio;
+    private TextView tvDuration;
+    private LinearLayout itemImg;
+    private SimpleDraweeView imgView;
+    private LinearLayout itemFile;
+    private TextView fielTitle;
+    private LinearLayout itemSmallVideo;
+    private ImageView smallVideoTip;
+    private CircleProgressBar circleProgressBar;
+    private RelativeLayout itemLocation;
+    private TextView locationValue;
+    private SimpleDraweeView cropBitMap;
+    private LinearLayout itemProduct;
+    private TextView productMsg;
+    private TextView productName;
+    private SimpleDraweeView productIcon;
+    private TextView leaveMsg;
+    private ImageView cancleImg;
+    private String productUrl;
+    public static final int[] RESIDS={R.drawable.udesk_im_txt_right_default,R.drawable.udesk_im_txt_right_up,R.drawable.udesk_im_txt_right_down,R.drawable.udesk_im_txt_right_mid};
+    private LinearLayout itemReplyProduct;
+    private SimpleDraweeView replyProductImg;
+    private TextView replyProductTitle;
+    private RelativeLayout replyProductMid;
+    private TextView replyProductInfoOne;
+    private TextView replyProductInfoTwo;
+    private TextView replyProductInfoThree;
+    private LinearLayout itemText;
+    private LinearLayout itemLeaveMsg;
+
+    @Override
+    public void initView(Activity mContext, View convertView) {
+        try {
+            this.mContext=mContext;
+            tvTime = convertView.findViewById(R.id.udesk_tv_time);
+            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMTimeTextColorResId, tvTime);
+            ivStatus = convertView.findViewById(R.id.udesk_iv_status);
+            cancleImg = convertView.findViewById(R.id.udesk_iv_cancle);
+            cancleImg.setVisibility(View.GONE);
+            pbWait = convertView.findViewById(R.id.udesk_im_wait);
+            llHead = convertView.findViewById(R.id.udesk_rl_body);
+            itemText = convertView.findViewById(R.id.udesk_item_txt);
+            tvMsg = convertView.findViewById(R.id.udesk_tv_msg);
+            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMRightTextColorResId, tvMsg);
+            //消息 leavemsg
+            itemLeaveMsg = convertView.findViewById(R.id.udesk_item_leave_msg);
+            leaveMsg = (TextView) convertView.findViewById(R.id.udesk_leave_msg);
+            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMRightTextColorResId, leaveMsg);
+            //video消息
+            videoMsg = (TextView) convertView.findViewById(R.id.udesk_video_msg);
+            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMRightTextColorResId, videoMsg);
+            //audio消息
+            itemAudio = (RelativeLayout) convertView.findViewById(R.id.udesk_item_audio);
+            tvDuration = (TextView) convertView.findViewById(R.id.udesk_im_item_record_duration);
+            record_play = (ImageView) convertView.findViewById(R.id.udesk_im_item_record_play);
+            //image消息
+            itemImg = (LinearLayout) convertView.findViewById(R.id.udesk_item_img);
+            imgView = (SimpleDraweeView) convertView.findViewById(R.id.udesk_im_image);
+            imagePercent = (TextView) convertView.findViewById(R.id.udesk_precent);
+            //file消息
+            itemFile = (LinearLayout) convertView.findViewById(R.id.udesk_file_view);
+            fielTitle = (TextView) convertView.findViewById(R.id.udesk_file_name);
+            fielSize = (TextView) convertView.findViewById(R.id.udesk_file_size);
+            operater = (TextView) convertView.findViewById(R.id.udesk_file_operater);
+            mProgress = (ProgressBar) convertView.findViewById(R.id.udesk_progress);
+            //smallvideo
+            itemSmallVideo = (LinearLayout) convertView.findViewById(R.id.udesk_item_smallvideo);
+            smallVideoImgView = (SimpleDraweeView) convertView.findViewById(R.id.udesk_im_smallvideo_image);
+            smallVideoTip = (ImageView) convertView.findViewById(R.id.video_tip);
+            circleProgressBar = (CircleProgressBar) convertView.findViewById(R.id.video_upload_bar);
+            //location
+            itemLocation = (RelativeLayout) convertView.findViewById(R.id.udesk_item_location);
+            locationValue = (TextView) convertView.findViewById(R.id.postion_value);
+            cropBitMap = (SimpleDraweeView) convertView.findViewById(R.id.udesk_location_image);
+            //product
+            itemProduct = (LinearLayout) convertView.findViewById(R.id.udesk_item_product);
+            productMsg = (TextView) convertView.findViewById(R.id.udesk_product_msg);
+            productName = (TextView) convertView.findViewById(R.id.product_name);
+            productIcon = (SimpleDraweeView) convertView.findViewById(R.id.udesk_product_icon);
+
+            //商品回复
+            itemReplyProduct = convertView.findViewById(R.id.udesk_item_reply_product);
+            replyProductImg = convertView.findViewById(R.id.udesk_product_img);
+            replyProductTitle = convertView.findViewById(R.id.udesg_product_title);
+            replyProductMid = convertView.findViewById(R.id.udesk_product_mid);
+            replyProductInfoOne = convertView.findViewById(R.id.udesk_info_one);
+            replyProductInfoTwo = convertView.findViewById(R.id.udesk_info_two);
+            replyProductInfoThree = convertView.findViewById(R.id.udesk_info_three);
+            itemReplyProduct.setBackgroundResource(R.drawable.udesk_bg_struct_new);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void hideAllView() {
+        try {
+            itemText.setVisibility(View.GONE);
+            itemLeaveMsg.setVisibility(View.GONE);
+            videoMsg.setVisibility(View.GONE);
+            itemAudio.setVisibility(View.GONE);
+            itemImg.setVisibility(View.GONE);
+            itemFile.setVisibility(View.GONE);
+            itemSmallVideo.setVisibility(View.GONE);
+            itemLocation.setVisibility(View.GONE);
+            itemProduct.setVisibility(View.GONE);
+            itemReplyProduct.setVisibility(View.GONE);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void bind() {
+        try {
+            hideAllView();
+            changeUiState(message.getSendFlag());
+            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.topMargin=UdeskUtil.dip2px(mContext,10);
+            llHead.setLayoutParams(params);
+            switch (UdeskConst.parseTypeForMessage(message.getMsgtype())) {
+                case UdeskConst.ChatMsgTypeInt.TYPE_TEXT:
+                    dealTextMsg();
+                    break;
+                case UdeskConst.ChatMsgTypeInt.TYPE_LEAVEMSG:
+                    dealLeaveMsg();
+                    break;
+                case UdeskConst.ChatMsgTypeInt.TYPE_LIVE_VIDEO:
+                    dealVideoMsg();
+                    break;
+                case UdeskConst.ChatMsgTypeInt.TYPE_AUDIO:
+                    dealAudioMsg();
+                    break;
+                case UdeskConst.ChatMsgTypeInt.TYPE_IMAGE:
+                    dealImage();
+                    break;
+                case UdeskConst.ChatMsgTypeInt.TYPE_FILE:
+                    dealFile();
+                    break;
+                case UdeskConst.ChatMsgTypeInt.TYPE_VIDEO:
+                case UdeskConst.ChatMsgTypeInt.TYPE_SHORT_VIDEO:
+                    dealSmallVideo();
+                    break;
+                case UdeskConst.ChatMsgTypeInt.TYPE_LOCATION:
+                    dealLocation();
+                    break;
+                case UdeskConst.ChatMsgTypeInt.TYPE_PRODUCT:
+                    dealProduct();
+                    break;
+                case UdeskConst.ChatMsgTypeInt.TYPE_REPLY_PRODUCT:
+                    dealReplyProduct();
+                    break;
+
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 处理商品回复消息
+     */
+    private void dealReplyProduct() {
+        try {
+            itemReplyProduct.setVisibility(View.VISIBLE);
+            final ProductListBean productListBean=JsonUtils.parseReplyProduct(message.getMsgContent());
+            if (productListBean!=null){
+                replyProductTitle.setText(productListBean.getName());
+                if (!TextUtils.isEmpty(productListBean.getImage())){
+                    UdeskUtil.loadNoChangeView(mContext, replyProductImg, Uri.parse(productListBean.getImage()));
+                }
+                if (productListBean.getInfoList()!=null&&productListBean.getInfoList().size()>0){
+                    List<InfoListBean> infoList = productListBean.getInfoList();
+                    for (int j=0;j<infoList.size();j++){
+                        SpannableString spannableString=UdeskUtil.setSpan(infoList.get(j).getInfo(),UdeskUtils.objectToString(infoList.get(j).getColor()),infoList.get(j).getBoldFlag());
+                        if (j==0){
+                            replyProductMid.setVisibility(View.VISIBLE);
+                            replyProductInfoOne.setText(spannableString);
+                        }else if (j==1){
+                            replyProductInfoTwo.setText(spannableString);
+                        }else if (j==2){
+                            replyProductInfoThree.setVisibility(View.VISIBLE);
+                            replyProductInfoThree.setText(spannableString);
+                        }
+                    }
+                }else {
+                    replyProductMid.setVisibility(View.GONE);
+                    replyProductInfoThree.setVisibility(View.GONE);
+                }
+                itemReplyProduct.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
+                        intent.putExtra(UdeskConst.WELCOME_URL,productListBean.getUrl());
+                        mContext.startActivity(intent);
+                    }
+                });
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * text消息处理
+     */
+    private void dealTextMsg() {
+        try {
+            itemText.setVisibility(View.VISIBLE);
+            setTextBackgroud(itemText,RESIDS);
+            //设置文本消息内容，表情符转换对应的表情,没表情的另外处理
+            if (MoonUtils.isHasEmotions(message.getMsgContent())) {
+                tvMsg.setText(MoonUtils.replaceEmoticons(mContext, message.getMsgContent(), (int) tvMsg.getTextSize()));
+            } else {
+                tvMsg.setText(message.getMsgContent());
+                tvMsg.setMovementMethod(LinkMovementMethod.getInstance());
+                CharSequence text = tvMsg.getText();
+                if (text instanceof Spannable) {
+                    int end = text.length();
+                    Spannable sp = (Spannable) tvMsg.getText();
+                    URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
+                    SpannableStringBuilder style = new SpannableStringBuilder(text);
+                    style.clearSpans();// should clear old spans
+                    for (URLSpan url : urls) {
+                        TxtURLSpan txtURLSpan = new TxtURLSpan(url.getURL(), mContext);
+                        style.setSpan(txtURLSpan, sp.getSpanStart(url),
+                                sp.getSpanEnd(url),
+                                Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    }
+                    tvMsg.setText(style);
+                }
+            }
+
+            //设置消息长按事件  复制文本
+            tvMsg.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    ((UdeskChatActivity) mContext).handleText(message, v);
+                    return false;
+                }
+            });
+
+            //重发按钮点击事件
+            ivStatus.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
+                        @Override
+                        public void onRetry() {
+                            ((UdeskChatActivity) mContext).retrySendMsg(message);
+                        }
+                    });
+                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * leavemsg消息处理
+     */
+    private void dealLeaveMsg() {
+        try {
+            itemLeaveMsg.setVisibility(View.VISIBLE);
+            //设置文本消息内容，表情符转换对应的表情,没表情的另外处理
+            if (MoonUtils.isHasEmotions(message.getMsgContent())) {
+                leaveMsg.setText(MoonUtils.replaceEmoticons(mContext, message.getMsgContent(), (int) tvMsg.getTextSize()));
+            } else {
+                leaveMsg.setText(message.getMsgContent());
+                leaveMsg.setMovementMethod(LinkMovementMethod.getInstance());
+                CharSequence text = leaveMsg.getText();
+                if (text instanceof Spannable) {
+                    int end = text.length();
+                    Spannable sp = (Spannable) leaveMsg.getText();
+                    URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
+                    SpannableStringBuilder style = new SpannableStringBuilder(text);
+                    style.clearSpans();// should clear old spans
+                    for (URLSpan url : urls) {
+                        TxtURLSpan txtURLSpan = new TxtURLSpan(url.getURL(), mContext);
+                        style.setSpan(txtURLSpan, sp.getSpanStart(url),
+                                sp.getSpanEnd(url),
+                                Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    }
+                    leaveMsg.setText(style);
+                }
+            }
+
+            //设置消息长按事件  复制文本
+            leaveMsg.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    ((UdeskChatActivity) mContext).handleText(message, v);
+                    return false;
+                }
+            });
+            //设置重发按钮的点击事件
+            ivStatus.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
+                        @Override
+                        public void onRetry() {
+                            ((UdeskChatActivity) mContext).retrySendMsg(message);
+                        }
+                    });
+                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * video处理
+     */
+    private void dealVideoMsg() {
+        try {
+            videoMsg.setVisibility(View.VISIBLE);
+            videoMsg.setVisibility(View.VISIBLE);
+            videoMsg.setText(message.getMsgContent());
+            videoMsg.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
+                        @Override
+                        public void onRetry() {
+                            ((UdeskChatActivity) mContext).startVideo();
+                        }
+                    });
+                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * audio处理
+     */
+    private void dealAudioMsg() {
+        try {
+            itemAudio.setVisibility(View.VISIBLE);
+            checkPlayBgWhenBind();
+            if (message.getDuration() > 0) {
+                char symbol = 34;
+                tvDuration.setText(String.format("%d%s", message.getDuration(), String.valueOf(symbol)));
+            }
+            itemAudio.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    ((UdeskChatActivity) mContext).clickRecordFile(message);
+                }
+            });
+            ivStatus.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
+                        @Override
+                        public void onRetry() {
+                            ((UdeskChatActivity) mContext).retrySendMsg(message);
+                        }
+                    });
+                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                }
+            });
+            long duration = message.getDuration();
+            duration = duration == 0 ? 1 : duration;
+            int min = UdeskUtils.getScreenWidth(mContext) / 6;
+            int max = UdeskUtils.getScreenWidth(mContext) * 3 / 5;
+            int step = (int) ((duration < 10) ? duration : (duration / 10 + 9));
+            itemAudio.getLayoutParams().width = (step == 0) ? min
+                    : (min + (max - min) / 17 * step);//计算17份  2份是给背景图尖角预留位置
+        } catch (Exception e) {
+            e.printStackTrace();
+        } catch (OutOfMemoryError error) {
+            error.printStackTrace();
+        }
+    }
+
+    /**
+     * 检查播放状态
+     */
+    private void checkPlayBgWhenBind() {
+        try {
+            if (message.isPlaying) {
+                resetAnimationAndStart();
+            } else {
+                record_play.setImageDrawable(mContext.getResources().getDrawable(
+                        R.drawable.udesk_im_record_right_default));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } catch (OutOfMemoryError error) {
+            error.printStackTrace();
+        }
+    }
+
+    /**
+     * 重置和开启动画
+     */
+    @Override
+    public void resetAnimationAndStart() {
+        try {
+            record_play.setImageDrawable(mContext.getResources().getDrawable(R.drawable.udesk_im_record_play_right));
+            Drawable playDrawable = record_play.getDrawable();
+            if (playDrawable != null
+                    && playDrawable instanceof AnimationDrawable) {
+                ((AnimationDrawable) playDrawable).start();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } catch (OutOfMemoryError error) {
+            error.printStackTrace();
+        }
+    }
+
+    private void dealImage() {
+        try {
+            itemImg.setVisibility(View.VISIBLE);
+            if (message.getSendFlag() == UdeskConst.SendFlag.RESULT_SUCCESS
+                    || message.getSendFlag() == UdeskConst.SendFlag.RESULT_FAIL) {
+                imagePercent.setVisibility(View.GONE);
+            }
+            if (!TextUtils.isEmpty(message.getLocalPath()) && UdeskUtils.isExitFileByPath(message.getLocalPath())) {
+                int[] wh = UdeskUtil.getImageWH(message.getLocalPath());
+                UdeskUtil.loadFileFromSdcard(mContext, imgView, Uri.fromFile(new File(message.getLocalPath())), wh[0], wh[1],true);
+            } else {
+                UdeskUtil.loadImageView(mContext, imgView, Uri.parse(UdeskUtils.uRLEncoder(message.getMsgContent())),true);
+            }
+
+            imgView.setTag(message.getTime());
+            imgView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    if (message == null) {
+                        return;
+                    }
+                    Uri imgUri = null;
+                    if (!TextUtils.isEmpty(message.getLocalPath())) {
+                        imgUri = Uri.fromFile(new File(message.getLocalPath()));
+                    } else if (!TextUtils.isEmpty(message.getMsgContent())) {
+                        try {
+                            imgUri = Uri.parse(UdeskUtils.uRLEncoder(message.getMsgContent()));
+                        } catch (Exception e) {
+                            imgUri = Uri.parse(message.getMsgContent());
+                        }
+                    }
+                    UdeskUtil.previewPhoto(mContext, imgUri);
+                }
+            });
+            ivStatus.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
+                        @Override
+                        public void onRetry() {
+                            ((UdeskChatActivity) mContext).retrySendMsg(message);
+                        }
+                    });
+                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        } catch (OutOfMemoryError error) {
+            error.printStackTrace();
+        }
+    }
+
+    /**
+     * file处理
+     */
+    private void dealFile() {
+        try {
+            itemFile.setVisibility(View.VISIBLE);
+            if (message.getDirection() == UdeskConst.ChatMsgDirection.Send) {
+                if (TextUtils.isEmpty(message.getFilename())) {
+                    fielTitle.setText(UdeskUtil.getFileName(message.getLocalPath()));
+                } else {
+                    fielTitle.setText(message.getFilename());
+                }
+
+                if (TextUtils.isEmpty(message.getFilesize())) {
+                    fielSize.setText(UdeskUtil.getFileSizeByLoaclPath(message.getLocalPath()));
+                } else {
+                    fielSize.setText(message.getFilesize());
+                }
+                if (message.getSendFlag() == UdeskConst.SendFlag.RESULT_SUCCESS) {
+                    mProgress.setProgress(100);
+                    operater.setText(mContext.getString(R.string.udesk_has_send));
+                } else {
+                    mProgress.setProgress(message.getPrecent());
+                    operater.setText(String.format("%s%%", String.valueOf(message.getPrecent())));
+                }
+            } else {
+                fielTitle.setText(message.getFilename());
+                fielSize.setText(message.getFilesize());
+                if (UdeskUtils.fileIsExitByUrl(mContext, UdeskConst.File_File, message.getMsgContent())
+                        && UdeskUtils.getFileSize(UdeskUtils.getFileByUrl(mContext, UdeskConst.File_File, message.getMsgContent())) > 0) {
+                    mProgress.setProgress(100);
+                    operater.setText(mContext.getString(R.string.udesk_has_downed));
+                } else {
+                    mProgress.setProgress(0);
+                    operater.setText(mContext.getString(R.string.udesk_has_download));
+                }
+                operater.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ((UdeskChatActivity) mContext).downLoadMsg(message);
+                    }
+                });
+            }
+
+            itemFile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        File file;
+                        if (message.getDirection() == UdeskConst.ChatMsgDirection.Send) {
+                            file = new File(message.getLocalPath());
+                        } else {
+                            file = UdeskUtils.getFileByUrl(mContext, UdeskConst.File_File, message.getMsgContent());
+                            if (file == null || UdeskUtils.getFileSize(file) <= 0) {
+                                Toast.makeText(mContext.getApplicationContext(), mContext.getString(R.string.udesk_has_uncomplete_tip), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+                        Uri contentUri;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            contentUri = UdeskFileProvider.getUriForFile(mContext, UdeskUtil.getFileProviderName(mContext), file);
+                        } else {
+                            contentUri = Uri.fromFile(file);
+                        }
+                        if (contentUri == null) {
+                            return;
+                        }
+                        if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_SHORT_VIDEO)) {
+                            intent.setDataAndType(contentUri, "video/mp4");
+                        } else {
+                            String type = UdeskUtil.getMIMEType(file);
+                            intent.setDataAndType(contentUri, type);
+                        }
+                        mContext.startActivity(intent);
+                    } catch (Exception e) {
+                        if (!TextUtils.isEmpty(e.getMessage()) && e.getMessage().contains("No Activity found to handle Intent")) {
+                            Toast.makeText(mContext.getApplicationContext(), mContext.getString(R.string.udesk_no_app_handle), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            });
+
+            //设置重发按钮的点击事件
+            ivStatus.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
+                        @Override
+                        public void onRetry() {
+                            ((UdeskChatActivity) mContext).retrySendMsg(message);
+                        }
+                    });
+                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        } catch (OutOfMemoryError error) {
+            error.printStackTrace();
+        }
+    }
+
+    /**
+     * smallvideo处理
+     */
+    private void dealSmallVideo() {
+        try {
+            itemSmallVideo.setVisibility(View.VISIBLE);
+            if (message.getSendFlag() == UdeskConst.SendFlag.RESULT_SUCCESS) {
+                showSuccessView();
+            } else {
+                if (message.getSendFlag() == UdeskConst.SendFlag.RESULT_RETRY || message.getSendFlag() == UdeskConst.SendFlag.RESULT_SEND) {
+                    showSendView();
+                } else if (message.getSendFlag() == UdeskConst.SendFlag.RESULT_FAIL) {
+                    showFailureView();
+                }
+            }
+
+            if (!TextUtils.isEmpty(message.getLocalPath()) && UdeskUtils.isExitFileByPath(message.getLocalPath())) {
+                UdeskUtil.loadViewBySize(mContext, smallVideoImgView, Uri.fromFile(new File(message.getLocalPath())), UdeskUtil.dip2px(mContext, 130), UdeskUtil.dip2px(mContext, 200));
+            } else if (UdeskUtils.fileIsExitByUrl(mContext, UdeskConst.FileImg, message.getMsgContent())) {
+                String loaclpath = UdeskUtils.getPathByUrl(mContext, UdeskConst.FileImg, message.getMsgContent());
+                UdeskUtil.loadViewBySize(mContext, smallVideoImgView, Uri.fromFile(new File(loaclpath)), UdeskUtil.dip2px(mContext, 130), UdeskUtil.dip2px(mContext, 200));
+            } else {
+                ((UdeskChatActivity) mContext).showVideoThumbnail(message);
+            }
+            smallVideoImgView.setTag(message.getTime());
+            smallVideoImgView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    if (message == null) {
+                        return;
+                    }
+                    String path = "";
+                    if (!TextUtils.isEmpty(message.getLocalPath()) && UdeskUtils.isExitFileByPath(message.getLocalPath())) {
+                        path = message.getLocalPath();
+                    } else if (!TextUtils.isEmpty(message.getMsgContent())) {
+                        File file = UdeskUtils.getFileByUrl(mContext, UdeskConst.FileVideo, message.getMsgContent());
+                        if (file != null && UdeskUtils.getFileSize(file) > 0) {
+                            path = file.getPath();
+                        } else {
+                            ((UdeskChatActivity) mContext).downLoadVideo(message);
+                            path = message.getMsgContent();
+                        }
+                    }
+
+                    Intent intent = new Intent();
+                    intent.setClass(mContext, PictureVideoPlayActivity.class);
+                    Bundle data = new Bundle();
+                    data.putString(UdeskConst.PREVIEW_Video_Path, path);
+                    intent.putExtras(data);
+                    mContext.startActivity(intent);
+                }
+            });
+            ivStatus.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
+                        @Override
+                        public void onRetry() {
+                            ((UdeskChatActivity) mContext).retrySendMsg(message);
+                        }
+                    });
+                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                }
+            });
+
+            cancleImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    message.setSendFlag(UdeskConst.SendFlag.RESULT_FAIL);
+                    showFailureView();
+                    ((UdeskChatActivity) mContext).cancleSendVideoMsg(message);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        } catch (OutOfMemoryError error) {
+            error.printStackTrace();
+        }
+    }
+
+    /**
+     * smallvideo failure
+     */
+    private void showFailureView() {
+        try {
+            ivStatus.setVisibility(View.VISIBLE);
+            pbWait.setVisibility(View.GONE);
+            cancleImg.setVisibility(View.GONE);
+            circleProgressBar.setVisibility(View.GONE);
+            smallVideoTip.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * smallvideo send
+     */
+    private void showSendView() {
+        try {
+            if (circleProgressBar.getPercent() == 100) {
+                pbWait.setVisibility(View.VISIBLE);
+                smallVideoTip.setVisibility(View.VISIBLE);
+                cancleImg.setVisibility(View.GONE);
+                circleProgressBar.setVisibility(View.GONE);
+            } else {
+                pbWait.setVisibility(View.GONE);
+                cancleImg.setVisibility(View.VISIBLE);
+                circleProgressBar.setVisibility(View.VISIBLE);
+                circleProgressBar.setPercent(circleProgressBar.getPercent());
+                smallVideoTip.setVisibility(View.GONE);
+            }
+            ivStatus.setVisibility(View.GONE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * smallvideo success
+     */
+    private void showSuccessView() {
+        try {
+            cancleImg.setVisibility(View.GONE);
+            circleProgressBar.setVisibility(View.GONE);
+            ivStatus.setVisibility(View.GONE);
+            pbWait.setVisibility(View.GONE);
+            smallVideoTip.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 地理位置消息处理
+     */
+    private void dealLocation() {
+        try {
+            itemLocation.setVisibility(View.VISIBLE);
+            final String[] locationMessage = message.getMsgContent().split(";");
+            locationValue.setText(locationMessage[locationMessage.length - 1]);
+            cropBitMap.setImageURI(Uri.fromFile(new File(message.getLocalPath())));
+            cropBitMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (UdeskSDKManager.getInstance().getUdeskConfig().locationMessageClickCallBack != null) {
+                        UdeskSDKManager.getInstance().getUdeskConfig().locationMessageClickCallBack.luanchMap(mContext, Double.valueOf(locationMessage[0]),
+                                Double.valueOf(locationMessage[1]), locationMessage[locationMessage.length - 1]);
+                    }
+                }
+            });
+
+            //设置重发按钮的点击事件
+            ivStatus.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
+                        @Override
+                        public void onRetry() {
+                            ((UdeskChatActivity) mContext).retrySendMsg(message);
+                        }
+                    });
+                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 商品消息处理
+     */
+    private void dealProduct() {
+        try {
+            itemProduct.setVisibility(View.VISIBLE);
+            JSONObject jsonObject = new JSONObject(message.getMsgContent());
+            if (!TextUtils.isEmpty(jsonObject.optString("imgUrl"))) {
+                productIcon.setVisibility(View.VISIBLE);
+                UdeskUtil.loadNoChangeView(mContext.getApplicationContext(), productIcon, Uri.parse(jsonObject.optString("imgUrl")));
+            } else {
+                productIcon.setVisibility(View.GONE);
+            }
+            productUrl = jsonObject.optString("url");
+            productName.setText(jsonObject.optString("name"));
+            if (!TextUtils.isEmpty(productUrl)) {
+                productName.setTextColor(mContext.getResources().getColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductNameLinkColorResId));
+                productName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick != null) {
+                            UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick.txtMsgOnclick(productUrl);
+                        } else {
+                            Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
+                            intent.putExtra(UdeskConst.WELCOME_URL, productUrl);
+                            mContext.startActivity(intent);
+                        }
+                    }
+                });
+            }
+
+            StringBuilder builder = new StringBuilder();
+            builder.append("<font></font>");
+            JSONArray jsonArray = jsonObject.getJSONArray("params");
+            if (jsonArray != null && jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject data = jsonArray.optJSONObject(i);
+                    if (TextUtils.isEmpty(data.optString("text"))) {
+                        continue;
+                    }
+                    String textStr = "<font color=" + data.optString("color") +
+                            "  size=" + 2 * data.optInt("size") + ">" + data.optString("text") + "</font>";
+                    if (data.optBoolean("fold")) {
+                        textStr = "<b>" + textStr + "</b>";
+                    }
+                    if (data.optBoolean("break")) {
+                        textStr = textStr + "<br>";
+                    }
+                    builder.append(textStr);
+                }
+            }
+            String htmlString = builder.toString().replaceAll("font", HtmlTagHandler.TAG_FONT);
+            Spanned fromHtml = Html.fromHtml(htmlString, null, new HtmlTagHandler());
+            productMsg.setText(fromHtml);
+            //重发按钮点击事件
+            ivStatus.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
+                        @Override
+                        public void onRetry() {
+                            ((UdeskChatActivity) mContext).retrySendMsg(message);
+                        }
+                    });
+                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void changeUiState(int state) {
+        try {
+            if (state == UdeskConst.SendFlag.RESULT_SUCCESS) {
+                ivStatus.setVisibility(View.GONE);
+                pbWait.setVisibility(View.GONE);
+            } else {
+                if (state == UdeskConst.SendFlag.RESULT_RETRY || state == UdeskConst.SendFlag.RESULT_SEND) {
+                    ivStatus.setVisibility(View.GONE);
+                    pbWait.setVisibility(View.VISIBLE);
+                } else if (state == UdeskConst.SendFlag.RESULT_FAIL) {
+                    ivStatus.setVisibility(View.VISIBLE);
+                    pbWait.setVisibility(View.GONE);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * smallvideo状态改变
+     *
+     * @param percent
+     */
+    @Override
+    public void changeSmallvideoState(int percent) {
+        try {
+            circleProgressBar.setPercent(percent);
+            if (percent == 100) {
+                cancleImg.setVisibility(View.GONE);
+                circleProgressBar.setVisibility(View.GONE);
+                smallVideoTip.setVisibility(View.VISIBLE);
+                pbWait.setVisibility(View.VISIBLE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void showTextHead(boolean b) {
+
+    }
+}

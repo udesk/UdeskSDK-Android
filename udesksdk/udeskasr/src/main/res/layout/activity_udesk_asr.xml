@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.UdeskASRActivity"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/udesk_320"
+        android:layout_gravity="bottom"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="@dimen/udesk_15"
+            android:scrollbars="none"
+            >
+            <TextView
+                android:id="@+id/udesk_asr_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/udesk_sp16"
+                />
+        </ScrollView>
+
+        <TextView
+            android:id="@+id/udesk_press_speak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingBottom="@dimen/udesk_10"
+            android:text="@string/udesk_press_speak"
+            android:textColor="@color/udesk_color_b3212121" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/udesk_100"
+            android:layout_marginBottom="@dimen/udesk_25">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/udesk_close"
+                    android:layout_width="@dimen/udesk_50"
+                    android:layout_height="@dimen/udesk_50"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/udesk_down"
+                    />
+
+                <TextView
+                    android:id="@+id/udesk_clear"
+                    android:layout_width="@dimen/udesk_50"
+                    android:layout_height="@dimen/udesk_50"
+                    android:gravity="center"
+                    android:textColor="@color/udesk_black"
+                    android:visibility="gone"
+                    android:text="@string/udesk_clean" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <udesk.udeskasr.widget.WaveCircleView
+                    android:id="@+id/udesk_mic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/udesk_send"
+                    android:layout_width="@dimen/udesk_50"
+                    android:layout_height="@dimen/udesk_50"
+                    android:gravity="center"
+                    android:textColor="@color/udesk_color_307AE8"
+                    android:visibility="gone"
+                    android:text="@string/udesk_send_message" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

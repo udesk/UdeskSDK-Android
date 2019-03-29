@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_file_view"
+    android:layout_width="@dimen/udesk_190"
+    android:layout_height="@dimen/udesk_95"
+    android:background="@color/udesk_color_999999"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <TextView
+        android:id="@+id/udesk_file_name"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/udesk_40"
+        android:layout_marginLeft="@dimen/udesk_20"
+        android:layout_marginRight="@dimen/udesk_20"
+        android:ellipsize="middle"
+        android:gravity="left|center"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/udesk_sp16" />
+
+    <ProgressBar
+        android:id="@+id/udesk_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/udesk_5"
+        android:layout_marginLeft="@dimen/udesk_20"
+        android:layout_marginTop="@dimen/udesk_5"
+        android:layout_marginRight="@dimen/udesk_20"
+        android:layout_marginBottom="@dimen/udesk_5"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/udesk_progress_drawable" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/udesk_40">
+
+        <TextView
+            android:id="@+id/udesk_file_size"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/udesk_20"
+            android:gravity="left|center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/udesk_sp16" />
+
+        <TextView
+            android:id="@+id/udesk_file_operater"
+            android:layout_width="@dimen/udesk_80"
+            android:layout_height="fill_parent"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/udesk_sp16" />
+
+    </RelativeLayout>
+
+
+</LinearLayout>

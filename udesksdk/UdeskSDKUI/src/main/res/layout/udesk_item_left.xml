@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/udesk_chat_head_margin_left_or_right"
+    android:paddingRight="@dimen/udesk_chat_head_margin_left_or_right">
+
+    <TextView
+        android:id="@+id/udesk_tv_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/udesk_10"
+        android:layout_marginBottom="@dimen/udesk_5"
+        android:gravity="center"
+        android:textColor="@color/udesk_color_im_time_text1"
+        android:textSize="@dimen/udesk_sp14" />
+
+    <LinearLayout
+        android:id="@+id/udesk_ll_head"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/udesk_10"
+        android:gravity="center_vertical">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/udesk_iv_head"
+            android:layout_width="@dimen/udesk_25"
+            android:layout_height="@dimen/udesk_25"
+            fresco:actualImageScaleType="centerCrop"
+            fresco:placeholderImage="@drawable/udesk_im_default_agent_avatar"
+            fresco:roundAsCircle="true" />
+
+        <TextView
+            android:id="@+id/udesk_nick_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/udesk_color_242E33"
+            android:textSize="@dimen/udesk_sp12" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/udesk_chat_head_margin"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/udesk_im_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/udesk_robot_item_txt" />
+
+            <include layout="@layout/udesk_item_leave_txt_left" />
+
+            <include layout="@layout/udesk_item_rich" />
+            <include layout="@layout/udesk_item_flow" />
+
+            <include layout="@layout/udesk_item_video_left" />
+
+            <include layout="@layout/udesk_item_audio_left" />
+
+            <include layout="@layout/udesk_item_img" />
+
+            <include layout="@layout/udesk_item_file_left" />
+
+            <include layout="@layout/udesk_item_smallvideo" />
+
+            <include layout="@layout/udesk_item_redirect" />
+
+            <include layout="@layout/udesk_item_struct" />
+
+            <include layout="@layout/udesk_item_event" />
+
+            <include layout="@layout/udesk_item_queue" />
+
+            <include layout="@layout/udesk_item_img_txt_left" />
+
+            <include layout="@layout/udesk_robot_item_struc_brand" />
+
+            <include layout="@layout/udesk_robot_item_question_classify" />
+
+            <include layout="@layout/udesk_item_struct_table" />
+
+            <include layout="@layout/udesk_item_reply_product" />
+
+            <include layout="@layout/udesk_item_link" />
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/udesk_robot_ll_useful"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/udesk_8"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/udesk_useful"
+                android:layout_width="@dimen/udesk_32"
+                android:layout_height="@dimen/udesk_32"
+                android:background="@drawable/udesk_shape_oval_white"
+                android:scaleType="centerInside"
+                android:src="@drawable/udesk_useful" />
+
+            <ImageView
+                android:id="@+id/udesk_useless"
+                android:layout_width="@dimen/udesk_32"
+                android:layout_height="@dimen/udesk_32"
+                android:layout_marginTop="@dimen/udesk_8"
+                android:background="@drawable/udesk_shape_oval_white"
+                android:scaleType="centerInside"
+                android:src="@drawable/udesk_useless" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/udesk_im_ll_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/udesgk_im_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/udesk_6"
+            android:background="@drawable/udesk_ok_bg"
+            android:gravity="center"
+            android:paddingLeft="@dimen/udesk_12"
+            android:paddingTop="@dimen/udesk_4"
+            android:paddingRight="@dimen/udesk_12"
+            android:paddingBottom="@dimen/udesk_4"
+            android:text="是的"
+            android:textColor="@color/udesk_color_227BF0"
+            android:textSize="@dimen/udesk_12" />
+
+        <TextView
+            android:id="@+id/udesgk_im_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/udesk_10"
+            android:layout_marginTop="@dimen/udesk_6"
+            android:background="@drawable/udesk_ok_bg"
+            android:gravity="center"
+            android:paddingLeft="@dimen/udesk_12"
+            android:paddingTop="@dimen/udesk_4"
+            android:paddingRight="@dimen/udesk_12"
+            android:paddingBottom="@dimen/udesk_4"
+            android:text="不是"
+            android:textColor="@color/udesk_color_227BF0"
+            android:textSize="@dimen/udesk_12" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/udesk_robot_transfer_agent"
+        android:layout_width="@dimen/udesk_130"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/udesk_10"
+        android:background="@drawable/udesk_transfer_to_agent"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:padding="@dimen/udesk_6"
+        android:text="转人工"
+        android:textColor="@color/udesk_color_307AE8"
+        android:textSize="@dimen/udesk_sp14"
+        android:visibility="gone" />
+
+</LinearLayout>

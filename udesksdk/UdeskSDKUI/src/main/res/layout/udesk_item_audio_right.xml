@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_item_audio"
+    android:layout_width="150dp"
+    android:layout_height="38dp"
+    android:background="@drawable/udesk_im_txt_right_default"
+    android:visibility="gone">
+
+    <ImageView
+        android:id="@+id/udesk_im_item_record_play"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/udesk_18"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:layout_marginRight="@dimen/udesk_15"
+        android:src="@drawable/udesk_im_record_right_default" />
+    <TextView
+        android:id="@+id/udesk_im_item_record_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="@dimen/udesk_5"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/udesk_im_item_record_play"
+        android:textColor="@color/white"
+        android:textSize="@dimen/udesk_sp12"
+        />
+</RelativeLayout>

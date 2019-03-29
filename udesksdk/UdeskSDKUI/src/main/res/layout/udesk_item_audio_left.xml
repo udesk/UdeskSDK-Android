@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_item_audio"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/udesk_im_txt_left_default"
+    android:visibility="gone">
+    <LinearLayout
+        android:id="@+id/udesk_audio_top"
+        android:layout_width="@dimen/udesk_150"
+        android:layout_height="38dp"
+        android:gravity="center_vertical"
+        >
+        <ImageView
+            android:id="@+id/udesk_im_item_record_play"
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+            android:gravity="center"
+            android:layout_marginLeft="@dimen/udesk_15"
+            android:src="@drawable/udesk_im_record_left_default" />
+        <TextView
+            android:id="@+id/udesk_im_item_record_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/udesk_5"
+            android:gravity="center"
+            android:textColor="@color/udesk_color_212121"
+            android:textSize="@dimen/udesk_sp12" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/udesk_container_audio"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

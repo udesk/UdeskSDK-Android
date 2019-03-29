@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_item_event"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/udesk_event_bg"
+    android:padding="@dimen/udesk_5"
+    android:orientation="vertical"
+    android:visibility="gone"
+    >
+    <TextView
+        android:id="@+id/udesk_event"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#999999"
+        android:textSize="@dimen/udesk_sp14"
+        />
+</LinearLayout>

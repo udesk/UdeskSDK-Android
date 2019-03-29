@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_robot_item_struc_brand"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:visibility="gone">
+    <TextView
+        android:id="@+id/udesk_robot_txt_struc_brand_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/udesk_8"
+        android:paddingBottom="@dimen/udesk_8"
+        android:paddingLeft="@dimen/udesk_14"
+        android:paddingRight="@dimen/udesk_14"
+        android:maxWidth="@dimen/udesk_280"
+        android:background="@drawable/udesk_im_txt_left_default"
+        android:gravity="left|center"
+        android:lineSpacingExtra="3dip"
+        android:textColor="@color/udesk_color_212121"
+        android:textColorLink="@color/udesk_color_im_text_left1"
+        android:textSize="@dimen/udesk_sp15"
+        />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/udesk_robot_rv_struc_brand"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        />
+
+</LinearLayout>

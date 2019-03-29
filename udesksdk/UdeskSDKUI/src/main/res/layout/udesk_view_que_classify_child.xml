@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingTop="@dimen/udesk_10"
+    android:paddingBottom="@dimen/udesk_10"
+    android:paddingLeft="@dimen/udesk_14"
+    android:paddingRight="@dimen/udesk_14">
+    <TextView
+        android:id="@+id/udesk_robot_tv_que_child"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/udesk_dot"
+        android:drawablePadding="@dimen/udesk_6"
+        android:textColor="@color/udesk_color_227BF0"
+        android:textSize="@dimen/udesk_sp15"
+        android:maxWidth="@dimen/udesk_280"
+        />
+</LinearLayout>

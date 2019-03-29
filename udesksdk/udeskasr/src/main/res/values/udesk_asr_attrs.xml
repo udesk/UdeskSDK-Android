@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="WaveCircleView">
+        <attr name="udesk_color" format="color"/>
+        <attr name="udesk_image" format="reference"/>
+        <attr name="udesk_stroke" format="boolean"/>
+        <attr name="udesk_waveCreateSpeed" format="integer"/>
+        <attr name="udesk_duration" format="integer"/>
+    </declare-styleable>
+</resources>

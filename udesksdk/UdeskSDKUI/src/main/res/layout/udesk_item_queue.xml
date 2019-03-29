@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_item_queue"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/udesk_event_bg"
+    android:orientation="vertical"
+    android:visibility="gone">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/udesk_10"
+        android:text="@string/udesk_in_the_line"
+        android:textColor="@color/udesk_color_333333"
+        android:textSize="@dimen/udesk_sp16"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/udesk_queue_context"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/udesk_10"
+        android:paddingRight="@dimen/udesk_10"
+        android:paddingBottom="@dimen/udesk_5"
+        android:text="@string/udesk_in_the_line"
+        android:textColor="@color/udesk_color_666666"
+        android:textSize="@dimen/udesk_sp16" />
+    <TextView
+        android:id="@+id/udesk_leaveing_msg"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/udesk_10"
+        android:text="@string/udesk_ok"
+        android:textColor="@color/udesk_color_2d93fa"
+        android:textSize="@dimen/udesk_sp16"
+        android:visibility="visible" />
+</LinearLayout>

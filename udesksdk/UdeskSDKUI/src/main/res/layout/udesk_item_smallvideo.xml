@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/udesk_item_smallvideo"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/udesk_im_txt_left_default"
+    android:visibility="gone">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="1dip"
+        >
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/udesk_im_smallvideo_image"
+            fresco:placeholderImage="@drawable/udesk_defalut_image_loading"
+            fresco:placeholderImageScaleType="centerCrop"
+            android:layout_width="@dimen/udesk_130"
+            android:layout_height="@dimen/udesk_200"
+            fresco:roundedCornerRadius="9dp"/>
+
+        <ImageView
+            android:id="@+id/video_tip"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/udesk_video_play"
+            android:visibility="gone"/>
+
+        <cn.udesk.widget.CircleProgressBar
+            android:id="@+id/video_upload_bar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/udesk_video_play"
+            android:visibility="gone" />
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/udesk_container_smallvideo"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
+
