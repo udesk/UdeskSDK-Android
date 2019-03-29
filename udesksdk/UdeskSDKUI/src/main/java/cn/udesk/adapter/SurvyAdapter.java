@@ -1,9 +1,7 @@
 package cn.udesk.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import cn.udesk.R;
-import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
-import cn.udesk.model.NavigationMode;
 import cn.udesk.model.OptionsModel;
 import udesk.core.UdeskConst;
 import udesk.core.utils.UdeskUtils;

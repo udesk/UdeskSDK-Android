@@ -2,6 +2,7 @@ package cn.udesk.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import java.util.List;
 import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.model.NavigationMode;
+import udesk.core.UdeskConst;
 
 /**
  * Created by user on 2018/3/28.
@@ -32,11 +34,18 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
         this.mOnItemClickListener = listener;
     }
 
-    public NavigationAdapter(Context context) {
+    public NavigationAdapter(Context context,String currentView) {
         this.mContext = context;
-        if (UdeskSDKManager.getInstance().getUdeskConfig().navigationModes != null){
-            navigationModes = UdeskSDKManager.getInstance().getUdeskConfig().navigationModes;
+        if (TextUtils.equals(currentView,UdeskConst.CurrentFragment.agent)){
+            if (UdeskSDKManager.getInstance().getUdeskConfig().navigationModes != null){
+                navigationModes = UdeskSDKManager.getInstance().getUdeskConfig().navigationModes;
+            }
+        }else {
+            if (UdeskSDKManager.getInstance().getUdeskConfig().robotnavigationModes != null){
+                navigationModes = UdeskSDKManager.getInstance().getUdeskConfig().robotnavigationModes;
+            }
         }
+
 
     }
 

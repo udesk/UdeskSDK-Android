@@ -104,7 +104,7 @@ public class UdeskHelperActivity extends UdeskBaseActivity implements OnClickLis
         try {
             mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
             if (mTitlebar != null) {
-                mTitlebar.setLeftTextSequence(getString(R.string.udesk_navi_helper_title_main));
+                mTitlebar.setTopTextSequence(getString(R.string.udesk_navi_helper_title_main));
                 mTitlebar.setLeftLinearVis(View.VISIBLE);
                 mTitlebar.setLeftViewClick(new OnClickListener() {
 
@@ -116,7 +116,8 @@ public class UdeskHelperActivity extends UdeskBaseActivity implements OnClickLis
                 if (UdeskConfig.DEFAULT != UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId) {
                     mTitlebar.getUdeskBackImg().setImageResource(UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId);
                 }
-                UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarTextLeftRightResId, mTitlebar.getLeftTextView(), mTitlebar.getRightTextView());
+                UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarMiddleTextResId, mTitlebar.getUdeskTopText(), mTitlebar.getRightTextView());
+                UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarRightTextResId, mTitlebar.getRightTextView());
                 if (mTitlebar.getRootView() != null) {
                     UdekConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarBgResId, mTitlebar.getRootView());
                 }
@@ -202,7 +203,9 @@ public class UdeskHelperActivity extends UdeskBaseActivity implements OnClickLis
                     startGetSerchHelper(search);
                 }
             } else if (v.getId() == R.id.udesk_navi_to_im) {
-                UdeskSDKManager.getInstance().entryChat(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig(), UdeskSDKManager.getInstance().getSdkToken(getApplicationContext()));
+                UdeskSDKManager.getInstance().entryChat(getApplicationContext(),
+                        UdeskSDKManager.getInstance().getUdeskConfig(),
+                        UdeskSDKManager.getInstance().getSdkToken(getApplicationContext()));
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -8,6 +8,8 @@
         android:layout_height="fill_parent"
         android:background="@color/white"
         android:focusable="true"
+        android:paddingLeft="@dimen/udesk_10"
+        android:paddingRight="@dimen/udesk_10"
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
@@ -500,6 +502,33 @@
                     android:textSize="15sp" />
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/set_use_navigation_view_robot"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_has_navigation_robot"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -674,8 +703,28 @@
 
 
         </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="@dimen/udesk_10"
+            android:text="切换语言"/>
+        <EditText
+            android:id="@+id/edit_language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="@dimen/udesk_10"
+            android:gravity="start|center"
+            android:hint="请查找对应android系统的对应简写填入，不确定找应用系统的简写在接口中查找填入"
+            android:textColor="#333333"
+            android:textColorHint="@color/udesk_color_999999"
+            android:textSize="16sp" />
 
         <LinearLayout
+            android:visibility="gone"
             android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:orientation="horizontal">

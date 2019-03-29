@@ -87,6 +87,7 @@ public class UDPullGetMoreListView extends ListView implements OnScrollListener 
     }
 
 
+    @Override
     public void onScroll(AbsListView arg0, int firstVisiableItem, int arg2, int arg3) {
         firstItemIndex = firstVisiableItem;
         if(firstItemIndex == 1 && !isPush) {
@@ -95,6 +96,7 @@ public class UDPullGetMoreListView extends ListView implements OnScrollListener 
     }
 
 
+    @Override
     public void onScrollStateChanged(AbsListView arg0, int arg1) {
 
         switch(arg1){

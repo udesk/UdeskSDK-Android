@@ -1,20 +1,16 @@
 package cn.udesk.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.udesk.JsonUtils;
 import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
@@ -24,9 +20,7 @@ import cn.udesk.config.UdeskConfig;
 import cn.udesk.model.AgentGroupNode;
 import cn.udesk.widget.UdeskDialog;
 import cn.udesk.widget.UdeskTitleBar;
-import udesk.core.UdeskCallBack;
 import udesk.core.UdeskConst;
-import udesk.core.UdeskHttpFacade;
 
 
 /**
@@ -44,6 +38,14 @@ public class UdeskOptionsAgentGroupActivity extends UdeskBaseActivity implements
     private String rootId = "item_0";
     private AgentGroupNode backMode = null;
 
+    private boolean startActivityForResult = false;
+
+    public static void start(Activity context, int requestCode) {
+        Intent intent = new Intent(context, UdeskOptionsAgentGroupActivity.class);
+        intent.putExtra("forResult", true);
+        context.startActivityForResult(intent, requestCode);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +53,12 @@ public class UdeskOptionsAgentGroupActivity extends UdeskBaseActivity implements
             UdeskUtil.setOrientation(this);
             setContentView(R.layout.udesk_options_agentgroup_view);
             initView();
-            getImGroupInfo();
+            if (getIntent() != null) {
+                startActivityForResult = getIntent().getBooleanExtra("forResult", false);
+            }
+            groups = UdeskSDKManager.getInstance().getInitCustomerBean().getIm_group();
+            settingTitlebar();
+            drawView(rootId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -76,54 +83,6 @@ public class UdeskOptionsAgentGroupActivity extends UdeskBaseActivity implements
         }
     }
 
-    /**
-     * 请求客服组信息，没有客服组则直接进入会话界面
-     */
-    private void getImGroupInfo() {
-        try {
-            showLoading();
-            UdeskHttpFacade.getInstance().getImGroupApi(
-                    UdeskSDKManager.getInstance().getDomain(this),
-                    UdeskSDKManager.getInstance().getAppkey(this),
-                    UdeskSDKManager.getInstance().getSdkToken(this),
-                    UdeskSDKManager.getInstance().getAppId(this),
-                    new UdeskCallBack() {
-
-                        @Override
-                        public void onSuccess(String message) {
-                            dismiss();
-                            try {
-                                JSONObject resultJson = new JSONObject(message);
-                                if (resultJson.optInt("code") == 1000) {
-                                    groups = JsonUtils.parseIMGroup(message);
-                                    if (groups == null || groups.isEmpty()) {
-                                        luanchChat();
-                                        return;
-                                    }
-                                    settingTitlebar();
-                                    drawView(rootId);
-                                } else {
-                                    Toast.makeText(UdeskOptionsAgentGroupActivity.this, UdeskOptionsAgentGroupActivity.this.getString(R.string.udesk_error), Toast.LENGTH_SHORT).show();
-                                    finish();
-                                }
-                            } catch (Exception e) {
-                                Toast.makeText(UdeskOptionsAgentGroupActivity.this, UdeskOptionsAgentGroupActivity.this.getString(R.string.udesk_error), Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
-
-                        }
-
-                        @Override
-                        public void onFail(String message) {
-                            dismiss();
-                            Toast.makeText(UdeskOptionsAgentGroupActivity.this, UdeskOptionsAgentGroupActivity.this.getString(R.string.udesk_has_bad_net), Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                    });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     //进入会话界面
     private void luanchChat() {
@@ -144,7 +103,8 @@ public class UdeskOptionsAgentGroupActivity extends UdeskBaseActivity implements
 
         try {
             if (mTitlebar != null) {
-                UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarTextLeftRightResId, mTitlebar.getLeftTextView(), mTitlebar.getRightTextView());
+                UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarMiddleTextResId, mTitlebar.getUdeskTopText(), mTitlebar.getUdeskBottomText());
+                UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarRightTextResId, mTitlebar.getRightTextView());
                 if (mTitlebar.getRootView() != null) {
                     UdekConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarBgResId, mTitlebar.getRootView());
                 }
@@ -152,7 +112,7 @@ public class UdeskOptionsAgentGroupActivity extends UdeskBaseActivity implements
                     mTitlebar.getUdeskBackImg().setImageResource(UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId);
                 }
                 mTitlebar
-                        .setLeftTextSequence(getString(R.string.udesk_options_agentgroup));
+                        .setTopTextSequence(getString(R.string.udesk_options_agentgroup));
                 mTitlebar.setLeftLinearVis(View.VISIBLE);
                 mTitlebar.setLeftViewClick(new View.OnClickListener() {
 
@@ -194,14 +154,20 @@ public class UdeskOptionsAgentGroupActivity extends UdeskBaseActivity implements
             AgentGroupNode groupNode = adapter.getItem(i);
             backMode = groupNode;
             if (groupNode != null) {
-                if (TextUtils.isEmpty(groupNode.getGroup_id())) {
+                if (groupNode.getHas_next()) {
                     drawView(groupNode.getId());
                 } else {
-                    Intent intent = new Intent(getApplicationContext(), UdeskChatActivity.class);
-                    intent.putExtra(UdeskConst.UDESKGROUPID, groupNode.getGroup_id());
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
+                    if (startActivityForResult) {
+                        finshActivity(groupNode.getId());
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(), UdeskChatActivity.class);
+                        intent.putExtra(UdeskConst.UDESKMENUID, groupNode.getId());
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+
+
                 }
 
             }
@@ -211,21 +177,13 @@ public class UdeskOptionsAgentGroupActivity extends UdeskBaseActivity implements
 
     }
 
-    private void showLoading() {
-        try {
-            dialog = new UdeskDialog(UdeskOptionsAgentGroupActivity.this, R.style.udesk_dialog);
-            dialog.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+    private void finshActivity(String groupId) {
+        Intent intent = new Intent();
+        intent.putExtra(UdeskConst.UDESKMENUID, groupId);
+        setResult(RESULT_OK, intent);
+        UdeskOptionsAgentGroupActivity.this.finish();
     }
 
-    private void dismiss() {
-        if (dialog != null) {
-            dialog.dismiss();
-        }
-    }
 
     //根据id 画出相应的UI显示
     private void drawView(String currentId) {

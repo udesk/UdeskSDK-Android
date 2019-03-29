@@ -31,7 +31,7 @@
     <string name="udesk_label_customer_offline">Agent is offline</string>
     <!-- 商品咨询界面，链接按钮的展示文字 -->
     <string name="udesk_label_send_commondity_link">"Send links"</string>
-    <string name="udesk_transfer_persion">Operator</string>
+    <string name="udesk_transfer_person">Operator</string>
     <string name="udesk_robot_title">Intelligent robot</string>
     <string name="udesk_has_not_open_robot">You did not open intelligent robot service on your app</string>
     <string name="udesk_has_wrong_net">Network error, please checking you network setting!</string>
@@ -109,6 +109,11 @@
     <string name="udesk_statify">Satisfied</string>
     <string name="udesk_common">Neutral</string>
     <string name="udesk_unstatify">Unsatisfied</string>
+    <string name="udesk_satisfy_evaluation">Satisfaction evaluation</string>
+    <string name="udesk_satisfy_evaluation_title">What is your evaluation of the service?</string>
+    <string name="udesk_satisfy_evaluation_remark">Satisfaction evaluation remarks</string>
+
+
 
     <string name="udesk_remark_must">*  Remarks are required</string>
     <string name="udesk_rollback_tips">Agent %1$s recalled amessage</string>
@@ -120,4 +125,26 @@
     <string name="udesk_can_not_be_video">No customer service has been assigned yet, no video can be initiated</string>
     <string name="udesk_in_the_line">in the queue</string>
     <string name="udesk_in_the_line_max_send">Up to 20 messages can be sent in the queue</string>
+    <string name="udesk_online">online</string>
+    <string name="udesk_offline">offline</string>
+    <string name="udesk_resend_msg">Resend the message</string>
+    <string name="wait_try_again">Please wait until the picture is loaded successfully and try again</string>
+    <string name="udesk_no_network">The current network is unavailable. Please check your network settings</string>
+    <string name="udesk_answer_has_survey">Already evaluated</string>
+    <string name="udesk_expand">expand</string>
+    <string name="udesk_collapse">Retract</string>
+    <string name="udesk_clean">clear out</string>
+    <string name="udesk_edit_content">Editing</string>
+    <string name="udesk_robot_survey">Robot Evaluation</string>
+    <string name="udesk_change_group">change another words</string>
+    <string name="udesk_robot_recommendation_question">Would you like to ask the following questions?</string>
+
+    <string name="udesk_asr_close">Voice recognition is not enabled</string>
+    <string name="udesk_please_talk">Please enter</string>
+    <string name="udesk_press_speak">Hold and talk</string>
+    <string name="audio_denied">Voice permission denied</string>
+    <string name="udesk_asr_fail">Voice recognition failed</string>
+
+
+
 </resources>

@@ -30,7 +30,7 @@ public class UdeskWebViewUrlAcivity extends UdeskBaseWebViewActivity {
             setH5TitleListener(new UdeskWebChromeClient.GetH5Title() {
                 @Override
                 public void h5Title(String title) {
-                    mTitlebar.setLeftTextSequence(title);
+                    mTitlebar.setTopTextSequence(title);
                 }
             });
         } catch (Exception e) {
@@ -42,15 +42,15 @@ public class UdeskWebViewUrlAcivity extends UdeskBaseWebViewActivity {
     private void settingTitlebar() {
 
         try {
-            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarTextLeftRightResId, mTitlebar.getLeftTextView(), mTitlebar.getRightTextView());
-
+            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarMiddleTextResId, mTitlebar.getUdeskTopText(), mTitlebar.getUdeskBottomText());
+            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarRightTextResId, mTitlebar.getRightTextView());
             if (mTitlebar.getRootView() != null){
                 UdekConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarBgResId, mTitlebar.getRootView());
             }
             if (UdeskConfig.DEFAULT != UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId) {
                 mTitlebar.getUdeskBackImg().setImageResource(UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId);
             }
-            mTitlebar.setLeftTextSequence(UdeskWebViewUrlAcivity.this.getString(R.string.udesk_titlebar_back));
+            mTitlebar.setTopTextSequence(UdeskWebViewUrlAcivity.this.getString(R.string.udesk_titlebar_back));
             mTitlebar.setLeftLinearVis(View.VISIBLE);
             mTitlebar.setLeftViewClick(new View.OnClickListener() {
                 @Override

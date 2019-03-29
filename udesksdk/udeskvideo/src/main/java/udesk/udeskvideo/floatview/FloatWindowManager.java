@@ -85,8 +85,9 @@ public class FloatWindowManager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             isAttach = mFloatLayout.isAttachedToWindow();
         }
-        if (mHasShown && isAttach && mWindowManager != null)
+        if (mHasShown && isAttach && mWindowManager != null) {
             mWindowManager.removeView(mFloatLayout);
+        }
     }
 
     /**
@@ -100,14 +101,16 @@ public class FloatWindowManager {
     }
 
     public static void hide() {
-        if (mHasShown)
+        if (mHasShown) {
             mWindowManager.removeViewImmediate(mFloatLayout);
+        }
         mHasShown = false;
     }
 
     public static void show() {
-        if (!mHasShown)
+        if (!mHasShown) {
             mWindowManager.addView(mFloatLayout, wmParams);
+        }
         mHasShown = true;
     }
 }

@@ -42,6 +42,7 @@
     <string name="udesk_has_emotion">是否使用表情</string>
     <string name="udesk_has_more">是否使用更多控件</string>
     <string name="udesk_has_navigation">是否使用导航UI</string>
+    <string name="udesk_has_navigation_robot">是否使用机器人导航UI</string>
     <string name="udesk_has_navigation_survy">是否使用导航中的满意度评价</string>
     <string name="udesk_has_only_robot">是否只使用机器人</string>
     <string name="udesk_has_only_smallvideo">设置是否需要小视频</string>

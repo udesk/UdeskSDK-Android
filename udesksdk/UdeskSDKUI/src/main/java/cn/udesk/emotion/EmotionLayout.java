@@ -274,9 +274,9 @@ public class EmotionLayout extends LinearLayout implements View.OnClickListener 
 
     private void setCurPageCommon(int position) {
         try {
-            if (mTabPosi == 0)
+            if (mTabPosi == 0) {
                 setCurPage(position, (int) Math.ceil(EmojiManager.getDisplayCount() / (float) EmotionLayout.EMOJI_PER_PAGE));
-            else {
+            } else {
                 StickerCategory category = StickerManager.getInstance().getStickerCategories().get(mTabPosi - 1);
                 setCurPage(position, (int) Math.ceil(category.getStickers().size() / (float) EmotionLayout.STICKER_PER_PAGE));
             }
@@ -294,8 +294,9 @@ public class EmotionLayout extends LinearLayout implements View.OnClickListener 
 
     public void selectTab(int tabPosi) {
         try {
-            if (tabPosi == mTabViewArray.size() - 1)
+            if (tabPosi == mTabViewArray.size() - 1) {
                 return;
+            }
 
             for (int i = 0; i < mTabCount; i++) {
                 View tab = mTabViewArray.get(i);

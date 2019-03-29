@@ -1,9 +1,7 @@
 package cn.udesk.config;
 
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import cn.udesk.R;
@@ -30,9 +28,11 @@ public class UdeskConfig {
 
     // 标题栏TitleBar的背景色  通过颜色设置
     public int udeskTitlebarBgResId = DEFAULT;
-    // 标题栏TitleBar，左右两侧文字的颜色
-    public int udeskTitlebarTextLeftRightResId = DEFAULT;
-    //IM界面，左侧文字的字体颜色
+    // 标题栏TitleBar，中部上下文字的颜色
+    public int udeskTitlebarMiddleTextResId = DEFAULT;
+    // 标题栏TitleBar，右侧文字的颜色
+    public int udeskTitlebarRightTextResId = DEFAULT;
+    //    //IM界面，左侧文字的字体颜色
     public int udeskIMLeftTextColorResId = DEFAULT;
     //IM界面，右侧文字的字体颜色
     public int udeskIMRightTextColorResId = DEFAULT;
@@ -73,6 +73,8 @@ public class UdeskConfig {
     public boolean isUseMore = true;
     //设置是否使用导航UI rue表示使用 false表示不使用
     public boolean isUseNavigationRootView = false;
+    //设置是否使用导航UI rue表示使用 false表示不使用
+    public boolean isUseRobotNavigationRootView = false;
     //设置是否使用导航UI中的满意度评价UI rue表示使用 false表示不使用
     public boolean isUseNavigationSurvy = true;
     //设置是否需要小视频的功能 rue表示使用 false表示不使用
@@ -87,18 +89,12 @@ public class UdeskConfig {
     public String Orientation = OrientationValue.portrait;
     //在没有请求到管理员在后端对sdk使用配置下，在默认的情况下，是否需要表单留言，true需要， false 不需要
     public boolean isUserForm = false;
-    //创建用户的基本信息
-    public Map<String, String> defualtUserInfo;
-    //创建自定义的文本信息
+    //创建 更新用户的基本信息
+    public Map<String, String> defaultUserInfo;
+    //创建 更新自定义的文本信息
     public Map<String, String> definedUserTextField;
     //创建自定义的列表信息
     public Map<String, String> definedUserRoplist;
-    //用户需要更新的基本信息
-    public Map<String, String> updateDefualtUserInfo;
-    //用户需要更新自定义字段文本信息
-    public Map<String, String> updatedefinedUserTextField;
-    //用户需要更新自定义列表字段信息
-    public Map<String, String> updatedefinedUserRoplist;
     //设置带入一条消息  会话分配就发送给客服
     public String firstMessage;
     //udesk 机器人配置欢迎语 对应的Id值
@@ -125,6 +121,8 @@ public class UdeskConfig {
     public INavigationItemClickCallBack navigationItemClickCallBack;
     //约定传递的自定义按钮集合
     public List<NavigationMode> navigationModes;
+    //约定传递的自定义按钮集合
+    public List<NavigationMode> robotnavigationModes;
     //点击地理位置信息的回调接口
     public ILocationMessageClickCallBack locationMessageClickCallBack;
     //传入打开的地图的activity
@@ -148,7 +146,8 @@ public class UdeskConfig {
     UdeskConfig(Builder builder) {
 
         this.udeskTitlebarBgResId = builder.udeskTitlebarBgResId;
-        this.udeskTitlebarTextLeftRightResId = builder.udeskTitlebarTextLeftRightResId;
+        this.udeskTitlebarMiddleTextResId = builder.udeskTitlebarMiddleTextResId;
+        this.udeskTitlebarRightTextResId=builder.udeskTitlebarRightTextResId;
         this.udeskIMLeftTextColorResId = builder.udeskIMLeftTextColorResId;
         this.udeskIMRightTextColorResId = builder.udeskIMRightTextColorResId;
         this.udeskIMAgentNickNameColorResId = builder.udeskIMAgentNickNameColorResId;
@@ -170,6 +169,7 @@ public class UdeskConfig {
         this.isUseEmotion = builder.isUseEmotion;
         this.isUseMore = builder.isUseMore;
         this.isUseNavigationRootView = builder.isUseNavigationRootView;
+        this.isUseRobotNavigationRootView = builder.isUseRobotNavigationRootView;
         this.isUseNavigationSurvy = builder.isUseNavigationSurvy;
         this.isUseSmallVideo = builder.isUseSmallVideo;
         this.isScaleImg = builder.isScaleImg;
@@ -177,12 +177,9 @@ public class UdeskConfig {
         this.useMapType = builder.useMapType;
         this.Orientation = builder.Orientation;
         this.isUserForm = builder.isUserForm;
-        this.defualtUserInfo = builder.defualtUserInfo;
+        this.defaultUserInfo = builder.defaultUserInfo;
         this.definedUserTextField = builder.definedUserTextField;
         this.definedUserRoplist = builder.definedUserRoplist;
-        this.updateDefualtUserInfo = builder.updateDefualtUserInfo;
-        this.updatedefinedUserTextField = builder.updatedefinedUserTextField;
-        this.updatedefinedUserRoplist = builder.updatedefinedUserRoplist;
         this.firstMessage = builder.firstMessage;
         this.robot_modelKey = builder.robot_modelKey;
         this.concatRobotUrlWithCustomerInfo = builder.concatRobotUrlWithCustomerInfo;
@@ -196,6 +193,7 @@ public class UdeskConfig {
         this.extreFunctions = builder.extreFunctions;
         this.navigationItemClickCallBack = builder.navigationItemClickCallBack;
         this.navigationModes = builder.navigationModes;
+        this.robotnavigationModes = builder.robotnavigationModes;
         this.locationMessageClickCallBack = builder.locationMessageClickCallBack;
         this.cls = builder.cls;
         this.groupId = builder.groupId;
@@ -216,8 +214,10 @@ public class UdeskConfig {
     public static class Builder {
         // 标题栏TitleBar的背景色  通过颜色设置
         private int udeskTitlebarBgResId = DEFAULT;
-        // 标题栏TitleBar，左右两侧文字的颜色
-        private int udeskTitlebarTextLeftRightResId = DEFAULT;
+        // 标题栏TitleBar，中部上下文字的颜色
+        public int udeskTitlebarMiddleTextResId = DEFAULT;
+        // 标题栏TitleBar，右侧文字的颜色
+        public int udeskTitlebarRightTextResId = DEFAULT;
         //IM界面，左侧文字的字体颜色
         private int udeskIMLeftTextColorResId = DEFAULT;
         //IM界面，右侧文字的字体颜色
@@ -260,6 +260,8 @@ public class UdeskConfig {
         private boolean isUseMore = true;
         //设置是否使用导航UI rue表示使用 false表示不使用
         private boolean isUseNavigationRootView = false;
+        //设置是否使用导航UI rue表示使用 false表示不使用
+        private boolean isUseRobotNavigationRootView = false;
         //设置是否使用导航UI中的满意度评价UI rue表示使用 false表示不使用
         private boolean isUseNavigationSurvy = true;
         //设置是否需要小视频的功能 rue表示使用 false表示不使用
@@ -275,17 +277,11 @@ public class UdeskConfig {
         //在没有请求到管理员在后端对sdk使用配置下，在默认的情况下，是否需要表单留言，true需要， false 不需要
         private boolean isUserForm = false;
         //创建用户的基本信息
-        private Map<String, String> defualtUserInfo;
+        private Map<String, String> defaultUserInfo;
         //创建自定义的文本信息
         private Map<String, String> definedUserTextField;
         //创建自定义的列表信息
         private Map<String, String> definedUserRoplist;
-        //用户需要更新的基本信息
-        private Map<String, String> updateDefualtUserInfo;
-        //用户需要更新自定义字段文本信息
-        private Map<String, String> updatedefinedUserTextField;
-        //用户需要更新自定义列表字段信息
-        private Map<String, String> updatedefinedUserRoplist;
         //设置带入一条消息  会话分配就发送给客服
         private String firstMessage;
         //udesk 机器人配置欢迎语 对应的Id值
@@ -311,6 +307,9 @@ public class UdeskConfig {
         private INavigationItemClickCallBack navigationItemClickCallBack;
         //约定传递的自定义按钮集合
         private List<NavigationMode> navigationModes;
+        //约定传递的自定义按钮集合
+        private List<NavigationMode> robotnavigationModes;
+
         //点击地理位置信息的回调接口
         private ILocationMessageClickCallBack locationMessageClickCallBack;
         //传入打开的地图的activity
@@ -341,13 +340,20 @@ public class UdeskConfig {
             this.udeskTitlebarBgResId = udeskTitlebarBgResId;
             return this;
         }
-
         /**
-         * @param udeskTitlebarTextLeftRightResId 标题栏TitleBar，左右两侧文字的颜色
+         * @param udeskTitlebarMiddleTextResId 标题栏TitleBar，中间上下文字的颜色
          * @return
          */
-        public Builder setUdeskTitlebarTextLeftRightResId(int udeskTitlebarTextLeftRightResId) {
-            this.udeskTitlebarTextLeftRightResId = udeskTitlebarTextLeftRightResId;
+        public Builder setUdeskTitlebarMiddleTextResId(int udeskTitlebarMiddleTextResId) {
+            this.udeskTitlebarMiddleTextResId = udeskTitlebarMiddleTextResId;
+            return this;
+        }
+        /**
+         * @param udeskTitlebarRightTextResId 标题栏TitleBar，右侧文字的颜色
+         * @return
+         */
+        public Builder setUdeskTitlebarRightTextResId(int udeskTitlebarRightTextResId) {
+            this.udeskTitlebarRightTextResId = udeskTitlebarRightTextResId;
             return this;
         }
 
@@ -583,10 +589,10 @@ public class UdeskConfig {
         }
 
         /**
-         * @param defualtUserInfo 创建用户的基本信息
+         * @param defaultUserInfo 创建用户的基本信息
          */
-        public Builder setDefualtUserInfo(Map<String, String> defualtUserInfo) {
-            this.defualtUserInfo = defualtUserInfo;
+        public Builder setdefaultUserInfo(Map<String, String> defaultUserInfo) {
+            this.defaultUserInfo = defaultUserInfo;
             return this;
         }
 
@@ -609,10 +615,10 @@ public class UdeskConfig {
         /**
          * 用户需要更新的基本信息
          *
-         * @param updateDefualtUserInfo
+         * @param updatedefaultUserInfo
          */
-        public Builder setUpdateDefualtUserInfo(Map<String, String> updateDefualtUserInfo) {
-            this.updateDefualtUserInfo = updateDefualtUserInfo;
+        public Builder setUpdatedefaultUserInfo(Map<String, String> updatedefaultUserInfo) {
+            this.defaultUserInfo = updatedefaultUserInfo;
             return this;
         }
 
@@ -620,7 +626,7 @@ public class UdeskConfig {
          * @param updatedefinedUserTextField 用户需要更新自定义字段文本信息
          */
         public Builder setUpdatedefinedUserTextField(Map<String, String> updatedefinedUserTextField) {
-            this.updatedefinedUserTextField = updatedefinedUserTextField;
+            this.definedUserTextField = updatedefinedUserTextField;
             return this;
         }
 
@@ -628,7 +634,7 @@ public class UdeskConfig {
          * @param updatedefinedUserRoplist 用户需要更新自定义列表字段信息
          */
         public Builder setUpdatedefinedUserRoplist(Map<String, String> updatedefinedUserRoplist) {
-            this.updatedefinedUserRoplist = updatedefinedUserRoplist;
+            this.definedUserRoplist = updatedefinedUserRoplist;
             return this;
         }
 
@@ -724,6 +730,19 @@ public class UdeskConfig {
                                       INavigationItemClickCallBack navigationItemClickCallBack) {
             this.isUseNavigationRootView = useNavigationRootView;
             this.navigationModes = navigationModes;
+            this.navigationItemClickCallBack = navigationItemClickCallBack;
+            return this;
+        }
+
+ /**
+         * @param useRobotNavigationRootView       设置是否使用导航UI rue表示使用 false表示不使用
+         * @param robotNavigationModes             约定传递的自定义按钮集合
+         * @param navigationItemClickCallBack 支持客户在导航处添加自定义按钮的点击回调事件
+         */
+        public Builder setRobotNavigations(boolean useRobotNavigationRootView, List<NavigationMode> robotNavigationModes,
+                                      INavigationItemClickCallBack navigationItemClickCallBack) {
+            this.isUseRobotNavigationRootView = useRobotNavigationRootView;
+            this.robotnavigationModes = robotNavigationModes;
             this.navigationItemClickCallBack = navigationItemClickCallBack;
             return this;
         }

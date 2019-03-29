@@ -30,8 +30,9 @@ public class MoonUtils {
      * EditText用来转换表情文字的方法，如果没有使用EmoticonPickerView的attachEditText方法，则需要开发人员手动调用方法来又识别EditText中的表情
      */
     public static void replaceEmoticons(Context context, Editable editable, int start, int count) {
-        if (count <= 0 || editable.length() < start + count)
+        if (count <= 0 || editable.length() < start + count) {
             return;
+        }
 
         CharSequence s = editable.subSequence(start, start + count);
         Matcher matcher = EmojiManager.getPattern().matcher(s);
@@ -48,15 +49,17 @@ public class MoonUtils {
     }
 
     public static boolean isHasEmotions(String string){
-        if (TextUtils.isEmpty(string))
+        if (TextUtils.isEmpty(string)) {
             return false;
+        }
         Matcher matcher = EmojiManager.getPattern().matcher(string);
         return matcher.find();
     }
 
     public static SpannableString replaceEmoticons(Context context, String string, int textSize) {
-        if (TextUtils.isEmpty(string))
+        if (TextUtils.isEmpty(string)) {
             return null;
+        }
         SpannableString spannable = new SpannableString(string);
         Matcher matcher = EmojiManager.getPattern().matcher(string);
         while (matcher.find()) {

@@ -50,7 +50,7 @@ public class PreviewPhotosFragmentAdapter extends RecyclerView.Adapter<RecyclerV
             final int mediaMimeType = UdeskUtil.isPictureType(type);
             Drawable drawable = ContextCompat.getDrawable(context, R.drawable.udesk_video_icon);
             UdeskUtil.modifyTextViewDrawable(contentHolder.tv_duration, drawable, 0);
-            contentHolder.tv_duration.setVisibility(mediaMimeType == UdeskUtil.TYPE_VIDEO ? View.VISIBLE : View.GONE);
+            contentHolder.tv_duration.setVisibility(mediaMimeType == UdeskUtil.TYPE_SHORT_VIDEO ? View.VISIBLE : View.GONE);
             UdeskUtil.loadViewBySize(context, contentHolder.iv_picture, Uri.fromFile(new File(path)), UdeskUtil.dip2px(context, 60), UdeskUtil.dip2px(context, 60));
             if (checkedPosition == position) {
                 contentHolder.v_selector.setVisibility(View.VISIBLE);

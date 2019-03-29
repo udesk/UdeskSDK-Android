@@ -5,7 +5,7 @@
         <item name="android:gravity">center</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/udesk_color_navi_text1</item>
+        <item name="android:textColor">@color/udesk_color_middle_text</item>
         <item name="android:textSize">@dimen/udesk_navi_text_size</item>
         <item name="android:ellipsize">middle</item>
         <item name="android:singleLine">true</item>
@@ -25,14 +25,14 @@
         <item name="android:gravity">left</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/udesk_color_navi_text1</item>
+        <item name="android:textColor">@color/udesk_color_middle_text</item>
         <item name="android:textSize">@dimen/udesk_navi_text_size</item>
         <item name="android:ellipsize">end</item>
         <item name="android:singleLine">true</item>
     </style>
 
     <style name="Udesk_Theme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowBackground">@color/udesk_color_f0f2f2</item>
     </style>
 
 
@@ -48,6 +48,13 @@
     <style name="udesk_survy_anim" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/udesk_pop_enter_anim</item>
         <item name="android:windowExitAnimation">@anim/udesk_pop_exit_anim</item>
+    </style>
+    <style name="udesk_default_dialog_style" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
 </resources>

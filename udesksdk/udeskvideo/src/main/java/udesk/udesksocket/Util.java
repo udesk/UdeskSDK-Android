@@ -93,13 +93,12 @@ public class Util {
         return 0;
     }
 
-    //
+    private static Pattern NumberPattern = Pattern.compile("[0-9]*");
     public static boolean isNumeric(String str) {
         if (TextUtils.isEmpty(str)) {
             return false;
         }
-        Pattern pattern = Pattern.compile("[0-9]*");
-        Matcher isNum = pattern.matcher(str);
+        Matcher isNum = NumberPattern.matcher(str);
         return isNum.matches();
     }
 
@@ -161,17 +160,18 @@ public class Util {
         int hour;
         int minute;
         int second;
-        if (time <= 0)
+        if (time <= 0) {
             return "00:00";
-        else {
+        } else {
             minute = time / 60;
             if (minute < 60) {
                 second = time % 60;
                 timeStr = "00:" + unitFormat(minute) + ":" + unitFormat(second);
             } else {
                 hour = minute / 60;
-                if (hour > 23)
+                if (hour > 23) {
                     return "23:59:59";
+                }
                 minute = minute % 60;
                 second = time - hour * 3600 - minute * 60;
                 timeStr = unitFormat(hour) + ":" + unitFormat(minute) + ":" + unitFormat(second);
@@ -183,10 +183,11 @@ public class Util {
 
     public static String unitFormat(int i) {
         String retStr;
-        if (i >= 0 && i < 10)
+        if (i >= 0 && i < 10) {
             retStr = "0" + Integer.toString(i);
-        else
+        } else {
             retStr = "" + i;
+        }
         return retStr;
     }
 

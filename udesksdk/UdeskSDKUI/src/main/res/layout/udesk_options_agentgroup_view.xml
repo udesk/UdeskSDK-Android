@@ -27,6 +27,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:cacheColorHint="@android:color/transparent"
+        android:layout_marginTop="@dimen/udesk_1"
         android:divider="@color/udesk_view_line"
         android:dividerHeight="@dimen/udesk_1"
         android:fadingEdge="none"

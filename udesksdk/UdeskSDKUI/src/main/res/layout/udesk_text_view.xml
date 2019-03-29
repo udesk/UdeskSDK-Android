@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="fill_parent"
-    android:background="@color/udesk_color_bg_white"
+    android:background="@color/transparent"
     android:layoutDirection="ltr"
     android:orientation="horizontal"
     android:paddingLeft="@dimen/udesk_10">
@@ -17,11 +17,12 @@
         android:gravity="center"
         android:maxWidth="@dimen/udesk_80"
         android:minWidth="@dimen/udesk_45"
-        android:padding="@dimen/udesk_5"
-        android:paddingLeft="@dimen/udesk_10"
-        android:paddingRight="@dimen/udesk_10"
+        android:paddingTop="@dimen/udesk_6"
+        android:paddingBottom="@dimen/udesk_6"
+        android:paddingLeft="@dimen/udesk_13"
+        android:paddingRight="@dimen/udesk_13"
         android:singleLine="true"
-        android:textColor="@color/udesk_color_666666"
+        android:textColor="@color/udesk_color_212121"
         android:textSize="@dimen/udesk_sp14" />
 
 

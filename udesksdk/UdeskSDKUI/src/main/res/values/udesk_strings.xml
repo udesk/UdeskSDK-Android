@@ -30,7 +30,7 @@
     <string name="udesk_im_time_format_dby">"前天"</string>
     <string name="udesk_label_customer_offline">客服不在线</string>
     <string name="udesk_label_send_commondity_link">"发送链接"</string>
-    <string name="udesk_transfer_persion">转人工</string>
+    <string name="udesk_transfer_person">转人工</string>
     <string name="udesk_robot_title">智能机器人对话</string>
     <string name="udesk_has_not_open_robot">当前APP还没有开启智能机器人客服功能</string>
     <string name="udesk_has_wrong_net">网络出错了,请检查网络设置!</string>
@@ -113,6 +113,9 @@
     <string name="udesk_statify">满意</string>
     <string name="udesk_unstatify">不满意</string>
     <string name="udesk_common">一般</string>
+    <string name="udesk_satisfy_evaluation">满意度评价</string>
+    <string name="udesk_satisfy_evaluation_title">您对本次服务的评价是？</string>
+    <string name="udesk_satisfy_evaluation_remark">满意度评价备注</string>
 
     <string name="udesk_remark_must">* 评价备注为必填项</string>
     <string name="udesk_rollback_tips">客服 %1$s 撤回一条消息</string>
@@ -124,6 +127,23 @@
     <string name="udesk_can_not_be_video">还未分配客服，不能发起视频</string>
     <string name="udesk_in_the_line">排队中</string>
     <string name="udesk_in_the_line_max_send">排队中最多允许发送二十条消息</string>
+    <string name="udesk_online">在线</string>
+    <string name="udesk_offline">离线</string>
+    <string name="udesk_resend_msg">重发消息</string>
+    <string name="wait_try_again">请等图片加载成功后再试</string>
+    <string name="udesk_no_network">当前网络不可用，请检查你的网络设置</string>
+    <string name="udesk_answer_has_survey">已评价</string>
+    <string name="udesk_expand">展开</string>
+    <string name="udesk_collapse">收起</string>
+    <string name="udesk_clean">清空</string>
+    <string name="udesk_edit_content">编辑内容</string>
+    <string name="udesk_robot_survey">机器人评价</string>
+    <string name="udesk_change_group">换一组</string>
+    <string name="udesk_robot_recommendation_question">您是不是要咨询下面的问题？</string>
 
-
+    <string name="udesk_asr_close">语音识别功能未启用</string>
+    <string name="udesk_please_talk">请说话..</string>
+    <string name="udesk_press_speak">按住说话</string>
+    <string name="audio_denied">语音权限被拒绝</string>
+    <string name="udesk_asr_fail">语音识别失败</string>
 </resources>

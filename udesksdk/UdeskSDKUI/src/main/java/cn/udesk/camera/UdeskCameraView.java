@@ -40,7 +40,7 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
 
     //拍照浏览时候的类型
     public static final int TYPE_PICTURE = 0x001;
-    public static final int TYPE_VIDEO = 0x002;
+    public static final int TYPE_SHORT_VIDEO = 0x002;
     public static final int TYPE_SHORT = 0x003;
     public static final int TYPE_DEFAULT = 0x004;
 
@@ -419,7 +419,7 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
     public void resetState(int type) {
         try {
             switch (type) {
-                case TYPE_VIDEO:
+                case TYPE_SHORT_VIDEO:
                     stopVideo();    //停止播放
                     //初始化VideoView
                     UdeskUtils.deleteFile(videoUrl);
@@ -448,7 +448,7 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
     public void confirmState(int type) {
         try {
             switch (type) {
-                case TYPE_VIDEO:
+                case TYPE_SHORT_VIDEO:
                     stopVideo();    //停止播放
                     mVideoView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                     machine.start(mVideoView.getHolder(), screenProp);

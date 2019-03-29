@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.udesk.R;
-import cn.udesk.UdeskSDKManager;
-import cn.udesk.model.NavigationMode;
 import cn.udesk.model.Tag;
 
 /**

@@ -40,6 +40,7 @@ public class AudioRecordManager {
     private long startTime;
 
     private AudioRecord.OnRecordPositionUpdateListener updateListener = new AudioRecord.OnRecordPositionUpdateListener() {
+        @Override
         public void onPeriodicNotification(AudioRecord recorder) {
             try {
                 audioRecorder.read(buffer, 0, buffer.length); // Fill buffer
@@ -65,6 +66,7 @@ public class AudioRecordManager {
             }
         }
 
+        @Override
         public void onMarkerReached(AudioRecord recorder) {
             // NOT USED
         }

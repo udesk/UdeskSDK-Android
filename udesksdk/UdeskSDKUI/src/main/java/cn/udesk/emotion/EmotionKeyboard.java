@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 
 import java.lang.reflect.Field;
 
+import udesk.core.event.InvokeEventContainer;
+
 /**
  * 表情键盘协调工具
  */
@@ -66,6 +68,7 @@ public class EmotionKeyboard {
                     if (event.getAction() == MotionEvent.ACTION_UP && mEmotionLayout.isShown()) {
                         lockContentHeight();//显示软件盘时，锁定内容高度，防止跳闪。
                         hideEmotionLayout(true);//隐藏表情布局，显示软件盘
+                        InvokeEventContainer.getInstance().eventui_OnHideLayout.invoke(true);
                         //软件盘显示后，释放内容高度
                         mEditText.postDelayed(new Runnable() {
                             @Override
@@ -232,7 +235,7 @@ public class EmotionKeyboard {
     /**
      * 锁定内容高度，防止跳闪
      */
-    private void lockContentHeight() {
+    public void lockContentHeight() {
         try {
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mContentView.getLayoutParams();
             params.height = mContentView.getHeight();
@@ -264,6 +267,7 @@ public class EmotionKeyboard {
     public void showSoftInput() {
         try {
             mEditText.requestFocus();
+            InvokeEventContainer.getInstance().eventui_OnHideLayout.invoke(true);
             mEditText.post(new Runnable() {
                 @Override
                 public void run() {

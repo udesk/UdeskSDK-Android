@@ -58,7 +58,7 @@ public class MyReceiver extends BroadcastReceiver {
             Map<String, String> map = new HashMap<>();
             map.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdktoken);
             UdeskSDKManager.getInstance().initApiKey(context, domian, appkey, appid);
-            UdeskConfig udeskConfig = new UdeskConfig.Builder().setDefualtUserInfo(map).build();
+            UdeskConfig udeskConfig = new UdeskConfig.Builder().setdefaultUserInfo(map).build();
             UdeskSDKManager.getInstance().entryChat(context.getApplicationContext(), udeskConfig, sdktoken);
 
         } else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction())) {

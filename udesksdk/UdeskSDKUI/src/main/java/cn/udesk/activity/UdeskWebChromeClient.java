@@ -92,11 +92,6 @@ public class UdeskWebChromeClient extends WebChromeClient {
         quotaUpdater.updateQuota(requiredStorage*2);
     }
 
-//    @Override
-//    public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-//        Log.e("h5log", String.format("%s -- From line %s of %s", message, lineNumber, sourceID));
-//    }
-
     @Override
     public void onReceivedTitle(WebView view, String title) {
         if (h5TitleListener != null){
@@ -178,8 +173,9 @@ public class UdeskWebChromeClient extends WebChromeClient {
                             results[i] = item.getUri();
                         }
                     }
-                    if (dataString != null)
+                    if (dataString != null) {
                         results = new Uri[]{Uri.parse(dataString)};
+                    }
                 }
             }
             uploadMessageAboveL.onReceiveValue(results);

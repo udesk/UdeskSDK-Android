@@ -6,6 +6,7 @@ public interface RequestCode {
     int AUDIO = 0x01;//语音
     int EXTERNAL = 0x02;//存储
     int CallPhone = 0x04;//电话
+    int ASR = 0x05;//电话
     int LOCATION = 0x08;//位置
 //    int AUDIO = 0x04;//语音
 //    int EXTERNAL = 0x08;//存储

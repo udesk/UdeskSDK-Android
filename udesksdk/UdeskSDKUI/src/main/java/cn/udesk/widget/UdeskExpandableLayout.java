@@ -84,8 +84,23 @@ public class UdeskExpandableLayout extends LinearLayout {
 			e.printStackTrace();
 		}
 	}
+	public void startNetAnimation(){
+		try {
+			clearAnimation();
+			if (animationDown == null) {
+				animationDown = new DropDownAnim(mContentView,txt,
+						mContentHeight, true);
+				animationDown.setDuration(1000);
+			}
+			animationDown.setNetLine();
+			startAnimation(animationDown);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	
-	private void stopAnimation(){
+	public void stopAnimation(){
 
 		try {
 			clearAnimation();
@@ -118,6 +133,7 @@ public class UdeskExpandableLayout extends LinearLayout {
 		
 		public void setLine(boolean isLine) {
 			try {
+				txtView.setTextColor(mContext.getResources().getColor(R.color.udesk_color_bg_white));
 				if(isLine){
                     this.view.setBackgroundColor(Color.rgb(65, 207, 124));
                     txtView.setText(mContext.getString(R.string.udesk_service_line));
@@ -129,7 +145,17 @@ public class UdeskExpandableLayout extends LinearLayout {
 				e.printStackTrace();
 			}
 		}
-		
+
+		public void setNetLine() {
+			try {
+				this.view.setBackgroundColor(mContext.getResources().getColor(R.color.udesk_color_FFDFDF));
+				txtView.setText(mContext.getString(R.string.udesk_no_network));
+				txtView.setTextColor(mContext.getResources().getColor(R.color.udesk_color_eb212121));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
 		@Override
 		protected void applyTransformation(float interpolatedTime,
 				Transformation t) {

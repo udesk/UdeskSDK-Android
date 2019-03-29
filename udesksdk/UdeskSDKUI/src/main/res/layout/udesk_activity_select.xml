@@ -9,7 +9,7 @@
         android:id="@+id/udesk_title_root"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/udesk_titlebar_height"
-        android:background="@color/udesk_color_f2212123">
+        android:background="@color/udesk_color_f2242526">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -163,7 +163,7 @@
         android:layout_height="fill_parent"
         android:layout_above="@id/udesk_rl_bottom"
         android:layout_below="@id/udesk_title_root"
-        android:background="@color/udesk_color_eb212123"
+        android:background="@color/udesk_color_eb212121"
         android:paddingTop="50dp"
         android:visibility="gone">
 

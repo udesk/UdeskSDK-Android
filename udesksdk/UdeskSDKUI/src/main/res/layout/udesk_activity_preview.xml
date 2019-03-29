@@ -22,7 +22,7 @@
             android:id="@+id/m_top_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/udesk_color_f2212123">
+            android:background="@color/udesk_color_f2242526">
 
             <RelativeLayout
                 android:id="@+id/m_top_bar"
@@ -104,7 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@color/udesk_color_f2212123"
+            android:background="@color/udesk_color_f2242526"
             android:clickable="true"
             android:fitsSystemWindows="true"
             android:focusable="true">

@@ -64,7 +64,8 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final LocalMediaFolder folder = floders.get(position);
         try {
             if (folder != null) {
-                UdeskUtil.loadViewBySize(context, contentHolder.iv_picture, Uri.fromFile(new File(folder.getFirstFilePath())), UdeskUtil.dip2px(context, 80), UdeskUtil.dip2px(context, 80));
+                UdeskUtil.loadViewBySize(context, contentHolder.iv_picture, Uri.fromFile(new File(folder.getFirstFilePath())),
+                        UdeskUtil.dip2px(context, 80), UdeskUtil.dip2px(context, 80),false);
                 contentHolder.name.setText(folder.getName());
                 contentHolder.count.setText(String.valueOf(folder.getNum()));
                 if (position == 1) {

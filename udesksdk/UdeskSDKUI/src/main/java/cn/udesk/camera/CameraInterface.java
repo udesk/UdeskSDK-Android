@@ -78,7 +78,7 @@ public class CameraInterface implements Camera.PreviewCallback {
     private String videoFileAbsPath;
 
 
-    public static void destroyCameraInterface() {
+    public void destroyCameraInterface() {
         if (mCameraInterface != null) {
             mCameraInterface = null;
         }
@@ -93,11 +93,13 @@ public class CameraInterface implements Camera.PreviewCallback {
 
     //获取CameraInterface单例
     public static synchronized CameraInterface getInstance() {
-        if (mCameraInterface == null)
+        if (mCameraInterface == null) {
             synchronized (CameraInterface.class) {
-                if (mCameraInterface == null)
+                if (mCameraInterface == null) {
                     mCameraInterface = new CameraInterface();
+                }
             }
+        }
         return mCameraInterface;
     }
 
@@ -620,6 +622,7 @@ public class CameraInterface implements Camera.PreviewCallback {
     }
 
     private SensorEventListener sensorEventListener = new SensorEventListener() {
+        @Override
         public void onSensorChanged(SensorEvent event) {
             if (Sensor.TYPE_ACCELEROMETER != event.sensor.getType()) {
                 return;
@@ -629,6 +632,7 @@ public class CameraInterface implements Camera.PreviewCallback {
             rotationAnimation();
         }
 
+        @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
         }
     };

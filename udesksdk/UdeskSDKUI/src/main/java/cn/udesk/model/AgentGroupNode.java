@@ -1,27 +1,22 @@
 package cn.udesk.model;
 
+import java.io.Serializable;
+
+import udesk.core.utils.UdeskUtils;
+
 /**
  * Created by sks on 2016/3/15.
  */
-public class AgentGroupNode {
+public class AgentGroupNode implements Serializable {
 
-    String id;
-    String parentId;
+    String id;//menu_id
+    String parentId;//父级菜单id
     String item_name;
-    String has_next;
-    String group_id;
-    String link;
+    String has_next;//是否有下一个
+    String link;//弃用
 
-    public String getGroup_id() {
-        return group_id;
-    }
-
-    public void setGroup_id(String group_id) {
-        this.group_id = group_id;
-    }
-
-    public String getHas_next() {
-        return has_next;
+    public boolean getHas_next() {
+        return UdeskUtils.objectToBoolean(has_next);
     }
 
     public void setHas_next(String has_next) {

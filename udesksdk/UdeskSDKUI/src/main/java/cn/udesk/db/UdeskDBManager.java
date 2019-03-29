@@ -13,6 +13,7 @@ import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import udesk.core.UdeskConst;
 import udesk.core.model.AgentInfo;
+import udesk.core.model.InviterAgentInfo;
 import udesk.core.model.MessageInfo;
 import udesk.core.utils.UdeskUtils;
 
@@ -94,11 +95,7 @@ public class UdeskDBManager {
         getSQLiteDatabase().beginTransaction();
         try {
             for (MessageInfo msg : messages) {
-                if (msg.getDirection() == UdeskConst.ChatMsgDirection.Send) {
-                    if (isExitMessage(msg.getMsgId()) == null) {
-                        addMessageInfo(msg);
-                    }
-                } else {
+                if (isExitMessage(msg.getMsgId()) == null) {
                     addMessageInfo(msg);
                 }
             }
@@ -563,134 +560,6 @@ public class UdeskDBManager {
         return count;
     }
 
-//    /**
-//     * 增加一条在发送的消息
-//     *
-//     * @param msgId
-//     * @param sendFlag
-//     * @param time
-//     * @return
-//     */
-//    public synchronized boolean addSendingMsg(String msgId, int sendFlag, long time) {
-//        if (getSQLiteDatabase() == null) {
-//            return false;
-//        }
-//        String sql = "replace into " + UdeskDBHelper.UdeskSendIngMsgs
-//                + "(MsgID,SendFlag,Time) values(?,?,?)";
-//        try {
-//            getSQLiteDatabase().execSQL(sql,
-//                    new Object[]{msgId, sendFlag, time});
-//            return true;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
-
-//    /**
-//     * 删除一条发送中的消息
-//     *
-//     * @param msgId
-//     * @return
-//     */
-//    public boolean deleteSendingMsg(String msgId) {
-//        if (getSQLiteDatabase() == null) {
-//            return false;
-//        }
-//        String sql = "delete from " + UdeskDBHelper.UdeskSendIngMsgs + " where MsgID=?";
-//        try {
-//            getSQLiteDatabase().execSQL(sql, new Object[]{msgId});
-//            return true;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
-//
-//    /**
-//     * 删除所有的发送中的消息
-//     */
-//    public synchronized boolean delAllSendingMsg() {
-//        if (getSQLiteDatabase() == null) {
-//            return false;
-//        }
-//        String sql = "delete from " + UdeskDBHelper.UdeskSendIngMsgs;
-//        try {
-//            getSQLiteDatabase().execSQL(sql);
-//            return true;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
-
-//    /**
-//     * message调用二次就可以了
-//     * 获取5秒到半15之间都没发送成功的所有消息的MsgID
-//     *
-//     * @param currentTime
-//     * @return
-//     */
-//    public synchronized List<String> getNeedRetryMsg(long currentTime) {
-//        String sql = "select MsgID from " + UdeskDBHelper.UdeskSendIngMsgs + " where (" + currentTime + " - Time >= 5000 )" + " And (" + currentTime + " - Time <= 15000 )";
-//        List<String> listItems = null;
-//        Cursor cursor = null;
-//        if (getSQLiteDatabase() == null) {
-//            return null;
-//        }
-//        try {
-//            cursor = getSQLiteDatabase().rawQuery(sql, null);
-//            int count = cursor.getCount();
-//            if (count < 1) {
-//                return null;
-//            }
-//            listItems = new ArrayList<String>();
-//            while (cursor.moveToNext()) {
-//                listItems.add(cursor.getString(0));
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//            if (cursor != null) {
-//                cursor.close();
-//            }
-//        }
-//        return listItems;
-//    }
-//
-//    /**
-//     * 获取大于半分钟都未发送成功的消息
-//     *
-//     * @param currentTime
-//     * @return
-//     */
-//    public synchronized List<String> getNeedUpdateFailedMsg(long currentTime) {
-//        String sql = "select MsgID from " + UdeskDBHelper.UdeskSendIngMsgs + " where (" + currentTime + " - Time > 30000 )";
-//        List<String> listItems = null;
-//        Cursor cursor = null;
-//        if (getSQLiteDatabase() == null) {
-//            return null;
-//        }
-//        try {
-//            cursor = getSQLiteDatabase().rawQuery(sql, null);
-//            int count = cursor.getCount();
-//            if (count < 1) {
-//                return null;
-//            }
-//            listItems = new ArrayList<String>();
-//            while (cursor.moveToNext()) {
-//                listItems.add(cursor.getString(0));
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//            if (cursor != null) {
-//                cursor.close();
-//            }
-//        }
-//        return listItems;
-//    }
-
     /**
      * 判断消息是否已经存在
      *
@@ -767,6 +636,7 @@ public class UdeskDBManager {
 
     public synchronized void updateAllMsgRead() {
 
+
         String sql = "update " + UdeskDBHelper.UdeskMessage + " set " + "ReadFlag= ?";
         try {
             if (getSQLiteDatabase() == null) {
@@ -832,8 +702,9 @@ public class UdeskDBManager {
         Cursor cursor = null;
         try {
             cursor = getSQLiteDatabase().rawQuery(sql, new String[]{UdeskConst.ChatMsgReadFlag.unread + ""});
-            if (cursor.getCount() < 1)
+            if (cursor.getCount() < 1) {
                 return 0;
+            }
             cursor.moveToFirst();
             count = cursor.getInt(0);
         } catch (Exception e) {
@@ -895,7 +766,27 @@ public class UdeskDBManager {
             return false;
         }
     }
+    public synchronized boolean addInviterAgentInfo(InviterAgentInfo agentInfo) {
+        try {
 
+            if (getSQLiteDatabase() == null) {
+                return false;
+            }
+
+            String sql = "replace into "
+                    + UdeskDBHelper.UdeskAgentMsg
+                    + "(Receive_AgentJid ,HeadUrl ,AgentNick )"
+                    + " values (?,?,?)";
+
+            getSQLiteDatabase().execSQL(
+                    sql,
+                    new Object[]{agentInfo.getJid(), agentInfo.getAvatar(), agentInfo.getNick_name()});
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     /**
      * 本地保存序号字段
      *

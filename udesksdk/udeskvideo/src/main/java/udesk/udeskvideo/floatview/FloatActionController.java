@@ -61,7 +61,9 @@ public class FloatActionController {
      * 悬浮窗的显示
      */
     public void show() {
-        if (mFloatCallBack == null) return;
+        if (mFloatCallBack == null) {
+            return;
+        }
         mFloatCallBack.show();
     }
 
@@ -69,7 +71,9 @@ public class FloatActionController {
      * 悬浮窗的隐藏
      */
     public void hide() {
-        if (mFloatCallBack == null) return;
+        if (mFloatCallBack == null) {
+            return;
+        }
         mFloatCallBack.hide();
     }
 

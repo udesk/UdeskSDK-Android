@@ -18,26 +18,33 @@
     <dimen name="udesk_3">3dip</dimen>
     <dimen name="udesk_4">4dip</dimen>
     <dimen name="udesk_5">5dip</dimen>
+    <dimen name="udesk_6">6dip</dimen>
     <dimen name="udesk_7">7dip</dimen>
     <dimen name="udesk_8">8dip</dimen>
     <dimen name="udesk_10">10dip</dimen>
+    <dimen name="udesk_12">12dip</dimen>
     <dimen name="udesk_13">13dip</dimen>
     <dimen name="udesk_14">14dip</dimen>
     <dimen name="udesk_15">15dip</dimen>
+    <dimen name="udesk_16">16dip</dimen>
     <dimen name="udesk_18">18dip</dimen>
+    <dimen name="udesk_19">19dip</dimen>
     <dimen name="udesk_20">20dip</dimen>
     <dimen name="udesk_22">22dip</dimen>
     <dimen name="udesk_25">25dip</dimen>
     <dimen name="udesk_28">28dip</dimen>
     <dimen name="udesk_30">30dip</dimen>
+    <dimen name="udesk_32">32dip</dimen>
     <dimen name="udesk_35">35dip</dimen>
     <dimen name="udesk_40">40dip</dimen>
+    <dimen name="udesk_43">43dip</dimen>
     <dimen name="udesk_45">45dip</dimen>
     <dimen name="udesk_50">50dip</dimen>
     <dimen name="udesk_55">55dip</dimen>
     <dimen name="udesk_60">60dip</dimen>
     <dimen name="udesk_70">70dip</dimen>
     <dimen name="udesk_80">80dip</dimen>
+    <dimen name="udesk_87">87dip</dimen>
     <dimen name="udesk_90">90dip</dimen>
     <dimen name="udesk_95">95dip</dimen>
     <dimen name="udesk_100">100dip</dimen>
@@ -45,12 +52,21 @@
     <dimen name="udesk_120">120dip</dimen>
     <dimen name="udesk_130">130dip</dimen>
     <dimen name="udesk_140">140dip</dimen>
+    <dimen name="udesk_150">150dip</dimen>
     <dimen name="udesk_160">160dip</dimen>
+    <dimen name="udesk_170">170dip</dimen>
     <dimen name="udesk_190">190dip</dimen>
     <dimen name="udesk_200">200dip</dimen>
     <dimen name="udesk_220">220dip</dimen>
     <dimen name="udesk_240">240dip</dimen>
+    <dimen name="udesk_250">250dip</dimen>
+    <dimen name="udesk_260">260dip</dimen>
+    <dimen name="udesk_270">270dip</dimen>
+    <dimen name="udesk_280">280dip</dimen>
+    <dimen name="udesk_290">290dip</dimen>
     <dimen name="udesk_300">300dip</dimen>
+    <dimen name="udesk_310">310dip</dimen>
+    <dimen name="udesk_320">320dip</dimen>
 
     <dimen name="udesk_sp10">10sp</dimen>
     <dimen name="udesk_sp12">12sp</dimen>
@@ -58,12 +74,13 @@
     <dimen name="udesk_sp14">14sp</dimen>
     <dimen name="udesk_sp15">15sp</dimen>
     <dimen name="udesk_sp16">16sp</dimen>
+    <dimen name="udesk_sp17">17sp</dimen>
     <dimen name="udesk_sp18">18sp</dimen>
     <dimen name="udesk_sp20">20sp</dimen>
     <dimen name="udesk_chat_head">45dip</dimen>
     <dimen name="udesk_chat_head_margin">3dip</dimen>
     <dimen name="udesk_chat_msg_send_fail_pic">22dip</dimen>
-    <dimen name="udesk_chat_context_margin_other_derction">62dip</dimen>
+    <dimen name="udesk_chat_context_margin_other_direction">62dip</dimen>
 
 
     <!-- 整体界面中，TitleBar中文字的大小 -->

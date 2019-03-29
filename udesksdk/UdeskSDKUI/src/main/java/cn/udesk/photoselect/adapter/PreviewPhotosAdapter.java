@@ -66,7 +66,7 @@ public class PreviewPhotosAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (image != null) {
                 final int mediaMimeType = UdeskUtil.isPictureType(image.getPictureType());
                 UdeskUtil.loadImage(context, contentHolder.iv_picture, Uri.fromFile(new File(image.getPath())));
-                contentHolder.video_tip.setVisibility(mediaMimeType == UdeskUtil.TYPE_VIDEO ? View.VISIBLE : View.GONE);
+                contentHolder.video_tip.setVisibility(mediaMimeType == UdeskUtil.TYPE_SHORT_VIDEO ? View.VISIBLE : View.GONE);
                 contentHolder.iv_picture.setOnPhotoTapListener(new OnPhotoTapListener() {
                     @Override
                     public void onPhotoTap(View view, float x, float y) {

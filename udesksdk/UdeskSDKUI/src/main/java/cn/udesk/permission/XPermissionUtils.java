@@ -48,7 +48,9 @@ public class XPermissionUtils {
             if (deniedPermissions.length > 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissionsAgain(activity, permissions, requestCode);
             } else {
-                if (mOnPermissionListener != null) mOnPermissionListener.onPermissionGranted();
+                if (mOnPermissionListener != null) {
+                    mOnPermissionListener.onPermissionGranted();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,11 +104,15 @@ public class XPermissionUtils {
     @TargetApi(Build.VERSION_CODES.M)
     private static boolean hasAlwaysDeniedPermission(Activity activity, String... deniedPermissions) {
         try {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return false;
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                return false;
+            }
             boolean rationale;
             for (String permission : deniedPermissions) {
                 rationale = activity.shouldShowRequestPermissionRationale(permission);
-                if (!rationale) return true;
+                if (!rationale) {
+                    return true;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

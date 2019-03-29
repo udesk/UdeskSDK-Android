@@ -6,11 +6,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,7 +29,8 @@ import cn.udesk.model.OptionsModel;
 import cn.udesk.model.SurveyOptionsModel;
 import cn.udesk.model.Tag;
 import udesk.core.UdeskConst;
-import udesk.core.utils.UdeskUtils;
+
+import static udesk.core.UdeskConst.REMARK_OPTION_HIDE;
 
 /**
  * Created by user on 2018/3/28.
@@ -56,7 +54,7 @@ public class UdeskSurvyPopwindow extends PopupWindow {
 
 
     public interface SumbitSurvyCallBack {
-        void sumbitSurvyCallBack(String optionId, String show_type, String survey_remark, String tags);
+        void sumbitSurvyCallBack(boolean isRobot,String optionId, String show_type, String survey_remark, String tags);
     }
 
     @SuppressLint("WrongConstant")
@@ -100,6 +98,7 @@ public class UdeskSurvyPopwindow extends PopupWindow {
             //mMenuView添加OnTouchListener监听判断获取触屏位置如果在选择框外面则销毁弹出框
             mMenuView.setOnTouchListener(new View.OnTouchListener() {
 
+                @Override
                 public boolean onTouch(View v, MotionEvent event) {
 
                     int height = mMenuView.findViewById(R.id.udesk_root).getTop();
@@ -190,7 +189,7 @@ public class UdeskSurvyPopwindow extends PopupWindow {
                             Toast.makeText(context.getApplicationContext(), context.getString(R.string.summit_must_remark), Toast.LENGTH_LONG).show();
                             return;
                         }
-                        callBack.sumbitSurvyCallBack(String.valueOf(choiceOptionsModel.getId()), surveyOptions.getType(), remarkEt.getText().toString(), listToString(choiceTags));
+                        callBack.sumbitSurvyCallBack(surveyOptions.isRobot(),String.valueOf(choiceOptionsModel.getId()), surveyOptions.getType(), remarkEt.getText().toString(), listToString(choiceTags));
                         dismiss();
                     } else {
                         dismiss();
@@ -205,7 +204,7 @@ public class UdeskSurvyPopwindow extends PopupWindow {
     private void checkRemarkOption(OptionsModel model) {
 
         try {
-            if (model.getRemark_option().equals("hide")) {
+            if (model.getRemark_option().equals(REMARK_OPTION_HIDE)) {
                 remarkView.setVisibility(View.GONE);
                 remarkTips.setVisibility(View.GONE);
             } else {

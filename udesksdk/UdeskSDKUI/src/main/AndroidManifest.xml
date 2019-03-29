@@ -31,13 +31,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Udesk_Theme" />
         <activity
-            android:name="cn.udesk.activity.UdeskRobotActivity"
-            android:configChanges="screenSize|orientation|keyboardHidden"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/Udesk_Theme"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
-        <activity
             android:name="cn.udesk.activity.UdeskFormActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:launchMode="singleTop"
@@ -98,7 +91,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Udesk_Theme"
             />
-
         <provider
             android:name="cn.udesk.provider.UdeskFileProvider"
             android:authorities="${applicationId}.udeskfileprovider"

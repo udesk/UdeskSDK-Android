@@ -16,6 +16,7 @@ public class MyImageSpan extends ImageSpan {
         super(d);
     }
 
+    @Override
     public int getSize(Paint paint, CharSequence text, int start, int end,
                        Paint.FontMetricsInt fm) {
         Drawable d = getDrawable();

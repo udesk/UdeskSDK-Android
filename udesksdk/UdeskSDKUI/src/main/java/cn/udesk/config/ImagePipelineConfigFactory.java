@@ -68,6 +68,7 @@ public class ImagePipelineConfigFactory {
             configBuilder
                     .setBitmapMemoryCacheParamsSupplier(
                             new Supplier<MemoryCacheParams>() {
+                                @Override
                                 public MemoryCacheParams get() {
                                     return bitmapCacheParams;
                                 }
@@ -83,8 +84,9 @@ public class ImagePipelineConfigFactory {
     }
 
     public static File getExternalCacheDir(final Context context) {
-        if (hasExternalCacheDir())
+        if (hasExternalCacheDir()) {
             return context.getExternalCacheDir();
+        }
 
         // Before Froyo we need to construct the external cache dir ourselves
         final String cacheDir = "/Android/data/" + context.getPackageName() + "/cache/";

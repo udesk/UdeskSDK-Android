@@ -3,7 +3,6 @@ package cn.udesk.model;
 import java.io.Serializable;
 import java.util.List;
 
-import cn.udesk.UdeskUtil;
 import udesk.core.utils.UdeskUtils;
 
 public class OptionsModel implements Serializable {
@@ -13,14 +12,25 @@ public class OptionsModel implements Serializable {
      */
     private static final long serialVersionUID = 1L;
     private Object id;
-    private Object enabled;
-    private Object text;
-    private Object desc;
-    private Object remark_option;
-    private List<Tag> tags;
+    private Object enabled; //是否启用
+    private Object text; //名称
+    private Object desc;//选项（文本 表情 五星 有区别）
+    private Object remark_option;//备注
+    private List<Tag> tags;//标签
 
 //    boolean isCheck = false;
 
+
+    public OptionsModel() {
+    }
+
+    public OptionsModel(Object id, Object enabled, Object text, Object desc, Object remark_option) {
+        this.id = id;
+        this.enabled = enabled;
+        this.text = text;
+        this.desc = desc;
+        this.remark_option = remark_option;
+    }
 
     public int getId() {
         return UdeskUtils.objectToInt(id);

@@ -14,6 +14,7 @@ import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.adapter.NavigationAdapter;
 import cn.udesk.model.NavigationMode;
+import udesk.core.UdeskConst;
 
 /**
  * Created by user on 2018/3/28.
@@ -25,6 +26,7 @@ public class NavigationFragment extends Fragment {
     private NavigationAdapter navigationAdapter;
 
     UdeskChatActivity activity;
+    private String currentView= UdeskConst.CurrentFragment.agent;
 
     @Nullable
     @Override
@@ -41,14 +43,13 @@ public class NavigationFragment extends Fragment {
             mRecyclerView.setLayoutManager(layoutManager);
             mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-            navigationAdapter = new NavigationAdapter(getContext());
+            navigationAdapter = new NavigationAdapter(getContext(),currentView);
             mRecyclerView.setAdapter(navigationAdapter);
             navigationAdapter.setOnItemClickListener(new NavigationAdapter.OnRecyclerViewItemClickListener() {
                 @Override
                 public void onItemClick(View view, NavigationMode data) {
-                    if (UdeskSDKManager.getInstance().getUdeskConfig().navigationItemClickCallBack != null && activity != null
-                            && activity.getmPresenter() != null) {
-                        UdeskSDKManager.getInstance().getUdeskConfig().navigationItemClickCallBack.callBack(activity.getApplicationContext(), activity.getmPresenter(), data);
+                    if (UdeskSDKManager.getInstance().getUdeskConfig().navigationItemClickCallBack != null && activity != null) {
+                        UdeskSDKManager.getInstance().getUdeskConfig().navigationItemClickCallBack.callBack(activity.getApplicationContext(), activity.udeskViewMode, data,currentView);
                     }
                 }
             });
@@ -56,5 +57,8 @@ public class NavigationFragment extends Fragment {
             e.printStackTrace();
         }
         return rootView;
+    }
+    public void setCurrentView(String currentView){
+        this.currentView=currentView;
     }
 }

@@ -40,10 +40,11 @@ public class EmotionViewPagerAdapter extends PagerAdapter {
         mEmotionLayoutHeight = emotionLayoutHeight;
         mTabPosi = tabPosi;
 
-        if (mTabPosi == 0)
+        if (mTabPosi == 0) {
             mPageCount = (int) Math.ceil(EmojiManager.getDisplayCount() / (float) EmotionLayout.EMOJI_PER_PAGE);
-        else
+        } else {
             mPageCount = (int) Math.ceil(StickerManager.getInstance().getStickerCategories().get(mTabPosi - 1).getStickers().size() / (float) EmotionLayout.STICKER_PER_PAGE);
+        }
 
         this.listener = listener;
     }
@@ -156,8 +157,9 @@ public class EmotionViewPagerAdapter extends PagerAdapter {
 
     private void onEmojiSelected(String key) {
         try {
-            if (mMessageEditText == null)
+            if (mMessageEditText == null) {
                 return;
+            }
             Editable editable = mMessageEditText.getText();
             if (key.equals("/DEL")) {
                 mMessageEditText.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));

@@ -92,13 +92,14 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 final int mediaMimeType = UdeskUtil.isPictureType(pictureType);
                 Drawable drawable = ContextCompat.getDrawable(context, R.drawable.udesk_video_icon);
                 UdeskUtil.modifyTextViewDrawable(contentHolder.tv_duration, drawable, 0);
-                contentHolder.tv_duration.setVisibility(mediaMimeType == UdeskUtil.TYPE_VIDEO ? View.VISIBLE : View.GONE);
+                contentHolder.tv_duration.setVisibility(mediaMimeType == UdeskUtil.TYPE_SHORT_VIDEO ? View.VISIBLE : View.GONE);
                 long duration = image.getDuration();
                 contentHolder.tv_duration.setText(UdeskUtil.timeParse(duration));
                 if (disPlayWidth > 0) {
-                    UdeskUtil.loadViewBySize(context, contentHolder.iv_picture, Uri.fromFile(new File(path)), disPlayWidth / 4, UdeskUtil.dip2px(context, 100));
+                    UdeskUtil.loadViewBySize(context, contentHolder.iv_picture, Uri.fromFile(new File(path)),
+                            disPlayWidth / 4, UdeskUtil.dip2px(context, 100),false);
                 } else {
-                    UdeskUtil.loadNoChangeView(context, contentHolder.iv_picture, Uri.fromFile(new File(path)));
+                    UdeskUtil.loadNoChangeView(context, contentHolder.iv_picture, Uri.fromFile(new File(path)),false);
                 }
                 contentHolder.iv_picture.setOnClickListener(new View.OnClickListener() {
                     @Override

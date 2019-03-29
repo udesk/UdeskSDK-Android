@@ -53,8 +53,9 @@ public class EmojiManager {
         mDrawableCache = new LruCache<String, Bitmap>(CACHE_MAX_SIZE) {
             @Override
             protected void entryRemoved(boolean evicted, String key, Bitmap oldValue, Bitmap newValue) {
-                if (oldValue != newValue)
+                if (oldValue != newValue) {
                     oldValue.recycle();
+                }
             }
         };
     }

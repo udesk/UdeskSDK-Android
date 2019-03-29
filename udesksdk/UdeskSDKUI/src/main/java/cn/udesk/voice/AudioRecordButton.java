@@ -61,7 +61,7 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
         super(context, attrs, defStyleAttr);
         // 初始化按钮样式
         try {
-            setBackgroundResource(R.drawable.udesk_record_button_normal);
+            setBackgroundResource(R.drawable.udesk_chat_edit_bg);
             setText(getResources().getString(R.string.press_record));
         } catch (Exception e) {
             e.printStackTrace();
@@ -324,16 +324,16 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
                 mCurrentState = state;
                 if (state == STATE_NORMAL) {
                     setText(getResources().getString(R.string.press_record));
-                    setBackgroundResource(R.drawable.udesk_record_button_normal);
+                    setBackgroundResource(R.drawable.udesk_chat_edit_bg);
                 } else if (state == STATE_RECORDING) {
                     setText(getResources().getString(R.string.release_end));
-                    setBackgroundResource(R.drawable.udesk_record_button_recoding);
+                    setBackgroundResource(R.drawable.udesk_chat_record_button_recording);
                     if (isRecording) {
                         mDialogManager.showRecording();
                     }
                 } else if (state == STATE_WANT_CANCEL) {
                     setText(getResources().getString(R.string.release_cancel));
-                    setBackgroundResource(R.drawable.udesk_record_button_recoding);
+                    setBackgroundResource(R.drawable.udesk_chat_record_button_recording);
                     if (isRecording) {
                         mDialogManager.showDialogWantCancel();
                     }

@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -24,6 +25,7 @@ import java.util.UUID;
 
 import cn.udesk.PreferenceHelper;
 import cn.udesk.UdeskSDKManager;
+import cn.udesk.aac.UdeskViewMode;
 import cn.udesk.callback.IFunctionItemClickCallBack;
 import cn.udesk.callback.ILocationMessageClickCallBack;
 import cn.udesk.callback.INavigationItemClickCallBack;
@@ -31,11 +33,9 @@ import cn.udesk.callback.ITxtMessageWebonCliclk;
 import cn.udesk.callback.IUdeskFormCallBack;
 import cn.udesk.callback.IUdeskStructMessageCallBack;
 import cn.udesk.config.UdeskConfig;
-import cn.udesk.messagemanager.UdeskXmppManager;
 import cn.udesk.model.FunctionMode;
 import cn.udesk.model.NavigationMode;
 import cn.udesk.model.UdeskCommodityItem;
-import cn.udesk.presenter.ChatActivityPresenter;
 import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskConst;
 import udesk.core.model.MessageInfo;
@@ -58,6 +58,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
             set_useemotion,
             set_usemore,
             set_use_navigation_view,
+            set_use_navigation_view_robot,
             set_use_navigation_survy,
             set_use_onlyrobot,
             set_use_smallvideo,
@@ -76,7 +77,10 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
             textfiledkey, textfiledvalue,
             update_nick_name, update_description,
             updatetextfiledkey, updatetextfiledvalue,
-            firstMessage, customerUrl, robot_modelKey, robpt_customer_info;
+            firstMessage, customerUrl, robot_modelKey, robpt_customer_info,edit_language;
+    private Map<String, String> defualtInfos;
+    private Map<String, String> definedInfos;
+    private Map<String, String> definedRoplistInfos;
 
 
     @Override
@@ -89,7 +93,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
     private void initview() {
         mTitlebar = (UdeskTitleBar) findViewById(cn.udesk.R.id.udesktitlebar);
         if (mTitlebar != null) {
-            mTitlebar.setLeftTextSequence(getString(R.string.udesk_utils_tips));
+            mTitlebar.setTopTextSequence(getString(R.string.udesk_utils_tips));
             mTitlebar.setLeftLinearVis(View.VISIBLE);
             mTitlebar.setLeftViewClick(new View.OnClickListener() {
 
@@ -108,6 +112,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         set_useemotion = (CheckBox) findViewById(R.id.set_useemotion);
         set_usemore = (CheckBox) findViewById(R.id.set_usemore);
         set_use_navigation_view = (CheckBox) findViewById(R.id.set_use_navigation_view);
+        set_use_navigation_view_robot = (CheckBox) findViewById(R.id.set_use_navigation_view_robot);
         set_use_navigation_survy = (CheckBox) findViewById(R.id.set_use_navigation_survy);
         set_use_onlyrobot = (CheckBox) findViewById(R.id.set_use_onlyrobot);
         set_use_smallvideo = (CheckBox) findViewById(R.id.set_use_smallvideo);
@@ -144,15 +149,22 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         updatetextfiledkey = (EditText) findViewById(R.id.updatetextfiledkey);
         updatetextfiledvalue = (EditText) findViewById(R.id.updatetextfiledvalue);
         robpt_customer_info = (EditText) findViewById(R.id.robpt_customer_info);
+        edit_language = (EditText) findViewById(R.id.edit_language);
+
 
 
     }
 
 
     private UdeskConfig.Builder makeBuilder() {
+        if (!TextUtils.isEmpty(edit_language.getText().toString())){
+            LocalManageUtil.saveSelectLanguage(getApplicationContext(),new Locale(edit_language.getText().toString()));
+        }
+
         UdeskConfig.Builder builder = new UdeskConfig.Builder();
         builder.setUdeskTitlebarBgResId(R.color.udesk_titlebar_bg1) //设置标题栏TitleBar的背景色
-                .setUdeskTitlebarTextLeftRightResId(R.color.udesk_color_navi_text1) //设置标题栏TitleBar，左右两侧文字的颜色
+                .setUdeskTitlebarMiddleTextResId(R.color.udesk_color_middle_text) //设置标题栏TitleBar，左右两侧文字的颜色
+                .setUdeskTitlebarRightTextResId(R.color.udesk_color_right_text) //设置标题栏TitleBar，右侧文字的颜色
                 .setUdeskIMLeftTextColorResId(R.color.udesk_color_im_text_left1) //设置IM界面，左侧文字的字体颜色
                 .setUdeskIMRightTextColorResId(R.color.udesk_color_im_text_right1) // 设置IM界面，右侧文字的字体颜色
                 .setUdeskIMAgentNickNameColorResId(R.color.udesk_color_im_left_nickname1) //设置IM界面，左侧客服昵称文字的字体颜色
@@ -191,10 +203,10 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 .setOrientation(landscape.isChecked() ? UdeskConfig.OrientationValue.landscape :
                         (user.isChecked() ? UdeskConfig.OrientationValue.user : UdeskConfig.OrientationValue.portrait)) //设置默认屏幕显示习惯
                 .setUserForm(true) //在没有请求到管理员在后端对sdk使用配置下，在默认的情况下，是否需要表单留言，true需要， false 不需要
-                .setDefualtUserInfo(getDefualtUserInfo()) // 创建用户基本信息
+                .setdefaultUserInfo(getdefaultUserInfo()) // 创建用户基本信息
                 .setDefinedUserTextField(getDefinedUserTextField()) //创建用户自定义的文本信息
                 .setDefinedUserRoplist(getDefinedUserRoplist()) //创建用户自定义的列表信息
-                .setUpdateDefualtUserInfo(getUpdateDefualtUserInfo()) // 设置更新用户的基本信息
+                .setUpdatedefaultUserInfo(getUpdatedefaultUserInfo()) // 设置更新用户的基本信息
                 .setUpdatedefinedUserTextField(getUpdateDefinedTextField()) //设置用户更新自定义字段文本信息
                 .setUpdatedefinedUserRoplist(getUpdateDefinedRoplist()) //设置用户更新自定义列表字段信息
                 .setFirstMessage(firstMessage.getText().toString()) //设置带入一条消息  会话分配就发送给客服
@@ -205,39 +217,50 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 .setProduct(set_use_prouct.isChecked() ? createProduct() : null)//配置发送商品链接的mode
                 .setExtreFunctions(getExtraFunctions(), new IFunctionItemClickCallBack() {
                     @Override
-                    public void callBack(Context context, ChatActivityPresenter mPresenter, int id, String name) {
+                    public void callBack(Context context, UdeskViewMode udeskViewMode, int id, String name) {
                         if (id == 22) {
-                            mPresenter.sendCommodityMessage(createCommodity());
+                            udeskViewMode.sendCommodityMessage(createCommodity());
                         } else if (id == 23) {
                             UdeskSDKManager.getInstance().disConnectXmpp();
                         } else if (id == 24) {
-                            mPresenter.sendProductMessage(createProduct());
+                            udeskViewMode.sendProductMessage(createProduct());
                         }
                     }
                 })//在more 展开面板中设置额外的功能按钮
                 .setNavigations(set_use_navigation_view.isChecked(), getNavigations(), new INavigationItemClickCallBack() {
                     @Override
-                    public void callBack(Context context, ChatActivityPresenter mPresenter, NavigationMode navigationMode) {
-                        if (navigationMode.getId() == 1) {
-                            mPresenter.sendProductMessage(createProduct());
-                        } else if (navigationMode.getId() == 2) {
-                            mPresenter.sendTxtMessage(UUID.randomUUID().toString());
-                            mPresenter.sendTxtMessage("www.baidu.com");
+                    public void callBack(Context context, UdeskViewMode udeskViewMode, NavigationMode navigationMode,String currentView) {
+                            if (navigationMode.getId() == 1) {
+                                udeskViewMode.sendProductMessage(createProduct());
+                            } else if (navigationMode.getId() == 2) {
+                                udeskViewMode.sendTxtMessage(UUID.randomUUID().toString());
+                                udeskViewMode.sendTxtMessage("www.baidu.com");
+                            }
+                    }
+                })//设置是否使用机器人导航UI rue表示使用 false表示不使用
+                 .setRobotNavigations(set_use_navigation_view_robot.isChecked(), getRobotNavigations(), new INavigationItemClickCallBack() {
+                    @Override
+                    public void callBack(Context context, UdeskViewMode udeskViewMode, NavigationMode navigationMode,String currentView) {
+                        if (TextUtils.equals(currentView,UdeskConst.CurrentFragment.robot)){
+                            if (navigationMode.getId() == 1) {
+                                udeskViewMode.sendTxtMessage("robot导航");
+                            }
                         }
                     }
                 })//设置是否使用导航UI rue表示使用 false表示不使用
+
                 .setTxtMessageClick(new ITxtMessageWebonCliclk() {
                     @Override
                     public void txtMsgOnclick(String url) {
                         Toast.makeText(getApplicationContext(), "对文本消息中的链接消息处理设置回调", Toast.LENGTH_SHORT).show();
                     }
                 })   //如果需要对文本消息中的链接消息处理可以设置该回调，点击事件的拦截回调。 包含表情的不会拦截回调。
-//                .setFormCallBack(new IUdeskFormCallBack() {
-//                    @Override
-//                    public void toLuachForm(Context context) {
-//                        Toast.makeText(getApplicationContext(), "不用udesk系统提供的留言功能", Toast.LENGTH_SHORT).show();
-//                    }
-//                })//离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
+                .setFormCallBack(new IUdeskFormCallBack() {
+                    @Override
+                    public void toLuachForm(Context context) {
+                        Toast.makeText(getApplicationContext(), "不用udesk系统提供的留言功能", Toast.LENGTH_SHORT).show();
+                    }
+                })//离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
                 .setStructMessageCallBack(new IUdeskStructMessageCallBack() {
 
                     @Override
@@ -270,9 +293,15 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         modes.add(navigationMode2);
         return modes;
     }
+    private List<NavigationMode> getRobotNavigations() {
+        List<NavigationMode> modes = new ArrayList<>();
+        NavigationMode navigationMode1 = new NavigationMode("发送文本", 1);
+        modes.add(navigationMode1);
+        return modes;
+    }
 
-    private Map<String, String> getDefualtUserInfo() {
-        Map<String, String> defualtInfos = new HashMap<>();
+    private Map<String, String> getdefaultUserInfo() {
+        defualtInfos = new HashMap<>();
         if (!TextUtils.isEmpty(nick_name.getText().toString())) {
             defualtInfos.put(UdeskConst.UdeskUserInfo.NICK_NAME, nick_name.getText().toString());
         }
@@ -292,7 +321,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
     }
 
     private Map<String, String> getDefinedUserTextField() {
-        Map<String, String> definedInfos = new HashMap<>();
+        definedInfos = new HashMap<>();
         if (!TextUtils.isEmpty(textfiledkey.getText().toString())
                 && !TextUtils.isEmpty(textfiledvalue.getText().toString())) {
             definedInfos.put(textfiledkey.getText().toString(), textfiledvalue.getText().toString());
@@ -301,12 +330,11 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
     }
 
     private Map<String, String> getDefinedUserRoplist() {
-        Map<String, String> definedRoplistInfos = new HashMap<>();
+        definedRoplistInfos = new HashMap<>();
         return definedRoplistInfos;
     }
 
-    private Map<String, String> getUpdateDefualtUserInfo() {
-        Map<String, String> defualtInfos = new HashMap<>();
+    private Map<String, String> getUpdatedefaultUserInfo() {
         if (!TextUtils.isEmpty(update_nick_name.getText().toString())) {
             defualtInfos.put(UdeskConst.UdeskUserInfo.NICK_NAME, update_nick_name.getText().toString());
         }
@@ -318,7 +346,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
     }
 
     private Map<String, String> getUpdateDefinedTextField() {
-        Map<String, String> definedInfos = new HashMap<>();
+//        Map<String, String> definedInfos = new HashMap<>();
         if (!TextUtils.isEmpty(updatetextfiledkey.getText().toString())
                 && !TextUtils.isEmpty(updatetextfiledvalue.getText().toString())) {
             definedInfos.put(updatetextfiledkey.getText().toString(), updatetextfiledvalue.getText().toString());
@@ -327,7 +355,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
     }
 
     private Map<String, String> getUpdateDefinedRoplist() {
-        Map<String, String> definedRoplistInfos = new HashMap<>();
+        definedRoplistInfos = new HashMap<>();
         return definedRoplistInfos;
     }
 
@@ -463,8 +491,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                     }
                     UdeskSDKManager.getInstance().entryChat(getApplicationContext(),
                             makeBuilder().setGroupId(editText.getText().toString().trim(), true).build(),
-                            PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken")
-                    );
+                            PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken"));
                 }
             });
             dialog.setCancleTextViewOnclick(new View.OnClickListener() {
@@ -520,17 +547,9 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 }
             });
             dialog.show();
-        }
-//        else if (v.getId() == R.id.udesk_en) {
-////            UdeskUtil.changeAppLanguage(getApplicationContext(), Locale.ENGLISH);
-//            UdeskSDKManager.getInstance().entryChat(getApplicationContext(), makeBuilder().setLocale(Locale.ENGLISH).build(),
-//                    PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken")
-//            );
-//        }
-        else if (v.getId() == R.id.udesk_conversion_bysetting_menu) {
+        } else if (v.getId() == R.id.udesk_conversion_bysetting_menu) {
             UdeskSDKManager.getInstance().entryChat(getApplicationContext(), makeBuilder().build(),
-                    PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken")
-            );
+                    PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken"));
         }
 
     }

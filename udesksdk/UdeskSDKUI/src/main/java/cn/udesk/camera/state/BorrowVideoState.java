@@ -67,7 +67,7 @@ public class BorrowVideoState implements State {
     @Override
     public void cancle(SurfaceHolder holder, float screenProp) {
         try {
-            machine.getView().resetState(UdeskCameraView.TYPE_VIDEO);
+            machine.getView().resetState(UdeskCameraView.TYPE_SHORT_VIDEO);
             machine.setState(machine.getPreviewState());
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,7 +77,7 @@ public class BorrowVideoState implements State {
     @Override
     public void confirm() {
         try {
-            machine.getView().confirmState(UdeskCameraView.TYPE_VIDEO);
+            machine.getView().confirmState(UdeskCameraView.TYPE_SHORT_VIDEO);
             machine.setState(machine.getPreviewState());
         } catch (Exception e) {
             e.printStackTrace();

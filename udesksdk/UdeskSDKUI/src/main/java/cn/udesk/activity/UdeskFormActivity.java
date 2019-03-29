@@ -44,7 +44,8 @@ public class UdeskFormActivity extends UdeskBaseWebViewActivity {
     private void settingTitlebar() {
         try {
             if (mTitlebar != null) {
-                UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarTextLeftRightResId, mTitlebar.getLeftTextView(), mTitlebar.getRightTextView());
+                UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarMiddleTextResId, mTitlebar.getUdeskTopText(), mTitlebar.getRightTextView());
+                UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarRightTextResId, mTitlebar.getRightTextView());
                 if (mTitlebar.getRootView() != null){
                     UdekConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarBgResId ,mTitlebar.getRootView());
                 }
@@ -52,7 +53,7 @@ public class UdeskFormActivity extends UdeskBaseWebViewActivity {
                     mTitlebar.getUdeskBackImg().setImageResource(UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId);
                 }
                 mTitlebar
-                        .setLeftTextSequence(getString(R.string.udesk_ok));
+                        .setTopTextSequence(getString(R.string.udesk_ok));
                 mTitlebar.setLeftLinearVis(View.VISIBLE);
                 mTitlebar.setLeftViewClick(new OnClickListener() {
 
