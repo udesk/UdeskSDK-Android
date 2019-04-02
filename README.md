@@ -19,8 +19,7 @@ SDK原生机器人功能在 5.x 分支下。
 ### SDK还未完成适配9.0系统测试 。请targetSdkVersion 设置值小于28  小于28  小于28 
 ### SDK 采用AAC框架 
 ### fresco版本问题
-```
-   如果你的项目打包指定了so库的加载配置了，
+	如果你的项目打包指定了so库的加载配置了，
      ndk{
             abiFilters "armeabi"
      }
@@ -30,9 +29,8 @@ SDK原生机器人功能在 5.x 分支下。
     
     在UdeskSDKUI下的build.gradle文件下  修改dependencies fresco版本号 不能根据androidstudio提示更新到最新
     
-```
 ### okhttp的版本
-'com.qiniu:qiniu-android-sdk:7.3.+' 采用7.3.+的方式  okhttp需要大于当前七牛依赖的okhttp版本号， 而不能选择小的。
+	'com.qiniu:qiniu-android-sdk:7.3.+' 采用7.3.+的方式  okhttp需要大于当前七牛依赖的okhttp版本号， 而不能选择小的。
 
 **打包时会下载最新版本, 需要集成方在打包时注意测试上传图片和语言文件的功能,看你们app使用的okhttp和七牛依赖的需要的okhttp是否兼容.**
 
