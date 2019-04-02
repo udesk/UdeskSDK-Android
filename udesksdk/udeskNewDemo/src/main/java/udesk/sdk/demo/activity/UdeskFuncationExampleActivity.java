@@ -237,7 +237,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                                 udeskViewMode.sendTxtMessage("www.baidu.com");
                             }
                     }
-                })//设置是否使用机器人导航UI rue表示使用 false表示不使用
+                })//设置是否使用导航UI true表示使用 false表示不使用
                  .setRobotNavigations(set_use_navigation_view_robot.isChecked(), getRobotNavigations(), new INavigationItemClickCallBack() {
                     @Override
                     public void callBack(Context context, UdeskViewMode udeskViewMode, NavigationMode navigationMode,String currentView) {
@@ -247,7 +247,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                             }
                         }
                     }
-                })//设置是否使用导航UI rue表示使用 false表示不使用
+                })//设置是否使用机器人导航UI true表示使用 false表示不使用
 
                 .setTxtMessageClick(new ITxtMessageWebonCliclk() {
                     @Override

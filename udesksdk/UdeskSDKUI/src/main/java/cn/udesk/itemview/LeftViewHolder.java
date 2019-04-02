@@ -458,8 +458,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                         InvokeEventContainer.getInstance().event_OnTransferClick.invoke(message);
                     }
                 });
-                RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(UdeskUtil.dip2px(mContext,310),RelativeLayout.LayoutParams.WRAP_CONTENT);
-                itemView.setLayoutParams(params);
+                if(itemView!=null){
+                    RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(UdeskUtil.dip2px(mContext,310),RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    itemView.setLayoutParams(params);
+                }
                 return true;
             }else {
                 tvTransferAgent.setVisibility(View.GONE);
@@ -731,6 +733,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 onWebClick(robotImgTxtDes,wechatImageBean.getAnswerUrl());
                 onWebClick(robotImgTxtTop,wechatImageBean.getAnswerUrl());
             }
+            dealTransfer(containerImgTxt);
             showRecommended(containerImgTxt);
         } catch (Exception e) {
             e.printStackTrace();
@@ -1283,6 +1286,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     structRv.setAdapter(strucTableAdapter);
                 }
             }
+            dealTransfer(containerTable);
             showRecommended(containerTable);
         }catch (Exception e){
             e.printStackTrace();
@@ -1310,6 +1314,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     structRv.setAdapter(strucTableAdapter);
                 }
             }
+            dealTransfer(containerTable);
             showRecommended(containerTable);
         }catch (Exception e){
             e.printStackTrace();
@@ -1324,6 +1329,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             itemStructTable.setVisibility(View.VISIBLE);
             structTableLine.setVisibility(View.VISIBLE);
             structTableChange.setVisibility(View.GONE);
+            dealTransfer(containerTable);
             showRecommended(containerTable);
             final ShowProductBean showProductBean=JsonUtils.parseShowProduct(message.getMsgContent());
             if (showProductBean!=null){
@@ -1374,6 +1380,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
         try {
             showHead(true);
             itemReplyProduct.setVisibility(View.VISIBLE);
+            dealTransfer(containerReplyProduct);
             showRecommended(containerReplyProduct);
             final ProductListBean productListBean=JsonUtils.parseReplyProduct(message.getMsgContent());
             if (productListBean!=null){

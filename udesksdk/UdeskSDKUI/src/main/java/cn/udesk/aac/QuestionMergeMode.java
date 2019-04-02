@@ -1,19 +1,19 @@
-package cn.udesk.aac.livedata;
+package cn.udesk.aac;
 
 import cn.udesk.aac.MergeMode;
 
-public class QuestionMerMode extends MergeMode {
+public class QuestionMergeMode extends MergeMode {
     String question;
     int questionId;
     int queryType;
     String msgId;
     int logId;
 
-    public QuestionMerMode(int type, long id) {
+    public QuestionMergeMode(int type, long id) {
         super(type, id);
     }
 
-    public QuestionMerMode(int type, Object data, long id) {
+    public QuestionMergeMode(int type, Object data, long id) {
         super(type, data, id);
     }
 

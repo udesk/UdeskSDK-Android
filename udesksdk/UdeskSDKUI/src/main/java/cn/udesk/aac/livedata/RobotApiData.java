@@ -10,6 +10,7 @@ import cn.udesk.JsonUtils;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.aac.MergeMode;
 import cn.udesk.aac.MergeModeManager;
+import cn.udesk.aac.QuestionMergeMode;
 import udesk.core.model.BaseMode;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskConst;
@@ -97,7 +98,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
                     content, new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
-                            QuestionMerMode mergeMode = new QuestionMerMode(UdeskConst.LiveDataType.RobotTipsSuccess, message,System.currentTimeMillis());
+                            QuestionMergeMode mergeMode = new QuestionMergeMode(UdeskConst.LiveDataType.RobotTipsSuccess, message,System.currentTimeMillis());
                             mergeMode.setQuestion(content);
                             MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
@@ -264,7 +265,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
     }
     public void onQueClick(String msgId,Integer logId,String question,Integer questionId){
         try {
-            QuestionMerMode mergeMode=new QuestionMerMode(UdeskConst.LiveDataType.RobotChildHit,System.currentTimeMillis());
+            QuestionMergeMode mergeMode=new QuestionMergeMode(UdeskConst.LiveDataType.RobotChildHit,System.currentTimeMillis());
             mergeMode.setQuestion(question);
             mergeMode.setQuestionId(questionId);
             mergeMode.setQueryType(6);
@@ -280,7 +281,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
     public void onTipClick(RobotTipBean.ListBean bean){
         try {
             if (bean!=null){
-                QuestionMerMode mergeMode=new QuestionMerMode(UdeskConst.LiveDataType.RobotTipHit,bean,System.currentTimeMillis());
+                QuestionMergeMode mergeMode=new QuestionMergeMode(UdeskConst.LiveDataType.RobotTipHit,bean,System.currentTimeMillis());
                 mergeMode.setQueryType(9);
                 MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
@@ -330,7 +331,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
     public void onFlowClick(MessageInfo info,Integer dataId,String content) {
         try {
             if (info!=null){
-                QuestionMerMode mergeMode=new QuestionMerMode(UdeskConst.LiveDataType.ROBOT_FLOW_HIT,info,System.currentTimeMillis());
+                QuestionMergeMode mergeMode=new QuestionMergeMode(UdeskConst.LiveDataType.ROBOT_FLOW_HIT,info,System.currentTimeMillis());
                 mergeMode.setQueryType(8);
                 mergeMode.setQuestionId(dataId);
                 mergeMode.setQuestion(content);

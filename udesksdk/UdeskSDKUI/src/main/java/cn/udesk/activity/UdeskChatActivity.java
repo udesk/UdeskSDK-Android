@@ -62,7 +62,7 @@ import cn.udesk.UdeskUtil;
 import cn.udesk.aac.MergeMode;
 import cn.udesk.aac.MergeModeManager;
 import cn.udesk.aac.UdeskViewMode;
-import cn.udesk.aac.livedata.QuestionMerMode;
+import cn.udesk.aac.QuestionMergeMode;
 import cn.udesk.adapter.MessageAdatper;
 import cn.udesk.adapter.TipAdapter;
 import cn.udesk.callback.IUdeskHasSurvyCallBack;
@@ -385,7 +385,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 }
                 curentStatus = UdeskConst.Status.pre_session;
                 mAgentInfo = null;
-                setTitlebar(preTitle, on);
+                setTitlebar(preTitle, off);
             } else {
                 udeskViewMode.getApiLiveData().getAgentInfo(pre_session_id, null);
             }
@@ -881,7 +881,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                         //智能提示返回成功
                         case UdeskConst.LiveDataType.RobotTipsSuccess:
                             String tipMsg = UdeskUtils.objectToString(mergeMode.getData());
-                            String inputTxt = ((QuestionMerMode) mergeMode).getQuestion();
+                            String inputTxt = ((QuestionMergeMode) mergeMode).getQuestion();
                             RobotTipBean tipBean = JsonUtils.parseRobotTip(tipMsg);
                             if (tipBean != null && tipBean.getList() != null && tipBean.getList().size() > 0) {
                                 tipAdapter.setListAndContent(tipBean.getList(), inputTxt);
@@ -906,7 +906,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                                 mListView.smoothScrollToPosition(mChatAdapter.getCount());
                                 robotSengMsgCount++;
                                 showTranferAgent();
-                                udeskViewMode.getRobotApiData().robotHit(sendTipMsg.getMsgId(), 0, UdeskUtils.objectToString(listBean.getQuestion()), UdeskUtils.objectToInt(listBean.getQuestionId()), ((QuestionMerMode) mergeMode).getQueryType());
+                                udeskViewMode.getRobotApiData().robotHit(sendTipMsg.getMsgId(), 0, UdeskUtils.objectToString(listBean.getQuestion()), UdeskUtils.objectToInt(listBean.getQuestionId()), ((QuestionMergeMode) mergeMode).getQueryType());
                             }
                             break;
                         //机器人流程点击
@@ -915,13 +915,13 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                             isShowAssociate(false);
                             fragment.clearInputContent();
                             if (flowInfo != null) {
-                                MessageInfo sendTipMsg = UdeskUtil.buildSendChildMsg(((QuestionMerMode) mergeMode).getQuestion());
+                                MessageInfo sendTipMsg = UdeskUtil.buildSendChildMsg(((QuestionMergeMode) mergeMode).getQuestion());
                                 mChatAdapter.addItem(sendTipMsg);
                                 udeskViewMode.getDbLiveData().saveMessageDB(sendTipMsg);
                                 mListView.smoothScrollToPosition(mChatAdapter.getCount());
                                 robotSengMsgCount++;
                                 showTranferAgent();
-                                udeskViewMode.getRobotApiData().robotHit(flowInfo.getMsgId(), flowInfo.getLogId(), ((QuestionMerMode) mergeMode).getQuestion(), ((QuestionMerMode) mergeMode).getQuestionId(), ((QuestionMerMode) mergeMode).getQueryType());
+                                udeskViewMode.getRobotApiData().robotHit(flowInfo.getMsgId(), flowInfo.getLogId(), ((QuestionMergeMode) mergeMode).getQuestion(), ((QuestionMergeMode) mergeMode).getQuestionId(), ((QuestionMergeMode) mergeMode).getQueryType());
                             }
                             break;
 
@@ -931,13 +931,13 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                             break;
                         //问题待推荐点击子条目
                         case UdeskConst.LiveDataType.RobotChildHit:
-                            MessageInfo sendChildQueMsg = UdeskUtil.buildSendChildMsg(((QuestionMerMode) mergeMode).getQuestion());
+                            MessageInfo sendChildQueMsg = UdeskUtil.buildSendChildMsg(((QuestionMergeMode) mergeMode).getQuestion());
                             mChatAdapter.addItem(sendChildQueMsg);
                             udeskViewMode.getDbLiveData().saveMessageDB(sendChildQueMsg);
                             mListView.smoothScrollToPosition(mChatAdapter.getCount());
                             robotSengMsgCount++;
                             showTranferAgent();
-                            udeskViewMode.getRobotApiData().robotHit(((QuestionMerMode) mergeMode).getMsgId(), ((QuestionMerMode) mergeMode).getLogId(), ((QuestionMerMode) mergeMode).getQuestion(), ((QuestionMerMode) mergeMode).getQuestionId(), ((QuestionMerMode) mergeMode).getQueryType());
+                            udeskViewMode.getRobotApiData().robotHit(((QuestionMergeMode) mergeMode).getMsgId(), ((QuestionMergeMode) mergeMode).getLogId(), ((QuestionMergeMode) mergeMode).getQuestion(), ((QuestionMergeMode) mergeMode).getQuestionId(), ((QuestionMergeMode) mergeMode).getQueryType());
                             break;
                         //机器人发送文本消息
                         case UdeskConst.LiveDataType.ROBOT_SEND_TXT_MSG:
@@ -2330,9 +2330,9 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
 
     public boolean getPressionStatus() {
         try {
-            if (curentStatus.equals(UdeskConst.Status.pre_session) || curentStatus.equals(UdeskConst.Status.robot)
-                    || (curentStatus.equals(UdeskConst.Status.init) && initCustomer.getPre_session().getShow_pre_session() && initCustomer.getPre_session().getPre_session())
-                    ) {
+            if ((curentStatus.equals(UdeskConst.Status.pre_session) || curentStatus.equals(UdeskConst.Status.robot) || curentStatus.equals(UdeskConst.Status.init))
+                    && initCustomer.getPre_session().getShow_pre_session() && initCustomer.getPre_session().getPre_session()
+                    ){
                 return true;
             }
         } catch (Exception e) {
@@ -2811,14 +2811,19 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
         try {
             if (mTitlebar != null) {
                 mTitlebar.setTopTextSequence(title);
-                if (status.equals(on)) {
-                    mTitlebar.setBottomTextSequence(getString(R.string.udesk_online));
-                } else if (status.equals(off)) {
-                    mTitlebar.setBottomTextSequence(getString(R.string.udesk_offline));
-                } else if (status.equals(queue)) {
-                    mTitlebar.setBottomTextSequence(getString(R.string.udesk_in_the_line));
-                }
+                if (TextUtils.equals(curentStatus,UdeskConst.Status.pre_session)){
+                    mTitlebar.setUdeskBottomTextVis(View.GONE);
+                }else {
+                    mTitlebar.setUdeskBottomTextVis(View.VISIBLE);
+                    if (status.equals(on)) {
+                        mTitlebar.setBottomTextSequence(getString(R.string.udesk_online));
+                    } else if (status.equals(off)) {
+                        mTitlebar.setBottomTextSequence(getString(R.string.udesk_offline));
+                    } else if (status.equals(queue)) {
+                        mTitlebar.setBottomTextSequence(getString(R.string.udesk_in_the_line));
+                    }
 
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
