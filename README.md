@@ -16,9 +16,10 @@ SDK原生机器人功能在 5.x 分支下。
 - [八、更新记录](#8)
 - [九、功能截图](#9)
 <h1 id="1">一、特别声明</h1>
-### SDK还未完成适配9.0系统测试 。请targetSdkVersion 设置值小于28  小于28  小于28 
-### SDK 采用AAC框架 
-### fresco版本问题
+
+### SDK还未完成适配9.0系统测试 。请targetSdkVersion 设置值小于28  小于28  小于28 ###
+### SDK 采用AAC框架 ###
+### fresco版本问题 ###
 	如果你的项目打包指定了so库的加载配置了，
      ndk{
             abiFilters "armeabi"
@@ -93,12 +94,12 @@ UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), Ud
       
       注意：域名不要带有http://部分，假如注册生成的域名是"http://udesksdk.udesk.cn/" ,只要传入"udesksdk.udesk.cn"
 
-###2.设置UdeskConfig配置信息。
+### 2.设置UdeskConfig配置信息。
 
 **说明：配置的功能根据你们实际的需要进行选择，都有默认行为。**
 
 ### **2.1 设置用户的基本信息**
-###**注意sdktoken必填**
+### **注意sdktoken必填**
 	 
 	  默认系统字段是Udesk已定义好的字段，开发者可以直接传入这些用户信息，供客服查看。
       String sdktoken = “用户唯一的标识”; 
@@ -627,10 +628,76 @@ UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), Ud
 |ParamsBean.size | 可选| 字体大小| 
 	  
 用法场景:  
-1 可以每次进入会话, 通过UdeskConfig配置,设置一条商品消息,
+1 可以每次进入会话, 通过UdeskConfig配置,设置一条商品消息
+
 2 可以通过导航栏 自定义功能按钮  发送商品消息 
 
+<h1 id="5">五、消息推送</h1>
+
+当前仅支持一种推送方案，即Udesk务端发送消息至开发者的服务端，开发者再推送消息到 App。
+### 1 设置接收推送的服务器地址
+    推送消息将会发送至开发者的服务器。
+	
+	设置服务器地址，请使用Udesk管理员帐号登录 Udesk，在 设置 -> 移动SDK 中设置。
+![udesk](http://7xr0de.com1.z0.glb.clouddn.com/5D761252-3D9D-467C-93C9-8189D0B22424.png)	
+### 2 使用Udesk 推送功能的配置
+
+	配置 是否使用推送服务  true 表示使用  false表示不使用
+    public  static  boolean isUserSDkPush = false;
+
+### 3 设置用户的设备唯一标识
+	UdeskSDKManager.getInstance().setRegisterId（context,"xxxxregisterId"）
+     //保存注册推送的的设备ID
+    public void setRegisterId(Context context, String registerId) {
+        UdeskConfig.registerId = registerId;
+        PreferenceHelper.write(context, UdeskConst.SharePreParams.RegisterIdName,
+                UdeskConst.SharePreParams.Udesk_Push_RegisterId, registerId);
+    }
+关闭和开启Udesk推送服务，Udesk推送给开发者服务端的消息数据格式中，会有 device_token 的字段。
+### 4	关闭开启Udek推送服务
+	/**
+     * @param domain    公司注册生成的域名
+     * @param key        创建app时，生成的app key
+     * @param sdkToken   用户唯一标识
+	 * @param status         sdk推送状态 ["on" | "off"]  on表示开启Udesk推送服务， off表示关闭udesk推送服务
+     * @param registrationID 注册推送设备的ID
+     * @param appid  创建app时，生成的app id 
+     */
+
+    public void setSdkPushStatus(String domain, String key, String sdkToken, String status, String registrationID, String appid, UdeskCallBack callBack) {
+        try {
+            UdeskHttpFacade.getInstance().sdkPushStatus(domain, key, sdkToken, status, registrationID, appid, callBack);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+### 5 Udek推送给开发者服务端的接口说明	
+**基本要求**
+
+- 请求已 POST 方法发送
+- 请求时使用的 content-type 为 application/x-www-form-urlencoded 
+
+**参数**
+
+当有消息或事件发生时，将会向推送接口传送以下数据
+
+| 参数名          | 类型       | 说明                                       |
+| ------------ | -------- | ---------------------------------------- |
+| message_id   | string   | 消息id                                     |
+| platform     | string   | 平台，'ios' 或 'android'                     |
+| device_token | string   | 设备标识                                     |
+| app_id       | string   | SDK app id                               |
+| content      | string   | 消息内容，仅 type 为 'message' 时有效              |
+| sent_at      | datetime | 消息推送时间，格式 iso8601                        |
+| from_id      | integer  | 发送者id(客服)                                |
+| from_name    | string   | 发送者名称                                    |
+| to_id        | integer  | 接收者id(客户)                                |
+| to_token     | string   | 接收者 sdk_token(唯一标识)                      |
+| type         | string   | 消息类型，'event' 为事件，'message'为消息            |
+| event        | string   | 事件类型，'redirect' 客服转接，'close'对话关闭，'survey'发送满意度调查 |
+
 <h1 id="6">六、Udesk API说明</h1>
+
 ### 1 更新客户信息
 
 	UdeskConfig.Builder builder = new UdeskConfig.Builder();
@@ -782,69 +849,6 @@ sdk初始化成功，创建客户后，调用此接口可删除当前客户的�
 		MergeMode livedata 处理的消息
 		questionMergeMode MergeMode 子类拓展 处理点击问题
 		MergeModeManager  mergedata 管理类
-		
-<h1 id="5">五、消息推送</h1>
-	当前仅支持一种推送方案，即Udesk务端发送消息至开发者的服务端，开发者再推送消息到 App。
-### 1 设置接收推送的服务器地址
-        推送消息将会发送至开发者的服务器。
-	
-	设置服务器地址，请使用Udesk管理员帐号登录 Udesk，在 设置 -> 移动SDK 中设置。
-![udesk](http://7xr0de.com1.z0.glb.clouddn.com/5D761252-3D9D-467C-93C9-8189D0B22424.png)	
-### 2 使用Udesk 推送功能的配置
-
-	配置 是否使用推送服务  true 表示使用  false表示不使用
-    public  static  boolean isUserSDkPush = false;
-
-### 3 设置用户的设备唯一标识
-	UdeskSDKManager.getInstance().setRegisterId（context,"xxxxregisterId"）
-     //保存注册推送的的设备ID
-    public void setRegisterId(Context context, String registerId) {
-        UdeskConfig.registerId = registerId;
-        PreferenceHelper.write(context, UdeskConst.SharePreParams.RegisterIdName,
-                UdeskConst.SharePreParams.Udesk_Push_RegisterId, registerId);
-    }
-关闭和开启Udesk推送服务，Udesk推送给开发者服务端的消息数据格式中，会有 device_token 的字段。
-### 4	关闭开启Udek推送服务
-	/**
-     * @param domain    公司注册生成的域名
-     * @param key        创建app时，生成的app key
-     * @param sdkToken   用户唯一标识
-	 * @param status         sdk推送状态 ["on" | "off"]  on表示开启Udesk推送服务， off表示关闭udesk推送服务
-     * @param registrationID 注册推送设备的ID
-     * @param appid  创建app时，生成的app id 
-     */
-
-    public void setSdkPushStatus(String domain, String key, String sdkToken, String status, String registrationID, String appid, UdeskCallBack callBack) {
-        try {
-            UdeskHttpFacade.getInstance().sdkPushStatus(domain, key, sdkToken, status, registrationID, appid, callBack);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-### 5 Udek推送给开发者服务端的接口说明	
-**基本要求**
-
-- 请求已 POST 方法发送
-- 请求时使用的 content-type 为 application/x-www-form-urlencoded 
-
-**参数**
-
-当有消息或事件发生时，将会向推送接口传送以下数据
-
-| 参数名          | 类型       | 说明                                       |
-| ------------ | -------- | ---------------------------------------- |
-| message_id   | string   | 消息id                                     |
-| platform     | string   | 平台，'ios' 或 'android'                     |
-| device_token | string   | 设备标识                                     |
-| app_id       | string   | SDK app id                               |
-| content      | string   | 消息内容，仅 type 为 'message' 时有效              |
-| sent_at      | datetime | 消息推送时间，格式 iso8601                        |
-| from_id      | integer  | 发送者id(客服)                                |
-| from_name    | string   | 发送者名称                                    |
-| to_id        | integer  | 接收者id(客户)                                |
-| to_token     | string   | 接收者 sdk_token(唯一标识)                      |
-| type         | string   | 消息类型，'event' 为事件，'message'为消息            |
-| event        | string   | 事件类型，'redirect' 客服转接，'close'对话关闭，'survey'发送满意度调查 |
 
 <h1 id="7">七、常见问题</h1>
 
@@ -882,8 +886,9 @@ sdk初始化成功，创建客户后，调用此接口可删除当前客户的�
     https://github.com/udesk/udesk_android_sdk_h5
 	
 <h1 id="8">八、更新记录</h1>
-### 更新日志
-###sdk v5.0.0版本更新功能:
+
+### 更新日志 ###
+### sdk v5.0.0版本更新功能: ###
 
 1.支持原生机器人
 
@@ -1031,33 +1036,33 @@ sdk初始化成功，创建客户后，调用此接口可删除当前客户的�
 
 <h1 id="9">九、部分功能截图</h1>
 
-## 机器人聊天##
-###原生机器人###
+## 机器人聊天 ##
+### 原生机器人 ###
 ![udesk](http://qn-public.udesk.cn/667520967004022376406daf44e-f863-49f9-abea-cf79c658c70f_484930145abfe25b54b93190867c640e_upload.jpg)
-###输入联想###
+### 输入联想 ###
 ![udesk](http://qn-public.udesk.cn/667521150399125915804ae4c2c-9fff-4faf-a8c1-692eeab01c24_a2927d95d64c169fe7207af35fb65d62_upload.jpg)
-###语音识别###
+### 语音识别 ###
 ![udesk](http://qn-public.udesk.cn/667521150399125915953572dc9-0f5d-4ee0-afe6-63c155318ebe_ed0c33dfe9439aa916444f60539ec53a_upload.jpg)
 
-### 导航配置示意图###
+### 导航配置示意图 ###
 ![udesk](http://qn-im.udesk.cn/%E5%AF%BC%E8%88%AA%E8%AE%BE%E7%BD%AE_1540870908_976.png)
-### 无消息对话过滤示意图###
+### 无消息对话过滤示意图 ###
 ![udesk](http://qn-im.udesk.cn/%E6%97%A0%E6%B6%88%E6%81%AF%E5%AF%B9%E8%AF%9D%E8%BF%87%E6%BB%A4_1540881672_329.png)
 
-### 消息对话示意图###
+### 消息对话示意图 ###
 ![udesk](http://qn-im.udesk.cn/%E5%8A%9F%E8%83%BD%E5%9B%BE%E7%89%87_1540881751_124.png)
 ![udesk](http://qn-im.udesk.cn/%E5%8A%9F%E8%83%BD2_1540870974_781.png)
 ![udesk](http://qn-im.udesk.cn/%E5%8A%9F%E8%83%BD3_1540870997_368.png)
 
-### 自定义表情###
+### 自定义表情 ###
 
 ![udesk](http://qn-im.udesk.cn/%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A1%A8%E6%83%85_1540871031_250.png)
-### 自定义按钮###
+### 自定义按钮 ###
 ![udesk](http://qn-im.udesk.cn/%E6%94%AF%E6%8C%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%89%E9%92%AE_1540881846_830.png)
 
-### 满意度评价示意图###
+### 满意度评价示意图 ###
 ![udesk](http://qn-im.udesk.cn/%E6%BB%A1%E6%84%8F%E5%BA%A6%E8%AF%84%E4%BB%B7_1540881195_147.png)
 
-### 留言示意图###
+### 留言示意图 ###
 ![udesk](http://qn-im.udesk.cn/%E8%A1%A8%E5%8D%95%E7%95%99%E8%A8%80_1540871121_461.png)
 ![udesk](http://qn-im.udesk.cn/%E7%9B%B4%E6%8E%A5%E7%95%99%E8%A8%80_1540871126_218.png)
