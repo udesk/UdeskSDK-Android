@@ -1638,7 +1638,9 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             } else if (IM_GROUP_REQUEST_CODE == requestCode) {
                 if (resultCode == Activity.RESULT_OK || data != null) {
                     initFragment(UdeskConst.CurrentFragment.agent);
-                    udeskViewMode.getRobotApiData().robotTransfer();
+                    if (robot != null && robot.getEnable()) {
+                        udeskViewMode.getRobotApiData().robotTransfer();
+                    }
                     menuId = data.getStringExtra(UdeskConst.UDESKMENUID);
                     if (!TextUtils.isEmpty(menuId)) {
                         PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
