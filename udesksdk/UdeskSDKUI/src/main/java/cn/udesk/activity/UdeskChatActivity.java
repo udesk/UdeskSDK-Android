@@ -61,8 +61,8 @@ import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.aac.MergeMode;
 import cn.udesk.aac.MergeModeManager;
-import cn.udesk.aac.UdeskViewMode;
 import cn.udesk.aac.QuestionMergeMode;
+import cn.udesk.aac.UdeskViewMode;
 import cn.udesk.adapter.MessageAdatper;
 import cn.udesk.adapter.TipAdapter;
 import cn.udesk.callback.IUdeskHasSurvyCallBack;
@@ -79,21 +79,13 @@ import cn.udesk.fragment.UdeskbaseFragment;
 import cn.udesk.itemview.BaseViewHolder;
 import cn.udesk.messagemanager.UdeskXmppManager;
 import cn.udesk.model.AgentGroupNode;
+import cn.udesk.model.Customer;
 import cn.udesk.model.ImSetting;
+import cn.udesk.model.InitCustomerBean;
 import cn.udesk.model.Robot;
-import cn.udesk.widget.RecycleViewDivider;
-import udesk.core.model.AllMessageMode;
 import cn.udesk.model.SurveyOptionsModel;
 import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.model.UdeskQueueItem;
-import cn.udesk.model.Customer;
-import cn.udesk.model.InitCustomerBean;
-import udesk.core.model.Content;
-import udesk.core.model.DataBean;
-import udesk.core.model.LogBean;
-import udesk.core.model.ProductListBean;
-import udesk.core.model.RobotInit;
-import udesk.core.model.RobotTipBean;
 import cn.udesk.permission.RequestCode;
 import cn.udesk.permission.XPermissionUtils;
 import cn.udesk.photoselect.PhotoSelectorActivity;
@@ -101,6 +93,7 @@ import cn.udesk.photoselect.entity.LocalMedia;
 import cn.udesk.voice.RecordFilePlay;
 import cn.udesk.voice.RecordPlay;
 import cn.udesk.voice.RecordPlayCallback;
+import cn.udesk.widget.RecycleViewDivider;
 import cn.udesk.widget.UDPullGetMoreListView;
 import cn.udesk.widget.UdeskConfirmPopWindow;
 import cn.udesk.widget.UdeskConfirmPopWindow.OnPopConfirmClick;
@@ -113,8 +106,15 @@ import udesk.core.JsonObjectUtils;
 import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.model.AgentInfo;
+import udesk.core.model.AllMessageMode;
+import udesk.core.model.Content;
+import udesk.core.model.DataBean;
+import udesk.core.model.LogBean;
 import udesk.core.model.MessageInfo;
 import udesk.core.model.Product;
+import udesk.core.model.ProductListBean;
+import udesk.core.model.RobotInit;
+import udesk.core.model.RobotTipBean;
 import udesk.core.utils.UdeskIdBuild;
 import udesk.core.utils.UdeskUtils;
 
@@ -1041,7 +1041,9 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                     return;
                 }
                 initFragment(UdeskConst.CurrentFragment.agent);
-                udeskViewMode.getRobotApiData().robotTransfer();
+                if (robot != null && robot.getEnable()) {
+                    udeskViewMode.getRobotApiData().robotTransfer();
+                }
                 //进入人工客服判断
                 if (!isWorkTime()) {
                     curentStatus = UdeskConst.Status.notWorkingTime;

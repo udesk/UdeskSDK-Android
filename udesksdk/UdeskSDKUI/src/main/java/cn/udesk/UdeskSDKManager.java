@@ -229,13 +229,14 @@ public class UdeskSDKManager {
                                 if ((robot == null || !robot.getEnable())){
                                     if (udeskConfig.isOnlyUseRobot){
                                         UdeskUtils.showToast(context,"机器人未开启，请联系管理员");
+                                        return;
                                     }else if (imSetting.getEnable_im_group() && agentGroups != null && agentGroups.size() > 0){
                                         //不在当前会话，没有开启机器人，则先进入导航页面
                                         Intent intent = new Intent(context, UdeskOptionsAgentGroupActivity.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                         context.startActivity(intent);
+                                        return;
                                     }
-                                    return;
                                 }
                             }
                         }else if (udeskConfig.isOnlyUseRobot){
