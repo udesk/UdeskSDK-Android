@@ -47,7 +47,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
     private ImageView mEmojiImg;
     private ImageView mMoreImg;
     private TextView sendBtn;
-    private FrameLayout mBotomFramlayout;
+    private FrameLayout mBottomFramlayout;
     private EmotionLayout mEmotionlayout;
     private LinearLayout mMoreLayout;
     private GridView funGridView;
@@ -68,7 +68,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
             mEmojiImg = (ImageView) view.findViewById(R.id.udesk_emoji_img);
             mMoreImg = (ImageView) view.findViewById(R.id.udesk_more_img);
             sendBtn = (TextView) view.findViewById(R.id.udesk_bottom_send);
-            mBotomFramlayout = (FrameLayout) view.findViewById(R.id.udesk_bottom_frame);
+            mBottomFramlayout = (FrameLayout) view.findViewById(R.id.udesk_bottom_frame);
             mEmotionlayout = (EmotionLayout) view.findViewById(R.id.udesk_emotion_view);
             mMoreLayout = (LinearLayout) view.findViewById(R.id.udesk_more_layout);
             funGridView = (GridView) (view.findViewById(R.id.function_gridview));
@@ -120,7 +120,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
     public void onHideBottomLayout(Boolean isHide){
         try {
             if (isHide){
-                mBotomFramlayout.setVisibility(View.GONE);
+                mBottomFramlayout.setVisibility(View.GONE);
                 hideEmotionLayout();
                 hideMoreLayout();
             }
@@ -135,12 +135,12 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
         try {
             initFunctionAdapter();
             setNavigationViewVis();
-            mBtnAudio.init(UdeskUtils.getDirectoryPath(getActivity().getApplicationContext(), UdeskConst.FileAduio));
+            mBtnAudio.init(UdeskUtils.getDirectoryPath(getActivity().getApplicationContext(), UdeskConst.FileAudio));
             mBtnAudio.setRecordingListener(new AudioRecordButton.OnRecordingListener() {
                 @Override
                 public void recordStart() {
                     if (udeskChatActivity.mRecordFilePlay != null) {
-                        udeskChatActivity.showStartOrStopAnaimaition(
+                        udeskChatActivity.showStartOrStopAnimation(
                                 udeskChatActivity.mRecordFilePlay.getPlayAduioMessage(), false);
                         udeskChatActivity.recycleVoiceRes();
                     }
@@ -183,14 +183,14 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
             mEmotionKeyboard = EmotionKeyboard.with(udeskChatActivity);
             mEmotionKeyboard.bindToEditText(mInputEditView);
             mEmotionKeyboard.bindToContent(udeskChatActivity.mContentLinearLayout);
-            mEmotionKeyboard.setEmotionLayout(mBotomFramlayout);
+            mEmotionKeyboard.setEmotionLayout(mBottomFramlayout);
             mEmotionKeyboard.bindToEmotionButton(mEmojiImg, mMoreImg);
             mEmotionKeyboard.setOnEmotionButtonOnClickListener(new EmotionKeyboard.OnEmotionButtonOnClickListener() {
                 @Override
                 public boolean onEmotionButtonOnClickListener(View view) {
                     try {
-                        if (udeskChatActivity.isbolcked != null && udeskChatActivity.isbolcked.equals("true")) {
-                            udeskChatActivity.toBolckedView();
+                        if (udeskChatActivity.isblocked != null && udeskChatActivity.isblocked.equals("true")) {
+                            udeskChatActivity.toBlockedView();
                             return true;
                         }
                         if (udeskChatActivity.isMoreThan20 && udeskChatActivity.isNeedQueueMessageSave()) {
@@ -274,7 +274,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                             }
                         }
 
-                        if (udeskChatActivity.isbolcked.equals("true") ||
+                        if (udeskChatActivity.isblocked.equals("true") ||
                                 !udeskChatActivity.curentStatus.equals(UdeskConst.Status.chatting)) {
                             return;
                         }
@@ -657,7 +657,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                                 return;
                             }
                             udeskChatActivity.startVideo();
-                            mBotomFramlayout.setVisibility(View.GONE);
+                            mBottomFramlayout.setVisibility(View.GONE);
                             onHideBottomLayout(true);
                             break;
                         default:
@@ -678,8 +678,8 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
     public void onClick(View v) {
         try {
             //检查是否处在可发消息的状态
-            if (udeskChatActivity.isbolcked != null && udeskChatActivity.isbolcked.equals("true")) {
-                udeskChatActivity.toBolckedView();
+            if (udeskChatActivity.isblocked != null && udeskChatActivity.isblocked.equals("true")) {
+                udeskChatActivity.toBlockedView();
                 return;
             }
 
@@ -773,7 +773,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
             mEmojiImg.setVisibility(View.GONE);
             mAudioImg.setImageResource(R.drawable.udesk_chat_voice_keyboard);
 
-            if (mBotomFramlayout.isShown()) {
+            if (mBottomFramlayout.isShown()) {
                 if (mEmotionKeyboard != null) {
                     mEmotionKeyboard.interceptBackPress();
                 }

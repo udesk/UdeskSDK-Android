@@ -360,9 +360,9 @@ public class PhotoSelectorActivity extends FragmentActivity implements View.OnCl
             if (REQUEST_PREVIEW_ACTIVITY == requestCode) {
                 Bundle bundle = data.getBundleExtra(UdeskConst.SEND_BUNDLE);
                 if (bundle != null) {
-                    boolean isOrgin = bundle.getBoolean(UdeskConst.SEND_PHOTOS_IS_ORIGIN, false);
+                    boolean isOrigin = bundle.getBoolean(UdeskConst.SEND_PHOTOS_IS_ORIGIN, false);
                     boolean isSend = bundle.getBoolean(UdeskConst.IS_SEND, false);
-                    checkBox.setChecked(isOrgin);
+                    checkBox.setChecked(isOrigin);
                     if (isSend) {
                         sendPhotos();
                     } else {

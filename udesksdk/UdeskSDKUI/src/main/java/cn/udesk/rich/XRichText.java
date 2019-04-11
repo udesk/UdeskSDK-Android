@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cn.udesk.R;
 import cn.udesk.UdeskUtil;
 import cn.udesk.model.SpanModel;
 import udesk.core.UdeskConst;
@@ -52,13 +53,16 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
 
     Callback callback;
     ImageLoader downLoader;
-
-    private int richWidth;   //控件的宽高
+    //控件的宽高
+    private int richWidth;
     private boolean isInit = true;
     LocalImageGetter imgGetter;
 
     private static Object lock = new Object();
     private Attributes attributes;
+    private UrlDrawable urlDrawable;
+    //图片的最大宽度
+    private int imageMaxWidth=310;
 
     public XRichText(Context context) {
         super(context);
@@ -72,19 +76,19 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
         super(context, attrs, defStyleAttr);
     }
 
-    public void bind(){
-        InvokeEventContainer.getInstance().event_OnSpan.bind(this,"onDealSpan");
-        InvokeEventContainer.getInstance().event_OnSpanClick.bind(this,"onSpanClick");
-    }
-    public void unBind(){
-        InvokeEventContainer.getInstance().event_OnSpan.unBind(this);
-        InvokeEventContainer.getInstance().event_OnSpanClick.unBind(this);
-    }
+//    public void bind(){
+//        InvokeEventContainer.getInstance().event_OnSpan.bind(this,"onDealSpan");
+//        InvokeEventContainer.getInstance().event_OnSpanClick.bind(this,"onSpanClick");
+//    }
+//    public void unBind(){
+//        InvokeEventContainer.getInstance().event_OnSpan.unBind(this);
+//        InvokeEventContainer.getInstance().event_OnSpanClick.unBind(this);
+//    }
 
     public void onSpanClick(Integer start, Integer length, Editable out) {
         attributes=getAttributes();
         final SpanModel spanModel= new SpanModel();
-        spanModel.setContent(out.toString());
+        spanModel.setContent(out.toString().substring(start,length));
         if (attributes != null) {
             String data = attributes.getValue("", "data-type");
             spanModel.setType(data);
@@ -113,13 +117,22 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
     private Attributes getAttributes(){
         return attributes;
     }
-    public void text(Context context, String text) {
-        queryImgs(text);
 
+    /**
+     * 可以外面动态控制图片的宽度最大值
+     * @param width
+     */
+    public void setImageMaxWidth(int width){
+        this.imageMaxWidth=width;
+    }
+    public void text(Context context, String text) {
+        richWidth=UdeskUtil.dip2px(context,imageMaxWidth)-getPaddingLeft()-getPaddingRight();
+        urlDrawable = new UrlDrawable();
+        queryImgs(text);
         if (imgGetter == null) {
             imgGetter = new LocalImageGetter(this);
         }
-        CharSequence charSequence = UdeskHtml.fromHtml(context, text, imgGetter, new HtmlTagHandler());
+        CharSequence charSequence = UdeskHtml.fromHtml(context, text, imgGetter, new HtmlTagHandler(this));
         if (charSequence.toString().endsWith("\n\n")){
             charSequence=charSequence.subSequence(0,charSequence.length()-2);
         }
@@ -165,7 +178,7 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
             int end = builder.getSpanEnd(url);
             builder.setSpan(myURLSpan, statr,
                     end,
-                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         Linkify.addLinks(builder,Linkify.PHONE_NUMBERS);
         setText(builder);
@@ -210,6 +223,7 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
 
             imageHolderMap.put(holder.src, holder);
             position++;
+            setWidthHeight(urlDrawable,holder);
         }
     }
 
@@ -238,6 +252,33 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
         Log.i("xxxx", "fillBmp end");
         wrapDrawable(drawable, holder, destBmp);
         return true;
+    }
+
+    /**
+     * 获取图片的宽高 预设置图片的宽高
+     *
+     * @param drawable
+     * @param holder
+     */
+    public boolean setWidthHeight(UrlDrawable drawable, ImageHolder holder) {
+        if (holder.getWidth()>0&&holder.getHeight()>0){
+            int[] imageWidthHeight = UdeskUtil.getImageWidthHeight(new int[]{holder.getWidth(),holder.getHeight()});
+            Bitmap rawBmp=Bitmap.createBitmap(imageWidthHeight[0],imageWidthHeight[1],Bitmap.Config.ARGB_8888);
+            rawBmp.eraseColor(getResources().getColor(R.color.transparent));
+            return fillBmp(drawable,holder,rawBmp);
+        }else if (richWidth > 0 && UdeskUtils.fileIsExitByUrl(getContext(), UdeskConst.FileImg, holder.getSrc())) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(UdeskUtils.getPathByUrl(getContext(), UdeskConst.FileImg,
+                    holder.getSrc()),options);
+            if (options.outWidth>0&&options.outHeight>0){
+                int[] imageWidthHeight = UdeskUtil.getImageWidthHeight(new int[]{options.outWidth,options.outHeight});
+                Bitmap rawBmp=Bitmap.createBitmap(imageWidthHeight[0],imageWidthHeight[1],Bitmap.Config.ARGB_8888);
+                rawBmp.eraseColor(getResources().getColor(R.color.transparent));
+                return fillBmp(drawable,holder,rawBmp);
+            }
+        }
+        return false;
     }
 
     private void wrapDrawable(UrlDrawable drawable, ImageHolder holder, Bitmap destBmp) {
@@ -338,16 +379,16 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
 
     @Override
     public void onGlobalLayout() {
-        synchronized (lock) {
-            if (isInit) {
-                Log.i("xxxx", "getWidth=" + getWidth());
-                richWidth = getWidth() - getPaddingLeft() - getPaddingRight();
-                if (richWidth > 0) {
-                    isInit = false;
-                    lock.notifyAll();
-                }
-            }
-        }
+//        synchronized (lock) {
+//            if (isInit) {
+//                Log.i("xxxx", "getWidth=" + getWidth());
+//                richWidth = getWidth() - getPaddingLeft() - getPaddingRight();
+//                if (richWidth > 0) {
+//                    isInit = false;
+//                    lock.notifyAll();
+//                }
+//            }
+//        }
 
     }
 
@@ -361,8 +402,6 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
 
         @Override
         public Drawable getDrawable(String source) {
-            final UrlDrawable urlDrawable = new UrlDrawable();
-
             final ImageHolder holder = imageHolderMap.get(source);
             if (holder == null) {
                 return null;
@@ -592,31 +631,5 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
 
         void onStepClick(SpanModel model);
     }
-
-
-//    public static class BaseClickCallback implements Callback {
-//
-//        @Override
-//        public void onImageClick(List<String> urlList, int position) {
-//
-//        }
-//
-//        @Override
-//        public boolean onLinkClick(String url) {
-//            return false;
-//        }
-//
-//        @Override
-//        public void onFix(ImageHolder holder) {
-//
-//        }
-//
-//        public  void phoneClick(){
-//
-//        }
-//
-//
-//    }
-
 
 }

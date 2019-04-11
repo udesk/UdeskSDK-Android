@@ -58,7 +58,7 @@ public class UdeskConfig {
     //配置 是否使用推送服务  true 表示使用  false表示不使用
     public boolean isUserSDkPush = true;
     //配置放弃排队的策略
-    public String UdeskQuenuMode = UdeskQuenuFlag.Mark;
+    public String UdeskQuenuMode = UdeskQueueFlag.Mark;
     //是否使用录音功能  true表示使用 false表示不使用
     public boolean isUseVoice = true;
     //是否使用发送图片的功能  true表示使用 false表示不使用
@@ -245,7 +245,7 @@ public class UdeskConfig {
         //配置 是否使用推送服务  true 表示使用  false表示不使用
         private boolean isUserSDkPush = true;
         //配置放弃排队的策略
-        private String UdeskQuenuMode = UdeskQuenuFlag.Mark;
+        private String UdeskQuenuMode = UdeskQueueFlag.Mark;
         //是否使用录音功能  true表示使用 false表示不使用
         private boolean isUseVoice = true;
         //是否使用发送图片的功能  true表示使用 false表示不使用
@@ -615,32 +615,6 @@ public class UdeskConfig {
         }
 
         /**
-         * 用户需要更新的基本信息
-         *
-         * @param updatedefaultUserInfo
-         */
-        public Builder setUpdatedefaultUserInfo(Map<String, String> updatedefaultUserInfo) {
-            this.defaultUserInfo = updatedefaultUserInfo;
-            return this;
-        }
-
-        /**
-         * @param updatedefinedUserTextField 用户需要更新自定义字段文本信息
-         */
-        public Builder setUpdatedefinedUserTextField(Map<String, String> updatedefinedUserTextField) {
-            this.definedUserTextField = updatedefinedUserTextField;
-            return this;
-        }
-
-        /**
-         * @param updatedefinedUserRoplist 用户需要更新自定义列表字段信息
-         */
-        public Builder setUpdatedefinedUserRoplist(Map<String, String> updatedefinedUserRoplist) {
-            this.definedUserRoplist = updatedefinedUserRoplist;
-            return this;
-        }
-
-        /**
          * @param firstMessage 设置带入一条消息  会话分配就发送给客服
          */
         public Builder setFirstMessage(String firstMessage) {
@@ -832,7 +806,7 @@ public class UdeskConfig {
 
 
     //mode: mark (默认,标记放弃)/ cannel_mark(取消标记) / force_quit(强制立即放弃)
-    public static class UdeskQuenuFlag {
+    public static class UdeskQueueFlag {
         public static final String Mark = "mark";
         public static final String FORCE_QUIT = "force_quit";
     }

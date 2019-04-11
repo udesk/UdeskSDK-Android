@@ -7,6 +7,7 @@ import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import cn.udesk.aac.MergeMode;
 import cn.udesk.aac.MergeModeManager;
@@ -33,7 +34,7 @@ public class ReceiveLivaData<M> extends MutableLiveData<MergeMode> {
                 if (UdeskConst.isDebug) {
                     Log.i("aac", " ReceiveLivaData onNewMessage content =" + msgInfo.getMsgContent());
                 }
-                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmppMessage, msgInfo,System.currentTimeMillis());
+                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmppMessage, msgInfo,UUID.randomUUID().toString());
                 MergeModeManager.getmInstance().putMergeMode(mergeMode,ReceiveLivaData.this);
 
             }
@@ -51,7 +52,7 @@ public class ReceiveLivaData<M> extends MutableLiveData<MergeMode> {
                 if (UdeskConst.isDebug) {
                     Log.i("aac", " ReceiveLivaData messageReceived msgId =" + msgId);
                 }
-                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmppMessageReceived, msgId,System.currentTimeMillis());
+                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmppMessageReceived, msgId,UUID.randomUUID().toString());
                 MergeModeManager.getmInstance().putMergeMode(mergeMode,ReceiveLivaData.this);
 
             }
@@ -69,7 +70,7 @@ public class ReceiveLivaData<M> extends MutableLiveData<MergeMode> {
                 Map<String, Object> hashMap = new HashMap<>();
                 hashMap.put("jid", jid);
                 hashMap.put("onlineflag", onlineflag);
-                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmmpPresence, hashMap,System.currentTimeMillis());
+                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmmpPresence, hashMap,UUID.randomUUID().toString());
                 MergeModeManager.getmInstance().putMergeMode(mergeMode,ReceiveLivaData.this);
 
             }
@@ -85,7 +86,7 @@ public class ReceiveLivaData<M> extends MutableLiveData<MergeMode> {
      */
     public void onReqsurveyMsg(Boolean isSurvey) {
         try {
-            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmmpSurvey, isSurvey,System.currentTimeMillis());
+            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmmpSurvey, isSurvey,UUID.randomUUID().toString());
             MergeModeManager.getmInstance().putMergeMode(mergeMode,ReceiveLivaData.this);
         }catch (Exception e){
             e.printStackTrace();
@@ -100,7 +101,7 @@ public class ReceiveLivaData<M> extends MutableLiveData<MergeMode> {
             }
             if (type.equals("ticket_reply")) {
                 //调用获取工单离线消息
-                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmmpTicketReplay, true,System.currentTimeMillis());
+                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmmpTicketReplay, true,UUID.randomUUID().toString());
                 MergeModeManager.getmInstance().putMergeMode(mergeMode,ReceiveLivaData.this);
 
                 return;
@@ -108,7 +109,7 @@ public class ReceiveLivaData<M> extends MutableLiveData<MergeMode> {
             if (actionText.equals("overtest")) {
                 UdeskXmppManager.getInstance().sendActionMessage(agentJId);
             } else if (actionText.equals("over")) {
-                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmmpOver, true,System.currentTimeMillis());
+                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmmpOver, true,UUID.randomUUID().toString());
                 MergeModeManager.getmInstance().putMergeMode(mergeMode,ReceiveLivaData.this);
 
                 try {

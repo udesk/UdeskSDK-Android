@@ -149,7 +149,7 @@ public class UdeskVideoActivity extends Activity implements View.OnClickListener
             initview();
             if (isInvete) {
                 initinvite();
-                MessageManager.getMessageManager().invite(UdeskConst.IMAgentJid, UdeskSocketContants.ToResId, UdeskSocketContants.CallType.video, channelID, Util.objectToInt(UdeskConst.IMBusseniessId));
+                MessageManager.getMessageManager().invite(UdeskConst.IMAgentJid, UdeskSocketContants.ToResId, UdeskSocketContants.CallType.video, channelID, Util.objectToInt(UdeskConst.IMBussinessId));
             } else {
                 initReceiveVideo();
                 startAlarm();

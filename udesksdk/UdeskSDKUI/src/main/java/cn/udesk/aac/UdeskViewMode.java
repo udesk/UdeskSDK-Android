@@ -13,6 +13,7 @@ import android.util.Log;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import cn.udesk.JsonUtils;
 import cn.udesk.UdeskSDKManager;
@@ -274,7 +275,7 @@ public class UdeskViewMode extends ViewModel {
     // 发送录音信息
     public void sendRecordAudioMsg(String audiopath, long duration) {
         try {
-            String fileName = (UdeskUtils.getFileName(audiopath, UdeskConst.FileAduio));
+            String fileName = (UdeskUtils.getFileName(audiopath, UdeskConst.FileAudio));
             MessageInfo msgInfo = UdeskUtil.buildSendMessage(
                     UdeskConst.ChatMsgTypeString.TYPE_AUDIO,
                     System.currentTimeMillis(), "", audiopath, fileName, "");
@@ -305,7 +306,7 @@ public class UdeskViewMode extends ViewModel {
 
     private void postMessage(MessageInfo msg, int type) {
         try {
-            MergeMode mergeMode = new MergeMode(type, msg,System.currentTimeMillis());
+            MergeMode mergeMode = new MergeMode(type, msg,UUID.randomUUID().toString());
             MergeModeManager.getmInstance().putMergeMode(mergeMode,mutableLiveData);
         }catch (Exception e){
             e.printStackTrace();
@@ -359,7 +360,7 @@ public class UdeskViewMode extends ViewModel {
                             @Override
                             public void run() {
                                 UdeskDBManager.getInstance().updateMsgSendFlag(messageInfo.getMsgId(), UdeskConst.SendFlag.RESULT_FAIL);
-                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.Send_Message_Failure, messageInfo.getMsgId(),System.currentTimeMillis());
+                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.Send_Message_Failure, messageInfo.getMsgId(),UUID.randomUUID().toString());
                                 MergeModeManager.getmInstance().putMergeMode(mergeMode,mutableLiveData);
                             }
                         }).start();
@@ -404,7 +405,7 @@ public class UdeskViewMode extends ViewModel {
         if (UdeskConst.isDebug) {
             Log.i("aac", "UdeskViewMode onCleared");
         }
-        apiLiveData.quitQuenu(UdeskSDKManager.getInstance().getUdeskConfig().UdeskQuenuMode);
+        apiLiveData.quitQueue(UdeskSDKManager.getInstance().getUdeskConfig().UdeskQuenuMode);
         UdeskHttpFacade.getInstance().cancel();
         liveDataMerger.removeSource(messageLivaData);
         liveDataMerger.removeSource(sendMessageLiveData);

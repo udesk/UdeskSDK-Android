@@ -10,7 +10,7 @@
     android:paddingBottom="@dimen/udesk_8"
     >
 
-    <cn.udesk.rich.XRichText
+    <TextView
         android:id="@+id/udesk_robot_tv_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -15,9 +15,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -39,13 +37,11 @@ import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.activity.UdeskWebViewUrlAcivity;
-import cn.udesk.config.UdekConfigUtil;
+import cn.udesk.config.UdeskConfigUtil;
 import cn.udesk.emotion.MoonUtils;
 import cn.udesk.fragment.UdeskResendDialog;
-import cn.udesk.model.SpanModel;
 import cn.udesk.photoselect.PictureVideoPlayActivity;
 import cn.udesk.provider.UdeskFileProvider;
-import cn.udesk.rich.XRichText;
 import cn.udesk.widget.CircleProgressBar;
 import cn.udesk.widget.HtmlTagHandler;
 import udesk.core.UdeskConst;
@@ -93,7 +89,7 @@ public class RightViewHolder extends BaseViewHolder {
         try {
             this.mContext=mContext;
             tvTime = convertView.findViewById(R.id.udesk_tv_time);
-            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMTimeTextColorResId, tvTime);
+            UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMTimeTextColorResId, tvTime);
             ivStatus = convertView.findViewById(R.id.udesk_iv_status);
             cancleImg = convertView.findViewById(R.id.udesk_iv_cancle);
             cancleImg.setVisibility(View.GONE);
@@ -101,14 +97,14 @@ public class RightViewHolder extends BaseViewHolder {
             llHead = convertView.findViewById(R.id.udesk_rl_body);
             itemText = convertView.findViewById(R.id.udesk_item_txt);
             tvMsg = convertView.findViewById(R.id.udesk_tv_msg);
-            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMRightTextColorResId, tvMsg);
+            UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMRightTextColorResId, tvMsg);
             //消息 leavemsg
             itemLeaveMsg = convertView.findViewById(R.id.udesk_item_leave_msg);
             leaveMsg = (TextView) convertView.findViewById(R.id.udesk_leave_msg);
-            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMRightTextColorResId, leaveMsg);
+            UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMRightTextColorResId, leaveMsg);
             //video消息
             videoMsg = (TextView) convertView.findViewById(R.id.udesk_video_msg);
-            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMRightTextColorResId, videoMsg);
+            UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMRightTextColorResId, videoMsg);
             //audio消息
             itemAudio = (RelativeLayout) convertView.findViewById(R.id.udesk_item_audio);
             tvDuration = (TextView) convertView.findViewById(R.id.udesk_im_item_record_duration);
@@ -725,7 +721,7 @@ public class RightViewHolder extends BaseViewHolder {
                 public void onClick(View view) {
                     message.setSendFlag(UdeskConst.SendFlag.RESULT_FAIL);
                     showFailureView();
-                    ((UdeskChatActivity) mContext).cancleSendVideoMsg(message);
+                    ((UdeskChatActivity) mContext).cancelSendVideoMsg(message);
                 }
             });
         } catch (Exception e) {

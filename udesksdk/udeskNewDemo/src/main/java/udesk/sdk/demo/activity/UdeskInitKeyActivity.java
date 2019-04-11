@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import cn.udesk.PreferenceHelper;
 import cn.udesk.UdeskSDKManager;
+import udesk.core.UdeskConst;
 import udesk.sdk.demo.R;
 
 
@@ -25,6 +26,19 @@ public class UdeskInitKeyActivity extends Activity {
     // 替换成你们在后台生成的密钥
     private String UDESK_SECRETKEY = "12cec1ded15716158f7d50fefd1d42a7";
 
+//    //替换成你们注册生成的域名
+//    private String UDESK_DOMAIN = "brazil0326.udesk.cn";
+//    //替换成你们生成应用产生的appid
+//    private String AppId = "e925309ab51f0725";
+//    // 替换成你们在后台生成的密钥
+//    private String UDESK_SECRETKEY = "8c63951173fbd6ac81a6c6146f940e7b";
+
+    //替换成你们注册生成的域名
+//    private String UDESK_DOMAIN = "udesksdk.udesk.cn";
+//    //替换成你们生成应用产生的appid
+//    private String AppId = "cdc6da4fa97efc2c";
+//    // 替换成你们在后台生成的密钥
+//    private String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
 
 //    //替换成你们注册生成的域名
 //    private String UDESK_DOMAIN = "reocar.udeskmonkey.com";
@@ -36,16 +50,10 @@ public class UdeskInitKeyActivity extends Activity {
     //替换成你们注册生成的域名
 //    private String UDESK_DOMAIN = "linapp.udeskt1.com";
 //    //替换成你们生成应用产生的appid
-//    private String AppId = "f0fe1b41c1d81218";
+//    private String AppId = "842f71cc75e47e06";
 //    // 替换成你们在后台生成的密钥
-//    private String UDESK_SECRETKEY = "71ad7bfefc85de69c8e4609c3baf5813";
+//    private String UDESK_SECRETKEY = "fe4cd5d012d633657e1c5c501b125f9b";
 
-//    替换成你们注册生成的域名
-//    private String UDESK_DOMAIN = "reocar.tryudesk2.com";
-//    //替换成你们生成应用产生的appid
-//    private String AppId = "cc9ab1c0468c5dff";
-//    // 替换成你们在后台生成的密钥
-//    private String UDESK_SECRETKEY = "5c2a0e96b480c81835573a8e9cbf0948";
 
 //    替换成你们注册生成的域名
 //    private String UDESK_DOMAIN = "linapp.udeskt2.com";
@@ -104,7 +112,7 @@ public class UdeskInitKeyActivity extends Activity {
                     //  使用前需要设置的信息:
                     UdeskSDKManager.getInstance().initApiKey(getApplicationContext(), mDomainEdit.getText().toString(),
                             mKeyEdit.getText().toString(), mAppidEdit.getText().toString());
-//                    UdeskConst.HTTP = "http://";
+                    UdeskConst.HTTP = "http://";
                     sdkToken = stoken.getText().toString();
                     PreferenceHelper.write(getApplicationContext(), "init_base_name", "sdktoken", sdkToken);
                     PreferenceHelper.write(getApplicationContext(), "init_base_name", "domain", mDomainEdit.getText().toString());

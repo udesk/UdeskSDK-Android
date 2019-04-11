@@ -30,11 +30,13 @@ public class HtmlTagHandler implements UdeskHtml.TagHandler {
 
     private Stack<Integer> stack;
     private Stack<Boolean> list;
+    private XRichText xRichText;
     private int index = 0;
 
-    public HtmlTagHandler() {
+    public HtmlTagHandler(XRichText xRichText) {
         stack = new Stack<>();
         list = new Stack<>();
+        this.xRichText=xRichText;
     }
 
     @Override
@@ -57,14 +59,16 @@ public class HtmlTagHandler implements UdeskHtml.TagHandler {
     public void handleAttributes(String tag, Attributes attributes) {
         switch (tag.toLowerCase()){
             case "span":
-                InvokeEventContainer.getInstance().event_OnSpan.invoke(attributes);
+//                InvokeEventContainer.getInstance().event_OnSpan.invoke(attributes);
+                xRichText.onDealSpan(attributes);
                 break;
         }
     }
 
     @Override
     public void handleClick(int start, int length, Editable output) {
-        InvokeEventContainer.getInstance().event_OnSpanClick.invoke(start,length,output);
+//        InvokeEventContainer.getInstance().event_OnSpanClick.invoke(start,length,output);
+        xRichText.onSpanClick(start,length,output);
     }
 
     @SuppressWarnings("unused")

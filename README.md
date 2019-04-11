@@ -10,8 +10,8 @@ SDK原生机器人功能在 5.x 分支下。
 - [二、集成SDK](#2)
 - [三、快速使用SDK](#3)
 - [四、Udesk SDK 自定义配置](#4)
-- [五、消息推送](#5)
-- [六、Udesk API说明](#6)
+- [五、Udesk API说明](#5)
+- [六、消息推送](#6)
 - [七、常见问题](#7)
 - [八、更新记录](#8)
 - [九、功能截图](#9)
@@ -29,11 +29,6 @@ SDK原生机器人功能在 5.x 分支下。
     不在包含armeabi 
     
     在UdeskSDKUI下的build.gradle文件下  修改dependencies fresco版本号 不能根据androidstudio提示更新到最新
-    
-### okhttp的版本
-	'com.qiniu:qiniu-android-sdk:7.3.+' 采用7.3.+的方式  okhttp需要大于当前七牛依赖的okhttp版本号， 而不能选择小的。
-
-**打包时会下载最新版本, 需要集成方在打包时注意测试上传图片和语言文件的功能,看你们app使用的okhttp和七牛依赖的需要的okhttp是否兼容.**
 
 ### customer_token， sdk_token 仅支持字母、数字及下划线,禁用特殊字符
 
@@ -50,7 +45,7 @@ SDK原生机器人功能在 5.x 分支下。
 你所要做的是把UdeskSDKUI做为独立的module import, 并在你APP build.gradle文件中加入：
 
 	dependencies {
-	    compile project(':UdeskSDKUI')
+	    api project(':UdeskSDKUI')
 	}
 
 ### 用户创建及更新逻辑:
@@ -72,17 +67,28 @@ SDK原生机器人功能在 5.x 分支下。
 	
 		6. 更新用户 ip 及 省份信息
 	
-	2. 创建用户 sdk_token email 没有会默认生成匿名邮件,以 @temp.com 结尾
-	3. 创建用户 device
+	2. 创建用户 device
 
-**注意sdktoken** 是客户的唯一标识，用来识别身份，**sdk_token: 传入的字符请使用 字母 / 数字 字符集**  。就如同身份证一样，不允许出现一个身份证号对应多个人，或者一个人有多个身份证号;**其次**如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客。  **完成了以上操作，接下来就可以使用UdeskSDK的其它功能了，祝你好运！**
+**注意** 
+	
+	现在根据primary_key的值来作为客户的唯一标识，用来识别身份。
+	
+	如果customer_token的值不为空， primary_key 的值为customer_token 以customer_token的值作为客户的唯一标识，用来识别身份。
+	
+	如果customer_token的值为空， primary_key 的值为sdk_token 以sdk_token的值作为客户的唯一标识，用来识别身份。
+	
+	customer_token sdk_token: 传入的字符请使用 字母 / 数字 字符集**  。就如同身份证一样，不允许出现一个身份证号对应多个人，或者一个人有多个身份证号;
+	
+	其次,如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客。  
+
+**完成了以上操作，接下来就可以使用UdeskSDK的其它功能了，祝你好运！**
 
 ### 启动帮助中心界面
 
 Udek系统帮助中心后台可以创建帮助文档，客户通过帮助中心可查看相关文档。调用以下接口启动帮助中心界面
 
 ```java
-UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
+UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
 ```
 
 
@@ -110,8 +116,8 @@ UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), Ud
       info.put(UdeskConst.UdeskUserInfo.NICK_NAME,"昵称");
       info.put(UdeskConst.UdeskUserInfo.EMAIL,"0631@163.com");
       info.put(UdeskConst.UdeskUserInfo.CELLPHONE,"15651818750");
-      info.put(UdeskConst.UdeskUserInfo.DESCRIPTION,"描述信息")
-   	  info.put(UdeskConst.UdeskUserInfo.DESCRIPTION,custom_token)
+      info.put(UdeskConst.UdeskUserInfo.DESCRIPTION,"描述信息");
+	  info.put(UdeskConst.UdeskUserInfo.CUSTOMER_TOKEN,custom_token);
       只设置用户基本信息的配置
       UdeskConfig.Builder builder = new UdeskConfig.Builder();
 	  builder.setDefualtUserInfo(info)
@@ -151,7 +157,7 @@ UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), Ud
 | useMapType                             | setUseMapSetting                                           | 设置使用那种地图                                                 | 
 | Orientation                            | setOrientation                                             | 设置默认屏幕显示习惯                                             |  
 | isUserForm                             | setUserForm                                                | 本地配置是否需要表单留言，true需要， false 不需要                |  
-| defualtUserInfo                        | setDefualtUserInfo                                         | 创建用户的基本信息                                               |  
+| defaultUserInfo                        | setDefualtUserInfo                                         | 创建用户的基本信息                                               |  
 | definedUserTextField                   | setDefinedUserTextField                                    | 创建自定义的文本信息                                             |
 | definedUserRoplist                     | setDefinedUserRoplist                                      | 创建自定义的列表信息                                             |    
 | firstMessage                           | setFirstMessage                                            | 设置带入一条消息  会话分配就发送给客服                           |  
@@ -177,14 +183,14 @@ UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), Ud
 | mProduct                               | setProduct                                                 | 设置商品消息         
 | channel                                | setChannel                                                 | SDK支持自定义渠道（只支持字符数字，不支持特殊支持）  				|
 
-	private UdeskConfig.Builder makeBuilder() {
+	  private UdeskConfig.Builder makeBuilder() {
         if (!TextUtils.isEmpty(edit_language.getText().toString())){
             LocalManageUtil.saveSelectLanguage(getApplicationContext(),new Locale(edit_language.getText().toString()));
         }
 
         UdeskConfig.Builder builder = new UdeskConfig.Builder();
         builder.setUdeskTitlebarBgResId(R.color.udesk_titlebar_bg1) //设置标题栏TitleBar的背景色
-                .setUdeskTitlebarMiddleTextResId(R.color.udesk_color_middle_text) //标题栏TitleBar，中部上下文字的颜色
+                .setUdeskTitlebarMiddleTextResId(R.color.udesk_color_middle_text) //设置标题栏TitleBar，左右两侧文字的颜色
                 .setUdeskTitlebarRightTextResId(R.color.udesk_color_right_text) //设置标题栏TitleBar，右侧文字的颜色
                 .setUdeskIMLeftTextColorResId(R.color.udesk_color_im_text_left1) //设置IM界面，左侧文字的字体颜色
                 .setUdeskIMRightTextColorResId(R.color.udesk_color_im_text_right1) // 设置IM界面，右侧文字的字体颜色
@@ -198,7 +204,7 @@ UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), Ud
                 .setUdeskCommityLinkColorResId(R.color.udesk_color_im_commondity_link1) //商品咨询页面中，发送链接的字样颜色
                 .setUserSDkPush(set_sdkpush.isChecked()) // 配置 是否使用推送服务  true 表示使用  false表示不使用
                 .setOnlyUseRobot(set_use_onlyrobot.isChecked())//配置是否只使用机器人功能 只使用机器人功能,只使用机器人功能;  其它功能不使用。
-                .setUdeskQuenuMode(force_quit.isChecked() ? UdeskConfig.UdeskQuenuFlag.FORCE_QUIT : UdeskConfig.UdeskQuenuFlag.Mark)  //  配置放弃排队的策略
+                .setUdeskQuenuMode(force_quit.isChecked() ? UdeskConfig.UdeskQueueFlag.FORCE_QUIT : UdeskConfig.UdeskQueueFlag.Mark)  //  配置放弃排队的策略
                 .setUseVoice(set_usevoice.isChecked()) // 是否使用录音功能  true表示使用 false表示不使用
                 .setUsephoto(set_usephoto.isChecked()) //是否使用发送图片的功能  true表示使用 false表示不使用
                 .setUsecamera(set_usecamera.isChecked()) //是否使用拍照的功能  true表示使用 false表示不使用
@@ -227,9 +233,6 @@ UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), Ud
                 .setdefaultUserInfo(getdefaultUserInfo()) // 创建用户基本信息
                 .setDefinedUserTextField(getDefinedUserTextField()) //创建用户自定义的文本信息
                 .setDefinedUserRoplist(getDefinedUserRoplist()) //创建用户自定义的列表信息
-                .setUpdatedefaultUserInfo(getUpdatedefaultUserInfo()) // 设置更新用户的基本信息
-                .setUpdatedefinedUserTextField(getUpdateDefinedTextField()) //设置用户更新自定义字段文本信息
-                .setUpdatedefinedUserRoplist(getUpdateDefinedRoplist()) //设置用户更新自定义列表字段信息
                 .setFirstMessage(firstMessage.getText().toString()) //设置带入一条消息  会话分配就发送给客服
                 .setCustomerUrl(customerUrl.getText().toString()) //设置客户的头像地址
                 .setRobot_modelKey(robot_modelKey.getText().toString()) // udesk 机器人配置插件 对应的Id值
@@ -258,17 +261,19 @@ UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), Ud
                                 udeskViewMode.sendTxtMessage("www.baidu.com");
                             }
                     }
-                })//设置是否使用机器人导航UI rue表示使用 false表示不使用
+                })//设置是否使用导航UI true表示使用 false表示不使用
                  .setRobotNavigations(set_use_navigation_view_robot.isChecked(), getRobotNavigations(), new INavigationItemClickCallBack() {
                     @Override
                     public void callBack(Context context, UdeskViewMode udeskViewMode, NavigationMode navigationMode,String currentView) {
                         if (TextUtils.equals(currentView,UdeskConst.CurrentFragment.robot)){
                             if (navigationMode.getId() == 1) {
                                 udeskViewMode.sendTxtMessage("robot导航");
+                            }else if (navigationMode.getId() == 2){
+                                udeskViewMode.getRobotApiData().onShowProductClick(createReplyProduct());
                             }
                         }
                     }
-                })//设置是否使用导航UI rue表示使用 false表示不使用
+                })//设置是否使用机器人导航UI true表示使用 false表示不使用
 
                 .setTxtMessageClick(new ITxtMessageWebonCliclk() {
                     @Override
@@ -289,11 +294,11 @@ UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), Ud
                         Toast.makeText(getApplicationContext(), "结构化消息控件点击事件回调", Toast.LENGTH_SHORT).show();
                     }
                 })//设置结构化消息控件点击事件回调接口.
-                .setChannel(channel.getText().toString())
-        ;
+                .setChannel(channel.getText().toString());
 
         return builder;
     }
+
 
 ### 3 进入页面分配会话
 	UdeskSDKManager.getInstance().entryChat(getApplicationContext(), makeBuilder().build(), sdkToken);
@@ -304,14 +309,8 @@ UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), Ud
 	//udesk
 	-keep class udesk.** {*;} 
 	-keep class cn.udesk.**{*; } 
-	//百度语音
+	//百度语音(如果使用百度语音识别添加 不使用不用添加)
 	-keep class com.baidu.speech.**{*;}
-	//七牛
-	-keep class okhttp3.** {*;} 
-	-keep class okio.** {*;} 
-	-keep class com.qiniu.**{*;}
-	-keep class com.qiniu.**{public <init>();}
-	-ignorewarnings
 	//smack
 	-keep class org.jxmpp.** {*;} 
 	-keep class de.measite.** {*;} 
@@ -598,20 +597,51 @@ UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), Ud
                         if (TextUtils.equals(currentView,UdeskConst.CurrentFragment.robot)){
                             if (navigationMode.getId() == 1) {
                                 udeskViewMode.sendTxtMessage("robot导航");
+                            }else if (navigationMode.getId() == 2){
+                                udeskViewMode.getRobotApiData().onShowProductClick(createReplyProduct());
                             }
                         }
                     }
                 })//设置是否使用机器人导航UI true表示使用 false表示不使用
 
 说明：导航栏一个功能按钮设置成一个NavigationMode， 包含属性
-      //文字的显示内容
+
+	//文字的显示内容
       private String name;
       //用来映射选择后对应的操作
       private int id;
 	  
-	  支持自定义的功能 同 功能按钮
+	  支持自定义的功能 同 功能按钮  
+***注意*** 机器人聊天自定义导航只支持文本和商品回复类型，其他类型不支持。
+### 8 发送商品回复消息 
 
-### 8 发送商品消息 具体可参考demo  
+	 private ProductListBean createReplyProduct(){
+        ProductListBean productListBean=new ProductListBean();
+        productListBean.setId(1);
+        productListBean.setUrl("https://item.jd.com/7633415.html");
+        productListBean.setImage("https://udeskzgh.oss-cn-beijing.aliyuncs.com/demo/sumsung.jpg");
+        productListBean.setName("【SSD套装版】三星 Galaxy S 轻奢版（SM-G8750）4GB +64GB");
+        List<InfoListBean> infoList = new ArrayList<>();
+
+        InfoListBean bean0= new InfoListBean();
+        bean0.setInfo("新品");
+        bean0.setColor("#00ff00");
+        bean0.setBoldFlag(0);
+
+        InfoListBean bean1= new InfoListBean();
+        bean1.setInfo("分期免息");
+        bean1.setColor("#ff0000");
+        bean1.setBoldFlag(0);
+
+        infoList.add(bean0);
+        infoList.add(bean1);
+        productListBean.setInfoList(infoList);
+        return productListBean;
+    }
+
+	udeskViewMode.getRobotApiData().onShowProductClick(createReplyProduct());
+
+### 9 发送商品消息 具体可参考demo  
 	  
 	  **Product字段属性说明**
 	  
@@ -631,8 +661,123 @@ UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), Ud
 1 可以每次进入会话, 通过UdeskConfig配置,设置一条商品消息
 
 2 可以通过导航栏 自定义功能按钮  发送商品消息 
+### 10 自定义机器人满意度评价内容（人工客服满意度调查内容是在后台配置）
+	  case UdeskConst.LiveDataType.RobotSessionHasSurvey:
+                            if ((boolean) mergeMode.getData()) {
+                                UdeskUtils.showToast(getApplicationContext(), getResources()
+                                        .getString(R.string.udesk_has_survey));
+                            } else {
+                                SurveyOptionsModel surveyOptionsModel1 = UdeskUtil.buildSurveyOptionsModel(getApplicationContext());
+                                toLaunchSurveyView(surveyOptionsModel1);
+                            }
+                            break;
 
-<h1 id="5">五、消息推送</h1>
+	  public static SurveyOptionsModel buildSurveyOptionsModel(Context context){
+        SurveyOptionsModel model=new SurveyOptionsModel();
+        model.setEnabled(true);
+        model.setName(context.getResources().getString(R.string.udesk_satisfy_evaluation));
+        model.setTitle(context.getResources().getString(R.string.udesk_satisfy_evaluation_title));
+        model.setRemark_enabled(true);
+        model.setRemark(context.getResources().getString(R.string.udesk_satisfy_evaluation_remark));
+        model.setType("text");
+        model.setDefault_option_id(0);
+        model.setRobot(true);
+        List<OptionsModel> options=new ArrayList<>();
+        int id=0;
+        options.add(new OptionsModel(++id,true,context.getResources().getString(R.string.udesk_statify),context.getResources().getString(R.string.udesk_statify),UdeskConst.REMARK_OPTION_HIDE));
+        options.add(new OptionsModel(++id,true,context.getResources().getString(R.string.udesk_common),context.getResources().getString(R.string.udesk_common),UdeskConst.REMARK_OPTION_OPTIONAL));
+        options.add(new OptionsModel(++id,true,context.getResources().getString(R.string.udesk_unstatify),context.getResources().getString(R.string.udesk_unstatify),UdeskConst.REMARK_OPTION_REQUIRED));
+        model.setOptions(options);
+        return model;
+    }
+
+<h1 id="5">五、Udesk API说明</h1>
+
+### 1.获取未读消息
+
+在退出对话界面后，没有断开与Udesk服务器的连接，注册获取未读消息事件方法，之后在该方法中可以收到未读消息。
+
+		 /**
+         * 注册和处理接收未读消息提醒事件
+         */
+        UdeskSDKManager.getInstance().setNewMessage(new IUdeskNewMessage() {
+            @Override
+            public void onNewMessage(MsgNotice msgNotice) {
+                if (msgNotice != null) {
+                    Log.i("xxx","UdeskCaseActivity 中收到msgNotice");
+                    NotificationUtils.getInstance().notifyMsg(getApplicationContext(), msgNotice.getContent());
+                }
+            }
+        });
+
+接收未读消息
+
+	 if (UdeskBaseInfo.isNeedMsgNotice && UdeskSDKManager.getInstance().getNewMessage() != null) {
+	   MsgNotice msgNotice = new MsgNotice(msgId, type, content);
+	   UdeskSDKManager.getInstance().getNewMessage().onNewMessage(msgNotice);
+	   }
+获取未读消息
+
+	//获取未读消息
+    List<MessageInfo> unReadMsgs = UdeskSDKManager.getInstance().getUnReadMessages(getApplicationContext(), PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken"));
+
+### 2 获取未读消息数
+
+在退出对话界面后，没有断开与Udesk服务器的连接，可获得这个会话的未读消息数，打开对话界面后未读消息数会清空。
+
+	UdeskSDKManager.getInstance().getCurrentConnectUnReadMsgCount();
+
+### 3 控制台日志开关
+
+如果开发中，想在控制台看当前客户与Udesk服务器连接（xmpp)的交互报文，调用如下接口可实现
+
+	//true 表示开启控制台日志  false表示关闭控制台日志
+	UdeskSDKManager.getInstance().isShowLog(true);
+### 4 断开与Udesk服务器连接
+
+  App运行时如果需要客服离线或不再接收客服消息，调此接口可以主动断开与Udesk服务器的的连接。
+
+	UdeskSDKManager.getInstance().disConnectXmpp();
+
+### 5 设置退出排队的模式
+
+ quitmode: mark (默认,标记放弃)/  force_quit(强制立即放弃)
+
+	build.setUdeskQuenuMode(quitmode);
+### 6 资源 UI
+
+	聊天界面UdeskChatActivity 
+	
+	机器人 UdeskRobotFragment
+	
+	人工客服 UdeskAgentFragment
+	
+	消息适配 MessageAdatper
+	
+	左侧布局 udesk_item_left.xml 里面包含多种消息类型的布局
+
+	左侧viewHolder LeftViewHolder  处理左侧消息
+	
+	右侧布局 udesk_item_right.xml 里面包含多种数据类型的布局
+
+	右侧viewHolder RightViewHolder  处理右侧消息
+
+	xmpp消息处理 UdeskXmppManager
+	
+	数据处理 
+		UdeskViewMode 
+		APILiveData 人工api 处理 
+		DBLiveData  数据库处理
+		FileLiveData  文件上传下载处理
+		ReceiveLiveData receive消息处理
+		RobotApiData 机器人api处理
+		SendMessageLiveData  发送消息处理
+		
+		MergeMode livedata 处理的消息
+		questionMergeMode MergeMode 子类拓展 处理点击问题
+		MergeModeManager  mergedata 管理类
+
+<h1 id="6">六、消息推送</h1>
 
 当前仅支持一种推送方案，即Udesk务端发送消息至开发者的服务端，开发者再推送消息到 App。
 ### 1 设置接收推送的服务器地址
@@ -696,159 +841,6 @@ UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), Ud
 | type         | string   | 消息类型，'event' 为事件，'message'为消息            |
 | event        | string   | 事件类型，'redirect' 客服转接，'close'对话关闭，'survey'发送满意度调查 |
 
-<h1 id="6">六、Udesk API说明</h1>
-
-### 1 更新客户信息
-
-	UdeskConfig.Builder builder = new UdeskConfig.Builder();
-
-  	更新系统默认客户字段，昵称、邮箱、电话、描述
-
-	Map<String, String> info = new HashMap<String, String>();
-	info.put(UdeskConst.UdeskUserInfo.NICK_NAME,"更新后的昵称");
-	//更新后的邮箱
-	info.put(UdeskConst.UdeskUserInfo.EMAIL,"0631@163.com");
-	//更新后的手机号
-	info.put(UdeskConst.UdeskUserInfo.CELLPHONE,"15651818750");
-	info.put(UdeskConst.UdeskUserInfo.DESCRIPTION,"更新后的描述信息")
-	info.put(UdeskConst.UdeskUserInfo.CUSTOMER_TOKEN,"对应的custom_token 不要乱传")
-	
-	传入需要更新的Udesk系统默认字段
-	
-	注意更新邮箱或者手机号码，如果在后端有同样的手机号或邮箱，则会更新失败     
-	builder.setUpdateDefualtUserInfo(info)   
-
-### 2 更新自定义字段
-文本型字段示例：
-
-	 {
-	      "field_name": "TextField_684",
-	      "field_label": "地址",
-	      "content_type": "text",
-	      "comment": "字段描述",
-	      "options": null,
-	      "permission": 0,
-	      "requirment": false
-	}
-	取该json中字段“field_name”对应的value值作为自定义字段key值进行赋值。 示例如下：
-	updateTextFieldMap.put("TextField_684","北京西城区");
-	
-	//传入需要更新的自定义文本字段
-	 builder.setUpdatedefinedUserTextField(updateTextFieldMap);
-
-
-选择型字段示例
-
-	{
-	    "field_name": "SelectField_457", 
-	    "permission": 0, 
-	    "comment": "这是描述", 
-	    "requirment": true, 
-	    "content_type": "droplist", 
-	    "field_label": "性别", 
-	    "options": [
-	        {
-	            "0": "男"
-	        }, 
-	        {
-	            "1": "女"
-	        }
-	    ]
-	}  
-	取该json中字段“field_name”对应的value值作为自定义字段key值进行赋值,取"options"中的某一项key值作为value，示例如下：
-	updateRoplistMap.put("SelectField_457","1");
-	
-	//传入需要更新的自定义下拉列表字段
-	builder.setUpdatedefinedUserRoplist(updateRoplistMap);
-### 3.获取未读消息
-
-在退出对话界面后，没有断开与Udesk服务器的连接，注册获取未读消息事件方法，之后在该方法中可以收到未读消息。
-
-		 /**
-         * 注册和处理接收未读消息提醒事件
-         */
-        UdeskSDKManager.getInstance().setNewMessage(new IUdeskNewMessage() {
-            @Override
-            public void onNewMessage(MsgNotice msgNotice) {
-                if (msgNotice != null) {
-                    Log.i("xxx","UdeskCaseActivity 中收到msgNotice");
-                    NotificationUtils.getInstance().notifyMsg(getApplicationContext(), msgNotice.getContent());
-                }
-            }
-        });
-
-接收未读消息
-
-	 if (UdeskBaseInfo.isNeedMsgNotice && UdeskSDKManager.getInstance().getNewMessage() != null) {
-	   MsgNotice msgNotice = new MsgNotice(msgId, type, content);
-	   UdeskSDKManager.getInstance().getNewMessage().onNewMessage(msgNotice);
-	   }
-获取未读消息
-
-	//获取未读消息
-    List<MessageInfo> unReadMsgs = UdeskSDKManager.getInstance().getUnReadMessages(getApplicationContext(), PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken"));
-
-### 4 获取未读消息数
-
-在退出对话界面后，没有断开与Udesk服务器的连接，可获得这个会话的未读消息数，打开对话界面后未读消息数会清空。
-
-	UdeskSDKManager.getInstance().getCurrentConnectUnReadMsgCount();
-
-### 5 删除客户聊天数据
-
-sdk初始化成功，创建客户后，调用此接口可删除当前客户的聊天记录信息
-
-	UdeskSDKManager.getInstance().deleteMsg(context，sdktoken);
-
-### 6 控制台日志开关
-
-如果开发中，想在控制台看当前客户与Udesk服务器连接（xmpp)的交互报文，调用如下接口可实现
-
-	//true 表示开启控制台日志  false表示关闭控制台日志
-	UdeskSDKManager.getInstance().isShowLog(true);
-### 7 断开与Udesk服务器连接
-
-  App运行时如果需要客服离线或不再接收客服消息，调此接口可以主动断开与Udesk服务器的的连接。
-
-	UdeskSDKManager.getInstance().disConnectXmpp();
-
-### 8 设置退出排队的模式
-
- quitmode: mark (默认,标记放弃)/  force_quit(强制立即放弃)
-
-	build.setUdeskQuenuMode(quitmode);
-### 9 资源 UI
-
-	聊天界面UdeskChatActivity 
-	
-	机器人 UdeskRobotFragment
-	
-	人工客服 UdeskAgentFragment
-	
-	消息适配 MessageAdatper
-	
-	左侧布局 udesk_item_left.xml 里面包含多种消息类型的布局
-
-	左侧viewHolder LeftViewHolder  处理左侧消息
-	
-	右侧布局 udesk_item_right.xml 里面包含多种数据类型的布局
-
-	右侧viewHolder RightViewHolder  处理右侧消息
-
-	xmpp消息处理 UdeskXmppManager
-	
-	数据处理 
-		UdeskViewMode 
-		APILiveData 人工api 处理 
-		DBLiveData  数据库处理
-		FileLiveData  文件上传下载处理
-		ReceiveLiveData receive消息处理
-		RobotApiData 机器人api处理
-		SendMessageLiveData  发送消息处理
-		
-		MergeMode livedata 处理的消息
-		questionMergeMode MergeMode 子类拓展 处理点击问题
-		MergeModeManager  mergedata 管理类
 
 <h1 id="7">七、常见问题</h1>
 
@@ -1036,33 +1028,53 @@ sdk初始化成功，创建客户后，调用此接口可删除当前客户的�
 
 <h1 id="9">九、部分功能截图</h1>
 
-## 机器人聊天 ##
-### 原生机器人 ###
-![udesk](http://qn-public.udesk.cn/667520967004022376406daf44e-f863-49f9-abea-cf79c658c70f_484930145abfe25b54b93190867c640e_upload.jpg)
-### 输入联想 ###
+### 1.原生机器人 ###
+![udesk](http://qn-im.udesk.cn/image_1554795197_196.png?imageMogr2/auto-orient)
+##### 后台配置 #####
+![udesk](http://qn-im.udesk.cn/%E6%9C%BA%E5%99%A8%E4%BA%BA_1554859742_673.png?imageMogr2/auto-orient/)
+### 2.输入联想 ###
 ![udesk](http://qn-public.udesk.cn/667521150399125915804ae4c2c-9fff-4faf-a8c1-692eeab01c24_a2927d95d64c169fe7207af35fb65d62_upload.jpg)
-### 语音识别 ###
+### 3.语音识别 ###
 ![udesk](http://qn-public.udesk.cn/667521150399125915953572dc9-0f5d-4ee0-afe6-63c155318ebe_ed0c33dfe9439aa916444f60539ec53a_upload.jpg)
-
-### 导航配置示意图 ###
-![udesk](http://qn-im.udesk.cn/%E5%AF%BC%E8%88%AA%E8%AE%BE%E7%BD%AE_1540870908_976.png)
-### 无消息对话过滤示意图 ###
-![udesk](http://qn-im.udesk.cn/%E6%97%A0%E6%B6%88%E6%81%AF%E5%AF%B9%E8%AF%9D%E8%BF%87%E6%BB%A4_1540881672_329.png)
-
-### 消息对话示意图 ###
-![udesk](http://qn-im.udesk.cn/%E5%8A%9F%E8%83%BD%E5%9B%BE%E7%89%87_1540881751_124.png)
-![udesk](http://qn-im.udesk.cn/%E5%8A%9F%E8%83%BD2_1540870974_781.png)
-![udesk](http://qn-im.udesk.cn/%E5%8A%9F%E8%83%BD3_1540870997_368.png)
-
-### 自定义表情 ###
-
-![udesk](http://qn-im.udesk.cn/%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A1%A8%E6%83%85_1540871031_250.png)
-### 自定义按钮 ###
-![udesk](http://qn-im.udesk.cn/%E6%94%AF%E6%8C%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%89%E9%92%AE_1540881846_830.png)
-
-### 满意度评价示意图 ###
-![udesk](http://qn-im.udesk.cn/%E6%BB%A1%E6%84%8F%E5%BA%A6%E8%AF%84%E4%BB%B7_1540881195_147.png)
-
-### 留言示意图 ###
-![udesk](http://qn-im.udesk.cn/%E8%A1%A8%E5%8D%95%E7%95%99%E8%A8%80_1540871121_461.png)
-![udesk](http://qn-im.udesk.cn/%E7%9B%B4%E6%8E%A5%E7%95%99%E8%A8%80_1540871126_218.png)
+### 4.三方会话 ###
+![udesk](http://qn-im.udesk.cn/image_1554796278_175.png?imageMogr2/auto-orient%3E)
+### 5.商品链接 自定义导航及服务评价 自定义表情 ###
+![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554803534_500.png?imageMogr2/auto-orient/%3E)
+### 6.自定义按钮 ###
+![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554803735_637.png?imageMogr2/auto-orient/%3E)
+### 7.转人工导航设置 ###
+![udesk](http://qn-public.udesk.cn/667782297295624605007225530-427c-4995-9d80-cd1eae597912_8921c0b36b5c6b06d7d1707884285080_upload.jpg?imageMogr2/auto-orient/)
+##### 后台配置 #####
+![后台配置](http://qn-im.udesk.cn/11111_1554803134_488.jpg?imageMogr2/auto-orient/%3E)
+### 8.表单留言 ###
+![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554803920_860.png?imageMogr2/auto-orient)
+![udesk](http://qn-public.udesk.cn/667782297295624605267b1134e-8935-437f-8327-123f500ca74b_cad93b0de4c60075f08f5ad081f05e19_upload.jpg?imageMogr2/auto-orient/)
+### 9.直接留言 ###
+![udesk](http://qn-public.udesk.cn/667782297295624605592ee242a-6dbc-472a-b741-e8666642712f_2f0b7f6ffac2ab1ba4866f35c6946b57_upload.jpg?imageMogr2/auto-orient)
+##### 后台配置 #####
+![后台配置](http://qn-im.udesk.cn/%E7%95%99%E8%A8%80_1554804116_771.jpg?imageMogr2/auto-orient)
+### 10.满意度评价 ###
+![udesk](http://qn-public.udesk.cn/6677822972956246049a403c35c-ffa3-431a-8749-171a997eca4b_64011a5f3d16dd6c54b3e067f60a938b_upload.jpg?imageMogr2/auto-orient)
+### 11.无消息对话过滤 ###
+![udesk](http://qn-public.udesk.cn/6677822972956246053d7d398a2-ce59-4c9a-a6a4-4e48a454523a_642c49230fd6f95c10eb7f1ede237933_upload.jpg?imageMogr2/auto-orient/%3E)
+##### 后台配置 #####
+![后台配置](http://qn-im.udesk.cn/%E6%97%A0%E6%B6%88%E6%81%AF_1554804585_561.jpg?imageMogr2/auto-orient)
+### 12.消息类型展示 ###
+##### 商品消息 地图 文件 小视频类型 #####
+![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554874972_482.png?imageMogr2/auto-orient/)
+##### 富文本 图文带推荐消息 #####
+![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554875445_398.png?imageMogr2/auto-orient)
+##### 纯文本 流程消息 #####
+![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554875651_102.png?imageMogr2/auto-orient)
+##### 商品选择 商品回复 #####
+![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554875805_806.png?imageMogr2/auto-orient/)
+##### 问题带推荐 推荐带分类 #####
+![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554875975_407.png?imageMogr2/auto-orient/)
+##### 图片 链接 语音消息 转人工提示 答案评价 #####
+![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554876248_214.png?imageMogr2/auto-orient/)
+##### 转接 结构化消息 #####
+![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554876415_486.png?imageMogr2/auto-orient/)
+##### 转人工 留言事件 #####
+![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554876592_867.png?imageMogr2/auto-orient/)
+##### 视频直播 #####
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/image_1554878719_504.png?x-oss-process=image/auto-orient,1/)

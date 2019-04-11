@@ -16,7 +16,6 @@
         android:paddingRight="@dimen/udesk_14"
         android:paddingBottom="@dimen/udesk_10"
         android:lineSpacingExtra="3dip"
-        android:ellipsize="end"
         android:maxWidth="@dimen/udesk_310"
         android:textColor="@color/udesk_color_212121"
         android:textColorLink="@color/udesk_color_im_text_left1"

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,13 +20,10 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -35,6 +33,7 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,14 +42,12 @@ import cn.udesk.JsonUtils;
 import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
-import cn.udesk.aac.livedata.DBLiveData;
 import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.activity.UdeskWebViewUrlAcivity;
 import cn.udesk.adapter.BrandAdapter;
 import cn.udesk.adapter.BrandDivider;
 import cn.udesk.adapter.StrucTableAdapter;
-import cn.udesk.config.UdekConfigUtil;
-import cn.udesk.db.UdeskDBManager;
+import cn.udesk.config.UdeskConfigUtil;
 import cn.udesk.emotion.MoonUtils;
 import cn.udesk.model.SpanModel;
 import cn.udesk.model.StructModel;
@@ -62,7 +59,6 @@ import udesk.core.model.InfoListBean;
 import udesk.core.model.LinkBean;
 import udesk.core.model.OptionsListBean;
 import udesk.core.model.ProductListBean;
-import udesk.core.model.RobotInit;
 import udesk.core.model.ShowProductBean;
 import udesk.core.model.StrucTableBean;
 import udesk.core.model.TopAskBean;
@@ -110,10 +106,9 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
     private LinearLayout robotItemImgTxt;
     private SimpleDraweeView robotImgTxtImg;
     private RelativeLayout robotImgTxtTop;
-    private XRichText robotImgTxtTitle;
-    private XRichText robotImgTxtDes;
+    private TextView robotImgTxtTitle;
+    private TextView robotImgTxtDes;
     private LinearLayout robotItemTxt;
-    private XRichText robotTxtMsg;
     private RelativeLayout robotRlFold;
     private TextView robotTxtFold;
     private ImageView robotImgfold;
@@ -176,12 +171,12 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
         try {
             this.mContext = mContext;
             tvTime = convertView.findViewById(R.id.udesk_tv_time);
-            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMTimeTextColorResId, tvTime);
+            UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMTimeTextColorResId, tvTime);
             //头像
             llHead = convertView.findViewById(R.id.udesk_ll_head);
             ivHeader = convertView.findViewById(R.id.udesk_iv_head);
             agentnickName = convertView.findViewById(R.id.udesk_nick_name);
-            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMAgentNickNameColorResId, agentnickName);
+            UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMAgentNickNameColorResId, agentnickName);
             //有用
             robotLlUseful = convertView.findViewById(R.id.udesk_robot_ll_useful);
             robotImgUseful= convertView.findViewById(R.id.udesk_useful);
@@ -199,30 +194,31 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             robotTxtFold = convertView.findViewById(R.id.udesk_tv_fold);
             robotImgfold = convertView.findViewById(R.id.udesk_img_fold);
             containerTxt = convertView.findViewById(R.id.udesk_container_txt);
-            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMLeftTextColorResId, tvMsg);
+            UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMLeftTextColorResId, tvMsg);
             //消息 leavemsg
             itemLeaveMsg = convertView.findViewById(R.id.udesk_item_leave_msg);
             leaveMsg = convertView.findViewById(R.id.udesk_leave_msg);
+//            leaveMsg.bind();
             containerLeavemsg = convertView.findViewById(R.id.udesk_container_leaveMsg);
-            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMLeftTextColorResId, leaveMsg);
+            UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMLeftTextColorResId, leaveMsg);
             //富文本rich
             itemRich = convertView.findViewById(R.id.udesk_item_rich);
             richMsg = convertView.findViewById(R.id.udesk_tv_rich_msg);
-            richMsg.bind();
+//            richMsg.bind();
             containerRich = convertView.findViewById(R.id.udesk_container_rich);
-            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMLeftTextColorResId, richMsg);
+            UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMLeftTextColorResId, richMsg);
             //流程
             itemFlow = convertView.findViewById(R.id.udesk_item_flow);
             flowMsg = convertView.findViewById(R.id.udesk_tv_flow);
-            flowMsg.bind();
+//            flowMsg.bind();
             containerFlow = convertView.findViewById(R.id.udesk_container_flow);
-            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMLeftTextColorResId, flowMsg);
+            UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMLeftTextColorResId, flowMsg);
 
             //video消息
             itemVideo = convertView.findViewById(R.id.udesk_item_video);
             videoMsg = convertView.findViewById(R.id.udesk_video_msg);
             containerVideo = convertView.findViewById(R.id.udesk_container_video);
-            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMLeftTextColorResId, videoMsg);
+            UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMLeftTextColorResId, videoMsg);
             //audio消息
             itemAudio = convertView.findViewById(R.id.udesk_item_audio);
             audioTop = convertView.findViewById(R.id.udesk_audio_top);
@@ -252,7 +248,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             //redirect
             itemRedirect = convertView.findViewById(R.id.udesk_item_redirect);
             redirectMsg = convertView.findViewById(R.id.udesk_redirect_msg);
-            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMTipTextColorResId, redirectMsg);
+            UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMTipTextColorResId, redirectMsg);
             //struct
             itemStruct = convertView.findViewById(R.id.udesk_item_struct);
             structImgView = convertView.findViewById(R.id.udesk_struct_img_container);
@@ -289,6 +285,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             robotItemQueClassify = convertView.findViewById(R.id.udesk_robot_item_que_classify);
             robotTxtQueTitle = convertView.findViewById(R.id.udesk_robot_tv_que_title);
             containerClassify = convertView.findViewById(R.id.udesk_container_classify);
+//            robotTxtQueTitle.bind();
 
             //结构化消息 表格 列表 商品 商品选择
             itemStructTable = convertView.findViewById(R.id.udesk_item_struct_table);
@@ -721,11 +718,11 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             final WechatImageBean wechatImageBean = JsonUtils.parseWechatImage(message.getMsgContent());
             if (wechatImageBean!=null){
                 UdeskUtil.loadNoChangeView(mContext,robotImgTxtImg,Uri.parse(wechatImageBean.getCoverUrl()));
-                robotImgTxtTitle.callback(this).text(mContext,wechatImageBean.getContent());
-                robotImgTxtDes.callback(this).text(mContext,wechatImageBean.getDescription());
+                robotImgTxtTitle.setText(wechatImageBean.getContent());
+                robotImgTxtDes.setText(wechatImageBean.getDescription());
                 if (!TextUtils.isEmpty(wechatImageBean.getContent())){
                     robotImgTxtTitle.setVisibility(View.VISIBLE);
-                    robotImgTxtTitle.callback(this).text(mContext,wechatImageBean.getContent());
+                    robotImgTxtTitle.setText(wechatImageBean.getContent());
                 }else {
                     robotImgTxtTitle.setVisibility(View.GONE);
                 }
@@ -789,15 +786,19 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     tvMsg.setText(style);
                 }
             }
-
-            if (tvMsg.getLineCount() > 5) {
-                robotRlFold.setVisibility(View.VISIBLE);
-                tvMsg.setMaxLines(5);
-                robotTxtFold.setText(mContext.getResources().getString(R.string.udesk_expand));
-                robotImgfold.setImageResource(R.drawable.udesk_text_expand);
-            } else {
-                robotRlFold.setVisibility(View.GONE);
-            }
+            tvMsg.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (tvMsg.getLineCount() > 5) {
+                        robotRlFold.setVisibility(View.VISIBLE);
+                        tvMsg.setMaxLines(5);
+                        robotTxtFold.setText(mContext.getResources().getString(R.string.udesk_expand));
+                        robotImgfold.setImageResource(R.drawable.udesk_text_expand);
+                    } else {
+                        robotRlFold.setVisibility(View.GONE);
+                    }
+                }
+            });
             //设置消息长按事件  复制文本
             tvMsg.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -807,24 +808,6 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 }
             });
 
-            tvMsg.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-                @Override
-                public void onGlobalLayout() {
-                    int count = tvMsg.getLineCount();
-                    if (count > 0) {
-                        tvMsg.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        if (tvMsg.getLineCount() > 5) {
-                            robotRlFold.setVisibility(View.VISIBLE);
-                            tvMsg.setMaxLines(5);
-                            robotTxtFold.setText(mContext.getResources().getString(R.string.udesk_expand));
-                            robotImgfold.setImageResource(R.drawable.udesk_text_expand);
-                        } else {
-                            robotRlFold.setVisibility(View.GONE);
-                        }
-                    }
-                }
-            });
             dealTransfer(robotItemTxt);
             showRecommended(containerTxt);
             dealSingleLine(robotItemTxt);
@@ -972,11 +955,17 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             showHead(true);
             itemAudio.setVisibility(View.VISIBLE);
             RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-            itemRich.setLayoutParams(layoutParams);
+            itemAudio.setLayoutParams(layoutParams);
             checkPlayBgWhenBind();
             if (message.getDuration() > 0) {
                 char symbol = 34;
                 tvDuration.setText(String.format("%d%s", message.getDuration(), String.valueOf(symbol)));
+            }else {
+                long audioDuration = getAudioDuration();
+                if (audioDuration>0){
+                    char symbol = 34;
+                    tvDuration.setText(String.format("%d%s", audioDuration, String.valueOf(symbol)));
+                }
             }
             dealTransfer(itemAudio);
             showRecommended(containerAudio);
@@ -1000,6 +989,25 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
         } catch (OutOfMemoryError error) {
             error.printStackTrace();
         }
+    }
+
+    /**
+     * 获取语音时长
+     * @return
+     */
+    private long  getAudioDuration() {
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        long duration=0L;
+        try {
+            mediaPlayer.setDataSource(message.getMsgContent());
+            mediaPlayer.prepare();
+            return UdeskUtils.objectToLong(mediaPlayer.getDuration()/1000);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            mediaPlayer.release();
+        }
+        return duration;
     }
 
     /**

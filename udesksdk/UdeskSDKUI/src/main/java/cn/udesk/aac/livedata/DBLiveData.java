@@ -6,6 +6,7 @@ import android.content.Context;
 import android.util.Log;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -50,7 +51,7 @@ public class DBLiveData<M> extends MutableLiveData<MergeMode> {
                 public void run() {
                     List<MessageInfo> list = UdeskDBManager.getInstance().getMessages(offset, pageNum);
                     if (list != null){
-                        MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.LoadHistoryDBMsg,list,System.currentTimeMillis());
+                        MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.LoadHistoryDBMsg,list,UUID.randomUUID().toString());
                         MergeModeManager.getmInstance().putMergeMode(mergeMode,DBLiveData.this);
 
                     }

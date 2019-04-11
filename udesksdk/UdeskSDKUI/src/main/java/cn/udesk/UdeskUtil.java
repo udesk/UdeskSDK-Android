@@ -65,6 +65,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1486,7 +1488,7 @@ public class UdeskUtil {
                     domain = domains[0];
                 }
                 if (!TextUtils.isEmpty(mAgentInfo.getIm_sub_session_id())) {
-                    UdeskConst.IMBusseniessId = mAgentInfo.getIm_sub_session_id();
+                    UdeskConst.IMBussinessId = mAgentInfo.getIm_sub_session_id();
                 }
                 if (!TextUtils.isEmpty(mAgentInfo.getAgentJid())) {
                     UdeskConst.IMAgentJid = mAgentInfo.getAgentJid();
@@ -1678,6 +1680,31 @@ public class UdeskUtil {
         }
         return msgInfos;
     }
+    public static int[] getImageWidthHeight(int[] rect){
+        try {
+            int sampleSize = 1;
+            int originWidth = rect[0];
+            int originHeight = rect[1];
+            float defaultHeight = 240f;
+            float defaultWidth = 160f;
+            if (originWidth > originHeight && originWidth > defaultWidth) {
+                sampleSize = (int) (rect[0] / defaultWidth);
+            } else if (originWidth < originHeight && originHeight > defaultHeight) {
+                sampleSize = (int) (rect[1] / defaultHeight);
+            }
+            if (sampleSize <= 0) {
+                rect[0]= (int) defaultWidth;
+                rect[1]= (int) defaultHeight;
+            }else if (sampleSize>1){
+                rect[0]= originWidth/sampleSize;
+                rect[1]=originHeight/sampleSize;
+            }
+            return new int[]{rect[0],rect[1]};
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new int[]{0,0};
+    }
 
     /**
      * 图片按比例大小压缩方法（根据bitmap图片压缩）
@@ -1699,13 +1726,13 @@ public class UdeskUtil {
         options.inJustDecodeBounds = false;
         int originWidth = options.outWidth;
         int originHeight = options.outHeight;
-        float defaultHeoght = 240f;
+        float defaultHeight = 240f;
         float defaultWidth = 160f;
         int sampleSize = 1;
         if (originWidth > originHeight && originWidth > defaultWidth) {
             sampleSize = (int) (options.outWidth / defaultWidth);
-        } else if (originWidth < originHeight && originHeight > defaultHeoght) {
-            sampleSize = (int) (options.outHeight / defaultHeoght);
+        } else if (originWidth < originHeight && originHeight > defaultHeight) {
+            sampleSize = (int) (options.outHeight / defaultHeight);
         }
         if (sampleSize <= 0) {
             sampleSize = 1;

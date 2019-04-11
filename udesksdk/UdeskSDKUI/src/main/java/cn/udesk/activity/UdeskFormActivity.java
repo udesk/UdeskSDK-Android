@@ -8,7 +8,7 @@ import android.view.View.OnClickListener;
 import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
-import cn.udesk.config.UdekConfigUtil;
+import cn.udesk.config.UdeskConfigUtil;
 import cn.udesk.config.UdeskConfig;
 
 
@@ -44,10 +44,10 @@ public class UdeskFormActivity extends UdeskBaseWebViewActivity {
     private void settingTitlebar() {
         try {
             if (mTitlebar != null) {
-                UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarMiddleTextResId, mTitlebar.getUdeskTopText(), mTitlebar.getRightTextView());
-                UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarRightTextResId, mTitlebar.getRightTextView());
+                UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarMiddleTextResId, mTitlebar.getUdeskTopText(), mTitlebar.getRightTextView());
+                UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarRightTextResId, mTitlebar.getRightTextView());
                 if (mTitlebar.getRootView() != null){
-                    UdekConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarBgResId ,mTitlebar.getRootView());
+                    UdeskConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarBgResId ,mTitlebar.getRootView());
                 }
                 if (UdeskConfig.DEFAULT != UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId) {
                     mTitlebar.getUdeskBackImg().setImageResource(UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId);

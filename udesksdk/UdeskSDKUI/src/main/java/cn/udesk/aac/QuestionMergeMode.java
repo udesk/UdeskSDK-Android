@@ -9,11 +9,11 @@ public class QuestionMergeMode extends MergeMode {
     String msgId;
     int logId;
 
-    public QuestionMergeMode(int type, long id) {
+    public QuestionMergeMode(int type, String id) {
         super(type, id);
     }
 
-    public QuestionMergeMode(int type, Object data, long id) {
+    public QuestionMergeMode(int type, Object data, String id) {
         super(type, data, id);
     }
 

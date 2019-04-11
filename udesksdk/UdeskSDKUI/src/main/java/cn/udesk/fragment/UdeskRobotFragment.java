@@ -57,7 +57,7 @@ public class UdeskRobotFragment extends UdeskbaseFragment implements View.OnClic
     private ImageView mEmojiImg;
     private ImageView mMoreImg;
     private TextView sendBtn;
-    private FrameLayout mBotomFramlayout;
+    private FrameLayout mBottomFramlayout;
     private EmotionLayout mEmotionlayout;
     private LinearLayout mMoreLayout;
     private GridView funGridView;
@@ -78,7 +78,7 @@ public class UdeskRobotFragment extends UdeskbaseFragment implements View.OnClic
             mEmojiImg = (ImageView) view.findViewById(R.id.udesk_emoji_img);
             mMoreImg = (ImageView) view.findViewById(R.id.udesk_more_img);
             sendBtn = (TextView) view.findViewById(R.id.udesk_bottom_send);
-            mBotomFramlayout = (FrameLayout) view.findViewById(R.id.udesk_bottom_frame);
+            mBottomFramlayout = (FrameLayout) view.findViewById(R.id.udesk_bottom_frame);
             mEmotionlayout = (EmotionLayout) view.findViewById(R.id.udesk_emotion_view);
             mMoreLayout = (LinearLayout) view.findViewById(R.id.udesk_more_layout);
             funGridView = (GridView) (view.findViewById(R.id.function_gridview));
@@ -135,7 +135,7 @@ public class UdeskRobotFragment extends UdeskbaseFragment implements View.OnClic
     public void onHideBottomLayout(Boolean isHide){
         try {
             if (isHide){
-                mBotomFramlayout.setVisibility(View.GONE);
+                mBottomFramlayout.setVisibility(View.GONE);
                 hideEmotionLayout();
                 hideMoreLayout();
             }
@@ -191,14 +191,14 @@ public class UdeskRobotFragment extends UdeskbaseFragment implements View.OnClic
             mEmotionKeyboard = EmotionKeyboard.with(udeskChatActivity);
             mEmotionKeyboard.bindToEditText(mInputEditView);
             mEmotionKeyboard.bindToContent(udeskChatActivity.mContentLinearLayout);
-            mEmotionKeyboard.setEmotionLayout(mBotomFramlayout);
+            mEmotionKeyboard.setEmotionLayout(mBottomFramlayout);
             mEmotionKeyboard.bindToEmotionButton(mEmojiImg, mMoreImg);
             mEmotionKeyboard.setOnEmotionButtonOnClickListener(new EmotionKeyboard.OnEmotionButtonOnClickListener() {
                 @Override
                 public boolean onEmotionButtonOnClickListener(View view) {
                     try {
-                        if (udeskChatActivity.isbolcked != null && udeskChatActivity.isbolcked.equals("true")) {
-                            udeskChatActivity.toBolckedView();
+                        if (udeskChatActivity.isblocked != null && udeskChatActivity.isblocked.equals("true")) {
+                            udeskChatActivity.toBlockedView();
                             return true;
                         }
                         if (udeskChatActivity.isMoreThan20 && udeskChatActivity.isNeedQueueMessageSave()) {
@@ -569,8 +569,8 @@ public class UdeskRobotFragment extends UdeskbaseFragment implements View.OnClic
     public void onClick(View v) {
         try {
             //检查是否处在可发消息的状态
-            if (udeskChatActivity.isbolcked != null && udeskChatActivity.isbolcked.equals("true")) {
-                udeskChatActivity.toBolckedView();
+            if (udeskChatActivity.isblocked != null && udeskChatActivity.isblocked.equals("true")) {
+                udeskChatActivity.toBlockedView();
                 return;
             }
 
@@ -645,7 +645,7 @@ public class UdeskRobotFragment extends UdeskbaseFragment implements View.OnClic
         try {
             hideEmotionLayout();
             hideMoreLayout();
-            if (mBotomFramlayout.isShown()) {
+            if (mBottomFramlayout.isShown()) {
                 if (mEmotionKeyboard != null) {
                     mEmotionKeyboard.interceptBackPress();
                 }

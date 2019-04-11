@@ -6,7 +6,6 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,9 +21,7 @@ import java.util.List;
 
 import cn.udesk.R;
 import cn.udesk.UdeskUtil;
-import cn.udesk.adapter.MessageAdatper;
 import cn.udesk.model.UdeskQueueItem;
-import cn.udesk.rich.XRichText;
 import udesk.core.UdeskConst;
 import udesk.core.model.MessageInfo;
 import udesk.core.utils.UdeskUtils;
@@ -50,7 +47,7 @@ public abstract class BaseViewHolder{
     //image
     public TextView imagePercent;
     //text
-    public XRichText tvMsg;
+    public TextView tvMsg;
     public LinearLayout llHead;
 
     //2条消息之间 时间间隔超过SPACE_TIME， 会话界面会显示出消息的收发时间

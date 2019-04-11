@@ -7,6 +7,8 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import java.util.UUID;
+
 import cn.udesk.JsonUtils;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.aac.MergeMode;
@@ -76,13 +78,13 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
                         public void onSuccess(String message) {
 
                             InitCustomerBean initCustomerBean = JsonUtils.parseInitCustomer(message);
-                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.CustomerInitSuccess, initCustomerBean,System.currentTimeMillis());
+                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.CustomerInitSuccess, initCustomerBean,UUID.randomUUID().toString());
                             MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
                         }
 
                         @Override
                         public void onFail(String message) {
-                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.CustomerInitFailure, message,System.currentTimeMillis());
+                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.CustomerInitFailure, message,UUID.randomUUID().toString());
                             MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
                         }
                     }
@@ -98,13 +100,13 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
             UdeskHttpFacade.getInstance().v4Messages(domain, secretKey, sdktoken,appid,more_marking,new UdeskCallBack(){
                 @Override
                 public void onSuccess(String message) {
-                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.V4PullMessagesSuccess, message,System.currentTimeMillis());
+                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.V4PullMessagesSuccess, message,UUID.randomUUID().toString());
                     MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
                 }
 
                 @Override
                 public void onFail(String message) {
-                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.V4PullMessagesFailure, message,System.currentTimeMillis());
+                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.V4PullMessagesFailure, message,UUID.randomUUID().toString());
                     MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
                 }
             });
@@ -126,7 +128,7 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
                                 JSONObject json = new JSONObject(message);
                                 if (json.has("pre_session_id")) {
                                     MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.SetPreSessionStatus,
-                                            json.optString("pre_session_id"),System.currentTimeMillis());
+                                            json.optString("pre_session_id"),UUID.randomUUID().toString());
                                     MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
                                 }
                             } catch (Exception e) {
@@ -196,7 +198,7 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
                             // 获取客户成功，显示在线客服的信息，连接xmpp，进行会话
                             try {
                                 AgentInfo agentInfo = JsonUtils.parseAgentResult(message);
-                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RedirectAgentInfo, agentInfo,System.currentTimeMillis());
+                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RedirectAgentInfo, agentInfo,UUID.randomUUID().toString());
                                 MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -215,7 +217,7 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
     }
     public void dealAgentInfo(AgentInfo agentInfo) {
         try {
-            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.DealAgentInfo, agentInfo,System.currentTimeMillis());
+            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.DealAgentInfo, agentInfo,UUID.randomUUID().toString());
             MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
         }catch (Exception e){
             e.printStackTrace();
@@ -266,7 +268,7 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
 
     public void imStatus(String imStatus) {
         try {
-            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.IMSTATUS, imStatus,System.currentTimeMillis());
+            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.IMSTATUS, imStatus,UUID.randomUUID().toString());
             MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
         }catch (Exception e){
             e.printStackTrace();
@@ -276,7 +278,7 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
 
     public void failEnd(String message) {
         try {
-            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.FailEnd, message,System.currentTimeMillis());
+            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.FailEnd, message,UUID.randomUUID().toString());
             MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
         }catch (Exception e){
             e.printStackTrace();
@@ -307,11 +309,11 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
                                         if (TextUtils.equals(result.getString("has_survey"), "false")) {
                                             //未评价，可以发起评价
                                             if (hasSurvyCallBack != null) {
-                                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.finsh_Survey, true, System.currentTimeMillis());
+                                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.finsh_Survey, true, UUID.randomUUID().toString());
                                                 MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
 
                                             } else {
-                                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.click_Survey, true, System.currentTimeMillis());
+                                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.click_Survey, true,UUID.randomUUID().toString());
                                                 MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
 
                                             }
@@ -319,7 +321,7 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
                                             if (hasSurvyCallBack != null) {
                                                 hasSurvyCallBack.hasSurvy(true);
                                             } else {
-                                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.HasSurvey, true, System.currentTimeMillis());
+                                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.HasSurvey, true,UUID.randomUUID().toString());
                                                 MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
 
                                             }
@@ -383,7 +385,7 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
                                 if (model != null && (model.getOptions() == null || model.getOptions().isEmpty()) && hasSurvyCallBack != null) {
                                     hasSurvyCallBack.hasSurvy(true);
                                 } else {
-                                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.toLaunchSurveyView, model,System.currentTimeMillis());
+                                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.toLaunchSurveyView, model,UUID.randomUUID().toString());
                                     MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
 
                                 }
@@ -444,7 +446,7 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
     }
 
     //客户端返回会话界面，在排队中通知移除排队,不处理返回结果
-    public void quitQuenu(String quitMode) {
+    public void quitQueue(String quitMode) {
         try {
             UdeskHttpFacade.getInstance().quitQueue(domain, secretKey, sdktoken, appid,
                     quitMode, new UdeskCallBack() {
@@ -472,7 +474,7 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
                         public void onSuccess(String message) {
                             try {
                                 AllMessageMode replieMode = JsonUtils.parseMessage(message);
-                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.PullEventModel, replieMode,System.currentTimeMillis());
+                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.PullEventModel, replieMode,UUID.randomUUID().toString());
                                 MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
 
                             } catch (Exception e) {
@@ -494,7 +496,7 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
 
     private void surveyResult(boolean isSuccess) {
         try {
-            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.Survey_Result, isSuccess,System.currentTimeMillis());
+            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.Survey_Result, isSuccess,UUID.randomUUID().toString());
             MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
         }catch (Exception e){
             e.printStackTrace();

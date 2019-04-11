@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -132,7 +133,7 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                                 if (jsonObject.has("agent_seq_num")) {
                                     int agent_seq_num = jsonObject.optInt("agent_seq_num");
                                     //检查是否跳序
-                                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.Check_Agent_Seq_Num, agent_seq_num,System.currentTimeMillis());
+                                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.Check_Agent_Seq_Num, agent_seq_num,UUID.randomUUID().toString());
                                     MergeModeManager.getmInstance().putMergeMode(mergeMode,SendMessageLiveData.this);
 
                                 }
@@ -150,7 +151,7 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                                     removeSendMsgCace(msg.getMsgId());
                                     UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(), UdeskConst.SendFlag.RESULT_FAIL);
                                     postMessage(msg.getMsgId(),UdeskConst.LiveDataType.Send_Message_Failure);
-                                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RECREATE_CUSTOMER_INFO, msg.getMsgId(),System.currentTimeMillis());
+                                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RECREATE_CUSTOMER_INFO, msg.getMsgId(),UUID.randomUUID().toString());
                                     MergeModeManager.getmInstance().putMergeMode(mergeMode,SendMessageLiveData.this);
 
                                     return;
@@ -237,7 +238,7 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                                     }
                                     if (status == 9200) {
                                         String tipMsg = resultJson.getString("message");
-                                        MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.QueueMessageSaveError, tipMsg,System.currentTimeMillis());
+                                        MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.QueueMessageSaveError, tipMsg,UUID.randomUUID().toString());
                                         MergeModeManager.getmInstance().putMergeMode(mergeMode,SendMessageLiveData.this);
 
                                     }
@@ -342,7 +343,7 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
 
     private void postMessage(String msgId,int type){
         try {
-            MergeMode mergeMode = new MergeMode(type, msgId,System.currentTimeMillis());
+            MergeMode mergeMode = new MergeMode(type, msgId,UUID.randomUUID().toString());
             MergeModeManager.getmInstance().putMergeMode(mergeMode,SendMessageLiveData.this);
         }catch (Exception e){
             e.printStackTrace();

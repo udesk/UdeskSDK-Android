@@ -310,14 +310,6 @@ public class UdeskSDKManager {
     }
 
     /**
-     * 删除当前用户的聊天数据
-     */
-    public void deleteMsg(Context context, String token) {
-        initDB(context.getApplicationContext(), sdkToken);
-        UdeskDBManager.getInstance().deleteAllMsg();
-    }
-
-    /**
      * 初始话DB
      *
      * @param context

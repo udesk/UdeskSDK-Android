@@ -59,8 +59,12 @@ public class UdeskUseGuideActivity extends Activity {
             UdeskSDKManager.getInstance().logoutUdesk();
             PreferenceHelper.write(UdeskUseGuideActivity.this, "init_base_name",
                     "sdktoken", "");
-            PreferenceHelper.write(getApplicationContext(), "init_base_name",
-                    "menu_id", "");
+            PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                    UdeskConst.SharePreParams.Udesk_Menu_Id,"");
+            PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                    UdeskConst.SharePreParams.Udesk_Group_Id,"");
+            PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                    UdeskConst.SharePreParams.Udesk_Agent_Id,"");
             Intent initIntent = new Intent();
             initIntent.setClass(UdeskUseGuideActivity.this, UdeskInitKeyActivity.class);
             startActivity(initIntent);

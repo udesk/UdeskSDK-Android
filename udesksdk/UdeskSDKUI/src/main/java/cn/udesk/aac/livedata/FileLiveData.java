@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import cn.udesk.JsonUtils;
@@ -371,7 +372,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
 
 
     public void fileProgress(MessageInfo info) {
-        MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.UpLoadFileLiveData_progress, info,System.currentTimeMillis());
+        MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.UpLoadFileLiveData_progress, info,UUID.randomUUID().toString());
         MergeModeManager.getmInstance().putMergeMode(mergeMode,FileLiveData.this);
     }
 
@@ -379,8 +380,8 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
     //下载语言
     public void downAudio(final MessageInfo info, Context context) {
         try {
-            final File file = new File(UdeskUtils.getDirectoryPath(context, UdeskConst.FileAduio),
-                    UdeskUtils.getFileName(info.getMsgContent(), UdeskConst.FileAduio));
+            final File file = new File(UdeskUtils.getDirectoryPath(context, UdeskConst.FileAudio),
+                    UdeskUtils.getFileName(info.getMsgContent(), UdeskConst.FileAudio));
 
             UdeskHttpFacade.getInstance().downloadFile(file.getAbsolutePath(), info.getMsgContent(), UdeskConst.REFERER_VALUE,new UdeskHttpCallBack() {
 
@@ -423,7 +424,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
 
                 @Override
                 public void onFailure(int errorNo, String strMsg) {
-                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.DownFileError, info.getMsgId(),System.currentTimeMillis());
+                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.DownFileError, info.getMsgId(),UUID.randomUUID().toString());
                     MergeModeManager.getmInstance().putMergeMode(mergeMode,FileLiveData.this);
 
                 }
@@ -453,7 +454,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                     Bitmap bitmap = UdeskUtil.getVideoThumbnail(info.getMsgContent());
                     if (bitmap != null) {
                         UdeskUtils.saveBitmap(context, info.getMsgContent(), bitmap);
-                        MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ChangeVideoThumbnail, info.getMsgId(),System.currentTimeMillis());
+                        MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ChangeVideoThumbnail, info.getMsgId(),UUID.randomUUID().toString());
                         MergeModeManager.getmInstance().putMergeMode(mergeMode,FileLiveData.this);
 
                     }
@@ -465,13 +466,14 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
     }
 
     private void addMessage(MessageInfo msg) {
-        MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.AddMessage, msg,System.currentTimeMillis());
+        Log.d("huhu","addMessage===================="+msg.getMsgId());
+        MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.AddMessage, msg,UUID.randomUUID().toString());
         MergeModeManager.getmInstance().putMergeMode(mergeMode,FileLiveData.this);
 
     }
 
     private void updateFailure(String msgId) {
-        MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.Send_Message_Failure, msgId,System.currentTimeMillis());
+        MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.Send_Message_Failure, msgId,UUID.randomUUID().toString());
         MergeModeManager.getmInstance().putMergeMode(mergeMode,FileLiveData.this);
 
     }

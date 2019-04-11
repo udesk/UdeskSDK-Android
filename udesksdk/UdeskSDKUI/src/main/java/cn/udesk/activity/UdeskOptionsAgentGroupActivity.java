@@ -15,7 +15,7 @@ import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.adapter.OptionsAgentGroupAdapter;
-import cn.udesk.config.UdekConfigUtil;
+import cn.udesk.config.UdeskConfigUtil;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.model.AgentGroupNode;
 import cn.udesk.widget.UdeskDialog;
@@ -103,10 +103,10 @@ public class UdeskOptionsAgentGroupActivity extends UdeskBaseActivity implements
 
         try {
             if (mTitlebar != null) {
-                UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarMiddleTextResId, mTitlebar.getUdeskTopText(), mTitlebar.getUdeskBottomText());
-                UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarRightTextResId, mTitlebar.getRightTextView());
+                UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarMiddleTextResId, mTitlebar.getUdeskTopText(), mTitlebar.getUdeskBottomText());
+                UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarRightTextResId, mTitlebar.getRightTextView());
                 if (mTitlebar.getRootView() != null) {
-                    UdekConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarBgResId, mTitlebar.getRootView());
+                    UdeskConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarBgResId, mTitlebar.getRootView());
                 }
                 if (UdeskConfig.DEFAULT != UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId) {
                     mTitlebar.getUdeskBackImg().setImageResource(UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId);

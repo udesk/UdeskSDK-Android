@@ -13,7 +13,7 @@ import cn.udesk.JsonUtils;
 import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
-import cn.udesk.config.UdekConfigUtil;
+import cn.udesk.config.UdeskConfigUtil;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskCallBack;
@@ -55,9 +55,9 @@ public class UdeskHelperArticleActivity extends UdeskBaseActivity {
 			try {
 				mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
 				if(mTitlebar != null){
-                    UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarMiddleTextResId,mTitlebar.getUdeskTopText(),mTitlebar.getUdeskBottomText());
-					UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarRightTextResId, mTitlebar.getRightTextView());
-					UdekConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarBgResId ,mTitlebar.getRootView());
+                    UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarMiddleTextResId,mTitlebar.getUdeskTopText(),mTitlebar.getUdeskBottomText());
+					UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarRightTextResId, mTitlebar.getRightTextView());
+					UdeskConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskTitlebarBgResId ,mTitlebar.getRootView());
                     if (UdeskConfig.DEFAULT != UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId) {
                         mTitlebar.getUdeskBackImg().setImageResource(UdeskSDKManager.getInstance().getUdeskConfig().udeskbackArrowIconResId);
                     }

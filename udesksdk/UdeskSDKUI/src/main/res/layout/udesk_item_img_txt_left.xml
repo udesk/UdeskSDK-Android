@@ -22,7 +22,7 @@
             android:orientation="vertical"
             >
 
-            <cn.udesk.rich.XRichText
+            <TextView
                 android:id="@+id/udesk_im_img_txt_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
                 android:ellipsize="end"
                 android:maxWidth="205dp"
                 />
-            <cn.udesk.rich.XRichText
+            <TextView
                 android:id="@+id/udesk_im_img_txt_des"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

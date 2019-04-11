@@ -4,26 +4,27 @@ public class MergeMode<T> {
 
     int type ;
     private T data;
-    long id;
+    String id;
 
     public MergeMode() {
     }
 
-    public MergeMode(int type,long id) {
+    public MergeMode(int type,String id) {
         this.type = type;
+        this.id = id;
     }
 
-    public MergeMode(int type, T data, long id) {
+    public MergeMode(int type, T data, String id) {
         this.type = type;
         this.data = data;
         this.id = id;
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

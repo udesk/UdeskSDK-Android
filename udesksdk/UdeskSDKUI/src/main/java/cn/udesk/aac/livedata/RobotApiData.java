@@ -6,6 +6,8 @@ import android.text.TextUtils;
 
 import org.json.JSONObject;
 
+import java.util.UUID;
+
 import cn.udesk.JsonUtils;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.aac.MergeMode;
@@ -50,7 +52,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
                     new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
-                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotInitSuccess, message,System.currentTimeMillis());
+                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotInitSuccess, message,UUID.randomUUID().toString());
                             MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
                         }
@@ -74,7 +76,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
                     info.getMsgContent(), info.getMsgId(), info.getDuration(), info.getSeqNum(), info.getFilename(), info.getFilename(), new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
-                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotMessageSuccess, message,System.currentTimeMillis());
+                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotMessageSuccess, message,UUID.randomUUID().toString());
                             MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
                         }
@@ -98,7 +100,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
                     content, new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
-                            QuestionMergeMode mergeMode = new QuestionMergeMode(UdeskConst.LiveDataType.RobotTipsSuccess, message,System.currentTimeMillis());
+                            QuestionMergeMode mergeMode = new QuestionMergeMode(UdeskConst.LiveDataType.RobotTipsSuccess, message,UUID.randomUUID().toString());
                             mergeMode.setQuestion(content);
                             MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
@@ -123,7 +125,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
                 public void onSuccess(String message) {
                     //执行结果码，1000代表成功
                     BaseMode baseMode = JsonUtils.parseAnswerSurvey(message);
-                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotAnswerSurveySuccess, baseMode,System.currentTimeMillis());
+                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotAnswerSurveySuccess, baseMode,UUID.randomUUID().toString());
                     MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
                 }
@@ -146,14 +148,14 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
                         @Override
                         public void onSuccess(String message) {
                             //执行结果码，1000代表成功
-                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ROBOT_SURVEY_RESULT, true,System.currentTimeMillis());
+                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ROBOT_SURVEY_RESULT, true,UUID.randomUUID().toString());
                             MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
                         }
 
                         @Override
                         public void onFail(String message) {
-                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ROBOT_SURVEY_RESULT, false,System.currentTimeMillis());
+                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ROBOT_SURVEY_RESULT, false,UUID.randomUUID().toString());
                             MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
                         }
@@ -175,11 +177,11 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
                                 if (result.has("code") && result.getInt("code") == 1000) {
                                     if (result.has("has_survey")) {
                                         if (TextUtils.equals(result.getString("has_survey"), "false")) {
-                                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotSessionHasSurvey, false,System.currentTimeMillis());
+                                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotSessionHasSurvey, false,UUID.randomUUID().toString());
                                             MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
                                         }else {
-                                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotSessionHasSurvey, true,System.currentTimeMillis());
+                                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotSessionHasSurvey, true,UUID.randomUUID().toString());
                                             MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
                                         }
@@ -187,7 +189,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
                                 }
 
                             } catch (Exception e) {
-                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ROBOT_SURVEY_RESULT, false,System.currentTimeMillis());
+                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ROBOT_SURVEY_RESULT, false,UUID.randomUUID().toString());
                                 MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
                             }
@@ -195,7 +197,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
 
                         @Override
                         public void onFail(String message) {
-                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ROBOT_SURVEY_RESULT, false,System.currentTimeMillis());
+                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ROBOT_SURVEY_RESULT, false,UUID.randomUUID().toString());
                             MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
                         }
@@ -211,7 +213,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
             UdeskHttpFacade.getInstance().robotHit(domain, secretKey, sdktoken, appid,robotUrl,message_id, sessionId,logId, question, question_id, query_type, new UdeskCallBack() {
                 @Override
                 public void onSuccess(String message) {
-                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotHitSuccess, message,System.currentTimeMillis());
+                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotHitSuccess, message,UUID.randomUUID().toString());
                     MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
                 }
@@ -232,7 +234,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
             UdeskHttpFacade.getInstance().robotFlow(domain, secretKey, sdktoken, appid, robotUrl, message_id,sessionId, logId, flowId, flowContent, new UdeskCallBack() {
                 @Override
                 public void onSuccess(String message) {
-                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotFlowSuccess, message,System.currentTimeMillis());
+                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotFlowSuccess, message,UUID.randomUUID().toString());
                     MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
                 }
@@ -249,7 +251,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
     }
     public void requestFail(int flag, String message) {
         try {
-            MergeMode mergeMode = new MergeMode(flag, message,System.currentTimeMillis());
+            MergeMode mergeMode = new MergeMode(flag, message,UUID.randomUUID().toString());
             MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
         }catch (Exception e){
             e.printStackTrace();
@@ -257,7 +259,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
     }
     public void robotTransfer() {
         try {
-            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ROBOT_TRANSFER,System.currentTimeMillis());
+            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ROBOT_TRANSFER,UUID.randomUUID().toString());
             MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
         }catch (Exception e){
             e.printStackTrace();
@@ -265,7 +267,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
     }
     public void onQueClick(String msgId,Integer logId,String question,Integer questionId){
         try {
-            QuestionMergeMode mergeMode=new QuestionMergeMode(UdeskConst.LiveDataType.RobotChildHit,System.currentTimeMillis());
+            QuestionMergeMode mergeMode=new QuestionMergeMode(UdeskConst.LiveDataType.RobotChildHit,UUID.randomUUID().toString());
             mergeMode.setQuestion(question);
             mergeMode.setQuestionId(questionId);
             mergeMode.setQueryType(6);
@@ -281,7 +283,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
     public void onTipClick(RobotTipBean.ListBean bean){
         try {
             if (bean!=null){
-                QuestionMergeMode mergeMode=new QuestionMergeMode(UdeskConst.LiveDataType.RobotTipHit,bean,System.currentTimeMillis());
+                QuestionMergeMode mergeMode=new QuestionMergeMode(UdeskConst.LiveDataType.RobotTipHit,bean,UUID.randomUUID().toString());
                 mergeMode.setQueryType(9);
                 MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
@@ -294,7 +296,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
     public void onTableClick(String value){
         try {
             if (!TextUtils.isEmpty(value)){
-                MergeMode mergeMode=new MergeMode(UdeskConst.LiveDataType.ROBOT_TABLE_CLICK,value,System.currentTimeMillis());
+                MergeMode mergeMode=new MergeMode(UdeskConst.LiveDataType.ROBOT_TABLE_CLICK,value,UUID.randomUUID().toString());
                 MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
             }
@@ -306,7 +308,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
 
     public void onTransferClick(MessageInfo messageInfo) {
         try {
-            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ROBOT_TRANSFER_CLICK,messageInfo,System.currentTimeMillis());
+            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ROBOT_TRANSFER_CLICK,messageInfo,UUID.randomUUID().toString());
             MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
         }catch (Exception e){
             e.printStackTrace();
@@ -314,7 +316,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
     }
     public void onShowProductClick(ProductListBean bean) {
         try {
-            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ROBOT_SHOW_PRODUCT_CLICK,bean,System.currentTimeMillis());
+            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ROBOT_SHOW_PRODUCT_CLICK,bean,UUID.randomUUID().toString());
             MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
         }catch (Exception e){
             e.printStackTrace();
@@ -331,7 +333,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
     public void onFlowClick(MessageInfo info,Integer dataId,String content) {
         try {
             if (info!=null){
-                QuestionMergeMode mergeMode=new QuestionMergeMode(UdeskConst.LiveDataType.ROBOT_FLOW_HIT,info,System.currentTimeMillis());
+                QuestionMergeMode mergeMode=new QuestionMergeMode(UdeskConst.LiveDataType.ROBOT_FLOW_HIT,info,UUID.randomUUID().toString());
                 mergeMode.setQueryType(8);
                 mergeMode.setQuestionId(dataId);
                 mergeMode.setQuestion(content);
@@ -345,7 +347,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
 
     public void sendTxtMsg(String content){
         try {
-            MergeMode mergeMode=new MergeMode(UdeskConst.LiveDataType.ROBOT_SEND_TXT_MSG,content,System.currentTimeMillis());
+            MergeMode mergeMode=new MergeMode(UdeskConst.LiveDataType.ROBOT_SEND_TXT_MSG,content,UUID.randomUUID().toString());
             MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
         }catch (Exception e){
             e.printStackTrace();

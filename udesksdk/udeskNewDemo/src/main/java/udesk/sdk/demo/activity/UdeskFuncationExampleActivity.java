@@ -38,8 +38,10 @@ import cn.udesk.model.NavigationMode;
 import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskConst;
+import udesk.core.model.InfoListBean;
 import udesk.core.model.MessageInfo;
 import udesk.core.model.Product;
+import udesk.core.model.ProductListBean;
 import udesk.sdk.demo.R;
 import udesk.core.LocalManageUtil;
 import udesk.sdk.demo.maps.LocationActivity;
@@ -75,13 +77,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
 
     private EditText nick_name, cellphone, email, description, customer_token, channel,
             textfiledkey, textfiledvalue,
-            update_nick_name, update_description,
-            updatetextfiledkey, updatetextfiledvalue,
             firstMessage, customerUrl, robot_modelKey, robpt_customer_info,edit_language;
-    private Map<String, String> defualtInfos;
-    private Map<String, String> definedInfos;
-    private Map<String, String> definedRoplistInfos;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,10 +140,6 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         channel = (EditText) findViewById(R.id.channel);
         textfiledkey = (EditText) findViewById(R.id.textfiledkey);
         textfiledvalue = (EditText) findViewById(R.id.textfiledvalue);
-        update_nick_name = (EditText) findViewById(R.id.update_nick_name);
-        update_description = (EditText) findViewById(R.id.update_description);
-        updatetextfiledkey = (EditText) findViewById(R.id.updatetextfiledkey);
-        updatetextfiledvalue = (EditText) findViewById(R.id.updatetextfiledvalue);
         robpt_customer_info = (EditText) findViewById(R.id.robpt_customer_info);
         edit_language = (EditText) findViewById(R.id.edit_language);
 
@@ -177,7 +169,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 .setUdeskCommityLinkColorResId(R.color.udesk_color_im_commondity_link1) //商品咨询页面中，发送链接的字样颜色
                 .setUserSDkPush(set_sdkpush.isChecked()) // 配置 是否使用推送服务  true 表示使用  false表示不使用
                 .setOnlyUseRobot(set_use_onlyrobot.isChecked())//配置是否只使用机器人功能 只使用机器人功能,只使用机器人功能;  其它功能不使用。
-                .setUdeskQuenuMode(force_quit.isChecked() ? UdeskConfig.UdeskQuenuFlag.FORCE_QUIT : UdeskConfig.UdeskQuenuFlag.Mark)  //  配置放弃排队的策略
+                .setUdeskQuenuMode(force_quit.isChecked() ? UdeskConfig.UdeskQueueFlag.FORCE_QUIT : UdeskConfig.UdeskQueueFlag.Mark)  //  配置放弃排队的策略
                 .setUseVoice(set_usevoice.isChecked()) // 是否使用录音功能  true表示使用 false表示不使用
                 .setUsephoto(set_usephoto.isChecked()) //是否使用发送图片的功能  true表示使用 false表示不使用
                 .setUsecamera(set_usecamera.isChecked()) //是否使用拍照的功能  true表示使用 false表示不使用
@@ -206,9 +198,6 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 .setdefaultUserInfo(getdefaultUserInfo()) // 创建用户基本信息
                 .setDefinedUserTextField(getDefinedUserTextField()) //创建用户自定义的文本信息
                 .setDefinedUserRoplist(getDefinedUserRoplist()) //创建用户自定义的列表信息
-                .setUpdatedefaultUserInfo(getUpdatedefaultUserInfo()) // 设置更新用户的基本信息
-                .setUpdatedefinedUserTextField(getUpdateDefinedTextField()) //设置用户更新自定义字段文本信息
-                .setUpdatedefinedUserRoplist(getUpdateDefinedRoplist()) //设置用户更新自定义列表字段信息
                 .setFirstMessage(firstMessage.getText().toString()) //设置带入一条消息  会话分配就发送给客服
                 .setCustomerUrl(customerUrl.getText().toString()) //设置客户的头像地址
                 .setRobot_modelKey(robot_modelKey.getText().toString()) // udesk 机器人配置插件 对应的Id值
@@ -244,6 +233,8 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                         if (TextUtils.equals(currentView,UdeskConst.CurrentFragment.robot)){
                             if (navigationMode.getId() == 1) {
                                 udeskViewMode.sendTxtMessage("robot导航");
+                            }else if (navigationMode.getId() == 2){
+                                udeskViewMode.getRobotApiData().onShowProductClick(createReplyProduct());
                             }
                         }
                     }
@@ -268,8 +259,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                         Toast.makeText(getApplicationContext(), "结构化消息控件点击事件回调", Toast.LENGTH_SHORT).show();
                     }
                 })//设置结构化消息控件点击事件回调接口.
-                .setChannel(channel.getText().toString())
-        ;
+                .setChannel(channel.getText().toString());
 
         return builder;
     }
@@ -296,32 +286,35 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
     private List<NavigationMode> getRobotNavigations() {
         List<NavigationMode> modes = new ArrayList<>();
         NavigationMode navigationMode1 = new NavigationMode("发送文本", 1);
+        NavigationMode navigationMode2 = new NavigationMode("商品回复", 2);
         modes.add(navigationMode1);
+        modes.add(navigationMode2);
         return modes;
     }
 
     private Map<String, String> getdefaultUserInfo() {
-        defualtInfos = new HashMap<>();
+        Map<String, String> defaultInfos = new HashMap<>();
         if (!TextUtils.isEmpty(nick_name.getText().toString())) {
-            defualtInfos.put(UdeskConst.UdeskUserInfo.NICK_NAME, nick_name.getText().toString());
+            defaultInfos.put(UdeskConst.UdeskUserInfo.NICK_NAME, nick_name.getText().toString());
         }
         if (!TextUtils.isEmpty(cellphone.getText().toString())) {
-            defualtInfos.put(UdeskConst.UdeskUserInfo.CELLPHONE, cellphone.getText().toString());
+            defaultInfos.put(UdeskConst.UdeskUserInfo.CELLPHONE, cellphone.getText().toString());
         }
         if (!TextUtils.isEmpty(email.getText().toString())) {
-            defualtInfos.put(UdeskConst.UdeskUserInfo.EMAIL, email.getText().toString());
+            defaultInfos.put(UdeskConst.UdeskUserInfo.EMAIL, email.getText().toString());
         }
         if (!TextUtils.isEmpty(description.getText().toString())) {
-            defualtInfos.put(UdeskConst.UdeskUserInfo.DESCRIPTION, description.getText().toString());
+            defaultInfos.put(UdeskConst.UdeskUserInfo.DESCRIPTION, description.getText().toString());
         }
         if (!TextUtils.isEmpty(customer_token.getText().toString())) {
-            defualtInfos.put(UdeskConst.UdeskUserInfo.CUSTOMER_TOKEN, customer_token.getText().toString());
+            defaultInfos.put(UdeskConst.UdeskUserInfo.CUSTOMER_TOKEN, customer_token.getText().toString());
         }
-        return defualtInfos;
+        return defaultInfos;
     }
 
+
     private Map<String, String> getDefinedUserTextField() {
-        definedInfos = new HashMap<>();
+        Map<String, String> definedInfos=new HashMap<>();
         if (!TextUtils.isEmpty(textfiledkey.getText().toString())
                 && !TextUtils.isEmpty(textfiledvalue.getText().toString())) {
             definedInfos.put(textfiledkey.getText().toString(), textfiledvalue.getText().toString());
@@ -330,32 +323,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
     }
 
     private Map<String, String> getDefinedUserRoplist() {
-        definedRoplistInfos = new HashMap<>();
-        return definedRoplistInfos;
-    }
-
-    private Map<String, String> getUpdatedefaultUserInfo() {
-        if (!TextUtils.isEmpty(update_nick_name.getText().toString())) {
-            defualtInfos.put(UdeskConst.UdeskUserInfo.NICK_NAME, update_nick_name.getText().toString());
-        }
-
-        if (!TextUtils.isEmpty(update_description.getText().toString())) {
-            defualtInfos.put(UdeskConst.UdeskUserInfo.DESCRIPTION, update_description.getText().toString());
-        }
-        return defualtInfos;
-    }
-
-    private Map<String, String> getUpdateDefinedTextField() {
-//        Map<String, String> definedInfos = new HashMap<>();
-        if (!TextUtils.isEmpty(updatetextfiledkey.getText().toString())
-                && !TextUtils.isEmpty(updatetextfiledvalue.getText().toString())) {
-            definedInfos.put(updatetextfiledkey.getText().toString(), updatetextfiledvalue.getText().toString());
-        }
-        return definedInfos;
-    }
-
-    private Map<String, String> getUpdateDefinedRoplist() {
-        definedRoplistInfos = new HashMap<>();
+        Map<String, String> definedRoplistInfos = new HashMap<>();
         return definedRoplistInfos;
     }
 
@@ -367,7 +335,29 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         item.setCommodityUrl("https://detail.tmall.com/item.htm?spm=a1z10.3746-b.w4946-14396547293.1.4PUcgZ&id=529634221064&sku_properties=-1:-1");// 商品网络链接
         return item;
     }
+    private ProductListBean createReplyProduct(){
+        ProductListBean productListBean=new ProductListBean();
+        productListBean.setId(1);
+        productListBean.setUrl("https://item.jd.com/7633415.html");
+        productListBean.setImage("https://udeskzgh.oss-cn-beijing.aliyuncs.com/demo/sumsung.jpg");
+        productListBean.setName("【SSD套装版】三星 Galaxy S 轻奢版（SM-G8750）4GB +64GB");
+        List<InfoListBean> infoList = new ArrayList<>();
 
+        InfoListBean bean0= new InfoListBean();
+        bean0.setInfo("新品");
+        bean0.setColor("#00ff00");
+        bean0.setBoldFlag(0);
+
+        InfoListBean bean1= new InfoListBean();
+        bean1.setInfo("分期免息");
+        bean1.setColor("#ff0000");
+        bean1.setBoldFlag(0);
+
+        infoList.add(bean0);
+        infoList.add(bean1);
+        productListBean.setInfoList(infoList);
+        return productListBean;
+    }
     private Product createProduct() {
         Product product = new Product();
         product.setImgUrl("http://img12.360buyimg.com/n1/s450x450_jfs/t10675/253/1344769770/66891/92d54ca4/59df2e7fN86c99a27.jpg");
