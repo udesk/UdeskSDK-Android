@@ -129,7 +129,7 @@ public class MessageAdatper extends BaseAdapter {
 
                 }
             }
-            if (!TextUtils.isEmpty(message.getSubsessionid()) && message.getDirection() == UdeskConst.ChatMsgDirection.Recv && !message.getSend_status().equals("rollback")) {
+            if (!TextUtils.isEmpty(message.getSubsessionid()) && message.getDirection() == UdeskConst.ChatMsgDirection.Recv&& TextUtils.equals(UdeskConst.Sender.agent, message.getSender()) && !message.getSend_status().equals("rollback")) {
                 isNeedLoadMessage(message);
             }
             list.add(message);

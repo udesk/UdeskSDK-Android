@@ -65,8 +65,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -86,16 +84,16 @@ import java.util.regex.Pattern;
 import cn.udesk.activity.UdeskZoomImageActivty;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.db.UdeskDBManager;
-import cn.udesk.model.TicketReplieMode;
 import cn.udesk.model.ImSetting;
 import cn.udesk.model.OptionsModel;
 import cn.udesk.model.SurveyOptionsModel;
-import udesk.core.model.Content;
+import cn.udesk.model.TicketReplieMode;
 import cn.udesk.provider.UdeskFileProvider;
 import me.relex.photodraweeview.PhotoDraweeView;
 import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.model.AgentInfo;
+import udesk.core.model.Content;
 import udesk.core.model.LogBean;
 import udesk.core.model.MessageInfo;
 import udesk.core.model.ProductListBean;
@@ -494,7 +492,7 @@ public class UdeskUtil {
         }
     }
 
-    public static void loadFileFromSdcard(final Context context, final SimpleDraweeView draweeView, Uri loackUri, final int reqWidth, final int reqHeight,final boolean isfixScale) {
+    public static void loadFileFromSdcard(final Context context, final SimpleDraweeView draweeView, Uri loackUri, final int reqWidth, final int reqHeight, final boolean isfixScale) {
 
         try {
             ImageRequest request = ImageRequestBuilder.newBuilderWithSource(loackUri)
@@ -614,7 +612,7 @@ public class UdeskUtil {
         }
     }
 
-    public static void loadNoChangeView(Context context, SimpleDraweeView simpleDraweeView, Uri httpUri,boolean autoAnimals) {
+    public static void loadNoChangeView(Context context, SimpleDraweeView simpleDraweeView, Uri httpUri, boolean autoAnimals) {
         try {
             File file = getFileFromDiskCache(context, httpUri);
             if (file != null) {
@@ -640,7 +638,7 @@ public class UdeskUtil {
         loadViewBySize(context,simpleDraweeView,httpUri,width,height,true);
     }
 
-    public static void loadViewBySize(Context context, SimpleDraweeView simpleDraweeView, Uri httpUri, int width, int height,boolean autoAnimation) {
+    public static void loadViewBySize(Context context, SimpleDraweeView simpleDraweeView, Uri httpUri, int width, int height, boolean autoAnimation) {
         try {
             File file = getFileFromDiskCache(context, httpUri);
             if (file != null) {
@@ -1288,7 +1286,7 @@ public class UdeskUtil {
     }
 
 
-    public static  MessageInfo  addLeavMsgWeclome(String content,String leavMsgId ) {
+    public static MessageInfo addLeavMsgWeclome(String content, String leavMsgId ) {
         MessageInfo msg = new MessageInfo();
         try {
             msg.setMsgtype(UdeskConst.ChatMsgTypeString.TYPE_RICH);
@@ -1312,7 +1310,7 @@ public class UdeskUtil {
 
     //构建消息模型
     public static MessageInfo buildSendMessage(String msgType, long time, String text,
-                                        String location, String fileName, String fileSize) {
+                                               String location, String fileName, String fileSize) {
         MessageInfo msg = new MessageInfo();
         try {
             msg.setMsgtype(msgType);
@@ -1390,8 +1388,8 @@ public class UdeskUtil {
                 MessageInfo info=buildMsg(message.getAgent_nick_name(),message.getAgent_avatar(),stringToLong(message.getCreated_at()),
                         UdeskUtils.objectToString(message.getMessage_id()), message.getContent().getType(),content.getData().getContent(),
                         UdeskConst.ChatMsgReadFlag.read,UdeskConst.SendFlag.RESULT_SUCCESS,UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,"",
-                        UdeskUtils.objectToLong(message.getContent().getData().getDuration()),message.getAgent_jid(),message.getContent().getData().getFilename(),
-                        message.getContent().getData().getFilesize(),content.getData().getSwitchStaffType(),content.getData().getSwitchStaffTips());
+                        UdeskUtils.objectToLong(message.getContent().getData().getDuration()),message.getAgent_jid(),message.getContent().getFilename(),
+                        message.getContent().getFilesize(),content.getData().getSwitchStaffType(),content.getData().getSwitchStaffTips());
                 if (message.getInviterAgentInfo()!=null){
                     info.setReplyUser(message.getInviterAgentInfo().getNick_name());
                     info.setUser_avatar(message.getInviterAgentInfo().getAvatar());
@@ -1414,9 +1412,9 @@ public class UdeskUtil {
         return null;
     }
 
-    public static MessageInfo buildMsg(String name,String logoUrl,long time, String msgId, String msgtype, String msgContent,
-                                            int readFlag, int sendFlag, int playflag, int direction,
-                                            String localPath, long duration, String agentJid,String fileName,String fileSize,int switchStaffType,String switchStaffTips  ){
+    public static MessageInfo buildMsg(String name, String logoUrl, long time, String msgId, String msgtype, String msgContent,
+                                       int readFlag, int sendFlag, int playflag, int direction,
+                                       String localPath, long duration, String agentJid, String fileName, String fileSize, int switchStaffType, String switchStaffTips  ){
         MessageInfo msg = new MessageInfo();
         try {
             msg.setReplyUser(name);
@@ -1442,8 +1440,8 @@ public class UdeskUtil {
         return msg;
     }
     public static MessageInfo buildVideoEventMsg(String id, Boolean isInvite, String text,
-                                          String customerId,String agentJid,String agentNickName,
-                                          String subSessionId) {
+                                                 String customerId, String agentJid, String agentNickName,
+                                                 String subSessionId) {
         MessageInfo msg = new MessageInfo();
         try {
             msg.setCustomerId(customerId);
@@ -1477,7 +1475,7 @@ public class UdeskUtil {
     }
 
 
-    public static void sendVideoMessage(ImSetting sdkimSetting,AgentInfo mAgentInfo, Context context ) {
+    public static void sendVideoMessage(ImSetting sdkimSetting, AgentInfo mAgentInfo, Context context ) {
         try {
 
             if (sdkimSetting != null) {
@@ -1524,7 +1522,7 @@ public class UdeskUtil {
     }
 
 
-    public  static  File getScaleFile(Bitmap bitmap, Context context){
+    public  static File getScaleFile(Bitmap bitmap, Context context){
         try {
             int width = bitmap.getWidth();
             int height = bitmap.getHeight();
@@ -1747,7 +1745,7 @@ public class UdeskUtil {
     /**
      * 按质量压缩，并将图像生成指定的路径
      */
-    public static  Bitmap compressImage(Context context,String url, Bitmap image) {
+    public static Bitmap compressImage(Context context, String url, Bitmap image) {
         if (image == null || TextUtils.isEmpty(url)) {
             return null;
         }
@@ -1791,7 +1789,7 @@ public class UdeskUtil {
         }
         return bitmap.getRowBytes() * bitmap.getHeight();                //earlier version
     }
-    public static List<Integer> getRandomNum(int count,int size){
+    public static List<Integer> getRandomNum(int count, int size){
         Random random=new Random();
         List<Integer> list=new ArrayList<>();
         while (list.size()<count){

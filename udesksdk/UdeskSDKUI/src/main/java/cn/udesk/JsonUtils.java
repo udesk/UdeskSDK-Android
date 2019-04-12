@@ -18,12 +18,15 @@ import cn.udesk.model.IMInfo;
 import cn.udesk.model.ImSetting;
 import cn.udesk.model.InitCustomerBean;
 import cn.udesk.model.OptionsModel;
-import cn.udesk.model.StructModel;
 import cn.udesk.model.PreSession;
 import cn.udesk.model.Robot;
+import cn.udesk.model.StructModel;
 import cn.udesk.model.SurveyOptionsModel;
 import cn.udesk.model.Tag;
 import cn.udesk.model.TicketReplieMode;
+import cn.udesk.model.UploadService;
+import cn.udesk.model.UploadToken;
+import udesk.core.model.AgentInfo;
 import udesk.core.model.AllMessageMode;
 import udesk.core.model.BaseMode;
 import udesk.core.model.Content;
@@ -33,16 +36,13 @@ import udesk.core.model.InviterAgentInfo;
 import udesk.core.model.LinkBean;
 import udesk.core.model.LogBean;
 import udesk.core.model.OptionsListBean;
+import udesk.core.model.Product;
 import udesk.core.model.ProductListBean;
 import udesk.core.model.RobotInit;
 import udesk.core.model.RobotTipBean;
 import udesk.core.model.ShowProductBean;
 import udesk.core.model.StrucTableBean;
 import udesk.core.model.TopAskBean;
-import cn.udesk.model.UploadService;
-import cn.udesk.model.UploadToken;
-import udesk.core.model.AgentInfo;
-import udesk.core.model.Product;
 import udesk.core.model.UDHelperArticleContentItem;
 import udesk.core.model.UDHelperItem;
 import udesk.core.model.UploadBean;
@@ -551,7 +551,9 @@ public class JsonUtils {
                             contentBean.setAuto(content.opt("auto"));
                             contentBean.setSeq_num(content.opt("seq_num"));
                             contentBean.setIm_sub_session_id(content.opt("im_sub_session_id"));
-
+                            contentBean.setFilename(content.opt("filename"));
+                            contentBean.setFilesize(content.opt("filesize"));
+                            contentBean.setFile_policy(content.opt("file_policy"));
                             if (content.has("data")) {
                                 DataBean dataBean = new DataBean();
                                 JSONObject data = content.getJSONObject("data");
@@ -561,8 +563,7 @@ public class JsonUtils {
                                 dataBean.setQuesition_id(data.opt("question_id"));
                                 dataBean.setTimeout_freq(data.opt("timeout_freq"));
                                 dataBean.setDuration(data.opt("duration"));
-                                dataBean.setFilename(data.opt("filename"));
-                                dataBean.setFilesize(data.opt("filesize"));
+
                                 dataBean.setFlowId(data.opt("flowId"));
                                 dataBean.setFlowTitle(data.opt("flowTitle"));
                                 dataBean.setFlowContent(data.opt("flowContent"));
@@ -687,6 +688,9 @@ public class JsonUtils {
                     contentBean.setAuto(content.opt("auto"));
                     contentBean.setSeq_num(content.opt("seq_num"));
                     contentBean.setIm_sub_session_id(content.opt("im_sub_session_id"));
+                    contentBean.setFilename(content.opt("filename"));
+                    contentBean.setFilesize(content.opt("filesize"));
+                    contentBean.setFile_policy(content.opt("file_policy"));
                     if (content.has("data")) {
                         DataBean dataBean = new DataBean();
                         JSONObject data = content.getJSONObject("data");
@@ -696,8 +700,6 @@ public class JsonUtils {
                         dataBean.setQuesition_id(data.opt("question_id"));
                         dataBean.setTimeout_freq(data.opt("timeout_freq"));
                         dataBean.setDuration(data.opt("duration"));
-                        dataBean.setFilename(data.opt("filename"));
-                        dataBean.setFilesize(data.opt("filesize"));
                         dataBean.setFlowId(data.opt("flowId"));
                         dataBean.setFlowTitle(data.opt("flowTitle"));
                         dataBean.setFlowContent(data.opt("flowContent"));

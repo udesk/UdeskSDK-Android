@@ -61,15 +61,15 @@ import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.aac.MergeMode;
 import cn.udesk.aac.MergeModeManager;
-import cn.udesk.aac.UdeskViewMode;
 import cn.udesk.aac.QuestionMergeMode;
+import cn.udesk.aac.UdeskViewMode;
 import cn.udesk.adapter.MessageAdatper;
 import cn.udesk.adapter.TipAdapter;
 import cn.udesk.callback.IUdeskHasSurvyCallBack;
 import cn.udesk.camera.UdeskCameraActivity;
-import cn.udesk.config.UdeskConfigUtil;
 import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
+import cn.udesk.config.UdeskConfigUtil;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.emotion.IEmotionSelectedListener;
 import cn.udesk.emotion.LQREmotionKit;
@@ -79,21 +79,13 @@ import cn.udesk.fragment.UdeskbaseFragment;
 import cn.udesk.itemview.BaseViewHolder;
 import cn.udesk.messagemanager.UdeskXmppManager;
 import cn.udesk.model.AgentGroupNode;
+import cn.udesk.model.Customer;
 import cn.udesk.model.ImSetting;
+import cn.udesk.model.InitCustomerBean;
 import cn.udesk.model.Robot;
-import cn.udesk.widget.RecycleViewDivider;
-import udesk.core.model.AllMessageMode;
 import cn.udesk.model.SurveyOptionsModel;
 import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.model.UdeskQueueItem;
-import cn.udesk.model.Customer;
-import cn.udesk.model.InitCustomerBean;
-import udesk.core.model.Content;
-import udesk.core.model.DataBean;
-import udesk.core.model.LogBean;
-import udesk.core.model.ProductListBean;
-import udesk.core.model.RobotInit;
-import udesk.core.model.RobotTipBean;
 import cn.udesk.permission.RequestCode;
 import cn.udesk.permission.XPermissionUtils;
 import cn.udesk.photoselect.PhotoSelectorActivity;
@@ -101,6 +93,7 @@ import cn.udesk.photoselect.entity.LocalMedia;
 import cn.udesk.voice.RecordFilePlay;
 import cn.udesk.voice.RecordPlay;
 import cn.udesk.voice.RecordPlayCallback;
+import cn.udesk.widget.RecycleViewDivider;
 import cn.udesk.widget.UDPullGetMoreListView;
 import cn.udesk.widget.UdeskConfirmPopWindow;
 import cn.udesk.widget.UdeskConfirmPopWindow.OnPopConfirmClick;
@@ -113,8 +106,15 @@ import udesk.core.JsonObjectUtils;
 import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.model.AgentInfo;
+import udesk.core.model.AllMessageMode;
+import udesk.core.model.Content;
+import udesk.core.model.DataBean;
+import udesk.core.model.LogBean;
 import udesk.core.model.MessageInfo;
 import udesk.core.model.Product;
+import udesk.core.model.ProductListBean;
+import udesk.core.model.RobotInit;
+import udesk.core.model.RobotTipBean;
 import udesk.core.utils.UdeskIdBuild;
 import udesk.core.utils.UdeskUtils;
 
@@ -260,7 +260,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             UdeskUtils.resetTime();
             UdeskUtil.setOrientation(this);
             if (!Fresco.hasBeenInitialized()) {
-                UdeskUtil.frescoInit(this);
+                UdeskUtil.frescoInit(getApplicationContext());
             }
             setContentView(R.layout.udesk_activity_im);
             initView();
@@ -288,18 +288,18 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             if (getIntent() != null) {
                 menuId = getIntent().getStringExtra(UdeskConst.UDESKMENUID);
                 if (!TextUtils.isEmpty(menuId)) {
-                    PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                    PreferenceHelper.write(getApplicationContext(), UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                             UdeskConst.SharePreParams.Udesk_Menu_Id, menuId);
                 }
             }
             groupId = UdeskSDKManager.getInstance().getUdeskConfig().groupId;
             agentId = UdeskSDKManager.getInstance().getUdeskConfig().agentId;
             if (!TextUtils.isEmpty(groupId)) {
-                PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                PreferenceHelper.write(getApplicationContext(), UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                         UdeskConst.SharePreParams.Udesk_Group_Id, groupId);
             }
             if (!TextUtils.isEmpty(agentId)) {
-                PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                PreferenceHelper.write(getApplicationContext(), UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                         UdeskConst.SharePreParams.Udesk_Agent_Id, agentId);
             }
             udeskViewMode.getApiLiveData().setSpecifyAgentID(getAgentId());
@@ -1211,14 +1211,14 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             expandableLayout = (UdeskExpandableLayout) findViewById(R.id.udesk_change_status_info);
             mContentLinearLayout = (LinearLayout) findViewById(R.id.udesk_content_ll);
             mRvAssociate = (RecyclerView) findViewById(R.id.udesk_robot_rv_associate);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
             linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             mRvAssociate.setLayoutManager(linearLayoutManager);
-            mRvAssociate.addItemDecoration(new RecycleViewDivider(this, LinearLayoutManager.HORIZONTAL, UdeskUtil.dip2px(this, 1), getResources().getColor(R.color.udesk_color_d8d8d8), true));
-            tipAdapter = new TipAdapter(this);
+            mRvAssociate.addItemDecoration(new RecycleViewDivider(getApplicationContext(), LinearLayoutManager.HORIZONTAL, UdeskUtil.dip2px(getApplicationContext(), 1), getResources().getColor(R.color.udesk_color_d8d8d8), true));
+            tipAdapter = new TipAdapter(getApplicationContext());
             mRvAssociate.setAdapter(tipAdapter);
             mLlAssociate = (LinearLayout) findViewById(R.id.udesk_robot_ll_associate);
-            popWindow = new UdeskConfirmPopWindow(this);
+            popWindow = new UdeskConfirmPopWindow(getApplicationContext());
             udeskViewMode.getDbLiveData().initDB(getApplicationContext());
             setListView();
             initLoadData();
@@ -1576,7 +1576,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 if (mImageCaptureUri != null) {
                     try {
                         if (mImageCaptureUri != null) {
-                            String path = UdeskUtil.getFilePath(this, mImageCaptureUri);
+                            String path = UdeskUtil.getFilePath(getApplicationContext(), mImageCaptureUri);
                             if (UdeskSDKManager.getInstance().getUdeskConfig().isScaleImg) {
                                 udeskViewMode.scaleBitmap(path, getApplicationContext());
                             } else {
@@ -1607,7 +1607,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 if (mImageCaptureUri != null) {
                     try {
                         if (mImageCaptureUri != null) {
-                            String path = UdeskUtil.getFilePath(this, mImageCaptureUri);
+                            String path = UdeskUtil.getFilePath(getApplicationContext(), mImageCaptureUri);
                             if (this.getWindow() != null && this.getWindow().getDecorView() != null &&
                                     this.getWindow().getDecorView().getWindowToken() != null && UdeskUtil.isGpsNet(getApplicationContext())) {
                                 toGpsNetView(true, null, path);
@@ -1643,7 +1643,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                     }
                     menuId = data.getStringExtra(UdeskConst.UDESKMENUID);
                     if (!TextUtils.isEmpty(menuId)) {
-                        PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                        PreferenceHelper.write(getApplicationContext(), UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                                 UdeskConst.SharePreParams.Udesk_Menu_Id, menuId);
                     }
                     udeskViewMode.getApiLiveData().setMenu_id(getMenuId());
@@ -2464,7 +2464,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     public String getAgentId() {
         try {
             if (TextUtils.isEmpty(agentId)) {
-                return PreferenceHelper.readString(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                return PreferenceHelper.readString(getApplicationContext(), UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                         UdeskConst.SharePreParams.Udesk_Agent_Id);
             }
         } catch (Exception e) {
@@ -2476,7 +2476,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     public String getGroupId() {
         try {
             if (TextUtils.isEmpty(groupId)) {
-                return PreferenceHelper.readString(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                return PreferenceHelper.readString(getApplicationContext(), UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                         UdeskConst.SharePreParams.Udesk_Group_Id);
             }
         } catch (Exception e) {
@@ -2488,7 +2488,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     public String getMenuId() {
         try {
             if (TextUtils.isEmpty(menuId)&&TextUtils.isEmpty(groupId)&&TextUtils.isEmpty(agentId)) {
-                return PreferenceHelper.readString(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                return PreferenceHelper.readString(getApplicationContext(), UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                         UdeskConst.SharePreParams.Udesk_Menu_Id);
             }
         } catch (Exception e) {
@@ -2693,7 +2693,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     //发送广告的连接地址消息
     public void sentLink(String linkMsg) {
         try {
-            if (!UdeskUtils.isNetworkConnected(this)) {
+            if (!UdeskUtils.isNetworkConnected(getApplicationContext())) {
                 UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.udesk_has_wrong_net));
                 return;
             }
@@ -2728,7 +2728,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     //重试发送消息(无消息对话过滤状态，排队，在线)
     public void retrySendMsg(MessageInfo message) {
         try {
-            if (!UdeskUtils.isNetworkConnected(this)) {
+            if (!UdeskUtils.isNetworkConnected(getApplicationContext())) {
                 UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.udesk_has_wrong_net));
 
                 return;
@@ -2776,7 +2776,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     //下载文件
     public void downLoadMsg(MessageInfo message) {
         try {
-            if (!UdeskUtils.isNetworkConnected(this)) {
+            if (!UdeskUtils.isNetworkConnected(getApplicationContext())) {
                 UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.udesk_has_wrong_net));
                 return;
             }
@@ -2794,7 +2794,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
 
     public synchronized void downLoadVideo(MessageInfo message) {
         try {
-            if (!UdeskUtils.isNetworkConnected(this)) {
+            if (!UdeskUtils.isNetworkConnected(getApplicationContext())) {
                 UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.udesk_has_wrong_net));
                 return;
             }
