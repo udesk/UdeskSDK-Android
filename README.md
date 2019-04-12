@@ -1,25 +1,20 @@
+
+
 # UdeskSDK-Android #
-### 公告
+## 公告 ##
 
 SDK原生机器人功能在 5.x 分支下。
-### SDK下载地址
+## SDK下载地址 ##
 [Udesk-Android下载地址](https://github.com/udesk/UdeskSDK-Android)
 
-## 目录
-- [一、特别声明](#1)
-- [二、集成SDK](#2)
-- [三、快速使用SDK](#3)
-- [四、Udesk SDK 自定义配置](#4)
-- [五、Udesk API说明](#5)
-- [六、消息推送](#6)
-- [七、常见问题](#7)
-- [八、更新记录](#8)
-- [九、功能截图](#9)
-<h1 id="1">一、特别声明</h1>
+# 特别声明 #
 
-### SDK还未完成适配9.0系统测试 。请targetSdkVersion 设置值小于28  小于28  小于28 ###
-### SDK 采用AAC框架 ###
-### fresco版本问题 ###
+**SDK还未完成适配9.0系统测试 。请targetSdkVersion 设置值小于28  小于28  小于28**
+
+**SDK 采用AAC框架**
+
+**fresco版本问题**
+
 	如果你的项目打包指定了so库的加载配置了，
      ndk{
             abiFilters "armeabi"
@@ -29,10 +24,9 @@ SDK原生机器人功能在 5.x 分支下。
     不在包含armeabi 
     
     在UdeskSDKUI下的build.gradle文件下  修改dependencies fresco版本号 不能根据androidstudio提示更新到最新
+**customer_token， sdk_token 仅支持字母、数字及下划线,禁用特殊字符**
 
-### customer_token， sdk_token 仅支持字母、数字及下划线,禁用特殊字符
-
-<h1 id="2">二、集成SDK</h1>
+# 集成SDK #
 
 | Demo中的文件| 说明                            |
 | ---------  | -----------------------         |
@@ -40,15 +34,15 @@ SDK原生机器人功能在 5.x 分支下。
 | Udeskvideo | Udesk视频会话SDK（依赖在线咨询SDK）|
 | Udeskasr	 | Udesk原生机器人语音识别功能（依赖在线咨询SDK）       |
 
-### **注意：UdeskSDKUI并不依赖Udeskvideo和 udeskasr,如果不需要则不要导入该sdk。**
+**注意：UdeskSDKUI并不依赖Udeskvideo和 udeskasr,如果不需要则不要导入该sdk。**
 
-你所要做的是把UdeskSDKUI做为独立的module import, 并在你APP build.gradle文件中加入：
+**你所要做的是把UdeskSDKUI做为独立的module import, 并在你APP build.gradle文件中加入：**
 
 	dependencies {
 	    api project(':UdeskSDKUI')
 	}
 
-### 用户创建及更新逻辑:
+**用户创建及更新逻辑:**
 
 	1. 使用主键 [sdk_token customer_token email cellphone] (默认primary_key为sdk_token), 或 [customer_token sdk_token email cellphone] (primary_key 为 customer_taken时) 依次查找用户
 	
@@ -81,31 +75,30 @@ SDK原生机器人功能在 5.x 分支下。
 	
 	其次,如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客。  
 
-**完成了以上操作，接下来就可以使用UdeskSDK的其它功能了，祝你好运！**
-
-### 启动帮助中心界面
+**启动帮助中心界面**
 
 Udek系统帮助中心后台可以创建帮助文档，客户通过帮助中心可查看相关文档。调用以下接口启动帮助中心界面
 
-```java
-UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
-```
+	UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), 
+
+	UdeskSDKManager.getInstance().getUdeskConfig());
 
 
-<h1 id="3">三、快速使用SDK</h1>
 
-### 1.初始管理员后台创建应用是生成的对应app key 和 app id
+# 快速使用SDK #
+
+## 初始管理员后台创建应用是生成的对应app key 和 app id ##
 
       UdeskSDKManager.getInstance().initApiKey(context, "you domain","App Key","App Id");
       
       注意：域名不要带有http://部分，假如注册生成的域名是"http://udesksdk.udesk.cn/" ,只要传入"udesksdk.udesk.cn"
 
-### 2.设置UdeskConfig配置信息。
+## 设置UdeskConfig配置信息。
 
 **说明：配置的功能根据你们实际的需要进行选择，都有默认行为。**
 
-### **2.1 设置用户的基本信息**
-### **注意sdktoken必填**
+## 设置用户的基本信息 ##
+**注意sdktoken必填**
 	 
 	  默认系统字段是Udesk已定义好的字段，开发者可以直接传入这些用户信息，供客服查看。
       String sdktoken = “用户唯一的标识”; 
@@ -123,7 +116,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 	  builder.setDefualtUserInfo(info)
 	  UdeskSDKManager.getInstance().entryChat(getApplicationContext(), builder.build(), sdkToken);
 
-### **2.2 UdeskConfig内部类Builder的说明**
+## UdeskConfig内部类Builder的说明 ##
 | 属性           | 设置方法   | 功能说明         |
 | ------------- | ------ | ---------- |
 | udeskTitlebarBgResId        			 | setUdeskTitlebarBgResId       							  | 标题栏TitleBar的背景色,通过颜色设置   |
@@ -300,11 +293,11 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
     }
 
 
-### 3 进入页面分配会话
+## 进入页面分配会话
 	UdeskSDKManager.getInstance().entryChat(getApplicationContext(), makeBuilder().build(), sdkToken);
   注意：只有通过这个方法进入会话,管理员在后台配置的选项才会生效, 其它方式进入会话,配置不会生效。 
       
-### 4 Proguard
+## Proguard
 	
 	//udesk
 	-keep class udesk.** {*;} 
@@ -365,10 +358,9 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 	 //agora
 	-keep class io.agora.**{*;}
 
-<h1 id="4">四、Udesk SDK 自定义配置</h1>
+# Udesk SDK 自定义配置 #
 
-
-### 1 如果需要设置咨询对象，参照如下设置
+## 如果需要设置咨询对象，参照如下设置
 
       UdeskCommodityItem item = new UdeskCommodityItem();
         item.setTitle("木林森男鞋新款2016夏季透气网鞋男士休闲鞋网面韩版懒人蹬潮鞋子");// 商品主标题
@@ -383,18 +375,18 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 		发送咨询对象信息 在UdeskViewMode中调用
 		udeskViewMode.sendCommodityMessage(createCommodity());
 
-### 2 多语言设置
+## 多语言设置
 
   	LocalManageUtil.saveSelectLanguage
 
 
- ### 3 设置自定义表情的说明
+## 设置自定义表情的说明
      
 	1，自定义表情必须在assets下建立udeskemotion目录，当程序启动时，会自动将assets的udeskemotion目录下所有的贴图复制到贴图的存放位置；
 	2，udeskemotion目录下必须是 一个tab图标+一个贴图文件夹，两者必须同名 
 	具体参考demo
 
-### 4 IM中聊天功能 集成发送地理位置的信息说明
+## IM中聊天功能 集成发送地理位置的信息说明
      
 	 android 接入的第三方选择性比较多等原因，没有直接在SDK中内嵌地图SDK，由客户根据实际需要选择是否集成发送地理位置信息。
 	 提供集成地图的demo例子有：百度地图（见baidumapdemo 这个module），高德地图（gaodemapdemo）腾讯地图（tenxunmapdemo）
@@ -443,12 +435,12 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
                         context.startActivity(intent);
                     }
                 })
-### 5 IM 使用视频功能
+## IM 使用视频功能
 
     注意：需要使用视频功能，一定需要使用UdeskSDKUI IM中功能 ,但可以单独使用UdeskSDKUI功能  
 	在你的app中 在依赖udeskvideo 模块。
 
-### 6 支持自定义设置 功能按钮  具体可参考demo
+## 支持自定义设置 功能按钮  具体可参考demo
 	 .setExtreFunctions(getExtraFunctions(), new IFunctionItemClickCallBack() {
                     @Override
                     public void callBack(Context context, UdeskViewMode udeskViewMode, int id, String name) {
@@ -578,7 +570,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
         }
 
     }
-### 7 支持自定义导航栏设置 具体可参考demo
+## 支持自定义导航栏设置 具体可参考demo
  	
 	.setNavigations(set_use_navigation_view.isChecked(), getNavigations(), new INavigationItemClickCallBack() {
                     @Override
@@ -613,7 +605,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 	  
 	  支持自定义的功能 同 功能按钮  
 ***注意*** 机器人聊天自定义导航只支持文本和商品回复类型，其他类型不支持。
-### 8 发送商品回复消息 
+## 发送商品回复消息 
 
 	 private ProductListBean createReplyProduct(){
         ProductListBean productListBean=new ProductListBean();
@@ -641,9 +633,9 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 
 	udeskViewMode.getRobotApiData().onShowProductClick(createReplyProduct());
 
-### 9 发送商品消息 具体可参考demo  
+## 发送商品消息 具体可参考demo  
 	  
-	  **Product字段属性说明**
+**Product字段属性说明**
 	  
 | key           | 是否必选   | 说明         |
 | ------------- | ------ | ---------- |
@@ -661,7 +653,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 1 可以每次进入会话, 通过UdeskConfig配置,设置一条商品消息
 
 2 可以通过导航栏 自定义功能按钮  发送商品消息 
-### 10 自定义机器人满意度评价内容（人工客服满意度调查内容是在后台配置）
+## 自定义机器人满意度评价内容（人工客服满意度调查内容是在后台配置）
 	  case UdeskConst.LiveDataType.RobotSessionHasSurvey:
                             if ((boolean) mergeMode.getData()) {
                                 UdeskUtils.showToast(getApplicationContext(), getResources()
@@ -691,9 +683,9 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
         return model;
     }
 
-<h1 id="5">五、Udesk API说明</h1>
+# Udesk API说明 #
 
-### 1.获取未读消息
+## 获取未读消息
 
 在退出对话界面后，没有断开与Udesk服务器的连接，注册获取未读消息事件方法，之后在该方法中可以收到未读消息。
 
@@ -721,30 +713,30 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 	//获取未读消息
     List<MessageInfo> unReadMsgs = UdeskSDKManager.getInstance().getUnReadMessages(getApplicationContext(), PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken"));
 
-### 2 获取未读消息数
+## 获取未读消息数
 
 在退出对话界面后，没有断开与Udesk服务器的连接，可获得这个会话的未读消息数，打开对话界面后未读消息数会清空。
 
 	UdeskSDKManager.getInstance().getCurrentConnectUnReadMsgCount();
 
-### 3 控制台日志开关
+## 控制台日志开关
 
 如果开发中，想在控制台看当前客户与Udesk服务器连接（xmpp)的交互报文，调用如下接口可实现
 
 	//true 表示开启控制台日志  false表示关闭控制台日志
 	UdeskSDKManager.getInstance().isShowLog(true);
-### 4 断开与Udesk服务器连接
+## 断开与Udesk服务器连接
 
   App运行时如果需要客服离线或不再接收客服消息，调此接口可以主动断开与Udesk服务器的的连接。
 
 	UdeskSDKManager.getInstance().disConnectXmpp();
 
-### 5 设置退出排队的模式
+## 设置退出排队的模式
 
  quitmode: mark (默认,标记放弃)/  force_quit(强制立即放弃)
 
 	build.setUdeskQuenuMode(quitmode);
-### 6 资源 UI
+## 资源 UI
 
 	聊天界面UdeskChatActivity 
 	
@@ -777,20 +769,20 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 		questionMergeMode MergeMode 子类拓展 处理点击问题
 		MergeModeManager  mergedata 管理类
 
-<h1 id="6">六、消息推送</h1>
+# 消息推送 #
 
 当前仅支持一种推送方案，即Udesk务端发送消息至开发者的服务端，开发者再推送消息到 App。
-### 1 设置接收推送的服务器地址
+## 设置接收推送的服务器地址
     推送消息将会发送至开发者的服务器。
 	
 	设置服务器地址，请使用Udesk管理员帐号登录 Udesk，在 设置 -> 移动SDK 中设置。
 ![udesk](http://7xr0de.com1.z0.glb.clouddn.com/5D761252-3D9D-467C-93C9-8189D0B22424.png)	
-### 2 使用Udesk 推送功能的配置
+## 使用Udesk 推送功能的配置
 
 	配置 是否使用推送服务  true 表示使用  false表示不使用
     public  static  boolean isUserSDkPush = false;
 
-### 3 设置用户的设备唯一标识
+## 设置用户的设备唯一标识
 	UdeskSDKManager.getInstance().setRegisterId（context,"xxxxregisterId"）
      //保存注册推送的的设备ID
     public void setRegisterId(Context context, String registerId) {
@@ -799,7 +791,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
                 UdeskConst.SharePreParams.Udesk_Push_RegisterId, registerId);
     }
 关闭和开启Udesk推送服务，Udesk推送给开发者服务端的消息数据格式中，会有 device_token 的字段。
-### 4	关闭开启Udek推送服务
+## 关闭开启Udek推送服务
 	/**
      * @param domain    公司注册生成的域名
      * @param key        创建app时，生成的app key
@@ -816,7 +808,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
             e.printStackTrace();
         }
     }
-### 5 Udek推送给开发者服务端的接口说明	
+## Udek推送给开发者服务端的接口说明	
 **基本要求**
 
 - 请求已 POST 方法发送
@@ -842,7 +834,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 | event        | string   | 事件类型，'redirect' 客服转接，'close'对话关闭，'survey'发送满意度调查 |
 
 
-<h1 id="7">七、常见问题</h1>
+# 常见问题 #
 
    1. 指定客服组或者客服分配出现与指定客服组客服不一致的情况？
    
@@ -877,10 +869,9 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
     5.h5接入参考例子
     https://github.com/udesk/udesk_android_sdk_h5
 	
-<h1 id="8">八、更新记录</h1>
+# 更新记录 #
 
-### 更新日志 ###
-### sdk v5.0.0版本更新功能: ###
+## sdk v5.0.0版本更新功能: ##
 
 1.支持原生机器人
 
@@ -891,13 +882,13 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 4.采用AAC框架 
 
 5.添加语音识别功能
-### 4.1.1 修复内容
+## 4.1.1 修复内容
 1. 修复sdk排队中点击留言还在排队中；
 2. 修复排队发送文本消息后，更多得按钮隐藏了；
 3. 修复发送商品消息在客服端没显示；
 4. 优化消息的发送到达；（离开会话界面，有未收到回执的消息，会放入单例中发送）
 
-### 4.1.0+
+## 4.1.0+
 1. 支持排队时发送消息
 2. 替换表情
 3. 支持机器人  管理员配置名称
@@ -907,21 +898,21 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 7. 修改录音文件格式wav，提高客服语音转文字的准确率
 8. 优化无消息对话过滤消息保存
 
-### 4.0.5+ 
+## 4.0.5+ 
 1. 消息发送优化;
 2. 支持机器人key;
 3. 机器人SDK自动转人工事件
 
-### 4.0.4+ 
+## 4.0.4+ 
 1. 优化消息id的生成
 
-### 4.0.3+
+## 4.0.3+
 1. rtl的优化
 
-### 4.0.1+
+## 4.0.1+
 1. 支持商品消息
 
-### 4.0.0+
+## 4.0.0+
 1. SDK组片图件优化;  
 
 2. SDK支持小视频;
@@ -958,123 +949,131 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 
 18. sdk 发送图片加上图片后缀;
 
-### 3,9+ 
+## 3,9+ 
 1. 消息到达率优化 
 2. 支持视频聊天
 
-### 3.8.0+
+## 3.8.0+
 1. 支持发送地理位置信息
 
-### 3.7.1+
+## 3.7.1+
 1. 欢迎语显示优化
 
-### 3.7.0+
+## 3.7.0+
 1. 支持离线直接留言;
 2. SDK支持返回满意度调查和支持开关设置;
 3. SDK支持接收和发送GIF;
 4. SDK支持接收和发送视频;
 5. SDK支持客服消息撤回
 
-### 3.6.0+
+## 3.6.0+
 1. sdk增加显示结构化消息
 2. 增加黑名单提示语
 
-### 3.5.0 + 
+## 3.5.0 + 
 1. sdk初始化的方法修改为 initApiKey(Context context, String domain, String appkey, String appid)
 2. 接入会话的方式修改 统一调用entryChat(Context context)，内部处理了根据管理员在后台设置进行相应的业务流程跳转
 3. 之前提供的一些接入会话方式接口删除，统一使用见entryChat(Context context) 
 
-### 3.4.0 +
+## 3.4.0 +
 1. 支持推送，
 2. 支持多应用
 
-### 3.3.2+
+## 3.3.2+
 1. http协议换成https
 
 2. 增加sdk端 客户主动放弃满意度调查
 
-### 3.3.1+
+## 3.3.1+
 1. 适配android7.0
 
-### 3.3+ 
+## 3.3+ 
 1. 适配中英文，
 2. 增加UI配置，
 3. 修改连接会话的逻辑，
 4. 增加头像的配置，
 5. 界面UI的修改
 
-### 3.2.1+
+## 3.2.1+
 1. 支持黑名单的设置;
 2. 客服在线状态优化;
 3. 修复已离线的客户在手机端显示在线的；
 4. 支持客服头像， 支持显示发送每条消息的客服昵称；
 5. 支持更新用户的信息；
 
-### 3.2.0 +
+## 3.2.0 +
 1. 增加发送商品链接，
 2. 增加消息通知
 3. 增加未读消息的接口
 4. 增加android 6.0 运行权限
 
-### 3.1+ 
+## 3.1+ 
 1. 支持欢迎语设置链接
 2. 支持后台设置自定义链接
 3. 支持指定客服 id 进行分配
 4. 指定客服组 id 进行分配
 
-### 3.0+
+## 3.0+
 1. 新增客服转移和邀请评价功能
 
 
-<h1 id="9">九、部分功能截图</h1>
+# 部分功能截图 #
 
-### 1.原生机器人 ###
+## 原生机器人 ##
 ![udesk](http://qn-im.udesk.cn/image_1554795197_196.png?imageMogr2/auto-orient)
-##### 后台配置 #####
+
+**后台配置**
+
 ![udesk](http://qn-im.udesk.cn/%E6%9C%BA%E5%99%A8%E4%BA%BA_1554859742_673.png?imageMogr2/auto-orient/)
-### 2.输入联想 ###
+## 输入联想 ##
 ![udesk](http://qn-public.udesk.cn/667521150399125915804ae4c2c-9fff-4faf-a8c1-692eeab01c24_a2927d95d64c169fe7207af35fb65d62_upload.jpg)
-### 3.语音识别 ###
+## 语音识别 ##
 ![udesk](http://qn-public.udesk.cn/667521150399125915953572dc9-0f5d-4ee0-afe6-63c155318ebe_ed0c33dfe9439aa916444f60539ec53a_upload.jpg)
-### 4.三方会话 ###
+## 三方会话 ##
 ![udesk](http://qn-im.udesk.cn/image_1554796278_175.png?imageMogr2/auto-orient%3E)
-### 5.商品链接 自定义导航及服务评价 自定义表情 ###
+## 商品链接 自定义导航及服务评价 自定义表情 ##
 ![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554803534_500.png?imageMogr2/auto-orient/%3E)
-### 6.自定义按钮 ###
+## 自定义按钮 ##
 ![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554803735_637.png?imageMogr2/auto-orient/%3E)
-### 7.转人工导航设置 ###
+## 转人工导航设置 ##
 ![udesk](http://qn-public.udesk.cn/667782297295624605007225530-427c-4995-9d80-cd1eae597912_8921c0b36b5c6b06d7d1707884285080_upload.jpg?imageMogr2/auto-orient/)
-##### 后台配置 #####
+
+**后台配置**
+
 ![后台配置](http://qn-im.udesk.cn/11111_1554803134_488.jpg?imageMogr2/auto-orient/%3E)
-### 8.表单留言 ###
+## 表单留言 ##
 ![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554803920_860.png?imageMogr2/auto-orient)
 ![udesk](http://qn-public.udesk.cn/667782297295624605267b1134e-8935-437f-8327-123f500ca74b_cad93b0de4c60075f08f5ad081f05e19_upload.jpg?imageMogr2/auto-orient/)
-### 9.直接留言 ###
+## 直接留言 ##
 ![udesk](http://qn-public.udesk.cn/667782297295624605592ee242a-6dbc-472a-b741-e8666642712f_2f0b7f6ffac2ab1ba4866f35c6946b57_upload.jpg?imageMogr2/auto-orient)
-##### 后台配置 #####
+
+**后台配置**
+
 ![后台配置](http://qn-im.udesk.cn/%E7%95%99%E8%A8%80_1554804116_771.jpg?imageMogr2/auto-orient)
-### 10.满意度评价 ###
+## 满意度评价 ##
 ![udesk](http://qn-public.udesk.cn/6677822972956246049a403c35c-ffa3-431a-8749-171a997eca4b_64011a5f3d16dd6c54b3e067f60a938b_upload.jpg?imageMogr2/auto-orient)
-### 11.无消息对话过滤 ###
+## 无消息对话过滤 ##
 ![udesk](http://qn-public.udesk.cn/6677822972956246053d7d398a2-ce59-4c9a-a6a4-4e48a454523a_642c49230fd6f95c10eb7f1ede237933_upload.jpg?imageMogr2/auto-orient/%3E)
-##### 后台配置 #####
+
+**后台配置**
+
 ![后台配置](http://qn-im.udesk.cn/%E6%97%A0%E6%B6%88%E6%81%AF_1554804585_561.jpg?imageMogr2/auto-orient)
-### 12.消息类型展示 ###
-##### 商品消息 地图 文件 小视频类型 #####
+## 消息类型展示 ##
+### 商品消息 地图 文件 小视频类型 ###
 ![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554874972_482.png?imageMogr2/auto-orient/)
-##### 富文本 图文带推荐消息 #####
+### 富文本 图文带推荐消息 ###
 ![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554875445_398.png?imageMogr2/auto-orient)
-##### 纯文本 流程消息 #####
+### 纯文本 流程消息 ###
 ![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554875651_102.png?imageMogr2/auto-orient)
-##### 商品选择 商品回复 #####
+### 商品选择 商品回复 ###
 ![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554875805_806.png?imageMogr2/auto-orient/)
-##### 问题带推荐 推荐带分类 #####
+### 问题带推荐 推荐带分类 ###
 ![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554875975_407.png?imageMogr2/auto-orient/)
-##### 图片 链接 语音消息 转人工提示 答案评价 #####
+### 图片 链接 语音消息 转人工提示 答案评价 ###
 ![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554876248_214.png?imageMogr2/auto-orient/)
-##### 转接 结构化消息 #####
+### 转接 结构化消息 ###
 ![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554876415_486.png?imageMogr2/auto-orient/)
-##### 转人工 留言事件 #####
+### 转人工 留言事件 ###
 ![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554876592_867.png?imageMogr2/auto-orient/)
-##### 视频直播 #####
+### 视频直播 ###
 ![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/image_1554878719_504.png?x-oss-process=image/auto-orient,1/)
