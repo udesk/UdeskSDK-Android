@@ -43,8 +43,8 @@
     <string name="location_denied">Refused map authrity，can not send location</string>
     <string name="photo_denied">Refused storage authrity, can not get your photos</string>
     <string name="add_bolcked_tips">Sorry, you are in blacklist</string>
-    <string name="udesk_agent_connecting">Aagent connecting&#8230;</string>
-    <string name="udesk_agent_inti">Aagent connecting,please wait&#8230;</string>
+    <string name="udesk_agent_connecting">Agent connecting&#8230;</string>
+    <string name="udesk_agent_inti">Agent connecting,please wait&#8230;</string>
     <string name="udesk_agent_connecting_error_net_uavailabl">Failed connection, please try later!</string>
 
     <string name="udesk_edit_hint_msg">Typing...</string>
