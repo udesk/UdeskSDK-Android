@@ -1880,7 +1880,8 @@ public class ChatActivityPresenter {
                 queueMessageSave(message);
                 return;
             }
-            if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_TEXT) || message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_Location)) {
+            if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_TEXT) || message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_Location)
+                    || message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_PRODUCT)) {
                 messageSave(message);
             } else if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_IMAGE)
                     || message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_AUDIO)
