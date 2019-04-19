@@ -797,7 +797,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                         getResources().getString(R.string.udesk_has_wrong_net));
                 return false;
             }
-            if (udeskChatActivity.curentStatus.equals(UdeskConst.Status.over)) {
+            if (udeskChatActivity.curentStatus.equals(UdeskConst.Status.over)||udeskChatActivity.initCustomer==null) {
                 udeskChatActivity.reCreateIMCustomerInfo();
                 return false;
             }

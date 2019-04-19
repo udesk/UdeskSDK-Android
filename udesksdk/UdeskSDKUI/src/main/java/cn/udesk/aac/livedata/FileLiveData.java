@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -189,104 +190,108 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
     private void aliUpload(final String url, final String filePath, final String accessid, final String bucket, final String policy,
                            final String signature, final String dir,
                            final String expire, final String fileName, final MessageInfo messageInfo,String referer) {
-
-        if (okHttpClient == null) {
-            okHttpClient = new OkHttpClient.Builder().addInterceptor
-                    (new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)).build();
-        }
-        File file = new File(filePath);
-        final String alikey = dir + fileName;
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        builder.addFormDataPart("key", alikey);
-        builder.addFormDataPart("OSSAccessKeyId", accessid);
-        builder.addFormDataPart("bucket", bucket);
-        builder.addFormDataPart("policy", policy);
-        builder.addFormDataPart("Signature", signature);
-        builder.addFormDataPart("expire", expire);
-        addCustomRequestBody(builder,file, messageInfo, fileName);
-        Call call = getCall(url, messageInfo, builder,referer);
-        call.enqueue(new okhttp3.Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                uploadFailure(messageInfo);
+        try{
+            if (okHttpClient == null) {
+                okHttpClient = new OkHttpClient.Builder().addInterceptor
+                        (new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)).build();
             }
-
-            @Override
-            public void onResponse(Call call, Response response){
-
-                try {
-                    if (response.code() == 204
-                            || response.code() == 200
-                            || response.code() == 201
-                            || response.code() == 202
-                            || response.code() == 205){
-                        concurrentHashMap.remove(messageInfo.getMsgId());
-                        String temp = url;
-                        if (!temp.endsWith("/")) {
-                            temp += "/";
-                        }
-                        temp = temp + alikey;
-                        UdeskDBManager.getInstance().updateMsgContent(messageInfo.getMsgId(), temp);
-                        messageInfo.setMsgContent(temp);
-                        addMessage(messageInfo);
-                        return;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+            File file = new File(filePath);
+            final String alikey = dir + fileName;
+            MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+            builder.addFormDataPart("key", URLEncoder.encode(alikey,"UTF-8"));
+            builder.addFormDataPart("OSSAccessKeyId", accessid);
+            builder.addFormDataPart("bucket", bucket);
+            builder.addFormDataPart("policy", policy);
+            builder.addFormDataPart("Signature", signature);
+            builder.addFormDataPart("expire", expire);
+            addCustomRequestBody(builder,file, messageInfo, fileName);
+            Call call = getCall(url, messageInfo, builder,referer);
+            call.enqueue(new okhttp3.Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    uploadFailure(messageInfo);
                 }
-                uploadFailure(messageInfo);
-            }
-        });
 
+                @Override
+                public void onResponse(Call call, Response response){
+
+                    try {
+                        if (response.code() == 204
+                                || response.code() == 200
+                                || response.code() == 201
+                                || response.code() == 202
+                                || response.code() == 205){
+                            concurrentHashMap.remove(messageInfo.getMsgId());
+                            String temp = url;
+                            if (!temp.endsWith("/")) {
+                                temp += "/";
+                            }
+                            temp = temp + alikey;
+                            UdeskDBManager.getInstance().updateMsgContent(messageInfo.getMsgId(), temp);
+                            messageInfo.setMsgContent(temp);
+                            addMessage(messageInfo);
+                            return;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    uploadFailure(messageInfo);
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void qiNiuUpload(final String url, final String filePath, final String token, final String bucket,
                              final MessageInfo messageInfo, final String fileName,String referer) {
-
-        if (okHttpClient == null) {
-            okHttpClient = new OkHttpClient();
-        }
-        File file = new File(filePath);
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        builder.addFormDataPart("key", messageInfo.getMsgId() + "_" + fileName);
-        builder.addFormDataPart("token", token);
-        builder.addFormDataPart("bucket", bucket);
-        addCustomRequestBody(builder,file, messageInfo, fileName);
-        Call call = getCall(url, messageInfo, builder,referer);
-        call.enqueue(new okhttp3.Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                uploadFailure(messageInfo);
+        try{
+            if (okHttpClient == null) {
+                okHttpClient = new OkHttpClient();
             }
+            File file = new File(filePath);
+            MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+            builder.addFormDataPart("key", messageInfo.getMsgId() + "_" + URLEncoder.encode(fileName,"UTF-8"));
+            builder.addFormDataPart("token", token);
+            builder.addFormDataPart("bucket", bucket);
+            addCustomRequestBody(builder,file, messageInfo, fileName);
+            Call call = getCall(url, messageInfo, builder,referer);
+            call.enqueue(new okhttp3.Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    uploadFailure(messageInfo);
+                }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
 
-                concurrentHashMap.remove(messageInfo.getMsgId());
-                String string = response.body().string();
-                if (!TextUtils.isEmpty(string)) {
-                    try {
-                        Log.i("UdeskSdk", "onsuccess strng=" + string);
-                        JSONObject jsonObject = new JSONObject(string);
-                        String key = jsonObject.optString("key");
-                        StringBuilder builder = new StringBuilder();
-                        if (bucket.equals("udesk")) {
-                            builder.append("https://qn-private.udesk.cn/").append(key).append("?attname=");
-                        } else if (bucket.equals("udeskpub")) {
-                            builder.append("https://qn-public.udesk.cn/").append(key);
-                        } else if (bucket.equals("udeskim")) {
-                            builder.append("https://qn-im.udesk.cn/").append(key);
+                    concurrentHashMap.remove(messageInfo.getMsgId());
+                    String string = response.body().string();
+                    if (!TextUtils.isEmpty(string)) {
+                        try {
+                            Log.i("UdeskSdk", "onsuccess strng=" + string);
+                            JSONObject jsonObject = new JSONObject(string);
+                            String key = jsonObject.optString("key");
+                            StringBuilder builder = new StringBuilder();
+                            if (bucket.equals("udesk")) {
+                                builder.append("https://qn-private.udesk.cn/").append(key).append("?attname=");
+                            } else if (bucket.equals("udeskpub")) {
+                                builder.append("https://qn-public.udesk.cn/").append(key);
+                            } else if (bucket.equals("udeskim")) {
+                                builder.append("https://qn-im.udesk.cn/").append(key);
+                            }
+                            UdeskDBManager.getInstance().updateMsgContent(messageInfo.getMsgId(), builder.toString());
+                            messageInfo.setMsgContent(builder.toString());
+                            addMessage(messageInfo);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        UdeskDBManager.getInstance().updateMsgContent(messageInfo.getMsgId(), builder.toString());
-                        messageInfo.setMsgContent(builder.toString());
-                        addMessage(messageInfo);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
                 }
-            }
-        });
-
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void uploadFailure(MessageInfo messageInfo) {
@@ -315,24 +320,26 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
 
     @NonNull
     private  void addCustomRequestBody (MultipartBody.Builder builder,  File file ,final MessageInfo messageInfo, String fileName) {
-
-        builder.addFormDataPart("file", fileName, createCustomRequestBody(file, new ProgressListener() {
-            @Override
-            public void onProgress(long totalBytes, long remainingBytes, boolean done) {
-                try {
-                    if (done) {
-                        return;
+        try {
+            builder.addFormDataPart("file", URLEncoder.encode(fileName,"UTF-8"), createCustomRequestBody(file, new ProgressListener() {
+                @Override
+                public void onProgress(long totalBytes, long remainingBytes, boolean done) {
+                    try {
+                        if (done) {
+                            return;
+                        }
+                        float percent = (totalBytes - remainingBytes) * 100 / totalBytes;
+                        int progress = Float.valueOf(percent).intValue();
+                        messageInfo.setPrecent(progress);
+                        fileProgress(messageInfo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    float percent = (totalBytes - remainingBytes) * 100 / totalBytes;
-                    int progress = Float.valueOf(percent).intValue();
-                    messageInfo.setPrecent(progress);
-                    fileProgress(messageInfo);
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-            }
-        }));
-
+            }));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static RequestBody createCustomRequestBody(final File file, final ProgressListener listener) {

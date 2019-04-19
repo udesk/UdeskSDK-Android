@@ -61,15 +61,15 @@ import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.aac.MergeMode;
 import cn.udesk.aac.MergeModeManager;
-import cn.udesk.aac.QuestionMergeMode;
 import cn.udesk.aac.UdeskViewMode;
+import cn.udesk.aac.QuestionMergeMode;
 import cn.udesk.adapter.MessageAdatper;
 import cn.udesk.adapter.TipAdapter;
 import cn.udesk.callback.IUdeskHasSurvyCallBack;
 import cn.udesk.camera.UdeskCameraActivity;
+import cn.udesk.config.UdeskConfigUtil;
 import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
-import cn.udesk.config.UdeskConfigUtil;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.emotion.IEmotionSelectedListener;
 import cn.udesk.emotion.LQREmotionKit;
@@ -79,13 +79,21 @@ import cn.udesk.fragment.UdeskbaseFragment;
 import cn.udesk.itemview.BaseViewHolder;
 import cn.udesk.messagemanager.UdeskXmppManager;
 import cn.udesk.model.AgentGroupNode;
-import cn.udesk.model.Customer;
 import cn.udesk.model.ImSetting;
-import cn.udesk.model.InitCustomerBean;
 import cn.udesk.model.Robot;
+import cn.udesk.widget.RecycleViewDivider;
+import udesk.core.model.AllMessageMode;
 import cn.udesk.model.SurveyOptionsModel;
 import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.model.UdeskQueueItem;
+import cn.udesk.model.Customer;
+import cn.udesk.model.InitCustomerBean;
+import udesk.core.model.Content;
+import udesk.core.model.DataBean;
+import udesk.core.model.LogBean;
+import udesk.core.model.ProductListBean;
+import udesk.core.model.RobotInit;
+import udesk.core.model.RobotTipBean;
 import cn.udesk.permission.RequestCode;
 import cn.udesk.permission.XPermissionUtils;
 import cn.udesk.photoselect.PhotoSelectorActivity;
@@ -93,7 +101,6 @@ import cn.udesk.photoselect.entity.LocalMedia;
 import cn.udesk.voice.RecordFilePlay;
 import cn.udesk.voice.RecordPlay;
 import cn.udesk.voice.RecordPlayCallback;
-import cn.udesk.widget.RecycleViewDivider;
 import cn.udesk.widget.UDPullGetMoreListView;
 import cn.udesk.widget.UdeskConfirmPopWindow;
 import cn.udesk.widget.UdeskConfirmPopWindow.OnPopConfirmClick;
@@ -106,15 +113,8 @@ import udesk.core.JsonObjectUtils;
 import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.model.AgentInfo;
-import udesk.core.model.AllMessageMode;
-import udesk.core.model.Content;
-import udesk.core.model.DataBean;
-import udesk.core.model.LogBean;
 import udesk.core.model.MessageInfo;
 import udesk.core.model.Product;
-import udesk.core.model.ProductListBean;
-import udesk.core.model.RobotInit;
-import udesk.core.model.RobotTipBean;
 import udesk.core.utils.UdeskIdBuild;
 import udesk.core.utils.UdeskUtils;
 
@@ -201,8 +201,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     private LinearLayout mLlAssociate;
     private int robotSengMsgCount = 0;
 
-
-    InitCustomerBean initCustomer;
+    public InitCustomerBean initCustomer;
     public ImSetting imSetting;
     Robot robot;
     public String curentStatus = UdeskConst.Status.init;
@@ -213,7 +212,6 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     private boolean isShowNet = false;
     private Map<String, Boolean> usefulMap = new ConcurrentHashMap<>();//有用
     private Map<String, Boolean> transferMap = new ConcurrentHashMap<>();//转人工
-    //    private boolean isFirstLoad=true;
     private List<ProductListBean> randomList = new ArrayList<>();
     private UdeskSurvyPopwindow udeskSurvyPopwindow;
 
@@ -228,7 +226,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 boolean netWorkAvailable = UdeskUtils.isNetworkConnected(context);
                 if (netWorkAvailable) {
                     if (!currentStatusIsOnline && isNeedRelogin) {
-                        if (isblocked.equals("true") || !isWorkTime()) {
+                        if (isblocked.equals("true")) {
                             return;
                         }
                         if (isShowNet) {
@@ -322,8 +320,8 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 //失败  结束流程， 走留言提示
                 showFailToast("");
                 curentStatus = UdeskConst.Status.failure;
-                setTitlebar(getString(R.string.udesk_ok), off);
                 initFragment(UdeskConst.CurrentFragment.agent);
+                setTitlebar(getString(R.string.udesk_label_customer_offline), off);
                 return;
             }
             if (!TextUtils.isEmpty(initCustomer.getUploadService().getReferer())) {
@@ -352,12 +350,6 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 }
             }
             initFragment(UdeskConst.CurrentFragment.agent);
-            //进入人工客服判断  非工作时间 结束后续流程
-            if (!isWorkTime()) {
-                curentStatus = UdeskConst.Status.notWorkingTime;
-                setTitlebar(getString(R.string.udesk_label_customer_offline), off);
-                return;
-            }
             if (curentStatus.equals(UdeskConst.Status.chatting)) {
                 //会话中 直接请求分配客服
                 udeskViewMode.getApiLiveData().getAgentInfo(null, null);
@@ -584,6 +576,8 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                             curentStatus = UdeskConst.Status.over;
                             setTitlebar(getResources().getString(R.string.udesk_close_chart), off);
                             isMoreThan20 = false;
+                            UdeskSDKManager.getInstance().disConnectXmpp();
+                            currentStatusIsOnline=false;
                             break;
                         // 发送消息增加到页面上，不break，共用收到消息刷新?
                         case UdeskConst.LiveDataType.AddMessage:
@@ -921,7 +915,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                                 mListView.smoothScrollToPosition(mChatAdapter.getCount());
                                 robotSengMsgCount++;
                                 showTranferAgent();
-                                udeskViewMode.getRobotApiData().robotHit(flowInfo.getMsgId(), flowInfo.getLogId(), ((QuestionMergeMode) mergeMode).getQuestion(), ((QuestionMergeMode) mergeMode).getQuestionId(), ((QuestionMergeMode) mergeMode).getQueryType());
+                                udeskViewMode.getRobotApiData().robotFlow(flowInfo.getMsgId(), flowInfo.getLogId(), ((QuestionMergeMode) mergeMode).getQuestionId(),((QuestionMergeMode) mergeMode).getQuestion());
                             }
                             break;
 
@@ -1043,12 +1037,6 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 initFragment(UdeskConst.CurrentFragment.agent);
                 if (robot != null && robot.getEnable()) {
                     udeskViewMode.getRobotApiData().robotTransfer();
-                }
-                //进入人工客服判断
-                if (!isWorkTime()) {
-                    curentStatus = UdeskConst.Status.notWorkingTime;
-                    setTitlebar(getString(R.string.udesk_label_customer_offline), off);
-                    return;
                 }
                 if (!isBlocked(customer)) {
                     initAgentInfo();
@@ -1292,9 +1280,6 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             if (!isWorkTime()) {
                 return;
             }
-//            if (!isSurvyOperate && !UdeskXmppManager.getInstance().isConnection()) {
-//                udeskViewMode.getApiLiveData().initCustomer(getApplicationContext());
-//            }
             if (mAgentInfo != null && isOpenVideo()) {
                 UdeskUtil.sendVideoMessage(imSetting, mAgentInfo, getApplicationContext());
             }
@@ -1665,6 +1650,9 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             double size = UdeskUtils.getFileSize(new File(path));
             if (size >= 30 * 1024 * 1024) {
                 UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.udesk_file_to_large));
+                return;
+            }else if (size==0){
+                UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.udesk_file_not_exist));
                 return;
             }
             if (path.contains(".mp4")) {

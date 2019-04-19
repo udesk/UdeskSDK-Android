@@ -378,12 +378,14 @@ public class UdeskViewMode extends ViewModel {
     //点击失败按钮 重试发送消息
     public void startRetryMsg(MessageInfo message) {
         try {
-            if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_TEXT) || message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_Location)) {
+            if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_TEXT) || message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_Location)
+                    || message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_PRODUCT)) {
                 postMessage(message, UdeskConst.LiveDataType.AddMessage);
             } else if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_IMAGE)
                     || message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_AUDIO)
                     || message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_File)
-                    || message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_SHORT_VIDEO)) {
+                    || message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_SHORT_VIDEO)
+                    || message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_VIDEO)) {
                 postMessage(message, UdeskConst.LiveDataType.AddFileMessage);
             }
         } catch (Exception e) {

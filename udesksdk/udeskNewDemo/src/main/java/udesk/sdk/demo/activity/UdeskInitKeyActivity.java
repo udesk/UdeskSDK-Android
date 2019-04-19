@@ -112,7 +112,7 @@ public class UdeskInitKeyActivity extends Activity {
                     //  使用前需要设置的信息:
                     UdeskSDKManager.getInstance().initApiKey(getApplicationContext(), mDomainEdit.getText().toString(),
                             mKeyEdit.getText().toString(), mAppidEdit.getText().toString());
-                    UdeskConst.HTTP = "http://";
+//                    UdeskConst.HTTP = "http://";
                     sdkToken = stoken.getText().toString();
                     PreferenceHelper.write(getApplicationContext(), "init_base_name", "sdktoken", sdkToken);
                     PreferenceHelper.write(getApplicationContext(), "init_base_name", "domain", mDomainEdit.getText().toString());

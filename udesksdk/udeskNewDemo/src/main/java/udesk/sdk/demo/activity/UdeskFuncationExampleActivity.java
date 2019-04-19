@@ -360,7 +360,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
     }
     private Product createProduct() {
         Product product = new Product();
-        product.setImgUrl("http://img12.360buyimg.com/n1/s450x450_jfs/t10675/253/1344769770/66891/92d54ca4/59df2e7fN86c99a27.jpg");
+        product.setImgUrl("https://img12.360buyimg.com/n1/s450x450_jfs/t10675/253/1344769770/66891/92d54ca4/59df2e7fN86c99a27.jpg");
         product.setName(" Apple iPhone X (A1903) 64GB 深空灰色 移动联通4G手机");
         product.setUrl("https://item.jd.com/6748052.html");
 
