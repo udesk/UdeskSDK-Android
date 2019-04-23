@@ -1,16 +1,6 @@
 # UdeskSDK Android 4.1.0+ 开发者文档
 
-## 目录 ##
-- [一、特别提醒](#1)
-- [二、快速接入](#2)
-- [三、SDK中功能项说明](#3)
-- [四、常见问题](#4)
-- [五、Udesk SDK API说明](#5)
-- [六、离线消息推送](#6)
-- [七、更新日志](#7)
-- [八、部分功能截图说明](#8)
-
-<h1 id="1">一、特别提醒</h>
+# 特别提醒
 
 ### SDK 表单留言模式下 配置工单客户字段 需要特别注意，
 
@@ -43,7 +33,6 @@
 ### customer_token， sdk_token 仅支持字母、数字及下划线,禁用特殊字符
 
 ### 特别注意  注意 注意
-
     创建用户的基本信息(setDefualtUserInfo(Map<String, String> defualtUserInfo)) 
 	和 更新用户的基本信息不能共用(setUpdateDefualtUserInfo(Map<String, String> updateDefualtUserInfo))
 	
@@ -52,13 +41,27 @@
 	
 	demo中的 NotificationUtils，状态通知栏没有做 Android O通知栏适配， 你在实现targetSdkVersion 大于26时， 必须做对应的通知栏适配，
 	不可以用NotificationUtils  处理方式
+	
+### 4.1.5 修复内容 
+    1 优化保存消息返回8002，表示会话已经关闭的处理
+	2 适配某些手机9.0手机 长按发送语音时MotionEvent事件返回特殊，导致弹框未消失，产生卡顿在录音弹框的现象。
+
+
+### 4.1.4 修复内容 
+    1.排队场景 发送图片 客服显示问题修复
+	2.排队场景， 拉对话关闭对话场景下 无法发送语音和表情失败的修复
+	3.开发者选项 打开保护活动 在使用流量情况下不能发送文件修复
+	4 客服忙碌 排队，客服在切换离线，客户这边显示离线后， 客服在上线，拉入排队会话  客服发消息 客户收到 无法发送消息修复
+	5 空指针隐患的保护
+	6 其它优化
+
 
 
 [下载地址](https://github.com/udesk/UdeskSDK-Android/tree/master)
 
-<h1 id="2">二、快速接入</h>
+## 快速接入
  
-### 1.初始管理员后台创建应用是生成的对应app key 和 app id
+  ### 1.初始管理员后台创建应用是生成的对应app key 和 app id
    
    ``` java
       UdeskSDKManager.getInstance().initApiKey(context, "you domain","App Key","App Id");
@@ -99,40 +102,7 @@
 | description   | 可选     | 用户描述       |
   
   
-
-**导入集成**
-
-你所要做的是把UdeskSDKUI做为独立的module import, 并在你APP build.gradle文件中加入：
-
-	dependencies {
-	    compile project(':UdeskSDKUI')
-	}
-
-
-**初始化客户逻辑**
-
-	1使用主键 sdk_token customer_token email cellphone 依次查找用户,找到转1.1
-	     1.1 设找到的用户为customer
-	     1.2 如果有 sdk_token 参数并且不与 customer中原有的sdk_token相同, go 1.2.1
-	     1.2.1 更新用户主键及附加信息
-	     1.3 更新 device
-	2创建用户 email 没有会默认生成
-	3创建用户 device
-	4如果转入 customer_token 但以当前 customer.open_api_token 不同,也不与其它客户冲突,更新 customer_token 到客户 open_api_token 字段
-	
-	
-	创建用户失败返回的常见错误
-	   wrong_subdomain: {code: "2001" , message: "子域名错误"},
-	   no_sdktoken: {code: "2003" , message: "用户token错误"},
-	   wrong_sign: {code: "3001" , message: "签名错"},
-	   agent: {code: "5050" , message: "客服不存在"},
-	   user_group: {code: "5060" , message: "客服组不存在"}   
-	   validate_error: {:code=>"2004", :message=>"验证错", :exception=>"Validation failed: Email is invalid"}
-	   exception 中会带有具体验证错误信息 
-	
-**注意sdktoken** 是客户的唯一标识，用来识别身份，**sdk_token: 传入的字符请使用 字母 / 数字 字符集**  。就如同身份证一样，不允许出现一个身份证号对应多个人，或者一个人有多个身份证号;**其次**如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客。  **完成了以上操作，接下来就可以使用UdeskSDK的其它功能了，祝你好运！**
-	
-	  
+  
   
 **UdeskConfig内部类Builder的说明**
 
@@ -404,10 +374,9 @@
 
 [demo下载](https://s.beta.myapp.com/myapp/rdmexp/exp/file2/2018/11/26/udesksdkdemo_1.0_032e649f-e3ce-568d-8524-46fd7cb55fbe.apk)
 
-<h1 id="3">三、SDK中功能项说明</h>
+### SDK中功能项说明
 
-
-###  设置自定义表情的说明
+ ###  设置自定义表情的说明
      
 	1，自定义表情必须在assets下建立udeskemotion目录，当程序启动时，会自动将assets的udeskemotion目录下所有的贴图复制到贴图的存放位置；
 	2，udeskemotion目录下必须是 一个tab图标+一个贴图文件夹，两者必须同名 
@@ -569,38 +538,81 @@
 2 可以通过导航栏 自定义功能按钮  发送商品消息 
 
   
-<h1 id="4">四、常见问题</h>	
 	
-### 1. 指定客服组或者客服分配出现与指定客服组客服不一致的情况？
-	先要确认客服没有关闭会话。
-	我们产品逻辑： 假设客户A   选了客服组B下的客服B1，进行会话。  之后客户A退出会话界面，进入另外界面，之后通过客服组C下的客服C 1分配会话：  这时      后台会判断，如果和B1会话还存在，则会直接分配给B1，而不会分配給客服C 1。  只有B1会话关闭了，才会分配給客服C1。 
-	     
-### 2.出现在不同客户分配的会话在一个会话中?
-	   
-	      出现这种情况，是客服传的sdktoken值一样。 sdktoken像身份证一样，是用户唯一的标识。让客户检查接入是传入的sdktoken值。
-	      如果设置了email 或者 cellphone  出现相同也会在一个客服的会话里。
-	   
-### 3.某个手机打不开机器人页面？
-	   
-	     这个问题的可能情况之一： 手机时间设置和当前时间不一致造成的。时间误差超过一小时，必然会出现链接不上机器人界面。
-	     
-### 4.集成sdk后出现找不到类的错误？
-	   
-	     检查是否加分包策略：
-	      由于Android的Gradle插件在Android Build Tool 21.1开始支持使用multidex，所以我们需要使用Android Build Tools 21.1及以上版本，修改app目录下       的build.gradle文件，有两点需要修改。
-	     （1）在defaultConfig中添加multiDexEnabled true这个配置项。 
-	     （2）在dependencies中添加multidex的依赖： compile ‘com.android.support:multidex:1.0.0’
-	     （3）继承Application，然后重写attachBaseContext方法，并在AndroidManifest.xml的application标签中进行注册。
-	    
-	          @Override
-	   	 protected void attachBaseContext(Context base) {
-	     	     super.attachBaseContext(base);
-	      	     MultiDex.install(this);
-		  }
-	     
-	    5.h5接入参考例子
-	    https://github.com/udesk/udesk_android_sdk_h5
-		
+## 常见问题
+
+``` java
+   1. 指定客服组或者客服分配出现与指定客服组客服不一致的情况？
+   
+     先要确认客服没有关闭会话。
+     我们产品逻辑： 假设客户A   选了客服组B下的客服B1，进行会话。  之后客户A退出会话界面，进入另外界面，之后通过客服组C下的客服C 1分配会话：  这时      后台会判断，如果和B1会话还存在，则会直接分配给B1，而不会分配給客服C 1。  只有B1会话关闭了，才会分配給客服C1。 
+     
+   2.出现在不同客户分配的会话在一个会话中?
+   
+      出现这种情况，是客服传的sdktoken值一样。 sdktoken像身份证一样，是用户唯一的标识。让客户检查接入是传入的sdktoken值。
+      如果设置了email 或者 cellphone  出现相同也会在一个客服的会话里。
+   
+   3.某个手机打不开机器人页面？
+   
+     这个问题的可能情况之一： 手机时间设置和当前时间不一致造成的。时间误差超过一小时，必然会出现链接不上机器人界面。
+     
+   4.集成sdk后出现找不到类的错误？
+   
+     检查是否加分包策略：
+      由于Android的Gradle插件在Android Build Tool 21.1开始支持使用multidex，所以我们需要使用Android Build Tools 21.1及以上版本，修改app目录下       的build.gradle文件，有两点需要修改。
+     （1）在defaultConfig中添加multiDexEnabled true这个配置项。 
+     （2）在dependencies中添加multidex的依赖： compile ‘com.android.support:multidex:1.0.0’
+     （3）继承Application，然后重写attachBaseContext方法，并在AndroidManifest.xml的application标签中进行注册。
+    
+          @Override
+   	 protected void attachBaseContext(Context base) {
+     	     super.attachBaseContext(base);
+      	     MultiDex.install(this);
+	  }
+     
+    5.h5接入参考例子
+    https://github.com/udesk/udesk_android_sdk_h5
+	
+   
+  
+``` 
+
+
+## 导入集成
+
+你所要做的是把UdeskSDKUI做为独立的module import, 并在你APP build.gradle文件中加入：
+
+``` java
+dependencies {
+    compile project(':UdeskSDKUI')
+}
+
+```
+### 初始化客户逻辑
+
+``` java
+1使用主键 sdk_token customer_token email cellphone 依次查找用户,找到转1.1
+     1.1 设找到的用户为customer
+     1.2 如果有 sdk_token 参数并且不与 customer中原有的sdk_token相同, go 1.2.1
+     1.2.1 更新用户主键及附加信息
+     1.3 更新 device
+2创建用户 email 没有会默认生成
+3创建用户 device
+4如果转入 customer_token 但以当前 customer.open_api_token 不同,也不与其它客户冲突,更新 customer_token 到客户 open_api_token 字段
+
+
+创建用户失败返回的常见错误
+   wrong_subdomain: {code: "2001" , message: "子域名错误"},
+   no_sdktoken: {code: "2003" , message: "用户token错误"},
+   wrong_sign: {code: "3001" , message: "签名错"},
+   agent: {code: "5050" , message: "客服不存在"},
+   user_group: {code: "5060" , message: "客服组不存在"}   
+   validate_error: {:code=>"2004", :message=>"验证错", :exception=>"Validation failed: Email is invalid"}
+   exception 中会带有具体验证错误信息 
+```
+**注意sdktoken** 是客户的唯一标识，用来识别身份，**sdk_token: 传入的字符请使用 字母 / 数字 字符集**  。就如同身份证一样，不允许出现一个身份证号对应多个人，或者一个人有多个身份证号;**其次**如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客。  **完成了以上操作，接下来就可以使用UdeskSDK的其它功能了，祝你好运！**
+
+
 ### 启动帮助中心界面
 
 Udek系统帮助中心后台可以创建帮助文档，客户通过帮助中心可查看相关文档。调用以下接口启动帮助中心界面
@@ -608,47 +620,50 @@ Udek系统帮助中心后台可以创建帮助文档，客户通过帮助中心�
 ```java
 UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
 ```
-<h1 id="5">五、Udesk SDK API说明</h1>
 
-### 1更新客户信息
+## Udesk SDK API说明
 
-	UdeskConfig.Builder builder = new UdeskConfig.Builder();
-	
-	更新系统默认客户字段，昵称、邮箱、电话、描述
-	
-	Map<String, String> info = new HashMap<String, String>();
-	info.put(UdeskConst.UdeskUserInfo.NICK_NAME,"更新后的昵称");
-	//更新后的邮箱
-	info.put(UdeskConst.UdeskUserInfo.EMAIL,"0631@163.com");
-	//更新后的手机号
-	info.put(UdeskConst.UdeskUserInfo.CELLPHONE,"15651818750");
-	info.put(UdeskConst.UdeskUserInfo.DESCRIPTION,"更新后的描述信息")
-	info.put(UdeskConst.UdeskUserInfo.CUSTOMER_TOKEN,"对应的custom_token 不要乱传")
-	
-	//传入需要更新的Udesk系统默认字段
-	注意更新邮箱或者手机号码，如果在后端有同样的手机号或邮箱，则会更新失败     
-	builder.setUpdateDefualtUserInfo(info)   
-	
+ ### 1更新客户信息
+
+  UdeskConfig.Builder builder = new UdeskConfig.Builder();
+
+  更新系统默认客户字段，昵称、邮箱、电话、描述
+
+```java
+Map<String, String> info = new HashMap<String, String>();
+info.put(UdeskConst.UdeskUserInfo.NICK_NAME,"更新后的昵称");
+//更新后的邮箱
+info.put(UdeskConst.UdeskUserInfo.EMAIL,"0631@163.com");
+//更新后的手机号
+info.put(UdeskConst.UdeskUserInfo.CELLPHONE,"15651818750");
+info.put(UdeskConst.UdeskUserInfo.DESCRIPTION,"更新后的描述信息")
+info.put(UdeskConst.UdeskUserInfo.CUSTOMER_TOKEN,"对应的custom_token 不要乱传")
+
+//传入需要更新的Udesk系统默认字段
+注意更新邮箱或者手机号码，如果在后端有同样的手机号或邮箱，则会更新失败     
+builder.setUpdateDefualtUserInfo(info)   
+```
 
 ### 2更新自定义字段
 
 文本型字段示例：
-	
-	 {
-	      "field_name": "TextField_684",
-	      "field_label": "地址",
-	      "content_type": "text",
-	      "comment": "字段描述",
-	      "options": null,
-	      "permission": 0,
-	      "requirment": false
-	}
-	取该json中字段“field_name”对应的value值作为自定义字段key值进行赋值。 示例如下：
-	updateTextFieldMap.put("TextField_684","北京西城区");
-	
-	//传入需要更新的自定义文本字段
-	 builder.setUpdatedefinedUserTextField(updateTextFieldMap);
 
+```java
+ {
+      "field_name": "TextField_684",
+      "field_label": "地址",
+      "content_type": "text",
+      "comment": "字段描述",
+      "options": null,
+      "permission": 0,
+      "requirment": false
+}
+取该json中字段“field_name”对应的value值作为自定义字段key值进行赋值。 示例如下：
+updateTextFieldMap.put("TextField_684","北京西城区");
+
+//传入需要更新的自定义文本字段
+ builder.setUpdatedefinedUserTextField(updateTextFieldMap);
+```
 
 选择型字段示例
 
@@ -678,29 +693,30 @@ builder.setUpdatedefinedUserRoplist(updateRoplistMap);
 
 ### 3.发送咨询对象
 
-	在客户与客服对话时，经常需要将如咨询商品或订单发送给客服以便客服查看。
-	
-	咨询对象目前最多支持发送4个属性(detail,image,title,url)，如下以商品举例说明
-	
-	 //创建咨询对象的实例
-	UdeskCommodityItem item = new UdeskCommodityItem();
-	// 咨询对象主标题
-	item.setTitle("木林森男鞋新款2016夏季透气网鞋男士休闲鞋网面韩版懒人蹬潮鞋子");
-	//咨询对象描述
-	item.setSubTitle("¥ 99.00");
-	//左侧图片
-	item.setThumbHttpUrl("https://img.alicdn.com/imgextra/i1/1728293990/TB2ngm0qFXXXXcOXXXXXXXXXXXX_!!1728293990.jpg_430x430q90.jpg");
-	// 咨询对象网络链接
-	item.setCommodityUrl("https://detail.tmall.com/item.htm?spm=a1z10.3746-b.w4946-14396547293.1.4PUcgZ&id=529634221064&sku_properties=-1:-1");
-	
-	builder.setCommodity(item);    
-	
-	//发送咨询对象信息 见ChatActivityPresenter类中的sendCommodityMessage方法
-	public void sendCommodityMessage(UdeskCommodityItem commodityItem) {
-	UdeskMessageManager.getInstance().sendComodityMessage(buildCommodityMessage(commodityItem),
-	        mChatView.getAgentInfo().getAgentJid());
-	}
+在客户与客服对话时，经常需要将如咨询商品或订单发送给客服以便客服查看。
 
+咨询对象目前最多支持发送4个属性(detail,image,title,url)，如下以商品举例说明
+
+```java
+ //创建咨询对象的实例
+UdeskCommodityItem item = new UdeskCommodityItem();
+// 咨询对象主标题
+item.setTitle("木林森男鞋新款2016夏季透气网鞋男士休闲鞋网面韩版懒人蹬潮鞋子");
+//咨询对象描述
+item.setSubTitle("¥ 99.00");
+//左侧图片
+item.setThumbHttpUrl("https://img.alicdn.com/imgextra/i1/1728293990/TB2ngm0qFXXXXcOXXXXXXXXXXXX_!!1728293990.jpg_430x430q90.jpg");
+// 咨询对象网络链接
+item.setCommodityUrl("https://detail.tmall.com/item.htm?spm=a1z10.3746-b.w4946-14396547293.1.4PUcgZ&id=529634221064&sku_properties=-1:-1");
+
+builder.setCommodity(item);    
+
+//发送咨询对象信息 见ChatActivityPresenter类中的sendCommodityMessage方法
+public void sendCommodityMessage(UdeskCommodityItem commodityItem) {
+UdeskMessageManager.getInstance().sendComodityMessage(buildCommodityMessage(commodityItem),
+        mChatView.getAgentInfo().getAgentJid());
+}
+```
 
 
 
@@ -710,17 +726,18 @@ builder.setUpdatedefinedUserRoplist(updateRoplistMap);
 
 注册方法"OnNewMsgNotice"
 
-	UdeskMessageManager.getInstance().event_OnNewMsgNotice.bind(this, "OnNewMsgNotice");
-
+``` java
+UdeskMessageManager.getInstance().event_OnNewMsgNotice.bind(this, "OnNewMsgNotice");
+```
 
 OnNewMsgNotice方法的实现
-
+``` java
     public void OnNewMsgNotice(MsgNotice msgNotice) {
          if (msgNotice != null) {
              NotificationUtils.getInstance().notifyMsg(UdeskCaseActivity.this, msgNotice.getContent());
          }
     }
-
+```
 注意：1 消息上报的对象是：MsgNotice ；2 注册的方法和实现的方法  字符串必须保证一致分大小写；
 
 3 实现的方法  必须public修饰。
@@ -729,23 +746,26 @@ OnNewMsgNotice方法的实现
 
 sdk 3.2.0版本开始，可在退出对话界面后，没有断开与Udesk服务器的连接，可获得这个会话的未读消息数，打开对话界面后未读消息数会清空。
 
-	UdeskSDKManager.getInstance().getCurrentConnectUnReadMsgCount();
-
+```java
+UdeskSDKManager.getInstance().getCurrentConnectUnReadMsgCount();
+```
 
 ### 6 删除客户聊天数据
 
 sdk初始化成功，创建客户后，调用此接口可删除当前客户的聊天记录信息
 
-	UdeskSDKManager.getInstance().deleteMsg();
+```java
+UdeskSDKManager.getInstance().deleteMsg();
 
+```
 ### 7 控制台日志开关
 
 如果开发中，想在控制台看当前客户与Udesk服务器连接（xmpp)的交互报文，调用如下接口可实现
 
-
-	//true 表示开启控制台日志  false表示关闭控制台日志
-	UdeskSDKManager.getInstance().isShowLog(true);
-
+```java
+//true 表示开启控制台日志  false表示关闭控制台日志
+UdeskSDKManager.getInstance().isShowLog(true);
+```
 
 ### 8 断开与Udesk服务器连接
 
@@ -817,8 +837,7 @@ RedirectViewHolder  显示转移提示语信息；
 		
 ```
 
-<h1 "id="6">六、离线消息推送</h1>
-
+## 离线消息推送
 当前仅支持一种推送方案，即Udesk务端发送消息至开发者的服务端，开发者再推送消息到 App。
 ### 1 设置接收推送的服务器地址
         推送消息将会发送至开发者的服务器。
@@ -889,22 +908,9 @@ RedirectViewHolder  显示转移提示语信息；
 | type         | string   | 消息类型，'event' 为事件，'message'为消息            |
 | event        | string   | 事件类型，'redirect' 客服转接，'close'对话关闭，'survey'发送满意度调查 |
 
-<h1 id="7">七、更新日志<h1>
 
-### 4.1.7 修复内容
-1.修改无消息对话过滤状态特殊字符问题
-### 4.1.6 修复内容
-1. 修复设置欢迎语后 开启无消息对话过滤功能失效
-### 4.1.5 修复内容 
-1. 优化保存消息返回8002，表示会话已经关闭的处理
-2. 适配某些手机9.0手机 长按发送语音时MotionEvent事件返回特殊，导致弹框未消失，产生卡顿在录音弹框的现象。
-### 4.1.4 修复内容 
-1. 排队场景 发送图片 客服显示问题修复
-2. 排队场景， 拉对话关闭对话场景下 无法发送语音和表情失败的修复
-3. 开发者选项 打开保护活动 在使用流量情况下不能发送文件修复
-4. 客服忙碌 排队，客服在切换离线，客户这边显示离线后， 客服在上线，拉入排队会话  客服发消息 客户收到 无法发	送消息修复
-5. 空指针隐患的保护
-6.其它优化
+### 更新日志
+
 ### 4.1.1 修复内容
 1. 修复sdk排队中点击留言还在排队中；
 2. 修复排队发送文本消息后，更多得按钮隐藏了；
@@ -1040,7 +1046,7 @@ RedirectViewHolder  显示转移提示语信息；
 1. 新增客服转移和邀请评价功能
 
 
-<h1 id="8">八、部分功能截图说明<h1>
+### 部分功能截图说明
 
 ##### 机器人功能示意图
 
