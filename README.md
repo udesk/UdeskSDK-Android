@@ -2,6 +2,12 @@
 
 # 特别提醒
 
+### SDK 表单留言模式下 配置工单客户字段 需要特别注意，
+
+      如果需要使用 字段类型是下拉框，级联， 复选框 的字段，需要修改UdeskBaseWebViewActivity类中的initView()放法中初始化Webview中上下文参数。
+      mwebView = new WebView(getApplicationContext());  改成  mwebView = new WebView(this); WebView传入Activity上下文可能会出现内存泄漏的隐患。 如果传入Application的上下文，使用下拉框字段会出，
+	 下拉框需要创建对话框，对话框创建不能用getApplicationContext()得到的context,必须用Activity，否则会出现异常。
+
 ### SDK还未完成适配9.0系统测试 。请targetSdkVersion 设置值小于28  小于28  小于28 
 
 ### fresco版本问题
