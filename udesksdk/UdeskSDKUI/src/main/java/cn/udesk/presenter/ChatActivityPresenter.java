@@ -1739,7 +1739,7 @@ public class ChatActivityPresenter {
 //            uploadFileByStrategy(filePath, message);
 //        } else {
         try {
-
+            UdeskUtils.printStackTrace();
             if (isCancleUpLoad.containsKey(message.getMsgId())) {
                 isCancleUpLoad.put(message.getMsgId(), false);
                 return;
