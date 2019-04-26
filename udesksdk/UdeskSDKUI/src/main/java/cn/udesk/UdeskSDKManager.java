@@ -618,6 +618,9 @@ public class UdeskSDKManager {
         return imSetting;
     }
 
+    public void setImSetting(SDKIMSetting imSetting) {
+        this.imSetting = imSetting;
+    }
 
     //先预留开关，当后期管理员可配置时，方便修改
     public boolean getEnableSendMessageWhenQueue() {

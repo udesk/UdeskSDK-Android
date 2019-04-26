@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.Configuration;
@@ -26,11 +27,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +52,7 @@ import cn.udesk.db.UdeskDBManager;
 import cn.udesk.messagemanager.Concurrents;
 import cn.udesk.messagemanager.UdeskMessageManager;
 import cn.udesk.model.LogMessage;
+import cn.udesk.model.SDKIMSetting;
 import cn.udesk.model.SurveyOptionsModel;
 import cn.udesk.model.TicketReplieMode;
 import cn.udesk.model.UdeskCommodityItem;
@@ -400,17 +404,44 @@ public class ChatActivityPresenter {
     //请求获取客户信息的入口， 请求处理完后  会通知到onCreateCustomer 方法
     public void createIMCustomerInfo() {
         try {
-            Context mContext = mChatView.getContext();
-            String sdkToken = UdeskSDKManager.getInstance().getSdkToken(mContext);
-            UdeskHttpFacade.getInstance().setUserInfo(mContext, UdeskSDKManager.getInstance().getDomain(mContext),
-                    UdeskSDKManager.getInstance().getAppkey(mContext), sdkToken,
-                    UdeskSDKManager.getInstance().getUdeskConfig().defualtUserInfo,
-                    UdeskSDKManager.getInstance().getUdeskConfig().definedUserTextField,
-                    UdeskSDKManager.getInstance().getUdeskConfig().definedUserRoplist,
-                    UdeskSDKManager.getInstance().getAppId(mContext), UdeskSDKManager.getInstance().getUdeskConfig().channel, null);
+            final Context mContext = mChatView.getContext();
+            UdeskHttpFacade.getInstance().getIMSettings(UdeskSDKManager.getInstance().getDomain(mContext),
+                    UdeskSDKManager.getInstance().getAppkey(mContext),
+                    UdeskSDKManager.getInstance().getSdkToken(mContext),
+                    UdeskSDKManager.getInstance().getAppId(mContext), new UdeskCallBack() {
+                        @Override
+                        public void onSuccess(String message) {
+                            try {
+                                SDKIMSetting imSetting = JsonUtils.parserIMSettingJson(message);
+                                if (imSetting!=null){
+                                    UdeskSDKManager.getInstance().setImSetting(imSetting);
+
+                                }
+                                setUserInfo(mContext);
+                            } catch (Exception e) {
+                                setUserInfo(mContext);
+                            }
+                        }
+
+                        @Override
+                        public void onFail(String message) {
+                            setUserInfo(mContext);
+                        }
+                    });
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void setUserInfo(Context mContext) {
+        String sdkToken = UdeskSDKManager.getInstance().getSdkToken(mContext);
+        UdeskHttpFacade.getInstance().setUserInfo(mContext, UdeskSDKManager.getInstance().getDomain(mContext),
+                UdeskSDKManager.getInstance().getAppkey(mContext), sdkToken,
+                UdeskSDKManager.getInstance().getUdeskConfig().defualtUserInfo,
+                UdeskSDKManager.getInstance().getUdeskConfig().definedUserTextField,
+                UdeskSDKManager.getInstance().getUdeskConfig().definedUserRoplist,
+                UdeskSDKManager.getInstance().getAppId(mContext), UdeskSDKManager.getInstance().getUdeskConfig().channel, null);
     }
 
 
@@ -1557,8 +1588,16 @@ public class ChatActivityPresenter {
                 messageInfo.setDuration(UdeskUtils.objectToInt(logMessage.getDuration()));
                 messageInfo.setSeqNum(UdeskUtils.objectToInt(logMessage.getSeq_num()));
                 messageInfo.setSubsessionid(UdeskUtils.objectToString(logMessage.getIm_sub_session_id()));
-                messageInfo.setReplyUser(UdeskUtils.objectToString(logMessage.getAgent_nick_name()));
-                messageInfo.setUser_avatar(UdeskUtils.objectToString(logMessage.getAgent_avatar()));
+                if (messageInfo.getInviterAgentInfo() != null){
+                    messageInfo.setReplyUser(messageInfo.getInviterAgentInfo().getNick_name());
+                    messageInfo.setUser_avatar(messageInfo.getInviterAgentInfo().getAvatar());
+                    messageInfo.setmAgentJid(messageInfo.getInviterAgentInfo().getJid());
+                }else {
+                    messageInfo.setReplyUser(UdeskUtils.objectToString(logMessage.getAgent_nick_name()));
+                    messageInfo.setUser_avatar(UdeskUtils.objectToString(logMessage.getAgent_avatar()));
+                    messageInfo.setmAgentJid(UdeskUtils.objectToString(logMessage.getAgentJId()));
+                }
+
                 messageInfo.setFilesize(UdeskUtils.objectToString(logMessage.getFileSize()));
                 messageInfo.setFilename(UdeskUtils.objectToString(logMessage.getFileName()));
                 msgInfos.add(messageInfo);
