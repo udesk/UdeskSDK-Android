@@ -76,7 +76,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
             textfiledkey, textfiledvalue,
             update_nick_name, update_description,
             updatetextfiledkey, updatetextfiledvalue,
-            firstMessage, customerUrl, robot_modelKey, robpt_customer_info;
+            firstMessage, customerUrl, robot_modelKey, robpt_customer_info,edit_language;
 
 
     @Override
@@ -144,12 +144,18 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         updatetextfiledkey = (EditText) findViewById(R.id.updatetextfiledkey);
         updatetextfiledvalue = (EditText) findViewById(R.id.updatetextfiledvalue);
         robpt_customer_info = (EditText) findViewById(R.id.robpt_customer_info);
+        edit_language = (EditText) findViewById(R.id.edit_language);
+
 
 
     }
 
 
     private UdeskConfig.Builder makeBuilder() {
+        if (!TextUtils.isEmpty(edit_language.getText().toString())){
+            LocalManageUtil.saveSelectLanguage(getApplicationContext(),new Locale(edit_language.getText().toString()));
+        }
+
         UdeskConfig.Builder builder = new UdeskConfig.Builder();
         builder.setUdeskTitlebarBgResId(R.color.udesk_titlebar_bg1) //设置标题栏TitleBar的背景色
                 .setUdeskTitlebarTextLeftRightResId(R.color.udesk_color_navi_text1) //设置标题栏TitleBar，左右两侧文字的颜色
@@ -232,12 +238,12 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                         Toast.makeText(getApplicationContext(), "对文本消息中的链接消息处理设置回调", Toast.LENGTH_SHORT).show();
                     }
                 })   //如果需要对文本消息中的链接消息处理可以设置该回调，点击事件的拦截回调。 包含表情的不会拦截回调。
-//                .setFormCallBack(new IUdeskFormCallBack() {
-//                    @Override
-//                    public void toLuachForm(Context context) {
-//                        Toast.makeText(getApplicationContext(), "不用udesk系统提供的留言功能", Toast.LENGTH_SHORT).show();
-//                    }
-//                })//离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
+                .setFormCallBack(new IUdeskFormCallBack() {
+                    @Override
+                    public void toLuachForm(Context context) {
+                        Toast.makeText(getApplicationContext(), "不用udesk系统提供的留言功能", Toast.LENGTH_SHORT).show();
+                    }
+                })//离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
                 .setStructMessageCallBack(new IUdeskStructMessageCallBack() {
 
                     @Override

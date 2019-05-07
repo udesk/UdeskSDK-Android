@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.udesk.UdeskSDKManager;
-import cn.udesk.UdeskUtil;
 import udesk.core.UdeskConst;
 import udesk.core.model.AgentInfo;
 import udesk.core.model.MessageInfo;

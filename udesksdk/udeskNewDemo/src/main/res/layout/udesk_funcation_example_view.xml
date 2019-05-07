@@ -675,7 +675,22 @@
 
         </LinearLayout>
 
+        <EditText
+            android:id="@+id/edit_language"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="@dimen/udesk_10"
+            android:layout_marginBottom="@dimen/udesk_10"
+            android:gravity="start|center"
+            android:hint="请查找对应android系统的对应简写填入，不确定找应用系统的简写在接口中查找填入"
+            android:textColor="#333333"
+            android:textColorHint="@color/udesk_color_999999"
+            android:textSize="16sp" />
+
         <LinearLayout
+            android:visibility="gone"
             android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:orientation="horizontal">

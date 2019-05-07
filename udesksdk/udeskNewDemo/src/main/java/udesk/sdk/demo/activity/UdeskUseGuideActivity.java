@@ -52,6 +52,7 @@ public class UdeskUseGuideActivity extends Activity {
             startActivity(funtionIntent);
         } else if (v.getId() == R.id.udesk_group_reset) {
             //重置域名和App Key
+            UdeskSDKManager.getInstance().logoutUdesk();
             PreferenceHelper.write(UdeskUseGuideActivity.this, "init_base_name",
                     "sdktoken", "");
             Intent initIntent = new Intent();
