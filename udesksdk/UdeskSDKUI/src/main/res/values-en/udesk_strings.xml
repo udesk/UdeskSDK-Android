@@ -120,4 +120,5 @@
     <string name="udesk_can_not_be_video">No customer service has been assigned yet, no video can be initiated</string>
     <string name="udesk_in_the_line">in the queue</string>
     <string name="udesk_in_the_line_max_send">Up to 20 messages can be sent in the queue</string>
+    <string name="udesk_file_not_exist">File does not exist</string>
 </resources>

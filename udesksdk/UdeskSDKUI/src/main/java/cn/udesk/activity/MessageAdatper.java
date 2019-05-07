@@ -327,6 +327,7 @@ public class MessageAdatper extends BaseAdapter {
                 if (!TextUtils.isEmpty(messageUI.getSubsessionid())
                         && messageUI.getSubsessionid().equals(message.getSubsessionid())
                         && messageUI.getDirection() == UdeskConst.ChatMsgDirection.Recv
+                        && message.getSeqNum() != 0
                         && message.getSeqNum() - messageUI.getSeqNum() != 1) {
                     ((UdeskChatActivity) mContext).pullByJumpOrder(messageUI.getSeqNum(), messageUI.getSubsessionid());
                     return;

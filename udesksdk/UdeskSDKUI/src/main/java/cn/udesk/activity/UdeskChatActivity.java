@@ -54,10 +54,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import cn.udesk.model.UdeskQueueItem;
-import cn.udesk.presenter.MessageCache;
-import udesk.core.JsonObjectUtils;
-import udesk.core.LocalManageUtil;
 import cn.udesk.PreferenceHelper;
 import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
@@ -78,12 +74,14 @@ import cn.udesk.model.FunctionMode;
 import cn.udesk.model.SDKIMSetting;
 import cn.udesk.model.SurveyOptionsModel;
 import cn.udesk.model.UdeskCommodityItem;
+import cn.udesk.model.UdeskQueueItem;
 import cn.udesk.permission.RequestCode;
 import cn.udesk.permission.XPermissionUtils;
 import cn.udesk.photoselect.PhotoSelectorActivity;
 import cn.udesk.photoselect.entity.LocalMedia;
 import cn.udesk.presenter.ChatActivityPresenter;
 import cn.udesk.presenter.IChatActivityView;
+import cn.udesk.presenter.MessageCache;
 import cn.udesk.voice.AudioRecordButton;
 import cn.udesk.voice.RecordFilePlay;
 import cn.udesk.voice.RecordPlay;
@@ -96,6 +94,8 @@ import cn.udesk.widget.UdeskMultiMenuHorizontalWindow;
 import cn.udesk.widget.UdeskMultiMenuHorizontalWindow.OnPopMultiMenuClick;
 import cn.udesk.widget.UdeskSurvyPopwindow;
 import cn.udesk.widget.UdeskTitleBar;
+import udesk.core.JsonObjectUtils;
+import udesk.core.LocalManageUtil;
 import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
 import udesk.core.event.InvokeEventContainer;
@@ -249,6 +249,9 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                     setTitlebar(context.getResources().getString(
                             R.string.udesk_agent_connecting_error_net_uavailabl), "off");
                     currentStatusIsOnline = false;
+                    if (mHandler!=null && myRunnable!=null){
+                        mHandler.removeCallbacks(myRunnable);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -437,15 +440,16 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                                         this.removeCallbacks(activity.myRunnable);
                                         this.post(activity.myRunnable);
                                     }
-                                }else{
-                                    if ( activity.mAgentInfo != null && !TextUtils.isEmpty(msgInfo.getmAgentJid()) && activity.mPresenter != null) {
+                                } else {
+                                    if (activity.mAgentInfo != null && !TextUtils.isEmpty(msgInfo.getmAgentJid()) && activity.mPresenter != null) {
                                         activity.mPresenter.getAgentInfo(activity.pre_session_id, null);
                                     }
                                 }
-                                activity.mChatAdapter.addItem(msgInfo);
-                                activity.mListView.smoothScrollToPosition(activity.mChatAdapter.getCount());
                             }
+                            activity.mChatAdapter.addItem(msgInfo);
+                            activity.mListView.smoothScrollToPosition(activity.mChatAdapter.getCount());
                         }
+
                         break;
                     case MessageWhat.pre_session_status:
                         String title = (String) msg.obj;
@@ -1652,6 +1656,9 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
             double size = UdeskUtils.getFileSize(new File(path));
             if (size >= 30 * 1024 * 1024) {
                 Toast.makeText(getApplicationContext(), getString(R.string.udesk_file_to_large), Toast.LENGTH_SHORT).show();
+                return;
+            }else if (size ==0){
+                UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.udesk_file_not_exist));
                 return;
             }
             if (path.contains(".mp4") && mPresenter != null) {

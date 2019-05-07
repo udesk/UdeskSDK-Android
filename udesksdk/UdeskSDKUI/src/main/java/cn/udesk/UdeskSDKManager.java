@@ -57,6 +57,8 @@ public class UdeskSDKManager {
     //多应用 配置选项mode
     private SDKIMSetting imSetting;
 
+    private Context appContext;
+
     private UdeskSDKManager() {
     }
 
@@ -74,6 +76,7 @@ public class UdeskSDKManager {
      */
     public void initApiKey(Context context, String domain, String appkey, String appid) {
         try {
+            appContext=context.getApplicationContext();
             UdeskSDKManager.domain = domain;
             UdeskSDKManager.app_Key = appkey;
             UdeskSDKManager.app_Id = appid;
@@ -141,6 +144,7 @@ public class UdeskSDKManager {
     //进入会话唯一入口,必须配置,根据配置展示会话
     public void entryChat(Context context, UdeskConfig udeskConfig, String sdktoken) {
         try {
+            appContext=context.getApplicationContext();
             if (udeskConfig == null) {
                 Toast.makeText(context, "UdeskConfig is null", Toast.LENGTH_LONG).show();
                 return;
@@ -367,6 +371,7 @@ public class UdeskSDKManager {
      */
     private void toLanuchChatAcitvity(Context context) {
         try {
+            appContext=context.getApplicationContext();
             Intent intent = new Intent(context, UdeskChatActivity.class);
             if (!TextUtils.isEmpty(getUdeskConfig().groupId)) {
                 intent.putExtra(UdeskConst.UDESKGROUPID, getUdeskConfig().groupId);
@@ -578,6 +583,10 @@ public class UdeskSDKManager {
     public String getAppId() {
         try {
             if (!TextUtils.isEmpty(UdeskSDKManager.app_Id)) {
+                return UdeskSDKManager.app_Id;
+            }
+            if (UdeskConfig.isUseShare && appContext!=null) {
+                UdeskSDKManager.app_Id = PreferenceHelper.readString(appContext, UdeskConst.SharePreParams.Udesk_Sharepre_Name, UdeskConst.SharePreParams.Udesk_App_Id);
                 return UdeskSDKManager.app_Id;
             }
         } catch (Exception e) {

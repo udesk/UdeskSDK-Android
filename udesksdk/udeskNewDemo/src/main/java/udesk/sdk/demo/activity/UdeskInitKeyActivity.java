@@ -26,19 +26,19 @@ public class UdeskInitKeyActivity extends Activity {
 //    // 替换成你们在后台生成的密钥
 //    private String UDESK_SECRETKEY = "6626724a3d701a8dfdbdfea2e08205b0";
 //
-//    //替换成你们注册生成的域名
+    //替换成你们注册生成的域名
 //    private String UDESK_DOMAIN = "reocar.udeskmonkey.com";
 //    //替换成你们生成应用产生的appid
 //    private String AppId = "8376c6ddcba14df3";
 //    // 替换成你们在后台生成的密钥
 //    private String UDESK_SECRETKEY = "0175ba741a912c516cea06b0fbe66992";
 
-    //替换成你们注册生成的域名
+//    //替换成你们注册生成的域名
     private String UDESK_DOMAIN = "udesksdk.udesk.cn";
     //替换成你们生成应用产生的appid
-    private String AppId = "cdc6da4fa97efc2c";
+    private String AppId = "cc57963d6284bfe7";
     // 替换成你们在后台生成的密钥
-    private String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
+    private String UDESK_SECRETKEY = "8bcc3f04490559068bd4a894272dc588";
 
 
     private EditText mDomainEdit;
@@ -89,7 +89,7 @@ public class UdeskInitKeyActivity extends Activity {
 
                     UdeskSDKManager.getInstance().initApiKey(getApplicationContext(), mDomainEdit.getText().toString(),
                             mKeyEdit.getText().toString(), mAppidEdit.getText().toString());
-                    UdeskConst.HTTP = "http://";
+//                    UdeskConst.HTTP = "http://";
                     sdkToken = stoken.getText().toString();
                     PreferenceHelper.write(getApplicationContext(), "init_base_name", "sdktoken", sdkToken);
                     PreferenceHelper.write(getApplicationContext(), "init_base_name", "domain", mDomainEdit.getText().toString());

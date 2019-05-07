@@ -2,19 +2,14 @@ package cn.udesk.messagemanager;
 
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.config.UdeskBaseInfo;
-import cn.udesk.config.UdeskConfig;
 import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.model.MessageInfo;
@@ -172,7 +167,8 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
                 if (!TextUtils.isEmpty(UdeskSDKManager.getInstance().getAppId())) {
                     xmppConnection.login(xmppLoginName, xmppLoginPassword, UdeskSDKManager.getInstance().getAppId());
                 } else {
-                    xmppConnection.login(xmppLoginName, xmppLoginPassword, UUID.randomUUID().toString());
+                    UdeskConst.sdk_xmpp_statea = UdeskConst.CONNECTION_FAILED;
+                   return false;
                 }
                 xmppConnection.sendPacket(new Presence(Presence.Type.available));
                 if (handler != null) {
@@ -209,7 +205,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
             Presence statusPacket = new Presence(Presence.Type.available);
             statusPacket.setStatus("online");
             statusPacket.setTo(UdeskBaseInfo.sendMsgTo);
-            if (xmppConnection != null) {
+            if (xmppConnection != null&& xmppConnection.isConnected()) {
                 xmppConnection.sendPacket(statusPacket);
             }
         } catch (Exception e) {

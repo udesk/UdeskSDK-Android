@@ -5,9 +5,7 @@ import android.util.Log;
 
 import java.util.concurrent.ExecutorService;
 
-import cn.udesk.UdeskSDKManager;
 import cn.udesk.config.UdeskBaseInfo;
-import cn.udesk.config.UdeskConfig;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.model.MsgNotice;
 import udesk.core.UdeskConst;

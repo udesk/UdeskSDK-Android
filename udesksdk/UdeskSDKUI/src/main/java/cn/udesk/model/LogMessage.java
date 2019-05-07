@@ -32,6 +32,7 @@ public class LogMessage {
     private Object fileSize;
 
 
+
     public Object getId() {
         return id;
     }
@@ -215,4 +216,5 @@ public class LogMessage {
     public void setFileSize(Object fileSize) {
         this.fileSize = fileSize;
     }
+
 }

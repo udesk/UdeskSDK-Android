@@ -489,7 +489,7 @@ public class ChatActivityPresenter {
     }
 
     //请求分配客服信息
-    public void getAgentInfo(String preSessionId, JSONObject preMessage) {
+    public void getAgentInfo(String preSessionId, final JSONObject preMessage) {
         try {
             UdeskHttpFacade.getInstance().getAgentInfo(
                     UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
@@ -503,6 +503,13 @@ public class ChatActivityPresenter {
                         public void onSuccess(String message) {
                             try {
                                 AgentInfo agentInfo = JsonUtils.parseAgentResult(message);
+                                if (preMessage != null && preMessage.has("message_id") &&
+                                        (agentInfo.getAgentCode() == UdeskConst.AgentReponseCode.HasAgent || agentInfo.getAgentCode() == UdeskConst.AgentReponseCode.WaitAgent)) {
+                                    String message_id = preMessage.optString("message_id");
+                                    if (!TextUtils.isEmpty(message_id)) {
+                                        changePrefilterMsgStatus(message_id);
+                                    }
+                                }
                                 if (agentInfo.getAgentCode() == 2000) {
                                     getIMStatus(agentInfo);
                                 } else {
@@ -1588,16 +1595,8 @@ public class ChatActivityPresenter {
                 messageInfo.setDuration(UdeskUtils.objectToInt(logMessage.getDuration()));
                 messageInfo.setSeqNum(UdeskUtils.objectToInt(logMessage.getSeq_num()));
                 messageInfo.setSubsessionid(UdeskUtils.objectToString(logMessage.getIm_sub_session_id()));
-                if (messageInfo.getInviterAgentInfo() != null){
-                    messageInfo.setReplyUser(messageInfo.getInviterAgentInfo().getNick_name());
-                    messageInfo.setUser_avatar(messageInfo.getInviterAgentInfo().getAvatar());
-                    messageInfo.setmAgentJid(messageInfo.getInviterAgentInfo().getJid());
-                }else {
-                    messageInfo.setReplyUser(UdeskUtils.objectToString(logMessage.getAgent_nick_name()));
-                    messageInfo.setUser_avatar(UdeskUtils.objectToString(logMessage.getAgent_avatar()));
-                    messageInfo.setmAgentJid(UdeskUtils.objectToString(logMessage.getAgentJId()));
-                }
-
+                messageInfo.setReplyUser(UdeskUtils.objectToString(logMessage.getAgent_nick_name()));
+                messageInfo.setUser_avatar(UdeskUtils.objectToString(logMessage.getAgent_avatar()));
                 messageInfo.setFilesize(UdeskUtils.objectToString(logMessage.getFileSize()));
                 messageInfo.setFilename(UdeskUtils.objectToString(logMessage.getFileName()));
                 msgInfos.add(messageInfo);
@@ -1908,7 +1907,17 @@ public class ChatActivityPresenter {
         }
 
     }
-
+    public void changePrefilterMsgStatus(String msgId){
+        if (cachePreMsg.size() > 0) {
+            for (MessageInfo messageInfo : cachePreMsg) {
+                if (TextUtils.equals(messageInfo.getMsgId(),msgId)){
+                    messageInfo.setSendFlag(UdeskConst.SendFlag.RESULT_SUCCESS);
+                    onMessageReceived(msgId);
+                    return;
+                }
+            }
+        }
+    }
     //点击失败按钮 重试发送消息
     public void startRetryMsg(MessageInfo message) {
         try {
