@@ -16,6 +16,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,6 +75,8 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
             force_quit,
             portrait,
             landscape,
+            show_customer_nickname,
+            show_customer_head,
             user;
 
     private EditText nick_name, cellphone, email, description, customer_token, channel,
@@ -109,6 +113,8 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         set_usemore = (CheckBox) findViewById(R.id.set_usemore);
         set_use_navigation_view = (CheckBox) findViewById(R.id.set_use_navigation_view);
         set_use_navigation_view_robot = (CheckBox) findViewById(R.id.set_use_navigation_view_robot);
+        show_customer_nickname = (CheckBox) findViewById(R.id.show_customer_nickname);
+        show_customer_head = (CheckBox) findViewById(R.id.show_customer_head);
         set_use_navigation_survy = (CheckBox) findViewById(R.id.set_use_navigation_survy);
         set_use_onlyrobot = (CheckBox) findViewById(R.id.set_use_onlyrobot);
         set_use_smallvideo = (CheckBox) findViewById(R.id.set_use_smallvideo);
@@ -127,6 +133,8 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         portrait.setOnCheckedChangeListener(this);
         landscape.setOnCheckedChangeListener(this);
         user.setOnCheckedChangeListener(this);
+        show_customer_head.setOnCheckedChangeListener(this);
+        show_customer_nickname.setOnCheckedChangeListener(this);
         set_en.setOnCheckedChangeListener(this);
         set_ch.setOnCheckedChangeListener(this);
         firstMessage = (EditText) findViewById(R.id.firstMessage);
@@ -160,6 +168,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 .setUdeskIMLeftTextColorResId(R.color.udesk_color_im_text_left1) //设置IM界面，左侧文字的字体颜色
                 .setUdeskIMRightTextColorResId(R.color.udesk_color_im_text_right1) // 设置IM界面，右侧文字的字体颜色
                 .setUdeskIMAgentNickNameColorResId(R.color.udesk_color_im_left_nickname1) //设置IM界面，左侧客服昵称文字的字体颜色
+                .setUdeskIMCustomerNickNameColorResId(R.color.udesk_color_im_right_nickname1) //设置IM界面，右侧用户昵称文字的字体颜色
                 .setUdeskIMTimeTextColorResId(R.color.udesk_color_im_time_text1) // 设置IM界面，时间文字的字体颜色
                 .setUdeskIMTipTextColorResId(R.color.udesk_color_im_tip_text1) //设置IM界面，提示语文字的字体颜色，比如客服转移
                 .setUdeskbackArrowIconResId(R.drawable.udesk_titlebar_back) // 设置返回箭头图标资源id
@@ -259,7 +268,9 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                         Toast.makeText(getApplicationContext(), "结构化消息控件点击事件回调", Toast.LENGTH_SHORT).show();
                     }
                 })//设置结构化消息控件点击事件回调接口.
-                .setChannel(channel.getText().toString());
+                .setChannel(channel.getText().toString())
+                .isShowCustomerNickname(show_customer_nickname.isChecked())//设置是否显示昵称
+                .isShowCustomerHead(show_customer_head.isChecked());//设置是否显示头像
 
         return builder;
     }
@@ -359,48 +370,56 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         return productListBean;
     }
     private Product createProduct() {
-        Product product = new Product();
-        product.setImgUrl("https://img12.360buyimg.com/n1/s450x450_jfs/t10675/253/1344769770/66891/92d54ca4/59df2e7fN86c99a27.jpg");
-        product.setName(" Apple iPhone X (A1903) 64GB 深空灰色 移动联通4G手机");
-        product.setUrl("https://item.jd.com/6748052.html");
+        try {
+            Product product = new Product();
+            product.setImgUrl("https://img12.360buyimg.com/n1/s450x450_jfs/t10675/253/1344769770/66891/92d54ca4/59df2e7fN86c99a27.jpg");
+            product.setName(" Apple iPhone X (A1903) 64GB 深空灰色 移动联通4G手机");
+            product.setUrl("https://item.jd.com/6748052.html");
+            //为和ios 兼容 使用jsonObject
+            JSONObject jsonObject=new JSONObject();
+            jsonObject.put("自定义key","自定义value");
+            jsonObject.put("key","value");
+            product.setCustomParameters(jsonObject);
 
-        List<Product.ParamsBean> paramsBeans = new ArrayList<>();
+            List<Product.ParamsBean> paramsBeans = new ArrayList<>();
+            Product.ParamsBean paramsBean0 = new Product.ParamsBean();
+            paramsBean0.setText("京 东 价  ");
+            paramsBean0.setColor("#C1B6B6");
+            paramsBean0.setFold(false);
+            paramsBean0.setBreakX(false);
+            paramsBean0.setSize(12);
 
-        Product.ParamsBean paramsBean0 = new Product.ParamsBean();
-        paramsBean0.setText("京 东 价  ");
-        paramsBean0.setColor("#C1B6B6");
-        paramsBean0.setFold(false);
-        paramsBean0.setBreakX(false);
-        paramsBean0.setSize(12);
+            Product.ParamsBean paramsBean1 = new Product.ParamsBean();
+            paramsBean1.setText("￥6999.00");
+            paramsBean1.setColor("#E6321A");
+            paramsBean1.setFold(true);
+            paramsBean1.setBreakX(true);
+            paramsBean1.setSize(16);
 
-        Product.ParamsBean paramsBean1 = new Product.ParamsBean();
-        paramsBean1.setText("￥6999.00");
-        paramsBean1.setColor("#E6321A");
-        paramsBean1.setFold(true);
-        paramsBean1.setBreakX(true);
-        paramsBean1.setSize(16);
+            Product.ParamsBean paramsBean2 = new Product.ParamsBean();
+            paramsBean2.setText("促　销  ");
+            paramsBean2.setColor("#C1B6B6");
+            paramsBean2.setFold(false);
+            paramsBean2.setBreakX(false);
+            paramsBean2.setSize(12);
 
-        Product.ParamsBean paramsBean2 = new Product.ParamsBean();
-        paramsBean2.setText("促　销  ");
-        paramsBean2.setColor("#C1B6B6");
-        paramsBean2.setFold(false);
-        paramsBean2.setBreakX(false);
-        paramsBean2.setSize(12);
+            Product.ParamsBean paramsBean3 = new Product.ParamsBean();
+            paramsBean3.setText("满1999元另加30元，或满2999元另加50元，即可在购物车换购热销商品 ");
+            paramsBean3.setColor("#E6321A");
+            paramsBean3.setFold(true);
+            paramsBean3.setBreakX(false);
+            paramsBean3.setSize(16);
+            paramsBeans.add(paramsBean0);
+            paramsBeans.add(paramsBean1);
+            paramsBeans.add(paramsBean2);
+            paramsBeans.add(paramsBean3);
 
-        Product.ParamsBean paramsBean3 = new Product.ParamsBean();
-        paramsBean3.setText("满1999元另加30元，或满2999元另加50元，即可在购物车换购热销商品 ");
-        paramsBean3.setColor("#E6321A");
-        paramsBean3.setFold(true);
-        paramsBean3.setBreakX(false);
-        paramsBean3.setSize(16);
-        paramsBeans.add(paramsBean0);
-        paramsBeans.add(paramsBean1);
-        paramsBeans.add(paramsBean2);
-        paramsBeans.add(paramsBean3);
-
-        product.setParams(paramsBeans);
-
-        return product;
+            product.setParams(paramsBeans);
+            return product;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

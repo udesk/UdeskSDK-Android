@@ -40,6 +40,8 @@ public class UdeskConfig {
     public int udeskIMRightTextColorResId = DEFAULT;
     //IM界面，左侧客服昵称文字的字体颜色
     public int udeskIMAgentNickNameColorResId = DEFAULT;
+    //IM界面，右侧用户昵称文字的字体颜色
+    public int udeskIMCustomerNickNameColorResId = DEFAULT;
     //IM界面，时间文字的字体颜色
     public int udeskIMTimeTextColorResId = DEFAULT;
     // IM界面，提示语文字的字体颜色，比如客服转移
@@ -143,6 +145,10 @@ public class UdeskConfig {
     public Product mProduct;
     //SDK支持自定义渠道
     public String channel;
+    //是否显示客户昵称
+    public boolean isShowCustomerNickname;
+    //是否显示客户头像
+    public boolean isShowCustomerHead = true;
 
 
     UdeskConfig(Builder builder) {
@@ -153,6 +159,7 @@ public class UdeskConfig {
         this.udeskIMLeftTextColorResId = builder.udeskIMLeftTextColorResId;
         this.udeskIMRightTextColorResId = builder.udeskIMRightTextColorResId;
         this.udeskIMAgentNickNameColorResId = builder.udeskIMAgentNickNameColorResId;
+        this.udeskIMCustomerNickNameColorResId = builder.udeskIMCustomerNickNameColorResId;
         this.udeskIMTimeTextColorResId = builder.udeskIMTimeTextColorResId;
         this.udeskIMTipTextColorResId = builder.udeskIMTipTextColorResId;
         this.udeskbackArrowIconResId = builder.udeskbackArrowIconResId;
@@ -205,6 +212,8 @@ public class UdeskConfig {
         this.isOnlyUseRobot = builder.isOnlyUseRobot;
         this.mProduct = builder.mProduct;
         this.channel = builder.channel;
+        this.isShowCustomerNickname = builder.isShowCustomerNickname;
+        this.isShowCustomerHead = builder.isShowCustomerHead;
 
     }
 
@@ -226,6 +235,8 @@ public class UdeskConfig {
         private int udeskIMRightTextColorResId = DEFAULT;
         //IM界面，左侧客服昵称文字的字体颜色
         private int udeskIMAgentNickNameColorResId = DEFAULT;
+        //IM界面，右侧用户昵称文字的字体颜色
+        private int udeskIMCustomerNickNameColorResId = DEFAULT;
         //IM界面，时间文字的字体颜色
         private int udeskIMTimeTextColorResId = DEFAULT;
         // IM界面，提示语文字的字体颜色，比如客服转移
@@ -329,6 +340,10 @@ public class UdeskConfig {
         private Product mProduct;
         //SDK支持自定义渠道
         private String channel;
+        //是否显示客户昵称
+        public boolean isShowCustomerNickname=false;
+        //是否显示客户头像
+        public boolean isShowCustomerHead = true;
 
         public Builder() {
 
@@ -385,6 +400,16 @@ public class UdeskConfig {
          */
         public Builder setUdeskIMAgentNickNameColorResId(int udeskIMAgentNickNameColorResId) {
             this.udeskIMAgentNickNameColorResId = udeskIMAgentNickNameColorResId;
+            return this;
+        }
+       /**
+         * IM界面，右侧用户昵称文字的字体颜色
+         *
+         * @param udeskIMCustomerNickNameColorResId
+         * @return
+         */
+        public Builder setUdeskIMCustomerNickNameColorResId(int udeskIMCustomerNickNameColorResId) {
+            this.udeskIMCustomerNickNameColorResId = udeskIMCustomerNickNameColorResId;
             return this;
         }
 
@@ -788,6 +813,16 @@ public class UdeskConfig {
 
         public Builder setChannel(String channel) {
             this.channel = channel;
+            return this;
+        }
+
+        public Builder isShowCustomerNickname(boolean isShowCustomerNickname) {
+            this.isShowCustomerNickname = isShowCustomerNickname;
+            return this;
+        }
+
+        public Builder isShowCustomerHead(boolean isShowCustomerHead) {
+            this.isShowCustomerHead = isShowCustomerHead;
             return this;
         }
 

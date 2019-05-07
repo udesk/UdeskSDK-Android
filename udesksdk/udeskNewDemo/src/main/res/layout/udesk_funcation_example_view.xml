@@ -531,6 +531,69 @@
             </LinearLayout>
 
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/show_customer_nickname"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginLeft="24dp"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_show_customer_nickname"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/show_customer_head"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginLeft="24dp"
+                    android:checked="true"
+                    android:background="@drawable/often_messages_selector"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="start|center"
+                    android:text="@string/udesk_show_customer_head"
+                    android:textColor="#666666"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
 
         <LinearLayout
@@ -806,7 +869,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="@dimen/udesk_10"
             android:gravity="start|center"
-            android:text="http://qn-im.udesk.cn/QQ%E5%9B%BE%E7%89%8720180918095411_1539245227_643.jpg"
+            android:text="https://qn-im.udesk.cn/QQ%E5%9B%BE%E7%89%8720180918095411_1539245227_643.jpg"
             android:textColor="#333333"
             android:textSize="16sp" />
 

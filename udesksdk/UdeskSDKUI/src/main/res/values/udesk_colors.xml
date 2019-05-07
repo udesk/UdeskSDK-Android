@@ -12,6 +12,8 @@
     <color name="udesk_color_im_text_right1">#FFFFFF</color>
     <!-- IM界面，左侧客服昵称文字的字体颜色 -->
     <color name="udesk_color_im_left_nickname1">#C3CDD4</color>
+    <!-- IM界面，右侧用户昵称文字的字体颜色 -->
+    <color name="udesk_color_im_right_nickname1">#242E33</color>
     <!-- IM界面，时间文字的字体颜色 -->
     <color name="udesk_color_im_time_text1">#C3CDD4</color>
     <!-- IM界面，提示语文字的字体颜色，比如客服转移-->

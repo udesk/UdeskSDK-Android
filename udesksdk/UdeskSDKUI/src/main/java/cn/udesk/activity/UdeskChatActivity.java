@@ -595,7 +595,12 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                                 showTranferAgent();
                                 return;
                             }
+                            if (TextUtils.equals(sendMessage.getMsgtype(),UdeskConst.ChatMsgTypeString.TYPE_IMAGE)
+                                    ||TextUtils.equals(sendMessage.getMsgtype(),UdeskConst.ChatMsgTypeString.TYPE_File)
+                                    ||TextUtils.equals(sendMessage.getMsgtype(),UdeskConst.ChatMsgTypeString.TYPE_VIDEO)
+                                    ||TextUtils.equals(sendMessage.getMsgtype(),UdeskConst.ChatMsgTypeString.TYPE_SHORT_VIDEO)){
                             changeFileProgress(sendMessage.getMsgId(), 100, 0, true);
+                        }
                             if (mAgentInfo != null && mAgentInfo.getAgentCode() == 2000) {
                                 sendMessage.setmAgentJid(mAgentInfo.getAgentJid());
                                 sendMessage.setSubsessionid(mAgentInfo.getIm_sub_session_id());

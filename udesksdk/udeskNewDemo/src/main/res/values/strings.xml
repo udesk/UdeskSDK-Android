@@ -66,6 +66,8 @@
     <string name="udesk_update_text_info">更新用户的自定义的文本信息</string>
     <string name="udesk_domain">域名</string>
     <string name="udesk_start">开启</string>
+    <string name="udesk_show_customer_nickname">是否显示客户昵称</string>
+    <string name="udesk_show_customer_head">是否显示客户头像</string>
 
 
 

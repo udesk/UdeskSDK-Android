@@ -143,64 +143,67 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 ### **2.2 UdeskConfig内部类Builder的说明**
 | 属性           | 设置方法   | 功能说明         |
 | ------------- | ------ | ---------- |
-| udeskTitlebarBgResId        			 | setUdeskTitlebarBgResId       							  | 标题栏TitleBar的背景色,通过颜色设置   |
-| udeskTitlebarMiddleTextResId           | setUdeskTitlebarMiddleTextResId                            | 标题栏TitleBar，中部上下文字的颜色                             |
-| udeskTitlebarRightTextResId            | setUdeskTitlebarRightTextResId                             | 标题栏TitleBar，右侧文字的颜色                      |
-| udeskIMLeftTextColorResId              | setUdeskIMLeftTextColorResId                               | IM界面，左侧文字的字体颜色                     |
-| udeskIMRightTextColorResId             | setUdeskIMRightTextColorResId                              | IM界面，右侧文字的字体颜色                                       |
+| udeskTitlebarBgResId        			 | setUdeskTitlebarBgResId       							  | 标题栏TitleBar的背景色,通过颜色设置                             |
+| udeskTitlebarMiddleTextResId           | setUdeskTitlebarMiddleTextResId                            | 标题栏TitleBar，中部上下文字的颜色                              |
+| udeskTitlebarRightTextResId            | setUdeskTitlebarRightTextResId                             | 标题栏TitleBar，右侧文字的颜色                                  |
+| udeskIMLeftTextColorResId              | setUdeskIMLeftTextColorResId                               | IM界面，左侧文字的字体颜色                                      |
+| udeskIMRightTextColorResId             | setUdeskIMRightTextColorResId                              | IM界面，右侧文字的字体颜色                                      |
 | udeskIMAgentNickNameColorResId         | setUdeskIMAgentNickNameColorResId                          | IM界面，左侧客服昵称文字的字体颜色                               |
-| udeskIMTimeTextColorResId              | setUdeskIMTimeTextColorResId                               | IM界面，时间文字的字体颜色                                       |
-| udeskIMTipTextColorResId               | setUdeskIMTipTextColorResId                                | IM界面，提示语文字的字体颜色，比如客服转移                       |
-| udeskbackArrowIconResId                | setUdeskbackArrowIconResId                                 | 返回箭头图标资源id                                               |
-| udeskCommityBgResId                    | setUdeskCommityBgResId                                     | 咨询商品item的背景颜色                                           |
-| udeskCommityTitleColorResId            | setUdeskCommityTitleColorResId                             | 商品介绍Title的字样颜色                                          |
+| udeskIMCustomerNickNameColorResId      | setUdeskIMCustomerNickNameColorResId                       | IM界面，右侧客户昵称文字的字体颜色                               |
+| udeskIMTimeTextColorResId              | setUdeskIMTimeTextColorResId                               | IM界面，时间文字的字体颜色                                      |
+| udeskIMTipTextColorResId               | setUdeskIMTipTextColorResId                                | IM界面，提示语文字的字体颜色，比如客服转移                        |
+| udeskbackArrowIconResId                | setUdeskbackArrowIconResId                                 | 返回箭头图标资源id                                             |
+| udeskCommityBgResId                    | setUdeskCommityBgResId                                     | 咨询商品item的背景颜色                                         |
+| udeskCommityTitleColorResId            | setUdeskCommityTitleColorResId                             | 商品介绍Title的字样颜色                                        |
 | udeskCommitysubtitleColorResId         | setUdeskCommitysubtitleColorResId                          | 商品咨询页面中，商品介绍子Title的字样颜色                        |
 | udeskCommityLinkColorResId             | setUdeskCommityLinkColorResId                              | 商品咨询页面中，发送链接的字样颜色                               |
 | isUserSDkPush                          | setUserSDkPush                                             | 配置 是否使用推送服务  true 表示使用  false表示不使用            |
-| UdeskQuenuMode                         | setUdeskQuenuMode                                          | 配置放弃排队的策略                                               |
+| UdeskQuenuMode                         | setUdeskQuenuMode                                          | 配置放弃排队的策略                                             |
 | isUseVoice                             | setUseVoice                                                | 是否使用录音功能  true表示使用 false表示不使用                   | 
 | isUsephoto                             | setUsephoto                                                | 是否使用发送图片的功能  true表示使用 false表示不使用             | 
 | isUsecamera                            | setUsecamera                                               | 是否使用拍照的功能  true表示使用 false表示不使用                 |      
 | isUsefile                              | setUsefile                                                 | 是否使用上传文件功能  true表示使用 false表示不使用               |  
 | isUseMap                               | setUseMap                                                  | 是否使用发送位置功能  true表示使用 false表示不使用               |  
-| isUseEmotion                           | setUseEmotion                                              | 是否使用表情 true表示使用 false表示不使用                        |  
-| isUseMore                              | setUseMore                                                 | 否使用展示出更多功能选项 true表示使用 false表示不使用            |
-| isUseNavigationRootView                | setNavigations                                             | 设置是否使用导航UI true表示使用 false表示不使用                   |  
-| isUseRobotNavigationRootView           | setRobotNavigations                                        | 设置是否使用机器人导航UI rue表示使用 false表示不使用                 |
+| isUseEmotion                           | setUseEmotion                                              | 是否使用表情 true表示使用 false表示不使用                       |  
+| isUseMore                              | setUseMore                                                 | 否使用展示出更多功能选项 true表示使用 false表示不使用             |
+| isUseNavigationRootView                | setNavigations                                             | 设置是否使用导航UI true表示使用 false表示不使用                  |  
+| isUseRobotNavigationRootView           | setRobotNavigations                                        | 设置是否使用机器人导航UI rue表示使用 false表示不使用             |
 | isUseNavigationSurvy                   | setUseNavigationSurvy                                      | 设置是否使用导航UI中的满意度评价UI rue表示使用 false表示不使用    |     
 | isUseSmallVideo                        | setUseSmallVideo                                           | 设置是否需要小视频的功能 rue表示使用 false表示不使用             | 
 | isScaleImg                             | setScaleMax                                                | 设置宽高最大值，如果超出则压缩，否则不压缩                       |   
-| ScaleMax                               | setScaleImg                                                | 上传图片是否使用原图 还是缩率图                                  |  
-| useMapType                             | setUseMapSetting                                           | 设置使用那种地图                                                 | 
-| Orientation                            | setOrientation                                             | 设置默认屏幕显示习惯                                             |  
-| isUserForm                             | setUserForm                                                | 本地配置是否需要表单留言，true需要， false 不需要                |  
-| defaultUserInfo                        | setDefualtUserInfo                                         | 创建用户的基本信息                                               |  
-| definedUserTextField                   | setDefinedUserTextField                                    | 创建自定义的文本信息                                             |
-| definedUserRoplist                     | setDefinedUserRoplist                                      | 创建自定义的列表信息                                             |    
-| firstMessage                           | setFirstMessage                                            | 设置带入一条消息  会话分配就发送给客服                           |  
-| robot_modelKey                         | setRobot_modelKey                                          |  udesk 机器人配置欢迎语 对应的Id值                               |  
-| concatRobotUrlWithCustomerInfo         | setConcatRobotUrlWithCustomerInfo                          |  用于机器人页面收集客户信息                                      |  
-| customerUrl                            | setCustomerUrl                                             |  设置客户的头像地址                                              |    
-| commodity                              | setCommodity                                               |  配置发送商品链接的mode                                          |  
-| txtMessageClick                        | setTxtMessageClick                                         | 文本消息中的链接消息的点击事件的拦截回调。 包含表情的不会拦截回调 |  
-| formCallBack                           | setFormCallBack                                            | 离线留言表单的回调接口 ，回调使用自己的处理流程                   |  
-| structMessageCallBack                  | setStructMessageCallBack                                   | 设置结构化消息的点击事件回调接口                                  |  
-| extreFunctions                         | setExtreFunctions                                          | 设置额外的功能按钮                                               |  
-| functionItemClickCallBack              | setExtreFunctions                                          | 点击事件回调 直接发送文本,图片,视频,文件,地理位置,商品信息        |  
-| navigationModes                        | setNavigations                                             | 约定传递的自定义按钮集合                                          |  
-| robotnavigationModes                   | setRobotNavigations                                   | 约定传递的自定义按钮集合                                          |  
-| navigationItemClickCallBack            | setNavigations                                             | 支持客户在导航处添加自定义按钮的点击回调事件                      | 
-| locationMessageClickCallBack           | setUseMapSetting                                           | 点击地理位置信息的回调接口                                       | 
-| cls                                    | setUseMapSetting                                           | 传入打开地图消息显示的详请activity                               | 
-| groupId                                | setGroupId                                                 | 设置的指定组，每次进入都必须重新指定                             | 
-| isOnlyByGroupId                        | setGroupId                                                 | 是否仅仅指定组进入                                               | 
-| agentId                                | setAgentId                                                 | 设置指订客服id，每次进入都必须重新指定                           | 
-| isOnlyByAgentId                        | setAgentId                                                 | 是否仅仅指定客服进入                                              | 
-| isOnlyUseRobot                         | setOnlyUseRobot                                            | 设置是否只使用机器人 不用其它功能                                 | 
-| mProduct                               | setProduct                                                 | 设置商品消息         
-| channel                                | setChannel                                                 | SDK支持自定义渠道（只支持字符数字，不支持特殊支持）  				|
+| ScaleMax                               | setScaleImg                                                | 上传图片是否使用原图 还是缩率图                                |  
+| useMapType                             | setUseMapSetting                                           | 设置使用那种地图                                             | 
+| Orientation                            | setOrientation                                             | 设置默认屏幕显示习惯                                          |  
+| isUserForm                             | setUserForm                                                | 本地配置是否需要表单留言，true需要， false 不需要               |  
+| defaultUserInfo                        | setDefualtUserInfo                                         | 创建用户的基本信息                                           |  
+| definedUserTextField                   | setDefinedUserTextField                                    | 创建自定义的文本信息                                         |
+| definedUserRoplist                     | setDefinedUserRoplist                                      | 创建自定义的列表信息                                         |    
+| firstMessage                           | setFirstMessage                                            | 设置带入一条消息  会话分配就发送给客服                         |  
+| robot_modelKey                         | setRobot_modelKey                                          |  udesk 机器人配置欢迎语 对应的Id值                            |  
+| concatRobotUrlWithCustomerInfo         | setConcatRobotUrlWithCustomerInfo                          |  用于机器人页面收集客户信息                                   |  
+| customerUrl                            | setCustomerUrl                                             |  设置客户的头像地址                                          |    
+| commodity                              | setCommodity                                               |  配置发送商品链接的mode                                      |  
+| txtMessageClick                        | setTxtMessageClick                                         | 文本消息中的链接消息的点击事件的拦截回调。 包含表情的不会拦截回调  |  
+| formCallBack                           | setFormCallBack                                            | 离线留言表单的回调接口 ，回调使用自己的处理流程                 |  
+| structMessageCallBack                  | setStructMessageCallBack                                   | 设置结构化消息的点击事件回调接口                               |  
+| extreFunctions                         | setExtreFunctions                                          | 设置额外的功能按钮                                           |  
+| functionItemClickCallBack              | setExtreFunctions                                          | 点击事件回调 直接发送文本,图片,视频,文件,地理位置,商品信息       |  
+| navigationModes                        | setNavigations                                             | 约定传递的自定义按钮集合                                      |  
+| robotnavigationModes                   | setRobotNavigations                                        | 约定传递的自定义按钮集合                                      |  
+| navigationItemClickCallBack            | setNavigations                                             | 支持客户在导航处添加自定义按钮的点击回调事件                    | 
+| locationMessageClickCallBack           | setUseMapSetting                                           | 点击地理位置信息的回调接口                                    | 
+| cls                                    | setUseMapSetting                                           | 传入打开地图消息显示的详请activity                            | 
+| groupId                                | setGroupId                                                 | 设置的指定组，每次进入都必须重新指定                           | 
+| isOnlyByGroupId                        | setGroupId                                                 | 是否仅仅指定组进入                                           | 
+| agentId                                | setAgentId                                                 | 设置指订客服id，每次进入都必须重新指定                         | 
+| isOnlyByAgentId                        | setAgentId                                                 | 是否仅仅指定客服进入                                         | 
+| isOnlyUseRobot                         | setOnlyUseRobot                                            | 设置是否只使用机器人 不用其它功能                              | 
+| mProduct                               | setProduct                                                 | 设置商品消息             									   |
+| channel                                | setChannel                                                 | SDK支持自定义渠道（只支持字符数字，不支持特殊支持）  			   |
+| isShowCustomerNickname                 | isShowCustomerNickname                                     | 是否显示客户昵称  				                           |
+| isShowCustomerHead                 	 | isShowCustomerHead                                          | 是否显示客户头像  				                           |
 
-	  private UdeskConfig.Builder makeBuilder() {
+	      private UdeskConfig.Builder makeBuilder() {
         if (!TextUtils.isEmpty(edit_language.getText().toString())){
             LocalManageUtil.saveSelectLanguage(getApplicationContext(),new Locale(edit_language.getText().toString()));
         }
@@ -212,6 +215,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
                 .setUdeskIMLeftTextColorResId(R.color.udesk_color_im_text_left1) //设置IM界面，左侧文字的字体颜色
                 .setUdeskIMRightTextColorResId(R.color.udesk_color_im_text_right1) // 设置IM界面，右侧文字的字体颜色
                 .setUdeskIMAgentNickNameColorResId(R.color.udesk_color_im_left_nickname1) //设置IM界面，左侧客服昵称文字的字体颜色
+                .setUdeskIMCustomerNickNameColorResId(R.color.udesk_color_im_right_nickname1) //设置IM界面，右侧用户昵称文字的字体颜色
                 .setUdeskIMTimeTextColorResId(R.color.udesk_color_im_time_text1) // 设置IM界面，时间文字的字体颜色
                 .setUdeskIMTipTextColorResId(R.color.udesk_color_im_tip_text1) //设置IM界面，提示语文字的字体颜色，比如客服转移
                 .setUdeskbackArrowIconResId(R.drawable.udesk_titlebar_back) // 设置返回箭头图标资源id
@@ -311,7 +315,9 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
                         Toast.makeText(getApplicationContext(), "结构化消息控件点击事件回调", Toast.LENGTH_SHORT).show();
                     }
                 })//设置结构化消息控件点击事件回调接口.
-                .setChannel(channel.getText().toString());
+                .setChannel(channel.getText().toString())
+                .isShowCustomerNickname(show_customer_nickname.isChecked())//设置是否显示昵称
+                .isShowCustomerHead(show_customer_head.isChecked());//设置是否显示头像
 
         return builder;
     }
@@ -668,6 +674,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 | url     | 可选     | 商品跳转链接(新页显示)，如果值为空，则不能点击      |
 | imgUrl         | 可选     | 商品显示图片的url       |
 | params   | 可选     | 参数列表       |
+| customParameters   | 可选     | 参数列表  自定义添加内容      |
 |ParamsBean.text | 可选| 参数文本|
 |ParamsBean.color | 可选| 参数颜色值，规定为十六进制值的颜色| 
 |ParamsBean.fold | 可选| 是否粗体| 
@@ -678,6 +685,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 1 可以每次进入会话, 通过UdeskConfig配置,设置一条商品消息
 
 2 可以通过导航栏 自定义功能按钮  发送商品消息 
+
 ### 10 自定义机器人满意度评价内容（人工客服满意度调查内容是在后台配置）
 	  case UdeskConst.LiveDataType.RobotSessionHasSurvey:
                             if ((boolean) mergeMode.getData()) {
@@ -708,6 +716,16 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
         return model;
     }
 
+### 11 设置是否显示用户头像
+
+	UdeskConfig.Builder builder = new UdeskConfig.Builder();
+	builder.isShowCustomerHead(true|false);
+	
+### 12 设置是否显示用户昵称
+
+	UdeskConfig.Builder builder = new UdeskConfig.Builder();
+	builder.isShowCustomerNickname(true|false);
+	
 <h1 id="5">五、Udesk API说明</h1>
 
 ### 1.获取未读消息
@@ -761,6 +779,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
  quitmode: mark (默认,标记放弃)/  force_quit(强制立即放弃)
 
 	build.setUdeskQuenuMode(quitmode);
+
 ### 6 资源 UI
 
 	聊天界面UdeskChatActivity 
@@ -793,6 +812,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 		MergeMode livedata 处理的消息
 		questionMergeMode MergeMode 子类拓展 处理点击问题
 		MergeModeManager  mergedata 管理类
+
 
 <h1 id="6">六、消息推送</h1>
 

@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import cn.udesk.JsonUtils;
 import cn.udesk.R;
@@ -83,6 +84,9 @@ public class RightViewHolder extends BaseViewHolder {
     private TextView replyProductInfoThree;
     private LinearLayout itemText;
     private LinearLayout itemLeaveMsg;
+    private SimpleDraweeView ivHeader;
+    private TextView customerNickName;
+    private LinearLayout llBody;
 
     @Override
     public void initView(Activity mContext, View convertView) {
@@ -90,11 +94,16 @@ public class RightViewHolder extends BaseViewHolder {
             this.mContext=mContext;
             tvTime = convertView.findViewById(R.id.udesk_tv_time);
             UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMTimeTextColorResId, tvTime);
+            //头像
+            llHead = convertView.findViewById(R.id.udesk_ll_head);
+            ivHeader = convertView.findViewById(R.id.udesk_iv_head);
+            customerNickName = convertView.findViewById(R.id.udesk_nick_name);
+            UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMCustomerNickNameColorResId, customerNickName);
+            llBody = convertView.findViewById(R.id.udesk_ll_body);
             ivStatus = convertView.findViewById(R.id.udesk_iv_status);
             cancleImg = convertView.findViewById(R.id.udesk_iv_cancle);
             cancleImg.setVisibility(View.GONE);
             pbWait = convertView.findViewById(R.id.udesk_im_wait);
-            llHead = convertView.findViewById(R.id.udesk_rl_body);
             itemText = convertView.findViewById(R.id.udesk_item_txt);
             tvMsg = convertView.findViewById(R.id.udesk_tv_msg);
             UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMRightTextColorResId, tvMsg);
@@ -170,6 +179,7 @@ public class RightViewHolder extends BaseViewHolder {
     public void bind() {
         try {
             hideAllView();
+            showHead(true);
             changeUiState(message.getSendFlag());
             LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
             params.topMargin=UdeskUtil.dip2px(mContext,10);
@@ -654,6 +664,7 @@ public class RightViewHolder extends BaseViewHolder {
     private void dealSmallVideo() {
         try {
             itemSmallVideo.setVisibility(View.VISIBLE);
+
             if (message.getSendFlag() == UdeskConst.SendFlag.RESULT_SUCCESS) {
                 showSuccessView();
             } else {
@@ -942,6 +953,70 @@ public class RightViewHolder extends BaseViewHolder {
 
     @Override
     protected void showTextHead(boolean b) {
+        if (b){
+            showHead(b);
+        }else {
+            llHead.setVisibility(View.GONE);
+            if (!(UdeskSDKManager.getInstance().getUdeskConfig().isShowCustomerHead || isShowCustomerNickName())){
+                setBodyTopMargin(3);
+            }
+        }
+    }
 
+    /**
+     * 是否显示客服头像和昵称
+     *
+     * @param isShow
+     */
+    private void showHead(boolean isShow) {
+        try {
+            if (isShow && (UdeskSDKManager.getInstance().getUdeskConfig().isShowCustomerHead || isShowCustomerNickName())) {
+                llHead.setVisibility(View.VISIBLE);
+                setBodyTopMargin( 3);
+                if (!UdeskSDKManager.getInstance().getUdeskConfig().isShowCustomerHead){
+                    ivHeader.setVisibility(View.GONE);
+                }else {
+                    ivHeader.setVisibility(View.VISIBLE);
+                    if (!TextUtils.isEmpty(UdeskSDKManager.getInstance().getUdeskConfig().customerUrl)) {
+                        UdeskUtil.loadHeadView(mContext, ivHeader, Uri.parse(UdeskSDKManager.getInstance().getUdeskConfig().customerUrl));
+                    }
+                }
+                if (!isShowCustomerNickName()) {
+                    customerNickName.setVisibility(View.GONE);
+                } else {
+                    customerNickName.setVisibility(View.VISIBLE);
+                    customerNickName.setText(getCustomerNickName());
+                }
+
+            } else {
+                llHead.setVisibility(View.GONE);
+                setBodyTopMargin(10);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void setBodyTopMargin(int i) {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.topMargin = UdeskUtils.dip2px(mContext, i);
+        llBody.setLayoutParams(params);
+    }
+
+    private String getCustomerNickName(){
+        Map<String, String> defaultUserInfo = UdeskSDKManager.getInstance().getUdeskConfig().defaultUserInfo;
+        if (defaultUserInfo != null && defaultUserInfo.containsKey(UdeskConst.UdeskUserInfo.NICK_NAME)
+                && !TextUtils.isEmpty(defaultUserInfo.get(UdeskConst.UdeskUserInfo.NICK_NAME))) {
+            return defaultUserInfo.get(UdeskConst.UdeskUserInfo.NICK_NAME);
+        }
+        return "";
+    }
+
+    private boolean isShowCustomerNickName(){
+        if (UdeskSDKManager.getInstance().getUdeskConfig().isShowCustomerNickname && !TextUtils.isEmpty(getCustomerNickName())){
+            return true;
+        }else {
+            return false;
+        }
     }
 }

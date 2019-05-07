@@ -302,13 +302,14 @@ public class MessageAdatper extends BaseAdapter {
                             holder.changeFileState(percent, fileSize, isSuccess);
                             return true;
 
+                        case UdeskConst.ChatMsgTypeInt.TYPE_VIDEO:
                         case UdeskConst.ChatMsgTypeInt.TYPE_SHORT_VIDEO:
                             holder.changeSmallvideoState(percent);
-                            break;
+                            return true;
 
                         case UdeskConst.ChatMsgTypeInt.TYPE_IMAGE:
                             holder.changeImageState(percent);
-                            break;
+                            return true;
                         default:
                             break;
                     }

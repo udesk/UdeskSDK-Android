@@ -473,13 +473,14 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
     }
 
     private void addMessage(MessageInfo msg) {
-        Log.d("huhu","addMessage===================="+msg.getMsgId());
+        UdeskUtils.printStackTrace();
         MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.AddMessage, msg,UUID.randomUUID().toString());
         MergeModeManager.getmInstance().putMergeMode(mergeMode,FileLiveData.this);
 
     }
 
     private void updateFailure(String msgId) {
+        UdeskUtils.printStackTrace();
         MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.Send_Message_Failure, msgId,UUID.randomUUID().toString());
         MergeModeManager.getmInstance().putMergeMode(mergeMode,FileLiveData.this);
 

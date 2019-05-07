@@ -350,6 +350,9 @@ public class JsonUtils {
             if (!TextUtils.isEmpty(mProduct.getImgUrl())) {
                 jsonObject.put("imgUrl", mProduct.getImgUrl());
             }
+            if (mProduct.getCustomParameters()!=null) {
+                jsonObject.put("customParameters",mProduct.getCustomParameters());
+            }
             List<Product.ParamsBean> params = mProduct.getParams();
             if (params != null && params.size() > 0) {
                 JSONArray jsonsArray = new JSONArray();
