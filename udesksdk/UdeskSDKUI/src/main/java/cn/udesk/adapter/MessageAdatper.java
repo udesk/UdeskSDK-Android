@@ -121,7 +121,7 @@ public class MessageAdatper extends BaseAdapter {
                     if (message.getSend_status().equals("rollback")) {
                         String content = String.format(mContext.getString(R.string.udesk_rollback_tips), message.getMsgContent());
                         message.setMsgContent(content);
-                        UdeskDBManager.getInstance().addMessageInfo(message);
+                        UdeskDBManager.getInstance().addMessageDB(message);
                         list.remove(info);
                         break;
                     }

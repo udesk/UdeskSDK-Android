@@ -8,9 +8,10 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 import cn.udesk.UdeskSDKManager;
-import cn.udesk.UdeskUtil;
 import udesk.core.UdeskConst;
 import udesk.core.model.AgentInfo;
 import udesk.core.model.InviterAgentInfo;
@@ -92,6 +93,9 @@ public class UdeskDBManager {
         if (messages == null || getSQLiteDatabase() == null) {
             return false;
         }
+        if (messages.size()>20){
+            messages=messages.subList(messages.size()-20,messages.size());
+        }
         getSQLiteDatabase().beginTransaction();
         try {
             for (MessageInfo msg : messages) {
@@ -101,7 +105,6 @@ public class UdeskDBManager {
             }
             getSQLiteDatabase().setTransactionSuccessful();
         } catch (Exception e) {
-
             return false;
         } finally {
             getSQLiteDatabase().endTransaction();
@@ -109,6 +112,21 @@ public class UdeskDBManager {
         return true;
     }
 
+    //保存消息
+    public Future<Boolean> addMessageDB(final MessageInfo msg) {
+        try {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    return addMessageInfo(msg);
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     /**
      * db中增加一条消息的语句
@@ -149,8 +167,23 @@ public class UdeskDBManager {
         }
     }
 
+
+    public Future<Boolean> updateMsgContentDB(final String msgId, final String text) {
+        try {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    return updateMsgContent(msgId,text);
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     //更新消息的内容
-    public synchronized boolean updateMsgContent(String msgid, String text) {
+    public synchronized boolean updateMsgContent(String msgId, String text) {
 
         String sql = "update " + UdeskDBHelper.UdeskMessage + " set " + "MsgContent= ?"
                 + " where MsgID = ? ";
@@ -158,7 +191,7 @@ public class UdeskDBManager {
             if (getSQLiteDatabase() == null) {
                 return false;
             }
-            getSQLiteDatabase().execSQL(sql, new Object[]{text, msgid});
+            getSQLiteDatabase().execSQL(sql, new Object[]{text, msgId});
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -167,8 +200,22 @@ public class UdeskDBManager {
 
     }
 
+    public Future<Boolean> updateMsgLoaclUrlDB(final String msgId, final String text) {
+        try {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    return updateMsgLoaclUrl(msgId,text);
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     //更新缓存的路径
-    public boolean updateMsgLoaclUrl(String msgid, String text) {
+    public boolean updateMsgLoaclUrl(String msgId, String text) {
 
         String sql = "update " + UdeskDBHelper.UdeskMessage + " set " + "LocalPath= ?"
                 + " where MsgID = ? ";
@@ -176,7 +223,7 @@ public class UdeskDBManager {
             if (getSQLiteDatabase() == null) {
                 return false;
             }
-            getSQLiteDatabase().execSQL(sql, new Object[]{text, msgid});
+            getSQLiteDatabase().execSQL(sql, new Object[]{text, msgId});
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -185,6 +232,20 @@ public class UdeskDBManager {
 
     }
 
+    public Future<Boolean> updateMsgSendFlagDB(final String msgId, final int sendflag) {
+        try {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    return updateMsgSendFlag(msgId,sendflag);
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     //更新消息发送的状态
     public synchronized boolean updateMsgSendFlag(String msgId, int sendflag) {
 
@@ -201,6 +262,21 @@ public class UdeskDBManager {
             return false;
         }
 
+    }
+
+    public Future<Boolean> updateSendFlagToFailDB() {
+        try {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    return updateSendFlagToFail();
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     //更新消息发送中的为发送失败
@@ -220,6 +296,20 @@ public class UdeskDBManager {
         }
     }
 
+    public Future<MessageInfo> isExitMessageDB(final String msgId) {
+        try {
+            Future<MessageInfo> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<MessageInfo>() {
+                @Override
+                public MessageInfo call() throws Exception {
+                    return isExitMessage(msgId);
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     //根据消息的ID查询这条消息
     private synchronized MessageInfo isExitMessage(String msgid) {
@@ -247,6 +337,20 @@ public class UdeskDBManager {
         return msg;
     }
 
+    public Future<MessageInfo> getMessageDB(final String msgId) {
+        try {
+            Future<MessageInfo> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<MessageInfo>() {
+                @Override
+                public MessageInfo call() throws Exception {
+                    return getMessage(msgId);
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     //根据消息的ID查询这条消息
     public synchronized MessageInfo getMessage(String msgid) {
         String sql = "select * from " + UdeskDBHelper.UdeskMessage
@@ -308,6 +412,20 @@ public class UdeskDBManager {
         return msg;
     }
 
+    public Future<List<MessageInfo>> getMessagesDB(final int offset, final int pageNum) {
+        try {
+            Future<List<MessageInfo>> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<List<MessageInfo>>() {
+                @Override
+                public List<MessageInfo> call() throws Exception {
+                    return getMessages(offset,pageNum);
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     /**
      * 获取指定条数的聊天记录
      *
@@ -390,6 +508,21 @@ public class UdeskDBManager {
         return list;
     }
 
+
+    public Future<MessageInfo> getLastMessageDB() {
+        try {
+            Future<MessageInfo> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<MessageInfo>() {
+                @Override
+                public MessageInfo call() throws Exception {
+                    return getLastMessage();
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     //获取聊天记录的最后一条
     public synchronized MessageInfo getLastMessage() {
 
@@ -458,6 +591,20 @@ public class UdeskDBManager {
         return msgInfo;
     }
 
+    public Future<MessageInfo> getAgentLastMessageDB() {
+        try {
+            Future<MessageInfo> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<MessageInfo>() {
+                @Override
+                public MessageInfo call() throws Exception {
+                    return getAgentLastMessage();
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     //获取客服聊天记录最后一条
     public synchronized MessageInfo getAgentLastMessage() {
 
@@ -530,6 +677,20 @@ public class UdeskDBManager {
         return msgInfo;
     }
 
+    public Future<Integer> getMessageCountDB() {
+        try {
+            Future<Integer> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Integer>() {
+                @Override
+                public Integer call() throws Exception {
+                    return getMessageCount();
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     /**
      * 获取消息总数
      *
@@ -560,6 +721,21 @@ public class UdeskDBManager {
         return count;
     }
 
+    public Future<Boolean> hasReceviedMsgDB(final String msgId) {
+        try {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    return hasReceviedMsg(msgId);
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     /**
      * 判断消息是否已经存在
      *
@@ -587,12 +763,27 @@ public class UdeskDBManager {
         return false;
     }
 
+    public Future<Boolean> deleteAllMsgDB() {
+        try {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    return deleteAllMsg();
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     /**
      * 清楚所有的消息记录
      *
      * @return
      */
-    public boolean deleteAllMsg() {
+    public synchronized boolean deleteAllMsg() {
         try {
             if (getSQLiteDatabase() == null) {
                 return false;
@@ -605,7 +796,21 @@ public class UdeskDBManager {
         }
     }
 
-    public boolean deleteMsgById(String msgId) {
+    public Future<Boolean> deleteMsgByIdDB(final String msgId) {
+        try {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    return deleteMsgById(msgId);
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public synchronized boolean deleteMsgById(String msgId) {
         try {
             if (getSQLiteDatabase() == null) {
                 return false;
@@ -619,6 +824,18 @@ public class UdeskDBManager {
         }
     }
 
+    public void updateMsgHasReadDB(final String msgId) {
+        try {
+            UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
+                @Override
+                public void run() {
+                    updateMsgHasRead(msgId);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public synchronized void updateMsgHasRead(String msgId) {
 
         String sql = "update " + UdeskDBHelper.UdeskMessage + " set " + "ReadFlag= ?"
@@ -632,6 +849,19 @@ public class UdeskDBManager {
             e.printStackTrace();
         }
 
+    }
+
+    public void updateAllMsgReadDB() {
+        try {
+            UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
+                @Override
+                public void run() {
+                    updateAllMsgRead();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public synchronized void updateAllMsgRead() {
@@ -650,6 +880,20 @@ public class UdeskDBManager {
     }
 
 
+    public Future<List<MessageInfo>>  getUnReadMessagesDB() {
+        try {
+            Future<List<MessageInfo>> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<List<MessageInfo>>() {
+                @Override
+                public List<MessageInfo> call() throws Exception {
+                    return getUnReadMessages();
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     /**
      * 获取最近的10条未读消息
      */
@@ -691,6 +935,20 @@ public class UdeskDBManager {
         return list;
     }
 
+    public Future<Integer>  getUnReadMessageCountDB() {
+        try {
+            Future<Integer> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Integer>() {
+                @Override
+                public Integer call() throws Exception {
+                    return getUnReadMessageCount();
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     //获取未读消息数
     public synchronized int getUnReadMessageCount() {
         int count;
@@ -719,6 +977,20 @@ public class UdeskDBManager {
         return count;
     }
 
+    public Future<String[]>  getAgentUrlAndNickDB(final String agentJId) {
+        try {
+            Future<String[]> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<String[]>() {
+                @Override
+                public String[] call() throws Exception {
+                    return getAgentUrlAndNick(agentJId);
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public synchronized String[] getAgentUrlAndNick(String agentJId) {
         String sql = "select * from " + UdeskDBHelper.UdeskAgentMsg
@@ -744,7 +1016,20 @@ public class UdeskDBManager {
         return urlAndNick;
     }
 
-
+    public Future<Boolean> addAgentInfoDB(final AgentInfo agentInfo) {
+        try {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    return addAgentInfo(agentInfo);
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     public synchronized boolean addAgentInfo(AgentInfo agentInfo) {
         try {
 
@@ -766,6 +1051,22 @@ public class UdeskDBManager {
             return false;
         }
     }
+
+    public Future<Boolean> addInviterAgentInfoDB(final InviterAgentInfo agentInfo) {
+        try {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    return addInviterAgentInfo(agentInfo);
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public synchronized boolean addInviterAgentInfo(InviterAgentInfo agentInfo) {
         try {
 
@@ -787,6 +1088,19 @@ public class UdeskDBManager {
             return false;
         }
     }
+
+    public void addSubSessionIdDB(final String im_sub_session_id, final int seqNum) {
+        try {
+            UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
+                @Override
+                public void run() {
+                    addSubSessionId(im_sub_session_id,seqNum);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * 本地保存序号字段
      *
@@ -806,6 +1120,20 @@ public class UdeskDBManager {
         }
     }
 
+    public Future<Integer>  getSubSessionIdDB(final String im_sub_session_id) {
+        try {
+            Future<Integer> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Integer>() {
+                @Override
+                public Integer call() throws Exception {
+                    return getSubSessionId(im_sub_session_id);
+                }
+            });
+            return future;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public synchronized int getSubSessionId(String im_sub_session_id) {
         try {

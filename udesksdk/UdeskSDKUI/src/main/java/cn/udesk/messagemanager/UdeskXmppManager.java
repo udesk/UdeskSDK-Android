@@ -7,7 +7,6 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import cn.udesk.UdeskSDKManager;
@@ -440,7 +439,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
             UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
                 @Override
                 public void run() {
-                    UdeskDBManager.getInstance().updateMsgSendFlag(msgId, UdeskConst.SendFlag.RESULT_SUCCESS);
+                    UdeskDBManager.getInstance().updateMsgSendFlagDB(msgId, UdeskConst.SendFlag.RESULT_SUCCESS);
                     InvokeEventContainer.getInstance().event_OnMessageReceived.invoke(msgId);
                 }
             });
@@ -455,7 +454,6 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
             DeliveryReceipt received = message.getExtension("received", "urn:xmpp:receipts");
             if (received != null && !TextUtils.isEmpty(received.getId())) {
                 messageReceived(received.getId());
-                InvokeEventContainer.getInstance().event_OnMessageReceived.invoke(received.getId());
             }
             return;
         }
@@ -559,7 +557,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
             String inviterJid = inviterAgentInfo.getJid();
             String jid[] = agentJid.split("/");
             if (!TextUtils.isEmpty(inviterJid)){
-                UdeskDBManager.getInstance().addInviterAgentInfo(inviterAgentInfo);
+                UdeskDBManager.getInstance().addInviterAgentInfoDB(inviterAgentInfo);
                 jid  = inviterJid.split("/");
             }
             MessageInfo msginfo = null;
@@ -648,7 +646,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
                 newUserInfoXmpp.setMsgId(message.getPacketID());
                 xmppMsg = new Message(message.getFrom(), Message.Type.chat);
                 xmppMsg.addExtension(newUserInfoXmpp);
-                if (xmppConnection != null) {
+                if (xmppConnection != null && xmppConnection.isConnected()) {
                     xmppConnection.sendPacket(xmppMsg);
                 }
             } catch (Exception e) {

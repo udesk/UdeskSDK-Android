@@ -122,6 +122,8 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                                 MessageInfo messageInfo = sendingMsgCache.get(msg.getMsgId());
                                 if (messageInfo != null) {
                                     messageInfo.setCount();
+                                }else {
+                                    msg.setCount();
                                 }
                                 // 发给当前的客服
                                 msg.setNoNeedSave(true);
@@ -149,7 +151,7 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                             try {
                                 if (TextUtils.equals("8002", message)) {
                                     removeSendMsgCace(msg.getMsgId());
-                                    UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(), UdeskConst.SendFlag.RESULT_FAIL);
+                                    UdeskDBManager.getInstance().updateMsgSendFlagDB(msg.getMsgId(), UdeskConst.SendFlag.RESULT_FAIL);
                                     postMessage(msg.getMsgId(),UdeskConst.LiveDataType.Send_Message_Failure);
                                     MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RECREATE_CUSTOMER_INFO, msg.getMsgId(),UUID.randomUUID().toString());
                                     MergeModeManager.getmInstance().putMergeMode(mergeMode,SendMessageLiveData.this);
@@ -192,6 +194,7 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                                 MessageInfo cacheMsg = sendingMsgCache.get(msg.getMsgId());
                                 // 发送2次也算成功，有服务端代发通知客服,等同于收到xmpp回执
                                 if (cacheMsg != null && (cacheMsg.getCount() + 1) >= 2) {
+                                    Log.d("aac","secondSave====="+msg.getMsgId());
                                     postMessage(msg.getMsgId(),UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmppMessageReceived);
                                 }
                             } catch (Exception e) {
@@ -203,7 +206,7 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                         public void onFail(String message) {
                             if (TextUtils.equals("8002", message)) {
                                 removeSendMsgCace(msg.getMsgId());
-                                UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(), UdeskConst.SendFlag.RESULT_FAIL);
+                                UdeskDBManager.getInstance().updateMsgSendFlagDB(msg.getMsgId(), UdeskConst.SendFlag.RESULT_FAIL);
                                 postMessage(msg.getMsgId(),UdeskConst.LiveDataType.Send_Message_Failure);
                                 return;
                             }
@@ -232,7 +235,8 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                                     int status = resultJson.getInt("code");
                                     if (status == 1000) {
                                         //保存成功 等同于xmpp发送成功
-                                        UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(), UdeskConst.SendFlag.RESULT_SUCCESS);
+                                        UdeskDBManager.getInstance().updateMsgSendFlagDB(msg.getMsgId(), UdeskConst.SendFlag.RESULT_SUCCESS);
+                                        Log.i("aac", " sendQueueMessage =" + msg.getMsgId());
                                         postMessage(msg.getMsgId(),UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmppMessageReceived);
                                         return;
                                     }
@@ -318,7 +322,9 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                         public void onSuccess(String message) {
                             //修改消息状态
                             try {
-                                UdeskDBManager.getInstance().updateMsgSendFlag(msgId, UdeskConst.SendFlag.RESULT_SUCCESS);
+                                UdeskDBManager.getInstance().updateMsgSendFlagDB(msgId, UdeskConst.SendFlag.RESULT_SUCCESS);
+                                Log.i("aac", " putLeavesMsg =" + msgId);
+
                                 postMessage(msgId,UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmppMessageReceived);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -328,7 +334,7 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                         @Override
                         public void onFail(String msg) {
                             try {
-                                UdeskDBManager.getInstance().updateMsgSendFlag(msgId, UdeskConst.SendFlag.RESULT_FAIL);
+                                UdeskDBManager.getInstance().updateMsgSendFlagDB(msgId, UdeskConst.SendFlag.RESULT_FAIL);
                                 postMessage(msgId,UdeskConst.LiveDataType.Send_Message_Failure);
                             } catch (Exception e) {
                                 e.printStackTrace();

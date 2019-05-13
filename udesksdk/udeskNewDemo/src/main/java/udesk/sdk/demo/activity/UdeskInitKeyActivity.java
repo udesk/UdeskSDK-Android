@@ -20,11 +20,11 @@ import udesk.sdk.demo.R;
 public class UdeskInitKeyActivity extends Activity {
 
 //    //替换成你们注册生成的域名
-    private String UDESK_DOMAIN = "brazil0326.udesk.cn";
-    //替换成你们生成应用产生的appid
-    private String AppId = "717b563a93e83c26";
-    // 替换成你们在后台生成的密钥
-    private String UDESK_SECRETKEY = "12cec1ded15716158f7d50fefd1d42a7";
+//    private String UDESK_DOMAIN = "brazil0326.udesk.cn";
+//    //替换成你们生成应用产生的appid
+//    private String AppId = "717b563a93e83c26";
+//    // 替换成你们在后台生成的密钥
+//    private String UDESK_SECRETKEY = "12cec1ded15716158f7d50fefd1d42a7";
 
 //    //替换成你们注册生成的域名
 //    private String UDESK_DOMAIN = "brazil0326.udesk.cn";
@@ -34,11 +34,11 @@ public class UdeskInitKeyActivity extends Activity {
 //    private String UDESK_SECRETKEY = "8c63951173fbd6ac81a6c6146f940e7b";
 
     //替换成你们注册生成的域名
-//    private String UDESK_DOMAIN = "udesksdk.udesk.cn";
-//    //替换成你们生成应用产生的appid
-//    private String AppId = "cdc6da4fa97efc2c";
-//    // 替换成你们在后台生成的密钥
-//    private String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
+    private String UDESK_DOMAIN = "udesksdk.udesk.cn";
+    //替换成你们生成应用产生的appid
+    private String AppId = "cc57963d6284bfe7";
+    // 替换成你们在后台生成的密钥
+    private String UDESK_SECRETKEY = "8bcc3f04490559068bd4a894272dc588";
 
 //    //替换成你们注册生成的域名
 //    private String UDESK_DOMAIN = "reocar.udeskmonkey.com";

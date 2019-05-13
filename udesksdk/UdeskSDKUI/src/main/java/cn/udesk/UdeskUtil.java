@@ -1666,13 +1666,13 @@ public class UdeskUtil {
                         msg.setUpdateTime(contentsBean.getReply_updated_at());
                         msg.setReplyUser(contentsBean.getReply_user());
                         msgInfos.add(msg);
-                        UdeskDBManager.getInstance().addMessageInfo(msg);
+                        UdeskDBManager.getInstance().addMessageDB(msg);
                         isAddEvent = true;
                     }
                 }
                 if (isAddEvent) {
                     msgInfos.add(0, eventMsg);
-                    UdeskDBManager.getInstance().addMessageInfo(eventMsg);
+                    UdeskDBManager.getInstance().addMessageDB(eventMsg);
                 }
             }
         } catch (Exception e) {

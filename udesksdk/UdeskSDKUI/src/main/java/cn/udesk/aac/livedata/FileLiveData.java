@@ -112,7 +112,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                 @Override
                 public void onFail(String message) {
                     updateFailure(messageInfo.getMsgId());
-                    UdeskDBManager.getInstance().updateMsgSendFlag(messageInfo.getMsgId(),
+                    UdeskDBManager.getInstance().updateMsgSendFlagDB(messageInfo.getMsgId(),
                             UdeskConst.SendFlag.RESULT_FAIL);
                 }
             });
@@ -175,7 +175,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                         temp += "/";
                     }
                     temp = temp + finalUrlkey;
-                    UdeskDBManager.getInstance().updateMsgContent(messageInfo.getMsgId(), temp);
+                    UdeskDBManager.getInstance().updateMsgContentDB(messageInfo.getMsgId(), temp);
                     messageInfo.setMsgContent(temp);
                     addMessage(messageInfo);
                 }
@@ -227,7 +227,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                                 temp += "/";
                             }
                             temp = temp + alikey;
-                            UdeskDBManager.getInstance().updateMsgContent(messageInfo.getMsgId(), temp);
+                            UdeskDBManager.getInstance().updateMsgContentDB(messageInfo.getMsgId(), temp);
                             messageInfo.setMsgContent(temp);
                             addMessage(messageInfo);
                             return;
@@ -280,7 +280,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                             } else if (bucket.equals("udeskim")) {
                                 builder.append("https://qn-im.udesk.cn/").append(key);
                             }
-                            UdeskDBManager.getInstance().updateMsgContent(messageInfo.getMsgId(), builder.toString());
+                            UdeskDBManager.getInstance().updateMsgContentDB(messageInfo.getMsgId(), builder.toString());
                             messageInfo.setMsgContent(builder.toString());
                             addMessage(messageInfo);
                         } catch (JSONException e) {
@@ -298,7 +298,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
         try {
             concurrentHashMap.remove(messageInfo.getMsgId());
             updateFailure(messageInfo.getMsgId());
-            UdeskDBManager.getInstance().updateMsgSendFlag(messageInfo.getMsgId(),
+            UdeskDBManager.getInstance().updateMsgSendFlagDB(messageInfo.getMsgId(),
                     UdeskConst.SendFlag.RESULT_FAIL);
         }catch (Exception e){
             e.printStackTrace();
@@ -423,7 +423,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                 @Override
                 public void onSuccess(byte[] t) {
                     try {
-                        UdeskDBManager.getInstance().updateMsgLoaclUrl(info.getMsgId(), file.getAbsolutePath());
+                        UdeskDBManager.getInstance().updateMsgLoaclUrlDB(info.getMsgId(), file.getAbsolutePath());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

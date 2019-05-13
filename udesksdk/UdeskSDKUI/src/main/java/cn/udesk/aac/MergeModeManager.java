@@ -14,15 +14,23 @@ import java.util.concurrent.Future;
 import udesk.core.model.MessageInfo;
 
 public class MergeModeManager {
-    private static MergeModeManager mInstance=new MergeModeManager();
+    private static MergeModeManager mInstance;
     private volatile Map<String,MergeMode>  mergeModeLinkedHashMap;
+    private Future<?> future2;
+
     private MergeModeManager(){
         mergeModeLinkedHashMap=Collections.synchronizedMap(new LinkedHashMap<String,MergeMode>());
         executor=Executors.newSingleThreadExecutor();
     }
     public static MergeModeManager getmInstance(){
+        synchronized(MergeModeManager.class){
+            if(mInstance == null){
+                mInstance = new MergeModeManager();
+            }
+        }
         return mInstance;
     }
+
     private ExecutorService executor;
     private Future<?> future;
     public  void putMergeMode(final MergeMode mergeMode, final MutableLiveData liveData){
@@ -48,16 +56,16 @@ public class MergeModeManager {
 
     public  void  dealMergeMode(final MergeMode mergeMode, final MutableLiveData liveData) {
         try {
-            future=executor.submit(new Runnable() {
+            future2 = executor.submit(new Runnable() {
                 @Override
                 public void run() {
                     if (!mergeModeLinkedHashMap.isEmpty()) {
                         if (mergeModeLinkedHashMap.containsKey(mergeMode.getId())) {
                             mergeModeLinkedHashMap.remove(mergeMode.getId());
                         }
-                        if (!mergeModeLinkedHashMap.isEmpty()){
+                        if (!mergeModeLinkedHashMap.isEmpty()) {
                             Iterator<Map.Entry<String, MergeMode>> iterator = mergeModeLinkedHashMap.entrySet().iterator();
-                            if (iterator!=null&&iterator.hasNext()) {
+                            if (iterator != null && iterator.hasNext()) {
                                 Map.Entry<String, MergeMode> next = iterator.next();
                                 liveData.postValue(next.getValue());
                             }
@@ -77,7 +85,15 @@ public class MergeModeManager {
                 future.cancel(true);
                 future = null;
             }
+            if (future2 != null) {
+                future2.cancel(true);
+                future2 = null;
+            }
+
             mergeModeLinkedHashMap.clear();
+            executor=null;
+            mergeModeLinkedHashMap=null;
+            mInstance=null;
         }catch (Exception e){
             e.printStackTrace();
         }

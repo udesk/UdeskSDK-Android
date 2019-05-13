@@ -359,7 +359,7 @@ public class UdeskViewMode extends ViewModel {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                UdeskDBManager.getInstance().updateMsgSendFlag(messageInfo.getMsgId(), UdeskConst.SendFlag.RESULT_FAIL);
+                                UdeskDBManager.getInstance().updateMsgSendFlagDB(messageInfo.getMsgId(), UdeskConst.SendFlag.RESULT_FAIL);
                                 MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.Send_Message_Failure, messageInfo.getMsgId(),UUID.randomUUID().toString());
                                 MergeModeManager.getmInstance().putMergeMode(mergeMode,mutableLiveData);
                             }

@@ -114,7 +114,7 @@ public class MessageCache {
                                 msg.setCount();
 //                       messagesave发送2次成功，有服务端代发通知客服,消息发送成功，更新db状态
                                 if (msg.getCount() >= 2) {
-                                    UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(),
+                                    UdeskDBManager.getInstance().updateMsgSendFlagDB(msg.getMsgId(),
                                             UdeskConst.SendFlag.RESULT_SUCCESS);
                                 } else {
                                     //继续加入队列
@@ -135,7 +135,7 @@ public class MessageCache {
                                 //messagesave 失败超过3次，计算服务异常，更新消息发送失败
                                 //小于3次 继续加入队列
                                 if (msg.getFailureCount() > 3) {
-                                    UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(),
+                                    UdeskDBManager.getInstance().updateMsgSendFlagDB(msg.getMsgId(),
                                             UdeskConst.SendFlag.RESULT_FAIL);
                                 } else {
                                     //继续加入队列
