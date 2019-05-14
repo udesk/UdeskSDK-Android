@@ -195,6 +195,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
     //排队中的消息提醒
     private UdeskQueueItem queueItem;
     private boolean isInTheQueue = false;
+    private boolean isfirstWaitTips = true;
     //最多允许发送20条消息
     boolean isMoreThan20 = false;
 
@@ -252,6 +253,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                     if (mHandler!=null && myRunnable!=null){
                         mHandler.removeCallbacks(myRunnable);
                     }
+                    isfirstWaitTips=true;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -313,11 +315,6 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                             activity.setTitlebar(activity.getString(R.string.udesk_label_customer_offline), "off");
                             activity.delayShowtips(this);
                         }
-                        if (activity.queueItem != null && activity.mChatAdapter != null) {
-                            activity.mChatAdapter.removeQueueMessage(activity.queueItem);
-                            activity.queueItem = null;
-                            activity.mListView.smoothScrollToPosition(activity.mChatAdapter.getCount());
-                        }
                         break;
                     case MessageWhat.HasAgent:
                         activity.isInTheQueue = false;
@@ -328,11 +325,6 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                         activity.showOnlieStatus(activity.mAgentInfo);
                         activity.setNavigationViewVis();
                         activity.initfunctionItems();
-                        if (activity.queueItem != null && activity.mChatAdapter != null) {
-                            activity.mChatAdapter.removeQueueMessage(activity.queueItem);
-                            activity.queueItem = null;
-                            activity.mListView.smoothScrollToPosition(activity.mChatAdapter.getCount());
-                        }
                         if (activity.mPresenter != null) {
                             activity.mPresenter.pullMessages(0, activity.mAgentInfo.getIm_sub_session_id());
                             activity.mPresenter.sendPrefilterMsg(true);
@@ -357,27 +349,9 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                         activity.setTitlebar(activity.getResources().getString(R.string.udesk_in_the_line), "queue");
                         activity.setUdeskImContainerVis(View.VISIBLE);
                         this.postDelayed(activity.myRunnable, activity.QUEUE_RETEY_TIME);
-                        if (activity.mPresenter != null) {
-                            activity.mPresenter.sendPrefilterMsg(true);
-                        }
-                        if (!activity.hasSendCommodity) {
-                            activity.hasSendCommodity = true;
-                            activity.sendCommodityMsg(UdeskSDKManager.getInstance().getUdeskConfig().commodity);
-                            activity.sendProduct(UdeskSDKManager.getInstance().getUdeskConfig().mProduct);
-                        }
-                        if (!activity.hasSendFirstMessage) {
-                            activity.hasSendFirstMessage = true;
-                            activity.sendDefualtMessage();
-                        }
-                        if (activity.queueItem == null) {
-                            activity.queueItem = new UdeskQueueItem(activity.isOpenLeaveMsg(), activity.mAgentInfo.getMessage());
-                            if (activity.mChatAdapter != null) {
-                                activity.mChatAdapter.addItem(activity.queueItem);
-                                activity.mListView.smoothScrollToPosition(activity.mChatAdapter.getCount());
-                            }
-                        } else {
-                            activity.queueItem.setQueueContent(activity.mAgentInfo.getMessage());
-                            activity.mChatAdapter.notifyDataSetChanged();
+                        if (activity.isfirstWaitTips) {
+                            activity.isfirstWaitTips = false;
+                            activity.delayShowtips(this);
                         }
                         break;
                     case MessageWhat.refreshAdapter:
@@ -489,7 +463,6 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                     case MessageWhat.IM_STATUS:
                         String imStatus = (String) msg.obj;
                         if (imStatus.equals("off")) {
-                            activity.isInTheQueue = false;
                             activity.isInitComplete = true;
                             if (activity.isleaveMessageTypeMsg()) {
                                 activity.setUdeskImContainerVis(View.GONE);
@@ -2161,6 +2134,10 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                 reCreateIMCustomerInfo();
                 return false;
             }
+            if (isInTheQueue) {
+                confirmToForm();
+                return false;
+            }
             if (!currentStatusIsOnline && !isleaveMessageTypeMsg()) {
                 confirmToForm();
                 return false;
@@ -3229,7 +3206,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
 
     @Override
     public boolean isNeedQueueMessageSave() {
-        return isInTheQueue && UdeskSDKManager.getInstance().getEnableSendMessageWhenQueue();
+        return false;
     }
 
     String moreThanStirng;

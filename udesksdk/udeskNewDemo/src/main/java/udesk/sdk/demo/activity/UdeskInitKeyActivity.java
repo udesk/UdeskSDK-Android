@@ -34,11 +34,18 @@ public class UdeskInitKeyActivity extends Activity {
 //    private String UDESK_SECRETKEY = "0175ba741a912c516cea06b0fbe66992";
 
 //    //替换成你们注册生成的域名
-    private String UDESK_DOMAIN = "udesksdk.udesk.cn";
+//    private String UDESK_DOMAIN = "udesksdk.udesk.cn";
+//    //替换成你们生成应用产生的appid
+//    private String AppId = "cc57963d6284bfe7";
+//    // 替换成你们在后台生成的密钥
+//    private String UDESK_SECRETKEY = "8bcc3f04490559068bd4a894272dc588";
+
+//    //替换成你们注册生成的域名
+    private String UDESK_DOMAIN = "xchat.yuceyi.com";
     //替换成你们生成应用产生的appid
-    private String AppId = "cc57963d6284bfe7";
+    private String AppId = "75a52752cf88b67d";
     // 替换成你们在后台生成的密钥
-    private String UDESK_SECRETKEY = "8bcc3f04490559068bd4a894272dc588";
+    private String UDESK_SECRETKEY = "889e8f182c15293c958e9eaf795fd6b6";
 
 
     private EditText mDomainEdit;

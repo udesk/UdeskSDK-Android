@@ -6,18 +6,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.qiniu.android.http.ResponseInfo;
-import com.qiniu.android.storage.Configuration;
-import com.qiniu.android.storage.KeyGenerator;
-import com.qiniu.android.storage.Recorder;
-import com.qiniu.android.storage.UpCancellationSignal;
-import com.qiniu.android.storage.UpCompletionHandler;
-import com.qiniu.android.storage.UploadManager;
-import com.qiniu.android.storage.UploadOptions;
-import com.qiniu.android.storage.persistent.FileRecorder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,13 +15,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +41,8 @@ import cn.udesk.model.SDKIMSetting;
 import cn.udesk.model.SurveyOptionsModel;
 import cn.udesk.model.TicketReplieMode;
 import cn.udesk.model.UdeskCommodityItem;
+import cn.udesk.upload.UdeskUploadCallBack;
+import cn.udesk.upload.UdeskUploadManager;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
@@ -66,17 +53,12 @@ import udesk.core.model.MessageInfo;
 import udesk.core.model.Product;
 import udesk.core.utils.UdeskIdBuild;
 import udesk.core.utils.UdeskUtils;
-import udesk.core.xmpp.XmppInfo;
 
 public class ChatActivityPresenter {
 
     private IChatActivityView mChatView;
 
     private String customerId;
-
-    //处理七牛上传完成的回调
-    MyUpCompletionHandler mMyUpCompletionHandler = null;
-    UploadManager uploadManager = null;
 
     private List<MessageInfo> cachePreMsg = new ArrayList<>();
 
@@ -262,7 +244,9 @@ public class ChatActivityPresenter {
     public void onMessageReceived(String msgId) {
         try {
             UdeskDBManager.getInstance().updateMsgSendFlag(msgId, UdeskConst.SendFlag.RESULT_SUCCESS);
-            sendingMsgCache.remove(msgId);
+            if (sendingMsgCache.containsKey(msgId)){
+                sendingMsgCache.remove(msgId);
+            }
             if (mChatView.getHandler() != null) {
                 Message message = mChatView.getHandler().obtainMessage(
                         MessageWhat.changeImState);
@@ -413,7 +397,7 @@ public class ChatActivityPresenter {
                         public void onSuccess(String message) {
                             try {
                                 SDKIMSetting imSetting = JsonUtils.parserIMSettingJson(message);
-                                if (imSetting!=null){
+                                if (imSetting != null) {
                                     UdeskSDKManager.getInstance().setImSetting(imSetting);
 
                                 }
@@ -510,7 +494,7 @@ public class ChatActivityPresenter {
                                         changePrefilterMsgStatus(message_id);
                                     }
                                 }
-                                if (agentInfo.getAgentCode() == 2000) {
+                                if (agentInfo.getAgentCode() == UdeskConst.AgentReponseCode.HasAgent) {
                                     getIMStatus(agentInfo);
                                 } else {
                                     mChatView.dealAgentInfo(agentInfo);
@@ -1356,11 +1340,11 @@ public class ChatActivityPresenter {
             if (TextUtils.isEmpty(customerId) || msg == null) {
                 return;
             }
-            if (mChatView != null && mChatView.getAgentInfo() != null){
-                if (!TextUtils.isEmpty(mChatView.getAgentInfo().getAgentJid())){
+            if (mChatView != null && mChatView.getAgentInfo() != null) {
+                if (!TextUtils.isEmpty(mChatView.getAgentInfo().getAgentJid())) {
                     msg.setmAgentJid(mChatView.getAgentInfo().getAgentJid());
                 }
-                if (!TextUtils.isEmpty(mChatView.getAgentInfo().getIm_sub_session_id())){
+                if (!TextUtils.isEmpty(mChatView.getAgentInfo().getIm_sub_session_id())) {
                     msg.setSubsessionid(mChatView.getAgentInfo().getIm_sub_session_id());
                 }
             }
@@ -1669,63 +1653,66 @@ public class ChatActivityPresenter {
         }
     }
 
-//    private void uploadFileByStrategy(String filePath, final MessageInfo message) {
-//        File file = new File(filePath);
-//        String fileName = file.getName();
-//        UdeskUploadManager uploadManager = new UdeskUploadManager();
-//        uploadManager.uploadFile(UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
-//                UdeskSDKManager.getInstance().getAppkey(mChatView.getContext()),
-//                UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
-//                UdeskSDKManager.getInstance().getAppId(mChatView.getContext()), fileName, filePath, message,
-//                new UdeskUploadCallBack() {
-//
-//                    @Override
-//                    public void onSuccess(MessageInfo info, String url) {
-//                        UdeskDBManager.getInstance().updateMsgContent(info.getMsgId(),
-//                                url);
-//                        info.setMsgContent(url);
-//                        messageSave(info);
-//                    }
-//
-//                    @Override
-//                    public void progress(MessageInfo info, String key, float percent) {
-//                        try {
-//                            if (mChatView != null && mChatView.getHandler() != null) {
-//                                Message message = mChatView.getHandler().obtainMessage(
-//                                        MessageWhat.ChangeFielProgress);
-//                                message.obj = key;
-//                                message.arg1 = new Float(percent * 100).intValue();
-//                                mChatView.getHandler().sendMessage(message);
-//                            }
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(MessageInfo info, String key) {
-//                        if (mChatView.getHandler() != null) {
-//                            Message message = mChatView.getHandler().obtainMessage(
-//                                    MessageWhat.changeImState);
-//                            message.obj = info.getMsgId();
-//                            message.arg1 = UdeskConst.SendFlag.RESULT_FAIL;
-//                            mChatView.getHandler().sendMessage(message);
-//                        }
-//                        UdeskDBManager.getInstance().updateMsgSendFlag(info.getMsgId(),
-//                                UdeskConst.SendFlag.RESULT_FAIL);
-//                    }
-//                });
-//    }
+    private void uploadFileByStrategy(String filePath, final MessageInfo message) {
+        File file = new File(filePath);
+        String fileName = file.getName();
+        UdeskUploadManager uploadManager = new UdeskUploadManager();
+        uploadManager.uploadFile(UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
+                UdeskSDKManager.getInstance().getAppkey(mChatView.getContext()),
+                UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
+                UdeskSDKManager.getInstance().getAppId(mChatView.getContext()), fileName, filePath, message,
+                new UdeskUploadCallBack() {
+
+                    @Override
+                    public void onSuccess(MessageInfo info, String url) {
+                        UdeskDBManager.getInstance().updateMsgContent(info.getMsgId(),
+                                url);
+                        info.setMsgContent(url);
+                        if (isNeedAddCachePre(info)) {
+                            return;
+                        }
+                        if (mChatView.isNeedQueueMessageSave()) {
+                            queueMessageSave(info);
+                            return;
+                        }
+                        messageSave(info);
+                    }
+
+                    @Override
+                    public void progress(MessageInfo info, String key, float percent) {
+                        try {
+                            if (mChatView != null && mChatView.getHandler() != null) {
+                                Message message = mChatView.getHandler().obtainMessage(
+                                        MessageWhat.ChangeFielProgress);
+                                message.obj = key;
+                                message.arg1 = new Float(percent * 100).intValue();
+                                mChatView.getHandler().sendMessage(message);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(MessageInfo info, String key) {
+                        if (mChatView.getHandler() != null) {
+                            Message message = mChatView.getHandler().obtainMessage(
+                                    MessageWhat.changeImState);
+                            message.obj = info.getMsgId();
+                            message.arg1 = UdeskConst.SendFlag.RESULT_FAIL;
+                            mChatView.getHandler().sendMessage(message);
+                        }
+                        UdeskDBManager.getInstance().updateMsgSendFlag(info.getMsgId(),
+                                UdeskConst.SendFlag.RESULT_FAIL);
+                    }
+                });
+    }
 
     protected volatile ConcurrentHashMap<String, Boolean> isCancleUpLoad = new ConcurrentHashMap<>();
 
     public void cancleUploadFile(MessageInfo message) {
         try {
-//            if (UdeskConst.isLocal) {
-//                UdeskUploadManager.cancleRequest(message.getMsgId());
-//            } else {
-            isCancleUpLoad.put(message.getMsgId(), true);
-//            }
+            UdeskUploadManager.cancleRequest(message.getMsgId());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1733,66 +1720,7 @@ public class ChatActivityPresenter {
 
     //上传文件
     private void upLoadFile(final String filePath, final MessageInfo message) {
-
-//        if (UdeskConst.isLocal) {
-//            uploadFileByStrategy(filePath, message);
-//        } else {
-        try {
-            UdeskUtils.printStackTrace();
-            if (isCancleUpLoad.containsKey(message.getMsgId())) {
-                isCancleUpLoad.put(message.getMsgId(), false);
-                return;
-            }
-            isCancleUpLoad.put(message.getMsgId(), false);
-            Recorder recorder = null;
-            try {
-                recorder = new FileRecorder(UdeskUtils.getDirectoryPath(mChatView.getContext(), UdeskConst.File_File));
-            } catch (Exception e) {
-            }
-            KeyGenerator keyGenerator = new KeyGenerator() {
-                @Override
-                public String gen(String key, File file) {
-                    String name = key + "_._" + new StringBuffer(file.getAbsolutePath()).reverse();
-                    return name;
-                }
-            };
-            Configuration config = new Configuration.Builder()
-                    .putThreshhold(512 * 1024)
-                    .connectTimeout(10)
-                    .recorder(recorder, keyGenerator)
-                    .useHttps(true)
-                    .build();
-
-            // 实例化一个上传的实例
-            if (uploadManager == null) {
-                uploadManager = new UploadManager(config);
-            }
-            if (mMyUpCompletionHandler == null) {
-                mMyUpCompletionHandler = new MyUpCompletionHandler();
-            }
-            String key = message.getMsgId();
-//            if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_IMAGE) && !TextUtils.isEmpty(message.getFilename())) {
-//                key = key + "_" + message.getFilename();
-//            }
-            key = key + "_" + message.getFilename();
-            mMyUpCompletionHandler.putCacheMessage(key, message);
-            uploadManager.put(filePath, key,
-                    XmppInfo.getInstance().getQiniuToken(),
-                    mMyUpCompletionHandler,
-                    new UploadOptions(null, null, false,
-                            mUpProgressHandler, new UpCancellationSignal() {
-                        @Override
-                        public boolean isCancelled() {
-                            return isCancleUpLoad.get(message.getMsgId());
-                        }
-                    }));
-        } catch (Exception e) {
-            e.printStackTrace();
-        } catch (OutOfMemoryError error) {
-            error.printStackTrace();
-        }
-//        }
-
+        uploadFileByStrategy(filePath, message);
     }
 
     //提交满意度调查出错
@@ -1806,90 +1734,6 @@ public class ChatActivityPresenter {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * 七牛上传进度
-     */
-    private final com.qiniu.android.storage.UpProgressHandler mUpProgressHandler = new com.qiniu.android.storage.UpProgressHandler() {
-        public void progress(String key, double percent) {
-            try {
-                if (mChatView != null && mChatView.getHandler() != null) {
-                    Message message = mChatView.getHandler().obtainMessage(
-                            MessageWhat.ChangeFielProgress);
-                    message.obj = key;
-                    message.arg1 = new Double(percent * 100).intValue();
-                    mChatView.getHandler().sendMessage(message);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
-
-    /**
-     * 七牛上传完成
-     */
-    class MyUpCompletionHandler implements UpCompletionHandler {
-
-        private final Map<String, MessageInfo> mToMsgMap = new HashMap<String, MessageInfo>();
-
-        public MyUpCompletionHandler() {
-
-        }
-
-        public void putCacheMessage(String md5, MessageInfo message) {
-            mToMsgMap.put(md5, message);
-        }
-
-        @Override
-        public void complete(String key, ResponseInfo info, JSONObject response) {
-            try {
-                MessageInfo msg = mToMsgMap.get(key);
-                isCancleUpLoad.remove(msg.getMsgId());
-                if (key != null && null != response && (response.has("key")
-                        || response.optString("error").contains("file exists"))
-                        && msg != null) {
-                    if (UdeskConst.isDebug) {
-                        Log.i("DialogActivityPresenter", "UpCompletion : key="
-                                + key + "\ninfo=" + info.toString() + "\nresponse="
-                                + response.toString());
-                    }
-                    String qiniuKey = response.optString("key");
-                    String qiniuUrl = UdeskConst.UD_QINIU_UPLOAD + qiniuKey;
-                    UdeskDBManager.getInstance().updateMsgContent(msg.getMsgId(),
-                            qiniuUrl);
-                    msg.setMsgContent(qiniuUrl);
-                    mToMsgMap.remove(key);
-                    if (isNeedAddCachePre(msg)) {
-                        return;
-                    }
-                    if (mChatView.isNeedQueueMessageSave()) {
-                        queueMessageSave(msg);
-                        return;
-                    }
-                    messageSave(msg);
-
-                } else {
-                    if (mChatView.getHandler() != null) {
-                        Message message = mChatView.getHandler().obtainMessage(
-                                MessageWhat.changeImState);
-                        message.obj = msg.getMsgId();
-                        message.arg1 = UdeskConst.SendFlag.RESULT_FAIL;
-                        mChatView.getHandler().sendMessage(message);
-                    }
-                    UdeskDBManager.getInstance().updateMsgSendFlag(msg.getMsgId(),
-                            UdeskConst.SendFlag.RESULT_FAIL);
-                    if (info != null && info.error != null && info.error.equals("file or data size is zero")) {
-                        mChatView.showFailToast(info.error);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } catch (OutOfMemoryError error) {
-                error.printStackTrace();
-            }
         }
     }
 
