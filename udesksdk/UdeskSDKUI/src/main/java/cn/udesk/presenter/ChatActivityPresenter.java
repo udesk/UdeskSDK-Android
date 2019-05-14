@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.Configuration;
@@ -27,13 +26,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -1310,7 +1307,7 @@ public class ChatActivityPresenter {
                     UdeskSDKManager.getInstance().getAppId(mChatView.getContext()),
                     customerId, subSessionId, seqNum, new UdeskCallBack() {
                         @Override
-                        public void onSuccess(String message) {
+                        public void onSuccess(final String message) {
                             try {
                                 JSONObject root = new JSONObject(message);
                                 String code = UdeskUtils.objectToString(root.opt("code"));
@@ -1323,14 +1320,20 @@ public class ChatActivityPresenter {
                                         }
                                     }, request_delay_time * 1000);
                                 } else {
-                                    List<LogMessage> logMessages = JsonUtils.parseMessages(message);
-                                    if (logMessages != null && logMessages.size() > 0) {
-                                        List<MessageInfo> msgInfos = tranferLogMessage(logMessages);
-                                        if (msgInfos.size() > 0) {
-                                            UdeskDBManager.getInstance().addAllMessageInfo(msgInfos);
-                                            mChatView.initLoadData();
+                                    UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            List<LogMessage> logMessages = JsonUtils.parseMessages(message);
+                                            if (logMessages != null && logMessages.size() > 0) {
+                                                List<MessageInfo> msgInfos = tranferLogMessage(logMessages);
+                                                if (msgInfos.size() > 0) {
+                                                    UdeskDBManager.getInstance().addAllMessageInfo(msgInfos);
+                                                    mChatView.initLoadData();
+                                                }
+                                            }
                                         }
-                                    }
+                                    });
+
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
