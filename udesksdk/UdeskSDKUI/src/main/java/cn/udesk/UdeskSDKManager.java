@@ -7,6 +7,8 @@ import android.widget.Toast;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.activity.UdeskFormActivity;
@@ -58,8 +60,10 @@ public class UdeskSDKManager {
     private SDKIMSetting imSetting;
 
     private Context appContext;
+    private  ExecutorService singleExecutor;
 
     private UdeskSDKManager() {
+        singleExecutor = Executors.newSingleThreadExecutor();
     }
 
     public static UdeskSDKManager getInstance() {
@@ -102,7 +106,9 @@ public class UdeskSDKManager {
         }
         return udeskConfig;
     }
-
+    public ExecutorService getSingleExecutor() {
+        return singleExecutor;
+    }
     /**
      * 直接进入帮助中心页面
      *

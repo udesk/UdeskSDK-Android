@@ -10,6 +10,7 @@ import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.config.UdekConfigUtil;
 import cn.udesk.config.UdeskConfig;
+import udesk.core.UdeskConst;
 
 
 public class UdeskFormActivity extends UdeskBaseWebViewActivity {
@@ -28,7 +29,7 @@ public class UdeskFormActivity extends UdeskBaseWebViewActivity {
     private void loadingView() {
         try {
             settingTitlebar();
-            String url = "https://" +  UdeskSDKManager.getInstance().getDomain(this)
+            String url = UdeskConst.HTTP +  UdeskSDKManager.getInstance().getDomain(this)
                     + "/im_client/feedback.html"
                     + UdeskUtil.getFormUrlPara(this);
 

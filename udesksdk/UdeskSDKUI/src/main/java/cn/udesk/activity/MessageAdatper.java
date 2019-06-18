@@ -59,6 +59,7 @@ import cn.udesk.widget.CircleProgressBar;
 import cn.udesk.widget.HtmlTagHandler;
 import udesk.core.UdeskConst;
 import udesk.core.model.MessageInfo;
+import udesk.core.model.TemplateMsgBean;
 import udesk.core.utils.UdeskUtils;
 
 import static android.util.Patterns.PHONE;
@@ -88,6 +89,7 @@ public class MessageAdatper extends BaseAdapter {
             R.layout.udesk_chat_msg_item_smallvideo_r,//短视频消息右
             R.layout.udesk_chat_msg_item_product_r, //商品消息右
             R.layout.udesk_chat_in_line_item, //排队中消息提示
+            R.layout.udesk_chat_msg_item_template_msg_l, //工单模板
     };
 
     /**
@@ -149,7 +151,10 @@ public class MessageAdatper extends BaseAdapter {
     private static final int MSG_SMALL_VIDEO_R = 19;
     private static final int MSG_PRODUCT_R = 20;
     private static final int MSG_IN_THE_LINE = 21;
-
+    /**
+     * 工单模板消息
+     */
+    private static final int MSG_TEMPLATE = 22;
 
     //2条消息之间 时间间隔超过SPACE_TIME， 会话界面会显示出消息的收发时间
     private static final long SPACE_TIME = 3 * 60 * 1000;
@@ -246,6 +251,8 @@ public class MessageAdatper extends BaseAdapter {
                     if (message.getDirection() == UdeskConst.ChatMsgDirection.Send) {
                         return MSG_PRODUCT_R;
                     }
+                case UdeskConst.ChatMsgTypeInt.TYPE_TEMPLATE_MSG:
+                    return MSG_TEMPLATE;
                 default:
                     return ILLEGAL;
             }
@@ -359,11 +366,33 @@ public class MessageAdatper extends BaseAdapter {
 
 
     void listAddEventItems(List<MessageInfo> messages) {
+//        try {
+//            if (messages == null) {
+//                return;
+//            }
+//            list.addAll(messages);
+//            notifyDataSetChanged();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         try {
             if (messages == null) {
                 return;
             }
-            list.addAll(messages);
+            if (list.size()>0){
+                List<MessageInfo> newMessages=new ArrayList<>();
+                newMessages.addAll(messages);
+                for (MessageInfo info:list){
+                    for (MessageInfo newInfo:messages){
+                        if (TextUtils.equals(info.getMsgId(),newInfo.getMsgId())){
+                            newMessages.remove(newInfo);
+                        }
+                    }
+                }
+                list.addAll(newMessages);
+            }else {
+                list.addAll(messages);
+            }
             notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
@@ -567,6 +596,15 @@ public class MessageAdatper extends BaseAdapter {
                         lineViewHolder.queueContext = convertView.findViewById(R.id.udesk_queue_context);
                         convertView.setTag(lineViewHolder);
                         break;
+                    case MSG_TEMPLATE:
+                        TemplateMsgViewHolder templateMsgViewHolder = new TemplateMsgViewHolder();
+                        initItemNormalView(convertView, templateMsgViewHolder);
+                        templateMsgViewHolder.udesk_template_title=convertView.findViewById(R.id.udesk_template_title);
+                        templateMsgViewHolder.udesk_template_content=convertView.findViewById(R.id.udesk_template_content);
+                        templateMsgViewHolder.udesk_template_container=convertView.findViewById(R.id.udesk_template_container);
+                        templateMsgViewHolder.udesk_template_line=convertView.findViewById(R.id.udesk_template_line);
+                        convertView.setTag(templateMsgViewHolder);
+                        break;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -624,6 +662,7 @@ public class MessageAdatper extends BaseAdapter {
                     case MSG_FILE_L:
                     case LEAVEMSG_TXT_L:
                     case MSG_Video_Txt_l:
+                    case MSG_TEMPLATE:
                         this.isLeft = true;
                         ivHeader.setImageResource(R.drawable.udesk_im_default_agent_avatar);
                         if (message.getUser_avatar() != null && !TextUtils.isEmpty(message.getUser_avatar().trim())) {
@@ -663,7 +702,8 @@ public class MessageAdatper extends BaseAdapter {
                         || itemType == MSG_REDIRECT
                         || itemType == MSG_STRUCT
                         || itemType == MSG_SMALL_VIDEO_L
-                        ) {
+                        || itemType == MSG_TEMPLATE
+                ) {
                     ivStatus.setVisibility(View.GONE);
                 } else {
                     changeUiState(message.getSendFlag());
@@ -747,6 +787,111 @@ public class MessageAdatper extends BaseAdapter {
                     rich_tvmsg.setMovementMethod(LinkMovementMethod.getInstance());
                 }
 
+            } catch (Exception e) {
+                e.printStackTrace();
+            } catch (OutOfMemoryError error) {
+                error.printStackTrace();
+            }
+
+        }
+
+    }
+ /**
+     * 展示工单模板消息
+     */
+    class TemplateMsgViewHolder extends BaseViewHolder {
+        TextView udesk_template_title;
+        TextView udesk_template_content;
+        TextView udesk_template_line;
+        LinearLayout udesk_template_container;
+
+        @Override
+        void bind(Context context) {
+            try {
+                final TemplateMsgBean templateMsgBean = JsonUtils.parseTemplateMsg(message.getMsgContent());
+                udesk_template_title.setText(templateMsgBean.getTitle());
+
+                CharSequence charSequence = Html.fromHtml(templateMsgBean.getContent());
+                String msg = charSequence.toString();
+                if (msg.endsWith("\n\n")) {
+                    charSequence = charSequence.subSequence(0, charSequence.length() - 2);
+                    udesk_template_content.setText(charSequence);
+                } else {
+                    udesk_template_content.setText(charSequence);
+                }
+                Linkify.addLinks(udesk_template_content, WEB_URL, null);
+                Linkify.addLinks(udesk_template_content, PHONE, null);
+                CharSequence text = udesk_template_content.getText();
+                if (text instanceof Spannable) {
+                    int end = text.length();
+                    Spannable sp = (Spannable) udesk_template_content.getText();
+                    URLSpan[] urls = sp.getSpans(0, end, URLSpan.class);
+                    SpannableStringBuilder style = new SpannableStringBuilder(text);
+                    style.clearSpans();
+                    for (URLSpan url : urls) {
+                        MyURLSpan myURLSpan = new MyURLSpan(url.getURL());
+                        style.setSpan(myURLSpan, sp.getSpanStart(url),
+                                sp.getSpanEnd(url),
+                                Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    }
+                    udesk_template_content.setText(style);
+                } else if (text instanceof SpannedString) {
+                    SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(charSequence);
+                    URLSpan[] urls = spannableStringBuilder.getSpans(0, charSequence.length(), URLSpan.class);
+                    spannableStringBuilder.clearSpans();
+                    SpannedString sp = (SpannedString) udesk_template_content.getText();
+                    for (URLSpan url : urls) {
+                        MyURLSpan myURLSpan = new MyURLSpan(url.getURL());
+                        int statr = sp.getSpanStart(url);
+                        int end = sp.getSpanEnd(url);
+                        spannableStringBuilder.setSpan(myURLSpan, statr,
+                                end,
+                                Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    }
+                    udesk_template_content.setText(spannableStringBuilder);
+                    udesk_template_content.setMovementMethod(LinkMovementMethod.getInstance());
+                }
+
+                List<TemplateMsgBean.BtnsBean> btns = templateMsgBean.getBtns();
+                if (btns!=null && btns.size()>0){
+                    udesk_template_line.setVisibility(View.VISIBLE);
+                    udesk_template_container.setVisibility(View.VISIBLE);
+                    udesk_template_container.removeAllViews();
+                    for (int i = 0; i<btns.size();i++){
+                        final TemplateMsgBean.BtnsBean btnsBean = btns.get(i);
+                        if (btnsBean !=null){
+                            if (i !=0){
+                                TextView line =new TextView(mContext);
+                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(UdeskUtil.dip2px(mContext,1),LinearLayout.LayoutParams.MATCH_PARENT);
+                                line.setLayoutParams(layoutParams);
+                                line.setBackgroundColor(mContext.getResources().getColor(R.color.udesk_color_E8ECED));
+                                udesk_template_container.addView(line);
+                            }
+                            TextView textView =new TextView(mContext);
+                            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT,1.0f);
+                            textView.setLayoutParams(layoutParams);
+                            textView.setTextColor(mContext.getResources().getColor(R.color.udesk_color_307AE8));
+                            textView.setTextSize(15);
+                            textView.setGravity(Gravity.CENTER);
+                            if (TextUtils.equals("link",btnsBean.getType()) && btnsBean.getData()!=null && !TextUtils.isEmpty(btnsBean.getData().getUrl())){
+                                textView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(mContext, WorkOrderWebViewActivity.class);
+                                        intent.putExtra(UdeskConst.WORK_ORDER_URL,btnsBean.getData().getUrl());
+                                        intent.putExtra(UdeskConst.WORK_ORDER_TITLE,templateMsgBean.getTitle());
+                                        mContext.startActivity(intent);
+                                    }
+                                });
+                            }
+                            if (!TextUtils.isEmpty(btnsBean.getName())){
+                                textView.setText(btnsBean.getName());
+                            }
+                            udesk_template_container.addView(textView);
+                        }
+
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             } catch (OutOfMemoryError error) {

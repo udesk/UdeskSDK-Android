@@ -44,6 +44,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Udesk_Theme" />
         <activity
+            android:name="cn.udesk.activity.WorkOrderWebViewActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/Udesk_Theme" />
+        <activity
             android:name="cn.udesk.activity.UdeskChatActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:launchMode="singleTop"

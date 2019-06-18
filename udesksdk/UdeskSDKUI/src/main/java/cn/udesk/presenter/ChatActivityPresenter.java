@@ -329,7 +329,7 @@ public class ChatActivityPresenter {
         //拉取工单回复的消息
         try {
             if (!TextUtils.isEmpty(customerId)) {
-                getTicketReplies(customerId, 1, UdeskConst.UDESK_HISTORY_COUNT, "");
+                getTicketReplies(customerId, 1, UdeskConst.UDESK_WORKORDER_COUNT, "");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -373,7 +373,7 @@ public class ChatActivityPresenter {
                 }
                 if (!TextUtils.isEmpty(customerId)) {
                     //拉取工单回复的消息
-                    getTicketReplies(customerId, 1, UdeskConst.UDESK_HISTORY_COUNT, "");
+                    getTicketReplies(customerId, 1, UdeskConst.UDESK_WORKORDER_COUNT, "");
                 }
             }
         } catch (Exception e) {
@@ -637,22 +637,31 @@ public class ChatActivityPresenter {
     public void getTicketReplies(String customerId, int page, int perPage, String createTime) {
         try {
             UdeskHttpFacade.getInstance().getTicketReplies(UdeskSDKManager.getInstance().getDomain(mChatView.getContext()),
-                    UdeskSDKManager.getInstance().getAppkey(mChatView.getContext()), customerId,
-                    UdeskSDKManager.getInstance().getAppId(mChatView.getContext()), page, perPage, createTime,
+                    UdeskSDKManager.getInstance().getAppkey(mChatView.getContext()), UdeskSDKManager.getInstance().getSdkToken(mChatView.getContext()),
+                    UdeskSDKManager.getInstance().getAppId(mChatView.getContext()), page, perPage,
                     new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
                             try {
-                                TicketReplieMode replieMode = JsonUtils.parserTicketReplie(message);
-                                if (replieMode != null && replieMode.getContents() != null) {
-                                    List<MessageInfo> messageInfos = buildLeaveMsgByTicketReplies(replieMode.getContents());
-                                    if (messageInfos != null && mChatView.getHandler() != null) {
+                                List<LogMessage> logMessages = JsonUtils.parseMessages(message);
+                                Collections.reverse(logMessages);
+                                if (logMessages != null && logMessages.size() > 0) {
+                                    final List<MessageInfo> msgInfos = tranferLogMessage(logMessages);
+                                    if (msgInfos != null && mChatView.getHandler() != null) {
                                         Message msg = Message.obtain();
                                         msg.what = MessageWhat.loadHistoryDBMsg;
                                         msg.arg1 = UdeskChatActivity.PullEventModel;
-                                        msg.obj = messageInfos;
+                                        msg.obj = msgInfos;
                                         mChatView.getHandler().sendMessage(msg);
                                     }
+                                    UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (msgInfos.size() > 0) {
+                                                UdeskDBManager.getInstance().addAllMessageInfo(msgInfos);
+                                            }
+                                        }
+                                    });
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -1294,7 +1303,7 @@ public class ChatActivityPresenter {
                     UdeskSDKManager.getInstance().getAppId(mChatView.getContext()),
                     customerId, subSessionId, seqNum, new UdeskCallBack() {
                         @Override
-                        public void onSuccess(String message) {
+                        public void onSuccess(final String message) {
                             try {
                                 JSONObject root = new JSONObject(message);
                                 String code = UdeskUtils.objectToString(root.opt("code"));
@@ -1307,14 +1316,20 @@ public class ChatActivityPresenter {
                                         }
                                     }, request_delay_time * 1000);
                                 } else {
-                                    List<LogMessage> logMessages = JsonUtils.parseMessages(message);
-                                    if (logMessages != null && logMessages.size() > 0) {
-                                        List<MessageInfo> msgInfos = tranferLogMessage(logMessages);
-                                        if (msgInfos.size() > 0) {
-                                            UdeskDBManager.getInstance().addAllMessageInfo(msgInfos);
-                                            mChatView.initLoadData();
+                                    UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            List<LogMessage> logMessages = JsonUtils.parseMessages(message);
+                                            if (logMessages != null && logMessages.size() > 0) {
+                                                List<MessageInfo> msgInfos = tranferLogMessage(logMessages);
+                                                if (msgInfos.size() > 0) {
+                                                    UdeskDBManager.getInstance().addAllMessageInfo(msgInfos);
+                                                    mChatView.initLoadData();
+                                                }
+                                            }
                                         }
-                                    }
+                                    });
+
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();

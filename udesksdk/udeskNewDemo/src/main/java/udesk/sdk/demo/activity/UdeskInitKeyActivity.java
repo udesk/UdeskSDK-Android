@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -40,13 +41,12 @@ public class UdeskInitKeyActivity extends Activity {
 //    // 替换成你们在后台生成的密钥
 //    private String UDESK_SECRETKEY = "8bcc3f04490559068bd4a894272dc588";
 
-//    //替换成你们注册生成的域名
-    private String UDESK_DOMAIN = "xchat.yuceyi.com";
+    //    替换成你们注册生成的域名
+    private String UDESK_DOMAIN = "linapp.udeskb3.com";
     //替换成你们生成应用产生的appid
-    private String AppId = "75a52752cf88b67d";
+    private String AppId = "3d096e01e762d2d5";
     // 替换成你们在后台生成的密钥
-    private String UDESK_SECRETKEY = "889e8f182c15293c958e9eaf795fd6b6";
-
+    private String UDESK_SECRETKEY = "f3f2e2bacd9b1cbd12b83a9a2f3a2ae4";
 
     private EditText mDomainEdit;
 
@@ -61,7 +61,7 @@ public class UdeskInitKeyActivity extends Activity {
     String appkey = "";
     String appid = "";
     String sdkToken = "";
-
+    private CheckBox use_http;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +72,7 @@ public class UdeskInitKeyActivity extends Activity {
         mKeyEdit = (EditText) findViewById(R.id.udesk_appkey);
         mAppidEdit = (EditText) findViewById(R.id.appid);
         stoken = (EditText) findViewById(R.id.stoken);
+        use_http = findViewById(R.id.use_http);
         startBtn = (Button) findViewById(R.id.udesk_start);
         sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
         if (TextUtils.isEmpty(sdkToken)) {
@@ -96,7 +97,7 @@ public class UdeskInitKeyActivity extends Activity {
 
                     UdeskSDKManager.getInstance().initApiKey(getApplicationContext(), mDomainEdit.getText().toString(),
                             mKeyEdit.getText().toString(), mAppidEdit.getText().toString());
-//                    UdeskConst.HTTP = "http://";
+                    UdeskConst.HTTP = use_http.isChecked() ? "http://" : "https://";
                     sdkToken = stoken.getText().toString();
                     PreferenceHelper.write(getApplicationContext(), "init_base_name", "sdktoken", sdkToken);
                     PreferenceHelper.write(getApplicationContext(), "init_base_name", "domain", mDomainEdit.getText().toString());
