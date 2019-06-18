@@ -6,30 +6,30 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:textDirection="locale"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_marginStart="25dp"
         android:layout_marginLeft="25dp"
+        android:layout_marginTop="250dp"
         android:layout_marginEnd="25dp"
         android:layout_marginRight="25dp"
-        android:layout_marginTop="250dp"
         android:background="@drawable/login_linearlayout_bg"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:textDirection="locale">
 
 
         <EditText
-            android:layoutDirection="locale"
             android:id="@+id/udesk_domain"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="@null"
             android:gravity="center_vertical"
             android:hint="@string/udesk_domain"
-            android:paddingRight="0dp"
-            android:paddingEnd="0dp"
+            android:layoutDirection="locale"
             android:paddingStart="12dp"
             android:paddingLeft="12dp"
+            android:paddingEnd="0dp"
+            android:paddingRight="0dp"
             android:singleLine="true"
             android:textColor="@color/android:white"
             android:textColorHint="@color/android:white"
@@ -38,30 +38,30 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layoutDirection="locale"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_marginStart="25dp"
         android:layout_marginLeft="25dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="25dp"
         android:layout_marginRight="25dp"
-        android:layout_marginTop="15dp"
         android:background="@drawable/login_linearlayout_bg"
+        android:layoutDirection="locale"
         android:orientation="horizontal">
 
 
         <EditText
-            android:layoutDirection="locale"
             android:id="@+id/udesk_appkey"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="@null"
             android:gravity="center_vertical"
             android:hint="app key"
-            android:paddingRight="0dp"
-            android:paddingEnd="0dp"
+            android:layoutDirection="locale"
             android:paddingStart="12dp"
             android:paddingLeft="12dp"
+            android:paddingEnd="0dp"
+            android:paddingRight="0dp"
             android:singleLine="true"
             android:textColor="@color/android:white"
             android:textColorHint="@color/android:white"
@@ -69,30 +69,30 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layoutDirection="locale"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_marginStart="25dp"
         android:layout_marginLeft="25dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="25dp"
         android:layout_marginRight="25dp"
-        android:layout_marginTop="15dp"
         android:background="@drawable/login_linearlayout_bg"
+        android:layoutDirection="locale"
         android:orientation="horizontal">
 
 
         <EditText
-            android:layoutDirection="locale"
             android:id="@+id/appid"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="@null"
             android:gravity="center_vertical"
             android:hint="app id"
-            android:paddingRight="0dp"
-            android:paddingEnd="0dp"
+            android:layoutDirection="locale"
             android:paddingStart="12dp"
             android:paddingLeft="12dp"
+            android:paddingEnd="0dp"
+            android:paddingRight="0dp"
             android:singleLine="true"
             android:textColor="@color/android:white"
             android:textColorHint="@color/android:white"
@@ -100,34 +100,61 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layoutDirection="locale"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:layout_marginStart="25dp"
         android:layout_marginLeft="25dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="25dp"
         android:layout_marginRight="25dp"
-        android:layout_marginTop="15dp"
         android:background="@drawable/login_linearlayout_bg"
+        android:layoutDirection="locale"
         android:orientation="horizontal">
 
 
         <EditText
-            android:layoutDirection="locale"
             android:id="@+id/stoken"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="@null"
             android:gravity="center_vertical"
             android:hint="stoken"
-            android:paddingRight="0dp"
-            android:paddingEnd="0dp"
+            android:layoutDirection="locale"
             android:paddingStart="12dp"
             android:paddingLeft="12dp"
+            android:paddingEnd="0dp"
+            android:paddingRight="0dp"
             android:singleLine="true"
             android:textColor="@color/android:white"
             android:textColorHint="@color/android:white"
             android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/use_http"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:background="@drawable/often_messages_selector"
+            android:button="@null"
+            android:checked="false"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="start|center"
+            android:text="使用http环境"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
     </LinearLayout>
 
     <Button
@@ -136,15 +163,14 @@
         android:layout_height="50dp"
         android:layout_marginStart="25dp"
         android:layout_marginLeft="25dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="25dp"
         android:layout_marginRight="25dp"
-        android:layout_marginTop="25dp"
         android:background="@drawable/udesk_btn_bg"
         android:gravity="center"
         android:text="@string/udesk_start"
         android:textColor="@color/android:white"
         android:textSize="17sp" />
-
 
 
 </LinearLayout>

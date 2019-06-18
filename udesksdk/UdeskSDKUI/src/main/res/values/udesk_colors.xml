@@ -81,6 +81,10 @@
     <color name="udesk_color_333333">#333333</color>
     <color name="udesk_color_cccccc">#cccccc</color>
     <color name="udesk_color_cd3f31">#CD3F31</color>
+    <color name="udesk_color_212121">#212121</color>
+    <color name="udesk_color_E8ECED">#E8ECED</color>
+    <color name="udesk_color_307AE8">#307AE8</color>
+
 
     <color name="line">#ccc</color>
     <color name="white">#fff</color>

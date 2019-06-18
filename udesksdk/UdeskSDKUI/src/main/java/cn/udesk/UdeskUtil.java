@@ -71,6 +71,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -78,6 +79,8 @@ import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.provider.UdeskFileProvider;
 import me.relex.photodraweeview.PhotoDraweeView;
+import udesk.core.JsonObjectUtils;
+import udesk.core.LocalManageUtil;
 import udesk.core.UdeskConst;
 import udesk.core.utils.UdeskUtils;
 
@@ -1187,6 +1190,25 @@ public class UdeskUtil {
             e.printStackTrace();
             Fresco.initialize(context);
         }
+    }
+    public static HashMap<String,String> buildGetParams(String sdkToken, String mSecretKey, String appid){
+        HashMap<String, String> params = new HashMap<>();
+        long timestamp = System.currentTimeMillis();
+        long nonce = System.currentTimeMillis() * JsonObjectUtils.getRandom();
+        String echostr = UUID.randomUUID().toString();
+        params.put("nonce", String.valueOf(nonce));
+        params.put("timestamp", String.valueOf(timestamp));
+        params.put("sdk_token", sdkToken);
+        params.put("echostr", echostr);
+        params.put("sdk_version", UdeskConst.sdkversion);
+        params.put("platform_name", "android");
+        params.put("platform", "android");
+        params.put("language", LocalManageUtil.getSetLanguageLocale());
+        if (!TextUtils.isEmpty(appid)) {
+            params.put("app_id", appid);
+        }
+        params.put("signature", UdeskUtils.getSignature(mSecretKey, sdkToken, timestamp, nonce));
+        return params;
     }
 
 }

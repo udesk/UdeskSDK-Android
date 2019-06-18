@@ -19,6 +19,7 @@ import cn.udesk.model.SurveyOptionsModel;
 import cn.udesk.model.Tag;
 import cn.udesk.model.TicketReplieMode;
 import udesk.core.model.AgentInfo;
+import udesk.core.model.TemplateMsgBean;
 import udesk.core.model.UDHelperArticleContentItem;
 import udesk.core.model.UDHelperItem;
 import udesk.core.utils.UdeskUtils;
@@ -538,5 +539,39 @@ public class JsonUtils {
 
     }
 
+    public static TemplateMsgBean parseTemplateMsg(String response){
+        TemplateMsgBean templateMsgBean =new TemplateMsgBean();
+        if (TextUtils.isEmpty(response)){
+            return templateMsgBean;
+        }
 
+        try {
+            JSONObject root = new JSONObject(response);
+            templateMsgBean.setTitle(root.opt("title"));
+            templateMsgBean.setContent(root.opt("content"));
+            if (root.has("btns")){
+                List<TemplateMsgBean.BtnsBean> btnsBeans= new ArrayList<>();
+                JSONArray btnsArray = root.getJSONArray("btns");
+                if (btnsArray!=null && btnsArray.length()>0){
+                    for (int i= 0; i< btnsArray.length();i++){
+                        TemplateMsgBean.BtnsBean btnsBean = new TemplateMsgBean.BtnsBean();
+                        JSONObject beanJson = btnsArray.getJSONObject(i);
+                        btnsBean.setName(beanJson.opt("name"));
+                        btnsBean.setType(beanJson.opt("type"));
+                        if (beanJson.has("data")){
+                            JSONObject data = beanJson.getJSONObject("data");
+                            TemplateMsgBean.BtnsBean.DataBean dataBean = new TemplateMsgBean.BtnsBean.DataBean();
+                            dataBean.setUrl(data.opt("url"));
+                            btnsBean.setData(dataBean);
+                        }
+                        btnsBeans.add(btnsBean);
+                    }
+                }
+                templateMsgBean.setBtns(btnsBeans);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return templateMsgBean;
+    }
 }
