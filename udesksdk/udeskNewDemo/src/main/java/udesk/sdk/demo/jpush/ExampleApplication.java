@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.support.multidex.MultiDex;
 import android.util.Log;
 
-import com.squareup.leakcanary.LeakCanary;
 
 import cn.jpush.android.api.JPushInterface;
 import udesk.core.LocalManageUtil;
@@ -27,12 +26,6 @@ public class ExampleApplication extends Application {
     public void onCreate() {
         Log.d(TAG, "[ExampleApplication] onCreate");
         super.onCreate();
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return;
-        }
-        LeakCanary.install(this);
         LocalManageUtil.setApplicationLanguage(this);
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);            // 初始化 JPush
