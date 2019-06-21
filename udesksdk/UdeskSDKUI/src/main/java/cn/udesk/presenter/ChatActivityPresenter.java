@@ -644,9 +644,8 @@ public class ChatActivityPresenter {
                         public void onSuccess(String message) {
                             try {
                                 List<LogMessage> logMessages = JsonUtils.parseMessages(message);
-                                Collections.reverse(logMessages);
                                 if (logMessages != null && logMessages.size() > 0) {
-                                    final List<MessageInfo> msgInfos = tranferLogMessage(logMessages);
+                                    final List<MessageInfo> msgInfos = buildTemplateReplies(logMessages);
                                     if (msgInfos != null && mChatView.getHandler() != null) {
                                         Message msg = Message.obtain();
                                         msg.what = MessageWhat.loadHistoryDBMsg;
@@ -654,14 +653,6 @@ public class ChatActivityPresenter {
                                         msg.obj = msgInfos;
                                         mChatView.getHandler().sendMessage(msg);
                                     }
-                                    UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (msgInfos.size() > 0) {
-                                                UdeskDBManager.getInstance().addAllMessageInfo(msgInfos);
-                                            }
-                                        }
-                                    });
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -1562,6 +1553,50 @@ public class ChatActivityPresenter {
                 if (isAddEvent) {
                     msgInfos.add(0, eventMsg);
                     UdeskDBManager.getInstance().addMessageInfo(eventMsg);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return msgInfos;
+    }
+
+    //构建工单模板回复的消息转换消息模型
+    public List<MessageInfo> buildTemplateReplies(List<LogMessage> logMessages) {
+        List<MessageInfo> msgInfos = new ArrayList<MessageInfo>();
+        try {
+            if (logMessages != null && logMessages.size() > 0) {
+                Collections.reverse(logMessages);
+                for (LogMessage logMessage : logMessages) {
+                    if (UdeskUtils.objectToString(logMessage.getSend_status()).equals("rollback") || UdeskUtils.objectToString(logMessage.getStatus()).equals("system")) {
+                        continue;
+                    }
+                    if (logMessage !=null && !UdeskDBManager.getInstance().hasReceviedMsg(UdeskUtils.objectToString(logMessage.getMessage_id()))){
+                        MessageInfo messageInfo = new MessageInfo();
+                        messageInfo.setMsgtype(UdeskUtils.objectToString(logMessage.getType()));
+                        messageInfo.setTime(UdeskUtil.stringToLong(UdeskUtils.objectToString(logMessage.getCreated_at())));
+                        messageInfo.setMsgId(UdeskUtils.objectToString(logMessage.getMessage_id()));
+                        if (UdeskUtils.objectToString(logMessage.getReply_user_type()).equals("agent")) {
+                            messageInfo.setDirection(UdeskConst.ChatMsgDirection.Recv);
+                        } else {
+                            messageInfo.setDirection(UdeskConst.ChatMsgDirection.Send);
+                        }
+                        messageInfo.setSendFlag(UdeskConst.SendFlag.RESULT_SUCCESS);
+                        messageInfo.setReadFlag(UdeskConst.ChatMsgReadFlag.read);
+                        messageInfo.setMsgContent(UdeskUtils.objectToString(logMessage.getContent()));
+                        messageInfo.setPlayflag(UdeskConst.PlayFlag.NOPLAY);
+                        messageInfo.setLocalPath("");
+                        messageInfo.setDuration(UdeskUtils.objectToInt(logMessage.getDuration()));
+                        messageInfo.setSeqNum(UdeskUtils.objectToInt(logMessage.getSeq_num()));
+                        messageInfo.setSubsessionid(UdeskUtils.objectToString(logMessage.getIm_sub_session_id()));
+                        messageInfo.setReplyUser(UdeskUtils.objectToString(logMessage.getAgent_nick_name()));
+                        messageInfo.setUser_avatar(UdeskUtils.objectToString(logMessage.getAgent_avatar()));
+                        messageInfo.setFilesize(UdeskUtils.objectToString(logMessage.getFileSize()));
+                        messageInfo.setFilename(UdeskUtils.objectToString(logMessage.getFileName()));
+                        messageInfo.setCreatedTime(UdeskUtils.objectToString(logMessage.getCreated_at()));
+                        msgInfos.add(messageInfo);
+                        UdeskDBManager.getInstance().addMessageInfo(messageInfo);
+                    }
                 }
             }
         } catch (Exception e) {
