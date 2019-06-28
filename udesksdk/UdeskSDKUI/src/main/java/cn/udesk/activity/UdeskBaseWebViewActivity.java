@@ -137,6 +137,8 @@ public class UdeskBaseWebViewActivity extends UdeskBaseActivity {
                         goChat();
                     } else if (url.contains("auto_transfer")){
                         autoTransfer();
+                    }else if (!(url.startsWith("http://")||url.startsWith("https://"))){
+                        return super.shouldOverrideUrlLoading(view,url);
                     }else {
                         view.loadUrl(url);
                     }
