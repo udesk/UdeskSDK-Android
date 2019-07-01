@@ -38,8 +38,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -478,6 +476,8 @@ public class MessageAdatper extends BaseAdapter {
                         productViewHolder.product_name = (TextView) convertView.findViewById(R.id.product_name);
                         productViewHolder.productView = convertView.findViewById(R.id.product_view);
                         productViewHolder.imgView = (SimpleDraweeView) convertView.findViewById(R.id.udesk_product_icon);
+                        productViewHolder.rootView = (LinearLayout) convertView.findViewById(R.id.product_view);
+                        UdekConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductBgResId, productViewHolder.rootView);
                         convertView.setTag(productViewHolder);
                         break;
                     case RICH_TEXT:
@@ -874,7 +874,7 @@ public class MessageAdatper extends BaseAdapter {
                             textView.setTextSize(15);
                             textView.setGravity(Gravity.CENTER);
                             if (TextUtils.equals("link",btnsBean.getType()) && btnsBean.getData()!=null && !TextUtils.isEmpty(btnsBean.getData().getUrl())){
-                                textView.setOnClickListener(new View.OnClickListener() {
+                                textView.setOnClickListener(new OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         Intent intent = new Intent(mContext, WorkOrderWebViewActivity.class);
@@ -1033,6 +1033,7 @@ public class MessageAdatper extends BaseAdapter {
         View productView;
         SimpleDraweeView imgView;
         String productUrl;
+        LinearLayout rootView;
 
         @Override
         void bind(Context context) {
