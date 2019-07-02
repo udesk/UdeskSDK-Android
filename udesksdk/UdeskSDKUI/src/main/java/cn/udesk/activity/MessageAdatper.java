@@ -1072,8 +1072,16 @@ public class MessageAdatper extends BaseAdapter {
                         if (TextUtils.isEmpty(data.optString("text"))) {
                             continue;
                         }
-                        String textStr = "<font color=" + data.optString("color") +
-                                "  size=" + 2 * data.optInt("size") + ">" + data.optString("text") + "</font>";
+                        String color = data.optString("color");
+                        int size = data.optInt("size");
+                        if (TextUtils.isEmpty(color)){
+                            color = "#000000";
+                        }
+                        if (size==0){
+                            size = 12;
+                        }
+                        String textStr = "<font color=" + color +
+                                "  size=" + UdeskUtil.dip2px(mContext,size) + ">" + data.optString("text") + "</font>";
                         if (data.optBoolean("fold")) {
                             textStr = "<b>" + textStr + "</b>";
                         }
