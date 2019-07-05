@@ -54,6 +54,8 @@ public class UdeskConfig {
     public int udeskProductBgResId = DEFAULT;
     //商品消息的 带有链接时的  商品名字显示的颜色
     public int udeskProductNameLinkColorResId = DEFAULT;
+    //商品消息名称最大显示行数
+    public int udeskProductMaxLines = 0;
     //配置 是否使用推送服务  true 表示使用  false表示不使用
     public boolean isUserSDkPush = true;
     //配置放弃排队的策略
@@ -162,6 +164,7 @@ public class UdeskConfig {
         this.udeskCommityLinkColorResId = builder.udeskCommityLinkColorResId;
         this.udeskProductBgResId = builder.udeskProductBgResId;
         this.udeskProductNameLinkColorResId = builder.udeskProductNameLinkColorResId;
+        this.udeskProductMaxLines = builder.udeskProductMaxLines;
         this.isUserSDkPush = builder.isUserSDkPush;
         this.UdeskQuenuMode = builder.UdeskQuenuMode;
         this.isUseVoice = builder.isUseVoice;
@@ -244,6 +247,8 @@ public class UdeskConfig {
         public int udeskProductBgResId = DEFAULT;
         // 商品消息的 带有链接时的  商品名字显示的颜色
         private int udeskProductNameLinkColorResId = R.color.color_1850cc;
+        //商品消息名称最大显示行数
+        public int udeskProductMaxLines = 0;
         //配置 是否使用推送服务  true 表示使用  false表示不使用
         private boolean isUserSDkPush = true;
         //配置放弃排队的策略
@@ -455,6 +460,16 @@ public class UdeskConfig {
          */
         public Builder setUdeskProductLinkColorResId(int udeskProductNameLinkColorResId) {
             this.udeskProductNameLinkColorResId = udeskProductNameLinkColorResId;
+            return this;
+        }
+
+        /**
+         * 商品消息名称最大显示行数
+         * @param maxLines
+         * @return
+         */
+        public Builder setUdeskProductMaxLines(int maxLines) {
+            this.udeskProductMaxLines = maxLines;
             return this;
         }
 

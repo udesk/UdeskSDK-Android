@@ -46,6 +46,7 @@ import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.config.UdekConfigUtil;
+import cn.udesk.config.UdeskConfig;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.emotion.MoonUtils;
 import cn.udesk.model.StructModel;
@@ -1064,6 +1065,10 @@ public class MessageAdatper extends BaseAdapter {
                 });
                 if (!TextUtils.isEmpty(productName)) {
                     product_name.setVisibility(View.VISIBLE);
+                    if (UdeskSDKManager.getInstance().getUdeskConfig().udeskProductMaxLines > 0 ){
+                        product_name.setMaxLines(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductMaxLines);
+                        product_name.setEllipsize(TextUtils.TruncateAt.END);
+                    }
                     product_name.setText(productName);
                     product_name.setTextColor(mContext.getResources().getColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductNameLinkColorResId));
                 }else {
@@ -1103,6 +1108,7 @@ public class MessageAdatper extends BaseAdapter {
                 if (TextUtils.isEmpty(fromHtml)){
                     tvMsg.setVisibility(View.GONE);
                 }else {
+                    tvMsg.setVisibility(View.VISIBLE);
                     tvMsg.setText(fromHtml);
                 }
 //                //设置消息长按事件  复制文本

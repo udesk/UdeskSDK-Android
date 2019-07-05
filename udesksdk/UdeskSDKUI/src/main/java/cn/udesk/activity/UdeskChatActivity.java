@@ -26,6 +26,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -180,6 +182,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
 
     //咨询对象的展示界面
     private View commodityView;
+    private RelativeLayout commodityRoot;
     public SimpleDraweeView commodityThumbnail;
     public TextView commodityTitle;
     public TextView commoditySubTitle;
@@ -648,6 +651,16 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
             commodityLink.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //检查是否处在可发消息的状态
+                    if (isbolcked != null && isbolcked.equals("true")) {
+                        toBolckedView();
+                        return;
+                    }
+
+                    if (!isShowFunctionNotSendMsg()) {
+                        mEmotionKeyboard.hideSoftInput();
+                        return;
+                    }
                     sentLink(item.getCommodityUrl());
                 }
             });
@@ -661,10 +674,14 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
             commodityView = findViewById(R.id.commodity_rl);
             commodityView.setVisibility(View.GONE);
             commodityThumbnail = (SimpleDraweeView) findViewById(R.id.udesk_im_commondity_thumbnail);
+            commodityRoot = (RelativeLayout) findViewById(R.id.udesk_commit_root);
             commodityTitle = (TextView) findViewById(R.id.udesk_im_commondity_title);
             commoditySubTitle = (TextView) findViewById(R.id.udesk_im_commondity_subtitle);
             commodityLink = (TextView) findViewById(R.id.udesk_im_commondity_link);
-
+            UdekConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskCommityBgResId, commodityRoot);
+            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskCommityTitleColorResId, commodityTitle);
+            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskCommitysubtitleColorResId, commoditySubTitle);
+            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskCommityLinkColorResId, commodityLink);
             popWindow = new UdeskConfirmPopWindow(this);
             sendBtn = (TextView) findViewById(R.id.udesk_bottom_send);
             sendBtn.setOnClickListener(this);
@@ -679,6 +696,17 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                     try {
+                        //检查是否处在可发消息的状态
+                        if (isbolcked != null && isbolcked.equals("true")) {
+                            toBolckedView();
+                            return;
+                        }
+
+                        if (!isShowFunctionNotSendMsg()) {
+                            mEmotionKeyboard.hideSoftInput();
+                            return;
+                        }
+
                         FunctionMode functionItem = (FunctionMode) adapterView.getItemAtPosition(i);
                         switch (functionItem.getId()) {
                             case UdeskConst.UdeskFunctionFlag.Udesk_Camera:
@@ -751,6 +779,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                 }
             });
             mListView = (UDPullGetMoreListView) findViewById(R.id.udesk_conversation);
+            mListView.addFooterView(LayoutInflater.from(this).inflate(R.layout.udesk_im_footview,null));
             expandableLayout = (UdeskExpandableLayout) findViewById(R.id.udesk_change_status_info);
 
             mContentLinearLayout = (LinearLayout) findViewById(R.id.udesk_content_ll);
@@ -2149,6 +2178,44 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
         return true;
     }
 
+    // 判断function可发送消息
+    private boolean isShowFunctionNotSendMsg() {
+        try {
+
+            if (!UdeskUtils.isNetworkConnected(this)) {
+                UdeskUtils.showToast(getApplicationContext(),
+                        getResources().getString(R.string.udesk_has_wrong_net));
+                return false;
+            }
+
+            if (!isInitComplete) {
+                UdeskUtils.showToast(getApplicationContext(),
+                        getResources().getString(R.string.udesk_agent_inti));
+                return false;
+            }
+
+            if (!TextUtils.isEmpty(pre_session_id)) {
+                return true;
+            }
+            if (isOverConversation) {
+                reCreateIMCustomerInfo();
+                return false;
+            }
+            if (isInTheQueue) {
+                confirmToForm();
+                return false;
+            }
+            if (!currentStatusIsOnline && !isleaveMessageTypeMsg()) {
+                confirmToForm();
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
     /**
      * 重新创建会话
      */
@@ -2744,18 +2811,10 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
     //发送广告的连接地址消息
     public void sentLink(String linkMsg) {
         try {
-            if (!UdeskUtils.isNetworkConnected(this)) {
-                UdeskUtils.showToast(this,
-                        getResources().getString(R.string.udesk_has_wrong_net));
-                return;
-            }
             if (mPresenter != null) {
                 if (currentStatusIsOnline) {
                     mPresenter.sendTxtMessage(linkMsg);
                 } else if (isPresessionStatus) {
-                    Toast.makeText(UdeskChatActivity.this,
-                            getResources().getString(R.string.udesk_agent_connecting),
-                            Toast.LENGTH_SHORT).show();
                     mPresenter.sendTxtMessage(linkMsg);
                 } else if (UdeskSDKManager.getInstance().getImSetting() != null &&
                         UdeskSDKManager.getInstance().getImSetting().getLeave_message_type().equals("msg")) {
