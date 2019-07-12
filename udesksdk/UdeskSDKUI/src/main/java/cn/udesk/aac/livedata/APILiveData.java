@@ -95,12 +95,12 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
 
     }
 
-    public void messages(String more_marking){
+    public void messages(String more_marking, final String from){
         try{
             UdeskHttpFacade.getInstance().v4Messages(domain, secretKey, sdktoken,appid,more_marking,new UdeskCallBack(){
                 @Override
                 public void onSuccess(String message) {
-                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.V4PullMessagesSuccess, message,UUID.randomUUID().toString());
+                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.V4PullMessagesSuccess, message,UUID.randomUUID().toString(),from);
                     MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
                 }
 

@@ -17,6 +17,8 @@ SDK原生机器人功能在 5.x 分支下。
 - [九、功能截图](#9)
 <h1 id="1">一、特别声明</h1>
 
+### 5.1.0 设置商品消息背景、字体api发生调整 请注意更改 ###
+
 ### SDK 表单留言模式下 配置工单客户字段 需要特别注意，
 
 	如果需要使用 字段类型是下拉框，级联， 复选框 的字段；需要修改UdeskBaseWebViewActivity类中的initView
@@ -201,9 +203,15 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 | mProduct                               | setProduct                                                 | 设置商品消息             									   |
 | channel                                | setChannel                                                 | SDK支持自定义渠道（只支持字符数字，不支持特殊支持）  			   |
 | isShowCustomerNickname                 | isShowCustomerNickname                                     | 是否显示客户昵称  				                           |
-| isShowCustomerHead                 	 | isShowCustomerHead                                          | 是否显示客户头像  				                           |
+| isShowCustomerHead                 	 | isShowCustomerHead                                         | 是否显示客户头像  				                           |
+| udeskProductLeftBgResId                | setUdeskProductLeftBgResId                                 | 商品消息背景左侧                                             |
+| udeskProductRightBgResId               | setUdeskProductRightBgResId                                | 商品消息背景右侧                                             |
+| udeskProductRightNameLinkColorResId    | setUdeskProductRightNameLinkColorResId                     | 商品消息的 带有链接时的  商品名字显示的颜色 右侧                |
+| udeskProductLeftNameLinkColorResId     | setUdeskProductLeftNameLinkColorResId                      | 商品消息的 带有链接时的  商品名字显示的颜色 左侧                 |
+| udeskProductMaxLines                   | setUdeskProductMaxLines                                    | 商品消息名称最大显示行数                                      |
 
-	      private UdeskConfig.Builder makeBuilder() {
+
+	    private UdeskConfig.Builder makeBuilder() {
         if (!TextUtils.isEmpty(edit_language.getText().toString())){
             LocalManageUtil.saveSelectLanguage(getApplicationContext(),new Locale(edit_language.getText().toString()));
         }
@@ -223,6 +231,9 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
                 .setUdeskCommityTitleColorResId(R.color.udesk_color_im_commondity_title1) // 商品介绍Title的字样颜色
                 .setUdeskCommitysubtitleColorResId(R.color.udesk_color_im_commondity_subtitle1)// 商品咨询页面中，商品介绍子Title的字样颜色
                 .setUdeskCommityLinkColorResId(R.color.udesk_color_im_commondity_link1) //商品咨询页面中，发送链接的字样颜色
+                .setUdeskProductLeftBgResId(R.drawable.udesk_im_txt_left_default) //商品消息背景
+                .setUdeskProductRightBgResId(R.drawable.udesk_im_item_bg_right) //商品消息背景
+                .setUdeskProductMaxLines(2) //商品消息名称最大显示行数
                 .setUserSDkPush(set_sdkpush.isChecked()) // 配置 是否使用推送服务  true 表示使用  false表示不使用
                 .setOnlyUseRobot(set_use_onlyrobot.isChecked())//配置是否只使用机器人功能 只使用机器人功能,只使用机器人功能;  其它功能不使用。
                 .setUdeskQuenuMode(force_quit.isChecked() ? UdeskConfig.UdeskQueueFlag.FORCE_QUIT : UdeskConfig.UdeskQueueFlag.Mark)  //  配置放弃排队的策略
@@ -269,6 +280,10 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
                             UdeskSDKManager.getInstance().disConnectXmpp();
                         } else if (id == 24) {
                             udeskViewMode.sendProductMessage(createProduct());
+                        }else if (id == 25) {
+                            sendCustomerOrder();
+                        }else if (id == 26) {
+                            sendTrace();
                         }
                     }
                 })//在more 展开面板中设置额外的功能按钮
@@ -278,7 +293,6 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
                             if (navigationMode.getId() == 1) {
                                 udeskViewMode.sendProductMessage(createProduct());
                             } else if (navigationMode.getId() == 2) {
-                                udeskViewMode.sendTxtMessage(UUID.randomUUID().toString());
                                 udeskViewMode.sendTxtMessage("www.baidu.com");
                             }
                     }
@@ -481,6 +495,10 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
                             UdeskSDKManager.getInstance().disConnectXmpp();
                         } else if (id == 24) {
                             udeskViewMode.sendProductMessage(createProduct());
+                        }else if (id == 25) {
+                            sendCustomerOrder();
+                        }else if (id == 26) {
+                            sendTrace();
                         }
                     }
                 })//在more 展开面板中设置额外的功能按钮
@@ -603,13 +621,12 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
     }
 ### 7 支持自定义导航栏设置 具体可参考demo
  	
-	.setNavigations(set_use_navigation_view.isChecked(), getNavigations(), new INavigationItemClickCallBack() {
+	 .setNavigations(set_use_navigation_view.isChecked(), getNavigations(), new INavigationItemClickCallBack() {
                     @Override
                     public void callBack(Context context, UdeskViewMode udeskViewMode, NavigationMode navigationMode,String currentView) {
                             if (navigationMode.getId() == 1) {
                                 udeskViewMode.sendProductMessage(createProduct());
                             } else if (navigationMode.getId() == 2) {
-                                udeskViewMode.sendTxtMessage(UUID.randomUUID().toString());
                                 udeskViewMode.sendTxtMessage("www.baidu.com");
                             }
                     }
@@ -626,6 +643,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
                         }
                     }
                 })//设置是否使用机器人导航UI true表示使用 false表示不使用
+
 
 说明：导航栏一个功能按钮设置成一个NavigationMode， 包含属性
 
@@ -725,7 +743,8 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 
 	UdeskConfig.Builder builder = new UdeskConfig.Builder();
 	builder.isShowCustomerNickname(true|false);
-	
+
+
 <h1 id="5">五、Udesk API说明</h1>
 
 ### 1.获取未读消息
@@ -780,7 +799,90 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 
 	build.setUdeskQuenuMode(quitmode);
 
-### 6 资源 UI
+### 6 发送商品订单
+
+		  **OrderBean字段属性说明**
+	  
+| key                | 是否必选   | 说明         |
+| -------------      | ------    | ---------- |
+| **name**           | **必选**   | 订单名称 |
+| url                | 可选       | 订单跳转链接      |
+| **order_no**       | **必选**   | 订单编号       |
+| **price**          | **必选**   | 订单价格       |
+| **order_at**       | **必选**   | 下单时间      |
+| pay_at              | 可选       | 付款时间|
+| **status**          | **必选**   | 订单状态(待付款: 'wait_pay'、已付款: 'paid'、已关闭: 'closed')| 
+| remark              | 可选       | 备注| 
+
+	 /**
+     * 发送商品订单
+     */
+    private void sendCustomerOrder() {
+        //发送订单信息
+        OrderBean orderBean =new OrderBean();
+        orderBean.setName("Apple iPhone X (A1903) 64GB");
+        orderBean.setOrder_at(UdeskUtil.getCurrentDate());
+        orderBean.setUrl("www.baidu.com");
+        orderBean.setPrice(1200.33);
+        orderBean.setOrder_no("123");
+        orderBean.setPay_at(UdeskUtil.getCurrentDate());
+        orderBean.setStatus(UdeskConst.OrderStatus.paid);
+        orderBean.setRemark("我是测试的");
+        String sdkToken = getSDKToken();
+        UdeskSDKManager.getInstance().sendCustomerOrder(UdeskSDKManager.getInstance().getDomain(this),UdeskSDKManager.getInstance().getAppkey(this),
+                sdkToken,UdeskSDKManager.getInstance().getAppId(this),JsonUtils.getOrderJson(orderBean));
+    }
+
+### 7 发送商品轨迹
+
+
+		  **TraceBean字段属性说明**
+	  
+| key                | 是否必选   | 说明         |
+| -------------      | ------    | ---------- |
+| **type**           | **必选**   | 跟踪类型 |
+| **data.name**      | **必选**   | 商品名称      |
+| data.url           | 可选       | 商品跳转链接       |
+| data.imgUrl        | 可选       | 图片url       |
+| data.date          | 可选       | 访问时间      |
+| data.params        | 可选       | 参数列表|
+| data.params.text   | 可选       | 参数文本| 
+| data.params.color  | 可选       | 参数颜色值| 
+| data.params.fold   | 可选       | 是否粗体| 
+| data.params.breakX | 可选       | 是否换行| 
+| data.params.size   | 可选       | 字体大小| 
+	
+	    /**
+     * 发送商品轨迹
+     */
+    private void sendTrace() {
+        //发送商品轨迹
+        TraceBean traceBean =new TraceBean();
+        traceBean.setType("product");
+        TraceBean.DataBean dataBean =new TraceBean.DataBean();
+        dataBean.setName("traceBean");
+        dataBean.setUrl("http://item.jd.com/6748052.html");
+        dataBean.setDate(UdeskUtil.getCurrentDate());
+        dataBean.setImgUrl("http://img12.360buyimg.com/n1/s450x450_jfs/t10675/253/1344769770/66891/92d54ca4/59df2e7fN86c99a27.jpg");
+        List<TraceBean.DataBean.ParamsBean> paramsBeanList =new ArrayList<>();
+
+        TraceBean.DataBean.ParamsBean paramsBean1 = new TraceBean.DataBean.ParamsBean();
+        paramsBean1.setBreakX(false);
+        paramsBean1.setColor("#ff0000");
+        paramsBean1.setFold(false);
+        paramsBean1.setSize("14");
+        paramsBean1.setText("999999999.00");
+
+        paramsBeanList.add(paramsBean1);
+        dataBean.setParams(paramsBeanList);
+
+        traceBean.setData(dataBean);
+        String sdkToken = getSDKToken();
+        UdeskSDKManager.getInstance().sendBehaviorTraces(UdeskSDKManager.getInstance().getDomain(this),UdeskSDKManager.getInstance().getAppkey(this),
+                sdkToken,UdeskSDKManager.getInstance().getAppId(this),JsonUtils.getTraceJson(traceBean));
+    }
+
+### 8 资源 UI
 
 	聊天界面UdeskChatActivity 
 	
@@ -914,9 +1016,28 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
     5.h5接入参考例子
     https://github.com/udesk/udesk_android_sdk_h5
 	
+   6.有些消息显示不全
+	由于5.1.0 数据库升级，添加一些新的字段，之前版本的数据库没有。覆盖安装时读取本地数据库历史消息，消息有些字段没有读取到，造成显示不全。 卸载重装一下就可以了。
+	
 <h1 id="8">八、更新记录</h1>
 
 ### 更新日志 ###
+
+### sdk v5.1.0 版本功能： ###
+
+1. 支持对话留言
+2. 支持模板消息
+3. 支持发送商品订单和商品轨迹
+4. 支持客服端添加商品消息类型
+5. 修改数据存储逻辑和数据库
+6. 修改机器人欢迎语逻辑
+7. 修改阿里上传策略问题
+8. webview适配非http/https 开头的链接
+9. 修改人工导航点击问题
+10.修改无消息对话过滤状态发送消息问题
+11.添加和修改商品消息背景，字体颜色，行数设置api
+12.修改4.x版本覆盖安装5.x 请求客服问题
+
 ### sdk v5.0.0版本更新功能: ###
 
 1.支持原生机器人

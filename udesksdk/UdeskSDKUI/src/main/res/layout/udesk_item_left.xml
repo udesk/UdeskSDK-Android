@@ -91,6 +91,8 @@
             <include layout="@layout/udesk_item_reply_product" />
 
             <include layout="@layout/udesk_item_link" />
+            <include layout="@layout/udesk_item_template_message" />
+            <include layout="@layout/udesk_item_product_left" />
 
 
         </RelativeLayout>

@@ -539,8 +539,15 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                 mMoreImg.setVisibility(vis);
                 if (vis == View.GONE) {
                     hideMoreLayout();
+                    mEmotionKeyboard.hideEmotionLayout(true);
                 }else if (vis==View.VISIBLE){
-                    sendBtn.setVisibility(View.GONE);
+                    if (mInputEditView.getText().toString().length()>0){
+                        mMoreImg.setVisibility(View.GONE);
+                        sendBtn.setVisibility(View.VISIBLE);
+                    }else {
+                        mMoreImg.setVisibility(View.VISIBLE);
+                        sendBtn.setVisibility(View.GONE);
+                    }
                 }
             }
             if (UdeskSDKManager.getInstance().getUdeskConfig().isUseNavigationRootView) {
@@ -736,15 +743,22 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                 }
                 if (udeskChatActivity.currentStatusIsOnline || udeskChatActivity.getPressionStatus() || udeskChatActivity.isNeedQueueMessageSave()) {
                     udeskViewMode.sendTxtMessage(getInputContent().toString());
-                    clearInputContent();
+                    if (!udeskChatActivity.getPressionStatus()){
+                        clearInputContent();
+                    }
 
-                } else if (udeskChatActivity.imSetting != null &&
-                        udeskChatActivity.imSetting.getLeave_message_type().equals("msg")) {
+                } else if (udeskChatActivity.imSetting != null
+                        && (udeskChatActivity.imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.directMsg)
+                        || udeskChatActivity.imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.imMsg))) {
                     if (!udeskViewMode.isLeavingMsg()) {
                         udeskChatActivity.addCustomerLeavMsg();
                         udeskViewMode.setLeavingMsg(true);
                     }
-                    udeskViewMode.sendLeaveMessage(mInputEditView.getText().toString());
+                    if (udeskChatActivity.imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.directMsg)){
+                        udeskViewMode.sendLeaveMessage(mInputEditView.getText().toString());
+                    }else if (udeskChatActivity.imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.imMsg)){
+                        udeskViewMode.sendIMLeaveMessage(mInputEditView.getText().toString());
+                    }
                     clearInputContent();
                 }
             } else if (R.id.navigation_survy == v.getId()) {

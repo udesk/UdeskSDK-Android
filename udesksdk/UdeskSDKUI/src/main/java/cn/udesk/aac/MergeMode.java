@@ -5,6 +5,7 @@ public class MergeMode<T> {
     int type ;
     private T data;
     String id;
+    String from;
 
     public MergeMode() {
     }
@@ -18,6 +19,13 @@ public class MergeMode<T> {
         this.type = type;
         this.data = data;
         this.id = id;
+    }
+
+    public MergeMode(int type, T data, String id, String from) {
+        this.type = type;
+        this.data = data;
+        this.id = id;
+        this.from = from;
     }
 
     public String getId() {
@@ -44,9 +52,16 @@ public class MergeMode<T> {
         this.data = data;
     }
 
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
 
     @Override
     public String toString() {
-        return "type="+type+",id="+id;
+        return "type="+type+",id="+id+", from="+from;
     }
 }

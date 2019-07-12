@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -70,6 +71,7 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -80,6 +82,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -90,6 +93,8 @@ import cn.udesk.model.TicketReplieMode;
 import cn.udesk.model.ImSetting;
 import cn.udesk.model.OptionsModel;
 import cn.udesk.model.SurveyOptionsModel;
+import udesk.core.JsonObjectUtils;
+import udesk.core.LocalManageUtil;
 import udesk.core.model.Content;
 import cn.udesk.provider.UdeskFileProvider;
 import me.relex.photodraweeview.PhotoDraweeView;
@@ -218,6 +223,25 @@ public class UdeskUtil {
         }
         return builder.toString();
     }
+    public static HashMap<String,String> buildGetParams(String sdkToken, String mSecretKey, String appid){
+        HashMap<String, String> params = new HashMap<>();
+        long timestamp = System.currentTimeMillis();
+        long nonce = System.currentTimeMillis() * JsonObjectUtils.getRandom();
+        String echostr = UUID.randomUUID().toString();
+        params.put("nonce", String.valueOf(nonce));
+        params.put("timestamp", String.valueOf(timestamp));
+        params.put("sdk_token", sdkToken);
+        params.put("echostr", echostr);
+        params.put("sdk_version", UdeskConst.sdkversion);
+        params.put("platform_name", "android");
+        params.put("platform", "android");
+        params.put("language", LocalManageUtil.getSetLanguageLocale());
+        if (!TextUtils.isEmpty(appid)) {
+            params.put("app_id", appid);
+        }
+        params.put("signature", UdeskUtils.getSignature(mSecretKey, sdkToken, timestamp, nonce));
+        return params;
+    }
 
     public static String formatLongTypeTimeToString(Context context, long time) {
 
@@ -325,7 +349,10 @@ public class UdeskUtil {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         return sdf.format(new Date(time));
     }
-
+    public static String getCurrentDate(){
+        SimpleDateFormat simpleDateFormat =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return simpleDateFormat.format(new Date());
+    }
     public static long stringToLong(String strTime) {
         Date date = stringToDate(strTime); // String类型转成date类型
         if (date == null) {

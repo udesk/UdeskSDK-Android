@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,6 +30,8 @@ import udesk.core.UdeskCallBack;
 import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
 import udesk.core.model.MessageInfo;
+import udesk.core.model.TraceInitBean;
+import udesk.core.model.TracesModel;
 import udesk.core.utils.UdeskUtils;
 
 
@@ -73,6 +77,9 @@ public class UdeskSDKManager {
     InitCustomerBean initCustomerBean;
 
     private Context appContext;
+    //包含商品订单和轨迹是否开启
+    private TraceInitBean traceInitBean;
+
     private UdeskSDKManager() {
         singleExecutor = Executors.newSingleThreadExecutor();
         fixedThread = Executors.newFixedThreadPool(3);
@@ -534,4 +541,76 @@ public class UdeskSDKManager {
     public void setNewMessage(IUdeskNewMessage newMessage) {
         this.newMessage = newMessage;
     }
+
+    /**
+     * 发送商品订单
+     * @param content
+     */
+    public void sendCustomerOrder(final String domain, final String app_Key, final String sdkToken, final String app_Id, final JSONObject content){
+        try {
+            if (traceInitBean == null){
+                UdeskHttpFacade.getInstance().traceInit(domain, app_Key, sdkToken, app_Id, new UdeskCallBack() {
+                    @Override
+                    public void onSuccess(String message) {
+                        traceInitBean = JsonUtils.parseTraceInit(message);
+                        if (traceInitBean.getCustomer_order()){
+                            putCustomerOrders(domain, app_Key, sdkToken, app_Id, content);
+                        }
+
+                    }
+
+                    @Override
+                    public void onFail(String message) {
+
+                    }
+                });
+            }else {
+                if (traceInitBean.getCustomer_order()){
+                    putCustomerOrders(domain, app_Key, sdkToken, app_Id, content);
+                }
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 发送商品轨迹
+     * @param content
+     */
+    public void sendBehaviorTraces(final String domain, final String app_Key, final String sdkToken, final String app_Id, final JSONObject content){
+        try {
+            if (traceInitBean == null){
+                UdeskHttpFacade.getInstance().traceInit(domain, app_Key, sdkToken, app_Id,new UdeskCallBack() {
+                    @Override
+                    public void onSuccess(String message) {
+                        traceInitBean = JsonUtils.parseTraceInit(message);
+                        if (traceInitBean.getBehavoir_trace()){
+                            putBehaviorTraces(domain, app_Key, sdkToken, app_Id, content);
+                        }
+                    }
+                    @Override
+                    public void onFail(String message) {
+                    }
+                });
+            }else {
+                if (traceInitBean.getBehavoir_trace()){
+                    putBehaviorTraces(domain, app_Key, sdkToken, app_Id, content);
+                }
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void putCustomerOrders(String domain,String app_Key,String sdkToken,String app_Id,JSONObject content) {
+        UdeskHttpFacade.getInstance().putCustomerOrders(domain, app_Key, sdkToken, app_Id,content,null);
+    }
+    private void putBehaviorTraces(String domain,String app_Key,String sdkToken,String app_Id,JSONObject content) {
+        UdeskHttpFacade.getInstance().putBehaviorTraces(domain, app_Key, sdkToken, app_Id,content,null);
+    }
+
+
 }

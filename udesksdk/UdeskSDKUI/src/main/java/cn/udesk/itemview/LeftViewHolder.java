@@ -14,9 +14,11 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
@@ -32,6 +34,9 @@ import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,15 +49,18 @@ import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.activity.UdeskWebViewUrlAcivity;
+import cn.udesk.activity.WorkOrderWebViewActivity;
 import cn.udesk.adapter.BrandAdapter;
 import cn.udesk.adapter.BrandDivider;
 import cn.udesk.adapter.StrucTableAdapter;
 import cn.udesk.config.UdeskConfigUtil;
 import cn.udesk.emotion.MoonUtils;
+import cn.udesk.fragment.UdeskResendDialog;
 import cn.udesk.model.SpanModel;
 import cn.udesk.model.StructModel;
 import cn.udesk.model.UdeskQueueItem;
 import cn.udesk.rich.XRichText;
+import cn.udesk.widget.HtmlTagHandler;
 import cn.udesk.widget.RecycleViewDivider;
 import cn.udesk.widget.UdeskRecycleView;
 import udesk.core.model.InfoListBean;
@@ -61,6 +69,7 @@ import udesk.core.model.OptionsListBean;
 import udesk.core.model.ProductListBean;
 import udesk.core.model.ShowProductBean;
 import udesk.core.model.StrucTableBean;
+import udesk.core.model.TemplateMsgBean;
 import udesk.core.model.TopAskBean;
 import cn.udesk.photoselect.PictureVideoPlayActivity;
 import cn.udesk.provider.UdeskFileProvider;
@@ -164,6 +173,15 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
     private LinearLayout itemFlow;
     private XRichText flowMsg;
     private LinearLayout containerFlow;
+    private LinearLayout itemTemplate;
+    private TextView templateTitle;
+    private XRichText templateContent;
+    private LinearLayout templateContainer;
+    private TextView templateLine;
+    private LinearLayout itemProduct;
+    private TextView productMsg;
+    private TextView productName;
+    private SimpleDraweeView productIcon;
 
 
     @Override
@@ -311,7 +329,18 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             linkTitle = convertView.findViewById(R.id.udesk_link_title);
             containerLink = convertView.findViewById(R.id.udesk_container_link);
 
-
+            //工单模板消息
+            itemTemplate = convertView.findViewById(R.id.udesk_item_template_msg);
+            templateTitle = convertView.findViewById(R.id.udesk_template_title);
+            templateContent = convertView.findViewById(R.id.udesk_template_content);
+            templateContainer = convertView.findViewById(R.id.udesk_template_container);
+            templateLine = convertView.findViewById(R.id.udesk_template_line);
+            //product
+            itemProduct = (LinearLayout) convertView.findViewById(R.id.udesk_item_product);
+            UdeskConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductLeftBgResId, itemProduct);
+            productMsg = (TextView) convertView.findViewById(R.id.udesk_product_msg);
+            productName = (TextView) convertView.findViewById(R.id.product_name);
+            productIcon = (SimpleDraweeView) convertView.findViewById(R.id.udesk_product_icon);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -345,6 +374,8 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             itemStructTable.setVisibility(View.GONE);
             itemReplyProduct.setVisibility(View.GONE);
             itemLink.setVisibility(View.GONE);
+            itemTemplate.setVisibility(View.GONE);
+            itemProduct.setVisibility(View.GONE);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -372,6 +403,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     dealRobotTxtMsg();
                     break;
                 case UdeskConst.ChatMsgTypeInt.TYPE_LEAVEMSG:
+                case UdeskConst.ChatMsgTypeInt.TYPE_LEAVEMSG_IM:
                     dealLeaveMsg();
                     break;
                 case UdeskConst.ChatMsgTypeInt.TYPE_RICH:
@@ -428,6 +460,12 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 case UdeskConst.ChatMsgTypeInt.TYPE_FLOW:
                     dealFlow();
                     break;
+                case UdeskConst.ChatMsgTypeInt.TYPE_TEMPLATE_MSG:
+                    dealTemplateMsg();
+                    break;
+                case UdeskConst.ChatMsgTypeInt.TYPE_PRODUCT:
+                    dealProduct();
+                    break;
                 default:
                     dealRichText();
                     break;
@@ -438,6 +476,88 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
 
     }
 
+    /**
+     * 商品消息处理
+     */
+    private void dealProduct() {
+        try {
+            showHead(true);
+            itemProduct.setVisibility(View.VISIBLE);
+            JSONObject jsonObject = new JSONObject(message.getMsgContent());
+            if (!TextUtils.isEmpty(jsonObject.optString("imgUrl"))) {
+                productIcon.setVisibility(View.VISIBLE);
+                UdeskUtil.loadNoChangeView(mContext.getApplicationContext(), productIcon, Uri.parse(jsonObject.optString("imgUrl")));
+            } else {
+                productIcon.setVisibility(View.GONE);
+            }
+            final String productUrl = jsonObject.optString("url");
+            String name =jsonObject.optString("name");
+            itemProduct.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick != null) {
+                        UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick.txtMsgOnclick(productUrl);
+                    } else {
+                        if (!TextUtils.isEmpty(productUrl)){
+                            Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
+                            intent.putExtra(UdeskConst.WELCOME_URL, productUrl);
+                            mContext.startActivity(intent);
+                        }
+                    }
+                }
+            });
+            if (!TextUtils.isEmpty(name)) {
+                productName.setVisibility(View.VISIBLE);
+                if (UdeskSDKManager.getInstance().getUdeskConfig().udeskProductMaxLines > 0 ){
+                    productName.setMaxLines(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductMaxLines);
+                    productName.setEllipsize(TextUtils.TruncateAt.END);
+                }
+                productName.setText(name);
+                productName.setTextColor(mContext.getResources().getColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductLeftNameLinkColorResId));
+            }else {
+                productName.setVisibility(View.GONE);
+            }
+
+            StringBuilder builder = new StringBuilder();
+            builder.append("<font></font>");
+            JSONArray jsonArray = jsonObject.getJSONArray("params");
+            if (jsonArray != null && jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject data = jsonArray.optJSONObject(i);
+                    if (TextUtils.isEmpty(data.optString("text"))) {
+                        continue;
+                    }
+                    String color = data.optString("color");
+                    int size = data.optInt("size");
+                    if (TextUtils.isEmpty(color)){
+                        color = "#000000";
+                    }
+                    if (size==0){
+                        size = 12;
+                    }
+                    String textStr = "<font color=" + color +
+                            "  size=" + UdeskUtil.dip2px(mContext,size) + ">" + data.optString("text") + "</font>";
+                    if (data.optBoolean("fold")) {
+                        textStr = "<b>" + textStr + "</b>";
+                    }
+                    if (data.optBoolean("break")) {
+                        textStr = textStr + "<br>";
+                    }
+                    builder.append(textStr);
+                }
+            }
+            String htmlString = builder.toString().replaceAll("font", HtmlTagHandler.TAG_FONT);
+            Spanned fromHtml = Html.fromHtml(htmlString, null, new HtmlTagHandler());
+            if (TextUtils.isEmpty(fromHtml)){
+                productMsg.setVisibility(View.GONE);
+            }else {
+                productMsg.setVisibility(View.VISIBLE);
+                productMsg.setText(fromHtml);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 处理转人工
@@ -888,6 +1008,60 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
         }
     }
 
+    /**
+     * 处理工单模板消息
+     */
+    private void dealTemplateMsg() {
+        try {
+            showHead(true);
+            itemTemplate.setVisibility(View.VISIBLE);
+            final TemplateMsgBean templateMsgBean = JsonUtils.parseTemplateMsg(message.getMsgContent());
+            templateTitle.setText(templateMsgBean.getTitle());
+            templateContent.callback(this).text(mContext,templateMsgBean.getContent());
+            List<TemplateMsgBean.BtnsBean> btns = templateMsgBean.getBtns();
+            if (btns!=null && btns.size()>0){
+                templateLine.setVisibility(View.VISIBLE);
+                templateContainer.setVisibility(View.VISIBLE);
+                templateContainer.removeAllViews();
+                for (int i = 0; i<btns.size();i++){
+                    final TemplateMsgBean.BtnsBean btnsBean = btns.get(i);
+                    if (btnsBean !=null){
+                        if (i !=0){
+                            TextView line =new TextView(mContext);
+                            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(UdeskUtil.dip2px(mContext,1),LinearLayout.LayoutParams.MATCH_PARENT);
+                            line.setLayoutParams(layoutParams);
+                            line.setBackgroundColor(mContext.getResources().getColor(R.color.udesk_color_E8ECED));
+                            templateContainer.addView(line);
+                        }
+                        TextView textView =new TextView(mContext);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT,1.0f);
+                        textView.setLayoutParams(layoutParams);
+                        textView.setTextColor(mContext.getResources().getColor(R.color.udesk_color_307AE8));
+                        textView.setTextSize(15);
+                        textView.setGravity(Gravity.CENTER);
+                        if (TextUtils.equals("link",btnsBean.getType()) && btnsBean.getData()!=null && !TextUtils.isEmpty(btnsBean.getData().getUrl())){
+                            textView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(mContext, WorkOrderWebViewActivity.class);
+                                    intent.putExtra(UdeskConst.WORK_ORDER_URL,btnsBean.getData().getUrl());
+                                    intent.putExtra(UdeskConst.WORK_ORDER_TITLE,templateMsgBean.getTitle());
+                                    mContext.startActivity(intent);
+                                }
+                            });
+                        }
+                        if (!TextUtils.isEmpty(btnsBean.getName())){
+                            textView.setText(btnsBean.getName());
+                        }
+                        templateContainer.addView(textView);
+                    }
+
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     /**
      * 富文本消息处理
      */

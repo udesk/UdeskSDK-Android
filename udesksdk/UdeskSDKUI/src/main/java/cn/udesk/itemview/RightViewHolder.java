@@ -139,6 +139,7 @@ public class RightViewHolder extends BaseViewHolder {
             cropBitMap = (SimpleDraweeView) convertView.findViewById(R.id.udesk_location_image);
             //product
             itemProduct = (LinearLayout) convertView.findViewById(R.id.udesk_item_product);
+            UdeskConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductRightBgResId, itemProduct);
             productMsg = (TextView) convertView.findViewById(R.id.udesk_product_msg);
             productName = (TextView) convertView.findViewById(R.id.product_name);
             productIcon = (SimpleDraweeView) convertView.findViewById(R.id.udesk_product_icon);
@@ -189,6 +190,7 @@ public class RightViewHolder extends BaseViewHolder {
                     dealTextMsg();
                     break;
                 case UdeskConst.ChatMsgTypeInt.TYPE_LEAVEMSG:
+                case UdeskConst.ChatMsgTypeInt.TYPE_LEAVEMSG_IM:
                     dealLeaveMsg();
                     break;
                 case UdeskConst.ChatMsgTypeInt.TYPE_LIVE_VIDEO:
@@ -851,21 +853,31 @@ public class RightViewHolder extends BaseViewHolder {
                 productIcon.setVisibility(View.GONE);
             }
             productUrl = jsonObject.optString("url");
-            productName.setText(jsonObject.optString("name"));
-            if (!TextUtils.isEmpty(productUrl)) {
-                productName.setTextColor(mContext.getResources().getColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductNameLinkColorResId));
-                productName.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick != null) {
-                            UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick.txtMsgOnclick(productUrl);
-                        } else {
+            String name =jsonObject.optString("name");
+            itemProduct.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick != null) {
+                        UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick.txtMsgOnclick(productUrl);
+                    } else {
+                        if (!TextUtils.isEmpty(productUrl)){
                             Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
                             intent.putExtra(UdeskConst.WELCOME_URL, productUrl);
                             mContext.startActivity(intent);
                         }
                     }
-                });
+                }
+            });
+            if (!TextUtils.isEmpty(name)) {
+                productName.setVisibility(View.VISIBLE);
+                if (UdeskSDKManager.getInstance().getUdeskConfig().udeskProductMaxLines > 0 ){
+                    productName.setMaxLines(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductMaxLines);
+                    productName.setEllipsize(TextUtils.TruncateAt.END);
+                }
+                productName.setText(name);
+                productName.setTextColor(mContext.getResources().getColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductRightNameLinkColorResId));
+            }else {
+                productName.setVisibility(View.GONE);
             }
 
             StringBuilder builder = new StringBuilder();
@@ -877,8 +889,16 @@ public class RightViewHolder extends BaseViewHolder {
                     if (TextUtils.isEmpty(data.optString("text"))) {
                         continue;
                     }
-                    String textStr = "<font color=" + data.optString("color") +
-                            "  size=" + 2 * data.optInt("size") + ">" + data.optString("text") + "</font>";
+                    String color = data.optString("color");
+                    int size = data.optInt("size");
+                    if (TextUtils.isEmpty(color)){
+                        color = "#000000";
+                    }
+                    if (size==0){
+                        size = 12;
+                    }
+                    String textStr = "<font color=" + color +
+                            "  size=" + UdeskUtil.dip2px(mContext,size) + ">" + data.optString("text") + "</font>";
                     if (data.optBoolean("fold")) {
                         textStr = "<b>" + textStr + "</b>";
                     }
@@ -890,7 +910,12 @@ public class RightViewHolder extends BaseViewHolder {
             }
             String htmlString = builder.toString().replaceAll("font", HtmlTagHandler.TAG_FONT);
             Spanned fromHtml = Html.fromHtml(htmlString, null, new HtmlTagHandler());
-            productMsg.setText(fromHtml);
+            if (TextUtils.isEmpty(fromHtml)){
+                productMsg.setVisibility(View.GONE);
+            }else {
+                productMsg.setVisibility(View.VISIBLE);
+                productMsg.setText(fromHtml);
+            }
             //重发按钮点击事件
             ivStatus.setOnClickListener(new View.OnClickListener() {
 

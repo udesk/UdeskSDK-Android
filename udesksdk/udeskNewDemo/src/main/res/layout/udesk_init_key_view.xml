@@ -133,6 +133,33 @@
                 android:textColorHint="@color/gray"
                 android:textSize="16sp" />
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/use_http"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:background="@drawable/often_messages_selector"
+                android:button="@null"
+                android:checked="false"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:gravity="start|center"
+                android:text="使用http环境"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/udesk_start"

@@ -30,6 +30,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,6 +41,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -54,8 +56,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import cn.udesk.JsonUtils;
 import cn.udesk.PreferenceHelper;
@@ -64,15 +64,15 @@ import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.aac.MergeMode;
 import cn.udesk.aac.MergeModeManager;
-import cn.udesk.aac.UdeskViewMode;
 import cn.udesk.aac.QuestionMergeMode;
+import cn.udesk.aac.UdeskViewMode;
 import cn.udesk.adapter.MessageAdatper;
 import cn.udesk.adapter.TipAdapter;
 import cn.udesk.callback.IUdeskHasSurvyCallBack;
 import cn.udesk.camera.UdeskCameraActivity;
-import cn.udesk.config.UdeskConfigUtil;
 import cn.udesk.config.UdeskBaseInfo;
 import cn.udesk.config.UdeskConfig;
+import cn.udesk.config.UdeskConfigUtil;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.emotion.IEmotionSelectedListener;
 import cn.udesk.emotion.LQREmotionKit;
@@ -82,21 +82,13 @@ import cn.udesk.fragment.UdeskbaseFragment;
 import cn.udesk.itemview.BaseViewHolder;
 import cn.udesk.messagemanager.UdeskXmppManager;
 import cn.udesk.model.AgentGroupNode;
+import cn.udesk.model.Customer;
 import cn.udesk.model.ImSetting;
+import cn.udesk.model.InitCustomerBean;
 import cn.udesk.model.Robot;
-import cn.udesk.widget.RecycleViewDivider;
-import udesk.core.model.AllMessageMode;
 import cn.udesk.model.SurveyOptionsModel;
 import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.model.UdeskQueueItem;
-import cn.udesk.model.Customer;
-import cn.udesk.model.InitCustomerBean;
-import udesk.core.model.Content;
-import udesk.core.model.DataBean;
-import udesk.core.model.LogBean;
-import udesk.core.model.ProductListBean;
-import udesk.core.model.RobotInit;
-import udesk.core.model.RobotTipBean;
 import cn.udesk.permission.RequestCode;
 import cn.udesk.permission.XPermissionUtils;
 import cn.udesk.photoselect.PhotoSelectorActivity;
@@ -104,6 +96,7 @@ import cn.udesk.photoselect.entity.LocalMedia;
 import cn.udesk.voice.RecordFilePlay;
 import cn.udesk.voice.RecordPlay;
 import cn.udesk.voice.RecordPlayCallback;
+import cn.udesk.widget.RecycleViewDivider;
 import cn.udesk.widget.UDPullGetMoreListView;
 import cn.udesk.widget.UdeskConfirmPopWindow;
 import cn.udesk.widget.UdeskConfirmPopWindow.OnPopConfirmClick;
@@ -116,8 +109,15 @@ import udesk.core.JsonObjectUtils;
 import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.model.AgentInfo;
+import udesk.core.model.AllMessageMode;
+import udesk.core.model.Content;
+import udesk.core.model.DataBean;
+import udesk.core.model.LogBean;
 import udesk.core.model.MessageInfo;
 import udesk.core.model.Product;
+import udesk.core.model.ProductListBean;
+import udesk.core.model.RobotInit;
+import udesk.core.model.RobotTipBean;
 import udesk.core.utils.UdeskIdBuild;
 import udesk.core.utils.UdeskUtils;
 
@@ -158,7 +158,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     private int currentMode = InitViewMode;
 
     private long QUEUE_RETEY_TIME = 20 * 1000; // 客服繁忙时  轮询的间隔时间
-
+    private long IM_LEAVE_MSG_INTERVAL = 2 * 60 * 1000; // 对话留言时，请求客服的间隔时间
     private final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 101;
     private final int SELECT_IMAGE_ACTIVITY_REQUEST_CODE = 102;
     private final int SELECT_FILE_OPTION_REQUEST_CODE = 104;
@@ -217,7 +217,10 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     private Map<String, Boolean> transferMap = new ConcurrentHashMap<>();//转人工
     private List<ProductListBean> randomList = new ArrayList<>();
     private UdeskSurvyPopwindow udeskSurvyPopwindow;
-    private ExecutorService singleExecutor = Executors.newSingleThreadExecutor();
+    private long imLeaveMsgTime = 0L; //对话留言时间戳
+    List<MessageInfo> imLeaveMsgCache= new ArrayList<>();
+    private boolean isExit=true;
+    private RelativeLayout commodityRoot;
 
     class ConnectivtyChangedReceiver extends BroadcastReceiver {
         @Override
@@ -305,10 +308,8 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             }
             groupId = UdeskSDKManager.getInstance().getUdeskConfig().groupId;
             agentId = UdeskSDKManager.getInstance().getUdeskConfig().agentId;
-            if (!TextUtils.isEmpty(groupId)) {
-                PreferenceHelper.write(getApplicationContext(), UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+            PreferenceHelper.write(getApplicationContext(), UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                         UdeskConst.SharePreParams.Udesk_Group_Id, groupId);
-            }
             if (!TextUtils.isEmpty(agentId)) {
                 PreferenceHelper.write(getApplicationContext(), UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                         UdeskConst.SharePreParams.Udesk_Agent_Id, agentId);
@@ -327,7 +328,6 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
 
     private void doWithInitCustomer() {
         try {
-            udeskViewMode.getApiLiveData().messages(moreMarking);
             //获取历史记录
             if (initCustomer == null || initCustomer.getCode() != 1000) {
                 //失败  结束流程， 走留言提示
@@ -341,6 +341,9 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 UdeskConst.REFERER_VALUE = initCustomer.getUploadService().getReferer();
             }
             curentStatus = initCustomer.getStatus();
+            if (!TextUtils.equals(curentStatus,UdeskConst.Status.chatting)){
+                udeskViewMode.getApiLiveData().messages("",UdeskConst.PullMsgFrom.init);
+            }
             Customer customer = initCustomer.getCustomer();
             customerId = customer != null ? customer.getId() : "";
             if (!TextUtils.isEmpty(customerId)) {
@@ -535,7 +538,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                             }
                             udeskViewMode.getSendMessageLiveData().sendMessage(sendMessage);
                             break;
-                        //增加直接离线留消息
+                        //增加直接离线留言消息
                         case UdeskConst.LiveDataType.AddLeaveMsg:
                             MessageInfo leaveMsg = (MessageInfo) mergeMode.getData();
                             if (leaveMsg == null) {
@@ -546,12 +549,39 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                             udeskViewMode.getDbLiveData().saveMessageDB(leaveMsg);
                             udeskViewMode.putLeavesMsg(leaveMsg);
                             break;
+                          //增加对话留言消息
+                        case UdeskConst.LiveDataType.AddIMLeaveMsg:
+                            MessageInfo imLeaveMsg = (MessageInfo) mergeMode.getData();
+                            if (imLeaveMsg == null) {
+                                return;
+                            }
+                            imLeaveMsgCache.add(imLeaveMsg);
+                            if (0L==imLeaveMsgTime){
+                                if (!currentStatusIsOnline) {
+                                    udeskViewMode.getApiLiveData().getAgentInfo(null, null);
+                                }else {
+                                    sendIMLeaveMsg(imLeaveMsgCache);
+                                }
+                            }else {
+                                long interval =System.currentTimeMillis()-imLeaveMsgTime;
+                                if (interval > IM_LEAVE_MSG_INTERVAL) {
+                                    if (!currentStatusIsOnline) {
+                                        udeskViewMode.getApiLiveData().getAgentInfo(null, null);
+                                    }else {
+                                        sendIMLeaveMsg(imLeaveMsgCache);
+                                    }
+                                }else {
+                                    sendIMLeaveMsg(imLeaveMsgCache);
+                                }
+                            }
+                            break;
+
                         //检查本地收到客服消息是否有跳序
                         case UdeskConst.LiveDataType.Check_Agent_Seq_Num:
                             int agent_seq_num = (int) mergeMode.getData();
                             if (getAgentSeqNum() != 0 && agent_seq_num > getAgentSeqNum()) {
 //                            isFirstLoad=true;
-                                udeskViewMode.getApiLiveData().messages("");
+                                udeskViewMode.getApiLiveData().messages("",UdeskConst.PullMsgFrom.jump);
                             }
                             break;
                         //消息发送失败
@@ -670,7 +700,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                                     }
                                 }
                                 currentMode = PullEventModel;
-//                                udeskViewMode.getDbLiveData().addAllMessageInfo(messageInfoList);
+                                udeskViewMode.getDbLiveData().addAllMessageInfo(messageInfoList);
                                 reFreshMessages(messageInfoList);
                             }
                             break;
@@ -704,15 +734,15 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                             changeFileProgress(msgId, 0, 0, false);
                             break;
                         //获取到拉取远程数据处理完的通知
-                        case UdeskConst.LiveDataType.PullMessages:
-                            initLoadData();
-                            break;
+//                        case UdeskConst.LiveDataType.PullMessages:
+//                            initLoadData();
+//                            break;
                         //加载本地数据库
                         case UdeskConst.LiveDataType.LoadHistoryDBMsg:
                             List<MessageInfo> msgs = (List<MessageInfo>) mergeMode.getData();
-                            for (MessageInfo messageInfo : msgs) {
-                                messageInfo.setFirstLoad(true);
-                            }
+//                            for (MessageInfo messageInfo : msgs) {
+//                                messageInfo.setFirstLoad(true);
+//                            }
                             reFreshMessages(msgs);
                             break;
                         //刷新小视频第一帧图
@@ -725,24 +755,41 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                             String robotInitMsg = UdeskUtils.objectToString(mergeMode.getData());
                             robotInit = JsonUtils.parseRobotInit(robotInitMsg);
                             if (robotInit != null && robotInit.getWebConfig() != null) {
-                                MessageInfo welcomInfo = UdeskUtil.buildWelcomeRelpy(robotInit);
-                                MessageInfo questionInfo = UdeskUtil.buildRobotInitRelpy(robotInit);
                                 List<MessageInfo> infoList = new ArrayList<>();
-                                if (UdeskUtils.objectToInt(robotInit.getSwitchStaffType()) == 2) {
-                                    welcomInfo.setSwitchStaffType(0);
-                                    questionInfo.setSwitchStaffType(0);
-                                    infoList.add(welcomInfo);
-                                    infoList.add(questionInfo);
-                                    mChatAdapter.listAddEventItems(infoList);
-                                    mListView.smoothScrollToPosition(mChatAdapter.getCount());
-                                    udeskViewMode.setSessionId(robotInit.getSessionId());
-                                    autoTransfer();
-                                } else {
-                                    infoList.add(welcomInfo);
-                                    infoList.add(questionInfo);
-                                    mChatAdapter.listAddEventItems(infoList);
-                                    mListView.smoothScrollToPosition(mChatAdapter.getCount());
-                                    udeskViewMode.setSessionId(robotInit.getSessionId());
+                                MessageInfo welcomInfo = UdeskUtil.buildWelcomeRelpy(robotInit);
+                                if ((robotInit.getTopAsk()!=null && robotInit.getTopAsk().size()>0)
+                                        || !TextUtils.isEmpty(robotInit.getWebConfig().getLeadingWord())){
+                                    MessageInfo questionInfo = UdeskUtil.buildRobotInitRelpy(robotInit);
+                                    if (UdeskUtils.objectToInt(robotInit.getSwitchStaffType()) == 2) {
+                                        welcomInfo.setSwitchStaffType(0);
+                                        questionInfo.setSwitchStaffType(0);
+                                        infoList.add(welcomInfo);
+                                        infoList.add(questionInfo);
+                                        mChatAdapter.listAddEventItems(infoList);
+                                        mListView.smoothScrollToPosition(mChatAdapter.getCount());
+                                        udeskViewMode.setSessionId(robotInit.getSessionId());
+                                        autoTransfer();
+                                    } else {
+                                        infoList.add(welcomInfo);
+                                        infoList.add(questionInfo);
+                                        mChatAdapter.listAddEventItems(infoList);
+                                        mListView.smoothScrollToPosition(mChatAdapter.getCount());
+                                        udeskViewMode.setSessionId(robotInit.getSessionId());
+                                    }
+                                }else {
+                                    if (UdeskUtils.objectToInt(robotInit.getSwitchStaffType()) == 2) {
+                                        welcomInfo.setSwitchStaffType(0);
+                                        infoList.add(welcomInfo);
+                                        mChatAdapter.listAddEventItems(infoList);
+                                        mListView.smoothScrollToPosition(mChatAdapter.getCount());
+                                        udeskViewMode.setSessionId(robotInit.getSessionId());
+                                        autoTransfer();
+                                    } else {
+                                        infoList.add(welcomInfo);
+                                        mChatAdapter.listAddEventItems(infoList);
+                                        mListView.smoothScrollToPosition(mChatAdapter.getCount());
+                                        udeskViewMode.setSessionId(robotInit.getSessionId());
+                                    }
                                 }
                             }
                             break;
@@ -828,7 +875,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                                 mListView.smoothScrollToPosition(mChatAdapter.getCount());
                                 robotSengMsgCount++;
                                 showTranferAgent();
-                                udeskViewMode.getRobotApiData().robotFlow(flowInfo.getMsgId(), flowInfo.getLogId(), ((QuestionMergeMode) mergeMode).getQuestionId(),((QuestionMergeMode) mergeMode).getQuestion());
+                                udeskViewMode.getRobotApiData().robotFlow(sendTipMsg.getMsgId(), flowInfo.getLogId(), ((QuestionMergeMode) mergeMode).getQuestionId(),((QuestionMergeMode) mergeMode).getQuestion());
                             }
                             break;
 
@@ -844,7 +891,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                             mListView.smoothScrollToPosition(mChatAdapter.getCount());
                             robotSengMsgCount++;
                             showTranferAgent();
-                            udeskViewMode.getRobotApiData().robotHit(((QuestionMergeMode) mergeMode).getMsgId(), ((QuestionMergeMode) mergeMode).getLogId(), ((QuestionMergeMode) mergeMode).getQuestion(), ((QuestionMergeMode) mergeMode).getQuestionId(), ((QuestionMergeMode) mergeMode).getQueryType());
+                            udeskViewMode.getRobotApiData().robotHit(sendChildQueMsg.getMsgId(), ((QuestionMergeMode) mergeMode).getLogId(), ((QuestionMergeMode) mergeMode).getQuestion(), ((QuestionMergeMode) mergeMode).getQuestionId(), ((QuestionMergeMode) mergeMode).getQueryType());
                             break;
                         //机器人发送文本消息
                         case UdeskConst.LiveDataType.ROBOT_SEND_TXT_MSG:
@@ -882,6 +929,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
 
                         case UdeskConst.LiveDataType.V4PullMessagesSuccess:
                             String loadMsg = UdeskUtils.objectToString(mergeMode.getData());
+                            String from = mergeMode.getFrom();
                             AllMessageMode allMessageMode = JsonUtils.parseMessage(loadMsg);
                             if (allMessageMode != null) {
                                 List<MessageInfo> messageInfoList = new ArrayList<>();
@@ -893,17 +941,32 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                                             messageInfoList.add(info);
                                         }
                                     }
-                                    if (TextUtils.isEmpty(moreMarking)) {
+                                    if (TextUtils.equals(from,UdeskConst.PullMsgFrom.init)){
+                                        currentMode= PullEventModel;
+                                        udeskViewMode.getDbLiveData().addAllMessageInfo(messageInfoList);
+                                        reFreshMessages(messageInfoList);
+                                        if (TextUtils.isEmpty(moreMarking)&& isExit){
+                                            isExit = false;
+                                            moreMarking = allMessageMode.getMore_marking();
+                                        }
+                                    }else if (TextUtils.equals(from,UdeskConst.PullMsgFrom.refresh)){
+                                        reFreshMessages(messageInfoList);
+                                        moreMarking = allMessageMode.getMore_marking();
+                                    }else if (TextUtils.equals(from,UdeskConst.PullMsgFrom.jump)){
+                                        currentMode= PullEventModel;
+                                        udeskViewMode.getDbLiveData().addAllMessageInfo(messageInfoList);
+                                        reFreshMessages(messageInfoList);
+                                    }else if (TextUtils.equals(from,UdeskConst.PullMsgFrom.hasAgent)){
                                         udeskViewMode.getDbLiveData().deleteAllMsg();
-                                        currentMode = InitViewMode;
-//                                    isFirstLoad=false;
-                                    } else {
-                                        currentMode = PullRefreshModel;
+                                        udeskViewMode.getDbLiveData().addAllMessageInfo(messageInfoList);
+                                        if (TextUtils.isEmpty(moreMarking)&& isExit){
+                                            isExit = false;
+                                            moreMarking = allMessageMode.getMore_marking();
+                                        }
+
                                     }
-                                    udeskViewMode.getDbLiveData().addAllMessageInfo(messageInfoList);
-                                    reFreshMessages(messageInfoList);
+
                                 }
-                                moreMarking = allMessageMode.getMore_marking();
                             }
                             break;
                         case UdeskConst.LiveDataType.ROBOT_TRANSFER:
@@ -919,6 +982,22 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             e.printStackTrace();
         }
 
+    }
+
+    private void sendIMLeaveMsg(List<MessageInfo> imLeaveMsgCache) {
+        if (imLeaveMsgCache!=null&&imLeaveMsgCache.size()>0){
+            imLeaveMsgTime = System.currentTimeMillis();
+            for (MessageInfo imLeaveMsg : imLeaveMsgCache){
+                if (imLeaveMsg!=null){
+                    mChatAdapter.addItem(imLeaveMsg);
+                    mListView.smoothScrollToPosition(mChatAdapter.getCount());
+                    udeskViewMode.getDbLiveData().saveMessageDB(imLeaveMsg);
+                    udeskViewMode.putIMLeavesMsg(imLeaveMsg);
+                    fragment.clearInputContent();
+                }
+            }
+            imLeaveMsgCache.clear();
+        }
     }
 
     private void dealReceiveSurvey() {
@@ -938,10 +1017,22 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
         if (hashMap != null) {
             int onlineflag = UdeskUtils.objectToInt(hashMap.get("onlineflag"));
             String jid = UdeskUtils.objectToString(hashMap.get("jid"));
-            if (mAgentInfo == null ||
-                    isblocked.equals("true") ||
-                    TextUtils.isEmpty(mAgentInfo.getAgentJid())
+//            if (mAgentInfo == null ||
+//                    isblocked.equals("true") ||
+//                    TextUtils.isEmpty(mAgentInfo.getAgentJid())
+//                    || !jid.contains(mAgentInfo.getAgentJid())) {
+//                return;
+//            }
+            if (isblocked.equals("true")){
+                return;
+            }
+            if (mAgentInfo == null
+                    || TextUtils.isEmpty(mAgentInfo.getAgentJid())
                     || !jid.contains(mAgentInfo.getAgentJid())) {
+                if (onlineflag == UdeskConst.ONLINEFLAG && imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.imMsg)
+                        && isleaveMessageTypeMsg() && (curentStatus== UdeskConst.Status.noAgent || curentStatus== UdeskConst.Status.off)){
+                    udeskViewMode.getApiLiveData().getAgentInfo(null, null);
+                }
                 return;
             }
             if (onlineflag == UdeskConst.ONLINEFLAG) {
@@ -1143,7 +1234,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 mLlAssociate.setVisibility(View.GONE);
                 mTitlebar.setRightViewVis(View.GONE);
                 robotSengMsgCount = 0;
-                moreMarking = "";
+//                moreMarking = "";
                 usefulMap.clear();
                 transferMap.clear();
             } else if (TextUtils.equals(UdeskConst.CurrentFragment.robot, from)) {
@@ -1220,10 +1311,16 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             commodityView = findViewById(R.id.commodity_rl);
             commodityView.setVisibility(View.GONE);
             commodityThumbnail = (SimpleDraweeView) findViewById(R.id.udesk_im_commondity_thumbnail);
+            commodityRoot = (RelativeLayout) findViewById(R.id.udesk_commit_root);
             commodityTitle = (TextView) findViewById(R.id.udesk_im_commondity_title);
             commoditySubTitle = (TextView) findViewById(R.id.udesk_im_commondity_subtitle);
             commodityLink = (TextView) findViewById(R.id.udesk_im_commondity_link);
+            UdeskConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskCommityBgResId, commodityRoot);
+            UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskCommityTitleColorResId, commodityTitle);
+            UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskCommitysubtitleColorResId, commoditySubTitle);
+            UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskCommityLinkColorResId, commodityLink);
             mListView = findViewById(R.id.udesk_conversation);
+            mListView.addFooterView(LayoutInflater.from(this).inflate(R.layout.udesk_im_footview,null));
             expandableLayout = (UdeskExpandableLayout) findViewById(R.id.udesk_change_status_info);
             mContentLinearLayout = (LinearLayout) findViewById(R.id.udesk_content_ll);
             mRvAssociate = (RecyclerView) findViewById(R.id.udesk_robot_rv_associate);
@@ -1277,7 +1374,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                         mListView.setSelection(0);
                     } else {
                         currentMode = PullRefreshModel;
-                        udeskViewMode.getApiLiveData().messages(moreMarking);
+                        udeskViewMode.getApiLiveData().messages(moreMarking,UdeskConst.PullMsgFrom.refresh);
                     }
                 }
             });
@@ -1738,17 +1835,17 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 mListView.setSelection(0);
             } else {
                 // 还有老数据
-                int pageNum = UdeskConst.UDESK_HISTORY_COUNT;
-                if (offset == -1) {
-                    offset = historyCount - UdeskConst.UDESK_HISTORY_COUNT;
-                } else {
-                    if (offset - UdeskConst.UDESK_HISTORY_COUNT < 0) {
-                        pageNum = offset;
-                    }
-                    offset = offset - UdeskConst.UDESK_HISTORY_COUNT;
-                }
-                offset = (offset < 0 ? 0 : offset);
-                udeskViewMode.getDbLiveData().getHistoryMessage(offset, pageNum);
+//                int pageNum = UdeskConst.UDESK_HISTORY_COUNT;
+//                if (offset == -1) {
+//                    offset = historyCount - UdeskConst.UDESK_HISTORY_COUNT;
+//                } else {
+//                    if (offset - UdeskConst.UDESK_HISTORY_COUNT < 0) {
+//                        pageNum = offset;
+//                    }
+//                    offset = offset - UdeskConst.UDESK_HISTORY_COUNT;
+//                }
+//                offset = (offset < 0 ? 0 : offset);
+                udeskViewMode.getDbLiveData().getHistoryMessage(0, historyCount);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -2298,7 +2395,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 return;
             }
             if (isleaveMessageTypeMsg()) {
-                //直接留言
+                //直接留言或者会话留言
                 if (mAgentInfo != null) {
                     mAgentInfo = null;
                 }
@@ -2372,12 +2469,16 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             if (agentInfo == null) {
                 return;
             }
+            imLeaveMsgTime=0L;
             switch (agentInfo.getAgentCode()) {
                 case UdeskConst.AgentResponseCode.NoAgent:
                     curentStatus = UdeskConst.Status.noAgent;
                     dismissFromWindow();
                     udeskViewMode.sendPrefilterMsg(false);
                     if (isleaveMessageTypeMsg()) {
+                        if (imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.imMsg) && imLeaveMsgCache.size()>0){
+                            sendIMLeaveMsg(imLeaveMsgCache);
+                        }
                         addWeclomeMessage();
                         setUdeskImContainerVis(View.GONE);
                         setTitlebar(getString(R.string.udesk_ok), off);
@@ -2398,6 +2499,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                     UdeskDBManager.getInstance().addAgentInfoDB(agentInfo);
                     mAgentInfo = agentInfo;
                     udeskViewMode.setAgentInfo(mAgentInfo);
+                    fragment.clearInputContent();
                     if (!isRedirect) {
                         dismissFromWindow();
                         setUdeskImContainerVis(View.VISIBLE);
@@ -2418,6 +2520,14 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                             hasSendFirstMessage = true;
                             sendDefaultMessage();
                         }
+                        if (imLeaveMsgCache.size()>0){
+                            for (MessageInfo msg : imLeaveMsgCache){
+                                if (msg!=null && !TextUtils.isEmpty(msg.getMsgContent())){
+                                    udeskViewMode.sendTxtMessage(msg.getMsgContent());
+                                }
+                            }
+                            imLeaveMsgCache.clear();
+                        }
                     } else {
                         String redirectTip = getString(R.string.udesk_transfer_success) + agentInfo.getAgentNick() + getString(R.string.udesk_service);
                         if (redirectMsg != null) {
@@ -2434,6 +2544,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                     if (mAgentInfo != null && isOpenVideo()) {
                         UdeskUtil.sendVideoMessage(imSetting, mAgentInfo, getApplicationContext());
                     }
+                    udeskViewMode.getApiLiveData().messages("",UdeskConst.PullMsgFrom.hasAgent);
                     break;
                 case UdeskConst.AgentResponseCode.WaitAgent:
                     curentStatus = UdeskConst.Status.queuing;
@@ -2442,6 +2553,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                     setUdeskImContainerVis(View.VISIBLE);
                     mHandler.postDelayed(myRunnable, QUEUE_RETEY_TIME);
                     udeskViewMode.sendPrefilterMsg(true);
+                    fragment.clearInputContent();
                     if (!hasSendCommodity) {
                         hasSendCommodity = true;
                         sendCommodityMsg(UdeskSDKManager.getInstance().getUdeskConfig().commodity);
@@ -2460,6 +2572,14 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                     } else {
                         queueItem.setQueueContent(mAgentInfo.getMessage());
                         mChatAdapter.notifyDataSetChanged();
+                    }
+                    if (imLeaveMsgCache.size()>0){
+                        for (MessageInfo msg : imLeaveMsgCache){
+                            if (msg!=null && !TextUtils.isEmpty(msg.getMsgContent())){
+                                udeskViewMode.sendTxtMessage(msg.getMsgContent());
+                            }
+                        }
+                        imLeaveMsgCache.clear();
                     }
                     break;
                 case UdeskConst.AgentResponseCode.NonExistentAgent:
@@ -2718,13 +2838,18 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             } else if (getPressionStatus()) {
                 UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.udesk_agent_connecting));
                 udeskViewMode.sendTxtMessage(linkMsg);
-            } else if (imSetting != null &&
-                    imSetting.getLeave_message_type().equals("msg")) {
+            } else if (imSetting != null
+                    && (imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.directMsg)
+                    || imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.imMsg))) {
                 if (!udeskViewMode.isLeavingMsg()) {
                     addCustomerLeavMsg();
                     udeskViewMode.setLeavingMsg(true);
                 }
-                udeskViewMode.sendLeaveMessage(linkMsg);
+                if (imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.directMsg)){
+                    udeskViewMode.sendLeaveMessage(linkMsg);
+                }else if (imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.imMsg)){
+                    udeskViewMode.sendIMLeaveMessage(linkMsg);
+                }
             } else if (isNeedQueueMessageSave()) {
                 if (isMoreThan20) {
                     UdeskUtils.showToast(getApplicationContext(), getMoreThanSendTip());
@@ -2764,6 +2889,11 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_LEAVEMSG)) {
                     if (!TextUtils.isEmpty(customerId)) {
                         udeskViewMode.putLeavesMsg(message);
+                    }
+                    return;
+                }else if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_LEAVEMSG_IM)){
+                    if (!TextUtils.isEmpty(customerId)) {
+                        udeskViewMode.putIMLeavesMsg(message);
                     }
                     return;
                 }
@@ -2911,7 +3041,8 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
 
     public boolean isleaveMessageTypeMsg() {
         try {
-            return imSetting != null && imSetting.getEnable_web_im_feedback() && imSetting.getLeave_message_type().equals("msg");
+            return imSetting != null && imSetting.getEnable_web_im_feedback()
+                    && (imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.directMsg) || imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.imMsg));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2947,7 +3078,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     public void pullByJumpOrder() {
         try {
             moreMarking = "";
-            udeskViewMode.getApiLiveData().messages(moreMarking);
+            udeskViewMode.getApiLiveData().messages(moreMarking,UdeskConst.PullMsgFrom.jump);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -3049,7 +3180,11 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
         try {
             if (imStatus.equals(off)) {
                 curentStatus = UdeskConst.Status.off;
+                imLeaveMsgTime=0L;
                 if (isleaveMessageTypeMsg()) {
+                    if (imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.imMsg) && imLeaveMsgCache.size()>0){
+                        sendIMLeaveMsg(imLeaveMsgCache);
+                    }
                     setUdeskImContainerVis(View.GONE);
                     addWeclomeMessage();
                     setTitlebar(getString(R.string.udesk_ok), off);

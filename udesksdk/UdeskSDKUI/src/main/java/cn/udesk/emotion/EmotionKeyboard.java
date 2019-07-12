@@ -219,7 +219,7 @@ public class EmotionKeyboard {
      *
      * @param showSoftInput 是否显示软件盘
      */
-    private void hideEmotionLayout(boolean showSoftInput) {
+    public void hideEmotionLayout(boolean showSoftInput) {
         try {
             if (mEmotionLayout.isShown()) {
                 mEmotionLayout.setVisibility(View.GONE);

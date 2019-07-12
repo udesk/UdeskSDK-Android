@@ -25,8 +25,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
+import cn.udesk.JsonUtils;
 import cn.udesk.PreferenceHelper;
 import cn.udesk.UdeskSDKManager;
+import cn.udesk.UdeskUtil;
 import cn.udesk.aac.UdeskViewMode;
 import cn.udesk.callback.IFunctionItemClickCallBack;
 import cn.udesk.callback.ILocationMessageClickCallBack;
@@ -35,6 +37,7 @@ import cn.udesk.callback.ITxtMessageWebonCliclk;
 import cn.udesk.callback.IUdeskFormCallBack;
 import cn.udesk.callback.IUdeskStructMessageCallBack;
 import cn.udesk.config.UdeskConfig;
+import cn.udesk.db.UdeskDBManager;
 import cn.udesk.model.FunctionMode;
 import cn.udesk.model.NavigationMode;
 import cn.udesk.model.UdeskCommodityItem;
@@ -42,8 +45,11 @@ import cn.udesk.widget.UdeskTitleBar;
 import udesk.core.UdeskConst;
 import udesk.core.model.InfoListBean;
 import udesk.core.model.MessageInfo;
+import udesk.core.model.OrderBean;
 import udesk.core.model.Product;
 import udesk.core.model.ProductListBean;
+import udesk.core.model.TraceBean;
+import udesk.core.utils.UdeskUtils;
 import udesk.sdk.demo.R;
 import udesk.core.LocalManageUtil;
 import udesk.sdk.demo.maps.LocationActivity;
@@ -82,6 +88,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
     private EditText nick_name, cellphone, email, description, customer_token, channel,
             textfiledkey, textfiledvalue,
             firstMessage, customerUrl, robot_modelKey, robpt_customer_info,edit_language;
+    private String sdkToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,6 +183,9 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 .setUdeskCommityTitleColorResId(R.color.udesk_color_im_commondity_title1) // 商品介绍Title的字样颜色
                 .setUdeskCommitysubtitleColorResId(R.color.udesk_color_im_commondity_subtitle1)// 商品咨询页面中，商品介绍子Title的字样颜色
                 .setUdeskCommityLinkColorResId(R.color.udesk_color_im_commondity_link1) //商品咨询页面中，发送链接的字样颜色
+                .setUdeskProductLeftBgResId(R.drawable.udesk_im_txt_left_default) //商品消息背景
+                .setUdeskProductRightBgResId(R.drawable.udesk_im_item_bg_right) //商品消息背景
+                .setUdeskProductMaxLines(2) //商品消息名称最大显示行数
                 .setUserSDkPush(set_sdkpush.isChecked()) // 配置 是否使用推送服务  true 表示使用  false表示不使用
                 .setOnlyUseRobot(set_use_onlyrobot.isChecked())//配置是否只使用机器人功能 只使用机器人功能,只使用机器人功能;  其它功能不使用。
                 .setUdeskQuenuMode(force_quit.isChecked() ? UdeskConfig.UdeskQueueFlag.FORCE_QUIT : UdeskConfig.UdeskQueueFlag.Mark)  //  配置放弃排队的策略
@@ -222,6 +232,10 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                             UdeskSDKManager.getInstance().disConnectXmpp();
                         } else if (id == 24) {
                             udeskViewMode.sendProductMessage(createProduct());
+                        }else if (id == 25) {
+                            sendCustomerOrder();
+                        }else if (id == 26) {
+                            sendTrace();
                         }
                     }
                 })//在more 展开面板中设置额外的功能按钮
@@ -231,7 +245,6 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                             if (navigationMode.getId() == 1) {
                                 udeskViewMode.sendProductMessage(createProduct());
                             } else if (navigationMode.getId() == 2) {
-                                udeskViewMode.sendTxtMessage(UUID.randomUUID().toString());
                                 udeskViewMode.sendTxtMessage("www.baidu.com");
                             }
                     }
@@ -280,9 +293,13 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         FunctionMode functionMode2 = new FunctionMode("发送咨询对象", 22, R.mipmap.udesk_form_table);
         FunctionMode functionMode3 = new FunctionMode("断开xmpp连接", 23, R.mipmap.udesk_form_table);
         FunctionMode functionMode4 = new FunctionMode("发送商品消息", 24, R.mipmap.udesk_form_table);
+        FunctionMode functionMode5 = new FunctionMode("发送商品订单", 25, R.mipmap.udesk_form_table);
+        FunctionMode functionMode6 = new FunctionMode("发送商品轨迹", 26, R.mipmap.udesk_form_table);
         modes.add(functionMode2);
         modes.add(functionMode3);
         modes.add(functionMode4);
+        modes.add(functionMode5);
+        modes.add(functionMode6);
         return modes;
     }
 
@@ -369,11 +386,12 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         productListBean.setInfoList(infoList);
         return productListBean;
     }
+    int count =0 ;
     private Product createProduct() {
         try {
             Product product = new Product();
             product.setImgUrl("https://img12.360buyimg.com/n1/s450x450_jfs/t10675/253/1344769770/66891/92d54ca4/59df2e7fN86c99a27.jpg");
-            product.setName(" Apple iPhone X (A1903) 64GB 深空灰色 移动联通4G手机");
+            product.setName(""+ count++);
             product.setUrl("https://item.jd.com/6748052.html");
             //为和ios 兼容 使用jsonObject
             JSONObject jsonObject=new JSONObject();
@@ -563,5 +581,81 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
 
     }
 
+    /**
+     * 发送商品订单
+     */
+    private void sendCustomerOrder() {
+        //发送订单信息
+        OrderBean orderBean =new OrderBean();
+        orderBean.setName("Apple iPhone X (A1903) 64GB");
+        orderBean.setOrder_at(UdeskUtil.getCurrentDate());
+        orderBean.setUrl("www.baidu.com");
+        orderBean.setPrice(1200.33);
+        orderBean.setOrder_no("123");
+        orderBean.setPay_at(UdeskUtil.getCurrentDate());
+        orderBean.setStatus(UdeskConst.OrderStatus.paid);
+        orderBean.setRemark("我是测试的");
+        String sdkToken = getSDKToken();
+        UdeskSDKManager.getInstance().sendCustomerOrder(UdeskSDKManager.getInstance().getDomain(this),UdeskSDKManager.getInstance().getAppkey(this),
+                sdkToken,UdeskSDKManager.getInstance().getAppId(this),JsonUtils.getOrderJson(orderBean));
+    }
 
+    /**
+     * 发送商品轨迹
+     */
+    private void sendTrace() {
+        //发送商品轨迹
+        TraceBean traceBean =new TraceBean();
+        traceBean.setType("product");
+        TraceBean.DataBean dataBean =new TraceBean.DataBean();
+        dataBean.setName("traceBean");
+        dataBean.setUrl("http://item.jd.com/6748052.html");
+        dataBean.setDate(UdeskUtil.getCurrentDate());
+        dataBean.setImgUrl("http://img12.360buyimg.com/n1/s450x450_jfs/t10675/253/1344769770/66891/92d54ca4/59df2e7fN86c99a27.jpg");
+        List<TraceBean.DataBean.ParamsBean> paramsBeanList =new ArrayList<>();
+
+        TraceBean.DataBean.ParamsBean paramsBean1 = new TraceBean.DataBean.ParamsBean();
+        paramsBean1.setBreakX(false);
+        paramsBean1.setColor("#ff0000");
+        paramsBean1.setFold(false);
+        paramsBean1.setSize("14");
+        paramsBean1.setText("999999999.00");
+
+        TraceBean.DataBean.ParamsBean paramsBean2 = new TraceBean.DataBean.ParamsBean();
+        paramsBean2.setBreakX(true);
+        paramsBean2.setColor("#000000");
+        paramsBean2.setFold(false);
+        paramsBean2.setSize("16");
+        paramsBean2.setText("666666.00");
+
+        TraceBean.DataBean.ParamsBean paramsBean3 = new TraceBean.DataBean.ParamsBean();
+        paramsBean3.setBreakX(false);
+        paramsBean3.setColor("#ffffff");
+        paramsBean3.setFold(traceBean);
+        paramsBean3.setSize("18");
+        paramsBean3.setText("333333.00");
+        paramsBeanList.add(paramsBean1);
+        paramsBeanList.add(paramsBean2);
+        paramsBeanList.add(paramsBean3);
+        dataBean.setParams(paramsBeanList);
+
+        traceBean.setData(dataBean);
+        String sdkToken = getSDKToken();
+        UdeskSDKManager.getInstance().sendBehaviorTraces(UdeskSDKManager.getInstance().getDomain(this),UdeskSDKManager.getInstance().getAppkey(this),
+                sdkToken,UdeskSDKManager.getInstance().getAppId(this),JsonUtils.getTraceJson(traceBean));
+    }
+
+    private String getSDKToken() {
+        String sdkToken ="";
+        if (TextUtils.isEmpty(UdeskSDKManager.getInstance().getSdkToken(this))){
+            sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
+            if (TextUtils.isEmpty(sdkToken)) {
+                sdkToken = UUID.randomUUID().toString();
+            }
+            sdkToken= UdeskUtil.stringFilter(sdkToken);
+        }else {
+            sdkToken=UdeskSDKManager.getInstance().getSdkToken(this);
+        }
+        return sdkToken;
+    }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -56,11 +57,25 @@ public class UdeskInitKeyActivity extends Activity {
 
 
 //    替换成你们注册生成的域名
-//    private String UDESK_DOMAIN = "linapp.udeskt2.com";
+//    private String UDESK_DOMAIN = "linapp.udeskt4.com";
 //    //替换成你们生成应用产生的appid
-//    private String AppId = "dd18a34044ff397f";
+//    private String AppId = "87da63e10d6aff57";
 //    // 替换成你们在后台生成的密钥
-//    private String UDESK_SECRETKEY = "4a4587538258518194f16fa692772cc7";
+//    private String UDESK_SECRETKEY = "d6be1a0be4913724d6c514277139c7ee";
+
+//    替换成你们注册生成的域名
+//    private String UDESK_DOMAIN = "reocar.udeskb2.com";
+//    //替换成你们生成应用产生的appid
+//    private String AppId = "17c3e02398a5b62a";
+//    // 替换成你们在后台生成的密钥
+//    private String UDESK_SECRETKEY = "3dfcd552c34cb78fe55e06a8239d4fce";
+
+//    替换成你们注册生成的域名
+//    private String UDESK_DOMAIN = "xianghuanji.s2.udesk.cn";
+//    //替换成你们生成应用产生的appid
+//    private String AppId = "957f1680f4a7ee45";
+//    // 替换成你们在后台生成的密钥
+//    private String UDESK_SECRETKEY = "bfdf5d8b5d1000ff3114068743e1b5bb";
 
 
     private EditText mDomainEdit;
@@ -77,6 +92,7 @@ public class UdeskInitKeyActivity extends Activity {
     String appkey = "";
     String appid = "";
     String sdkToken = "";
+    private CheckBox use_http;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +105,7 @@ public class UdeskInitKeyActivity extends Activity {
         mAppidEdit = (EditText) findViewById(R.id.appid);
         stoken = (EditText) findViewById(R.id.stoken);
         customerToken = (EditText) findViewById(R.id.customer_token);
+        use_http = findViewById(R.id.use_http);
         startBtn = (Button) findViewById(R.id.udesk_start);
         sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
         if (TextUtils.isEmpty(sdkToken)) {
@@ -112,7 +129,8 @@ public class UdeskInitKeyActivity extends Activity {
                     //  使用前需要设置的信息:
                     UdeskSDKManager.getInstance().initApiKey(getApplicationContext(), mDomainEdit.getText().toString(),
                             mKeyEdit.getText().toString(), mAppidEdit.getText().toString());
-//                    UdeskConst.HTTP = "http://";
+
+                    UdeskConst.HTTP = use_http.isChecked() ? "http://" : "https://";
                     sdkToken = stoken.getText().toString();
                     PreferenceHelper.write(getApplicationContext(), "init_base_name", "sdktoken", sdkToken);
                     PreferenceHelper.write(getApplicationContext(), "init_base_name", "domain", mDomainEdit.getText().toString());

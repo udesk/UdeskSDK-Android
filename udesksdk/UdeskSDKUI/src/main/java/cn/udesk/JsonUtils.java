@@ -33,16 +33,21 @@ import udesk.core.model.InviterAgentInfo;
 import udesk.core.model.LinkBean;
 import udesk.core.model.LogBean;
 import udesk.core.model.OptionsListBean;
+import udesk.core.model.OrderBean;
 import udesk.core.model.ProductListBean;
 import udesk.core.model.RobotInit;
 import udesk.core.model.RobotTipBean;
 import udesk.core.model.ShowProductBean;
 import udesk.core.model.StrucTableBean;
+import udesk.core.model.TemplateMsgBean;
 import udesk.core.model.TopAskBean;
 import cn.udesk.model.UploadService;
 import cn.udesk.model.UploadToken;
 import udesk.core.model.AgentInfo;
 import udesk.core.model.Product;
+import udesk.core.model.TraceBean;
+import udesk.core.model.TraceInitBean;
+import udesk.core.model.TracesModel;
 import udesk.core.model.UDHelperArticleContentItem;
 import udesk.core.model.UDHelperItem;
 import udesk.core.model.UploadBean;
@@ -571,57 +576,8 @@ public class JsonUtils {
                                 dataBean.setFlowTitle(data.opt("flowTitle"));
                                 dataBean.setFlowContent(data.opt("flowContent"));
                                 if (data.has("topAsk")) {
-                                    List<TopAskBean> topAskList = new ArrayList<>();
                                     if (!TextUtils.isEmpty(data.optString("topAsk"))) {
-                                        Object topAskObject = new JSONTokener(data.optString("topAsk")).nextValue();
-                                        if (topAskObject instanceof JSONArray) {
-                                            JSONArray topAskArray = data.getJSONArray("topAsk");
-                                            if (topAskArray != null && topAskArray.length() > 0) {
-                                                for (int k = 0; k < topAskArray.length(); k++) {
-                                                    JSONObject topAsk = topAskArray.optJSONObject(k);
-                                                    TopAskBean topAskBean = new TopAskBean();
-                                                    topAskBean.setQuestionType(topAsk.opt("questionType"));
-                                                    topAskBean.setQuestionTypeId(topAsk.opt("questionTypeId"));
-                                                    if (topAsk.has("optionsList")) {
-                                                        List<OptionsListBean> optionsLists = new ArrayList<>();
-                                                        JSONArray optionsListArray = topAsk.getJSONArray("optionsList");
-                                                        if (optionsListArray != null && optionsListArray.length() > 0) {
-                                                            for (int j = 0; j < optionsListArray.length(); j++) {
-                                                                JSONObject optionsList = optionsListArray.optJSONObject(j);
-                                                                OptionsListBean optionsListBean = new OptionsListBean();
-                                                                optionsListBean.setQuestion(optionsList.opt("question"));
-                                                                optionsListBean.setQuestionId(optionsList.opt("questionId"));
-
-                                                                optionsLists.add(optionsListBean);
-                                                            }
-                                                        }
-                                                        topAskBean.setOptionsList(optionsLists);
-                                                    }
-                                                    topAskList.add(topAskBean);
-                                                }
-                                            }
-
-                                        } else if (topAskObject instanceof JSONObject) {
-                                            JSONObject topAsk = data.getJSONObject("topAsk");
-                                            TopAskBean topAskBean = new TopAskBean();
-                                            topAskBean.setQuestionType(topAsk.opt("questionType"));
-                                            topAskBean.setQuestionTypeId(topAsk.opt("questionTypeId"));
-                                            if (topAsk.has("optionsList")) {
-                                                List<OptionsListBean> optionsLists = new ArrayList<>();
-                                                JSONArray optionsListArray = topAsk.getJSONArray("optionsList");
-                                                if (optionsListArray != null && optionsListArray.length() > 0) {
-                                                    for (int j = 0; j < optionsListArray.length(); j++) {
-                                                        JSONObject optionsList = optionsListArray.optJSONObject(j);
-                                                        OptionsListBean optionsListBean = new OptionsListBean();
-                                                        optionsListBean.setQuestion(optionsList.opt("question"));
-                                                        optionsListBean.setQuestionId(optionsList.opt("questionId"));
-                                                        optionsLists.add(optionsListBean);
-                                                    }
-                                                }
-                                                topAskBean.setOptionsList(optionsLists);
-                                            }
-                                            topAskList.add(topAskBean);
-                                        }
+                                        List<TopAskBean> topAskList = parseTopAsk(data);
                                         dataBean.setTopAsk(topAskList);
                                     }
                                 }
@@ -650,6 +606,69 @@ public class JsonUtils {
 
     }
 
+    public static List<TopAskBean> parseTopAsk(JSONObject data) {
+        List<TopAskBean> topAskList = new ArrayList<>();
+        if (data == null) {
+            return topAskList;
+        }
+        try {
+            if (data.has("topAsk") && !TextUtils.isEmpty(data.optString("topAsk"))) {
+                Object topAskObject = new JSONTokener(data.optString("topAsk")).nextValue();
+                if (topAskObject instanceof JSONArray) {
+                    JSONArray topAskArray = data.getJSONArray("topAsk");
+                    if (topAskArray != null && topAskArray.length() > 0) {
+                        for (int k = 0; k < topAskArray.length(); k++) {
+                            JSONObject topAsk = topAskArray.optJSONObject(k);
+                            TopAskBean topAskBean = new TopAskBean();
+                            topAskBean.setQuestionType(topAsk.opt("questionType"));
+                            topAskBean.setQuestionTypeId(topAsk.opt("questionTypeId"));
+                            if (topAsk.has("optionsList")) {
+                                List<OptionsListBean> optionsLists = new ArrayList<>();
+                                JSONArray optionsListArray = topAsk.getJSONArray("optionsList");
+                                if (optionsListArray != null && optionsListArray.length() > 0) {
+                                    for (int j = 0; j < optionsListArray.length(); j++) {
+                                        JSONObject optionsList = optionsListArray.optJSONObject(j);
+                                        OptionsListBean optionsListBean = new OptionsListBean();
+                                        optionsListBean.setQuestion(optionsList.opt("question"));
+                                        optionsListBean.setQuestionId(optionsList.opt("questionId"));
+
+                                        optionsLists.add(optionsListBean);
+                                    }
+                                }
+                                topAskBean.setOptionsList(optionsLists);
+                            }
+                            topAskList.add(topAskBean);
+                        }
+                    }
+
+                } else if (topAskObject instanceof JSONObject) {
+                    JSONObject topAsk = data.getJSONObject("topAsk");
+                    TopAskBean topAskBean = new TopAskBean();
+                    topAskBean.setQuestionType(topAsk.opt("questionType"));
+                    topAskBean.setQuestionTypeId(topAsk.opt("questionTypeId"));
+                    if (topAsk.has("optionsList")) {
+                        List<OptionsListBean> optionsLists = new ArrayList<>();
+                        JSONArray optionsListArray = topAsk.getJSONArray("optionsList");
+                        if (optionsListArray != null && optionsListArray.length() > 0) {
+                            for (int j = 0; j < optionsListArray.length(); j++) {
+                                JSONObject optionsList = optionsListArray.optJSONObject(j);
+                                OptionsListBean optionsListBean = new OptionsListBean();
+                                optionsListBean.setQuestion(optionsList.opt("question"));
+                                optionsListBean.setQuestionId(optionsList.opt("questionId"));
+                                optionsLists.add(optionsListBean);
+                            }
+                        }
+                        topAskBean.setOptionsList(optionsLists);
+                    }
+                    topAskList.add(topAskBean);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return topAskList;
+    }
     public static LogBean parseLogBean(String response) {
         LogBean logBean = new LogBean();
         if (TextUtils.isEmpty(response)) {
@@ -707,61 +726,10 @@ public class JsonUtils {
                         dataBean.setFlowTitle(data.opt("flowTitle"));
                         dataBean.setFlowContent(data.opt("flowContent"));
                         if (data.has("topAsk")) {
-                            List<TopAskBean> topAskList = new ArrayList<>();
                             if (!TextUtils.isEmpty(data.optString("topAsk"))) {
-                                Object topAskObject = new JSONTokener(data.optString("topAsk")).nextValue();
-                                if (topAskObject instanceof JSONArray) {
-                                    JSONArray topAskArray = data.getJSONArray("topAsk");
-                                    if (topAskArray != null && topAskArray.length() > 0) {
-                                        for (int k = 0; k < topAskArray.length(); k++) {
-                                            JSONObject topAsk = topAskArray.optJSONObject(k);
-                                            TopAskBean topAskBean = new TopAskBean();
-                                            topAskBean.setQuestionType(topAsk.opt("questionType"));
-                                            topAskBean.setQuestionTypeId(topAsk.opt("questionTypeId"));
-                                            if (topAsk.has("optionsList")) {
-                                                List<OptionsListBean> optionsLists = new ArrayList<>();
-                                                JSONArray optionsListArray = topAsk.getJSONArray("optionsList");
-                                                if (optionsListArray != null && optionsListArray.length() > 0) {
-                                                    for (int j = 0; j < optionsListArray.length(); j++) {
-                                                        JSONObject optionsList = optionsListArray.optJSONObject(j);
-                                                        OptionsListBean optionsListBean = new OptionsListBean();
-                                                        optionsListBean.setQuestion(optionsList.opt("question"));
-                                                        optionsListBean.setQuestionId(optionsList.opt("questionId"));
-
-                                                        optionsLists.add(optionsListBean);
-                                                    }
-                                                }
-                                                topAskBean.setOptionsList(optionsLists);
-                                            }
-                                            topAskList.add(topAskBean);
-                                        }
-                                    }
-
-                                } else if (topAskObject instanceof JSONObject) {
-                                    JSONObject topAsk = data.getJSONObject("topAsk");
-                                    TopAskBean topAskBean = new TopAskBean();
-                                    topAskBean.setQuestionType(topAsk.opt("questionType"));
-                                    topAskBean.setQuestionTypeId(topAsk.opt("questionTypeId"));
-                                    if (topAsk.has("optionsList")) {
-                                        List<OptionsListBean> optionsLists = new ArrayList<>();
-                                        JSONArray optionsListArray = topAsk.getJSONArray("optionsList");
-                                        if (optionsListArray != null && optionsListArray.length() > 0) {
-                                            for (int j = 0; j < optionsListArray.length(); j++) {
-                                                JSONObject optionsList = optionsListArray.optJSONObject(j);
-                                                OptionsListBean optionsListBean = new OptionsListBean();
-                                                optionsListBean.setQuestion(optionsList.opt("question"));
-                                                optionsListBean.setQuestionId(optionsList.opt("questionId"));
-
-                                                optionsLists.add(optionsListBean);
-                                            }
-                                        }
-                                        topAskBean.setOptionsList(optionsLists);
-                                    }
-                                    topAskList.add(topAskBean);
-                                }
+                                List<TopAskBean> topAskList = parseTopAsk(data);
+                                dataBean.setTopAsk(topAskList);
                             }
-
-                            dataBean.setTopAsk(topAskList);
                         }
                         contentBean.setData(dataBean);
                     }
@@ -831,6 +799,41 @@ public class JsonUtils {
         return strucTableBean;
     }
 
+    public static TemplateMsgBean parseTemplateMsg(String response){
+        TemplateMsgBean templateMsgBean =new TemplateMsgBean();
+        if (TextUtils.isEmpty(response)){
+            return templateMsgBean;
+        }
+
+        try {
+            JSONObject root = new JSONObject(response);
+            templateMsgBean.setTitle(root.opt("title"));
+            templateMsgBean.setContent(root.opt("content"));
+            if (root.has("btns")){
+                List<TemplateMsgBean.BtnsBean> btnsBeans= new ArrayList<>();
+                JSONArray btnsArray = root.getJSONArray("btns");
+                if (btnsArray!=null && btnsArray.length()>0){
+                    for (int i= 0; i< btnsArray.length();i++){
+                        TemplateMsgBean.BtnsBean btnsBean = new TemplateMsgBean.BtnsBean();
+                        JSONObject beanJson = btnsArray.getJSONObject(i);
+                        btnsBean.setName(beanJson.opt("name"));
+                        btnsBean.setType(beanJson.opt("type"));
+                        if (beanJson.has("data")){
+                            JSONObject data = beanJson.getJSONObject("data");
+                            TemplateMsgBean.BtnsBean.DataBean dataBean = new TemplateMsgBean.BtnsBean.DataBean();
+                            dataBean.setUrl(data.opt("url"));
+                            btnsBean.setData(dataBean);
+                        }
+                        btnsBeans.add(btnsBean);
+                    }
+                }
+                templateMsgBean.setBtns(btnsBeans);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return templateMsgBean;
+    }
     public static UploadBean parseUploadBean(String response) {
         UploadBean uploadBean = new UploadBean();
         if (TextUtils.isEmpty(response)) {
@@ -1178,5 +1181,219 @@ public class JsonUtils {
 
     }
 
+    public static TraceInitBean parseTraceInit(String response) {
+        TraceInitBean traceInitBean = new TraceInitBean();
+        if (TextUtils.isEmpty(response)) {
+            return traceInitBean;
+        }
+        try {
+            JSONObject root = new JSONObject(response);
+            traceInitBean.setCode(root.opt("code"));
+            traceInitBean.setBehavoir_trace(root.opt("behavoir_trace"));
+            traceInitBean.setCustomer_order(root.opt("customer_order"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return traceInitBean;
+    }
+    public static TracesModel parseTracesModel(String response) {
+        TracesModel tracesModel = new TracesModel();
+        if (TextUtils.isEmpty(response)) {
+            return tracesModel;
+        }
+        try {
+            JSONObject root = new JSONObject(response);
+            tracesModel.setCode(root.opt("code"));
+           if (root.has("traces")){
+               List<TracesModel.TracesBean> tracesBeanList = new ArrayList<>();
+               JSONArray traces = root.optJSONArray("traces");
+               if (traces!=null && traces.length()>0){
+                   for (int i=0;i<traces.length();i++){
+                       TracesModel.TracesBean tracesBean=new TracesModel.TracesBean();
+                       JSONObject jsonObject = traces.optJSONObject(i);
+                       tracesBean.setId(jsonObject.opt("id"));
+                       tracesBean.setVist_num(jsonObject.opt("vist_num"));
+                       if (jsonObject.has("trace")){
+                           TraceBean traceBean = new TraceBean();
+                           JSONObject trace = jsonObject.optJSONObject("trace");
+                           traceBean.setType(trace.opt("type"));
+                           if (trace.has("data")){
+                               TraceBean.DataBean dataBean=new TraceBean.DataBean();
+                               JSONObject data = trace.optJSONObject("data");
+                               dataBean.setName(data.opt("name"));
+                               dataBean.setImgUrl(data.opt("imgUrl"));
+                               dataBean.setUrl(data.opt("url"));
+                               dataBean.setDate(data.opt("date"));
+                               if (data.has("params")){
+                                   List<TraceBean.DataBean.ParamsBean> paramsBeanList =new ArrayList<>();
+                                   JSONArray params = data.optJSONArray("params");
+                                   if (params!=null && params.length()>0){
+                                       for (int j=0;j<params.length();j++){
+                                           TraceBean.DataBean.ParamsBean paramsBean=new TraceBean.DataBean.ParamsBean();
+                                           JSONObject object = params.optJSONObject(j);
+                                           paramsBean.setBreakX(object.opt("break"));
+                                           paramsBean.setColor(object.opt("color"));
+                                           paramsBean.setFold(object.opt("fold"));
+                                           paramsBean.setText(object.opt("text"));
+                                           paramsBean.setSize(object.opt("size"));
+                                           paramsBeanList.add(paramsBean);
+                                       }
+                                   }
+                                   dataBean.setParams(paramsBeanList);
+                               }
+                               traceBean.setData(dataBean);
+                           }
+                           tracesBean.setTrace(traceBean);
+                       }
+                       tracesBeanList.add(tracesBean);
+                   }
+               }
+               tracesModel.setTraces(tracesBeanList);
+           }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tracesModel;
+    }
+    public static JSONObject getTraceJson(TraceBean traceBean) {
+        JSONObject jsonObject = new JSONObject();
+        if (traceBean == null) {
+            return jsonObject;
+        }
+        try {
+            jsonObject.put("type", traceBean.getType());
+            if (traceBean.getData() != null) {
+                JSONObject dataJson = new JSONObject();
+                TraceBean.DataBean data = traceBean.getData();
+                dataJson.put("name", data.getName());
+                dataJson.put("url", data.getUrl());
+                dataJson.put("date", data.getDate());
+                dataJson.put("imgUrl", data.getImgUrl());
+
+                if (data.getParams() != null && data.getParams().size() > 0) {
+                    JSONArray paramListJson = new JSONArray();
+                    List<TraceBean.DataBean.ParamsBean> params = data.getParams();
+                    for (TraceBean.DataBean.ParamsBean paramsBean : params) {
+                        JSONObject paramJson = new JSONObject();
+                        paramJson.put("text", paramsBean.getText());
+                        paramJson.put("color", paramsBean.getColor());
+                        paramJson.put("fold", paramsBean.getFold());
+                        paramJson.put("break", paramsBean.getBreakX());
+                        paramJson.put("size", paramsBean.getSize());
+                        paramListJson.put(paramJson);
+                    }
+                    dataJson.put("params", paramListJson);
+                }
+                jsonObject.put("data", dataJson);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+
+    public static JSONObject getOrderJson(OrderBean orderBean){
+        JSONObject jsonObject =new JSONObject();
+        if (orderBean==null){
+            return jsonObject;
+        }
+        try {
+            jsonObject.put("name", orderBean.getName());
+            jsonObject.put("order_at", orderBean.getOrder_at());
+            jsonObject.put("order_no", orderBean.getOrder_no());
+            jsonObject.put("pay_at", orderBean.getPay_at());
+            jsonObject.put("price", orderBean.getPrice());
+            jsonObject.put("remark", orderBean.getRemark());
+            jsonObject.put("status", orderBean.getStatus());
+            jsonObject.put("url", orderBean.getUrl());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+
+    public static JSONObject parseTopAskToJson(List<TopAskBean> topAsk) {
+        JSONObject jsonObject = new JSONObject();
+        if (topAsk==null){
+            return jsonObject;
+        }
+        try {
+            JSONArray jsonArray = new JSONArray();
+            int count=topAsk.size();
+            for (int i=0;i<count;i++){
+                JSONObject topAskBean = new JSONObject();
+                topAskBean.put("questionType",topAsk.get(i).getQuestionType());
+                topAskBean.put("questionTypeId",topAsk.get(i).getQuestionTypeId());
+                List<OptionsListBean> optionsListBeanList = topAsk.get(i).getOptionsList();
+                if (optionsListBeanList !=null){
+                    topAskBean.put("optionsList",parseOptionListToJson(optionsListBeanList));
+                }
+                jsonArray.put(topAskBean);
+            }
+            jsonObject.put("topAsk",jsonArray);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+
+    public static JSONArray parseOptionListToJson(List<OptionsListBean> optionsListBeanList){
+        JSONArray jsonArray = new JSONArray();
+        if (optionsListBeanList == null){
+            return jsonArray;
+        }
+        try {
+            int count=optionsListBeanList.size();
+            for (int i=0;i<count;i++){
+                JSONObject optionsListBean = new JSONObject();
+                optionsListBean.put("question",optionsListBeanList.get(i).getQuestion());
+                optionsListBean.put("questionId",optionsListBeanList.get(i).getQuestionId());
+                jsonArray.put(optionsListBean);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return jsonArray;
+    }
+
+    public static JSONObject parseWebConfigBeanToJson(WebConfigBean webConfig){
+        JSONObject jsonObject = new JSONObject();
+        if (webConfig==null){
+            return jsonObject;
+        }
+        try {
+            JSONObject webConfigJson = new JSONObject();
+            webConfigJson.put("helloWord",webConfig.getHelloWord());
+            webConfigJson.put("robotName",webConfig.getRobotName());
+            webConfigJson.put("logoUrl",webConfig.getLogoUrl());
+            webConfigJson.put("leadingWord",webConfig.getLeadingWord());
+            jsonObject.put("webConfig",webConfigJson);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+
+    public static WebConfigBean parseWebConfigBean(String webConfigJson){
+        WebConfigBean webConfigBean = new WebConfigBean();
+        if (TextUtils.isEmpty(webConfigJson)){
+            return webConfigBean;
+        }
+        try {
+            JSONObject jsonObject = new JSONObject(webConfigJson);
+            if (jsonObject.has("webConfig")&& !TextUtils.isEmpty(jsonObject.optString("webConfig"))){
+                JSONObject object = new JSONObject(jsonObject.optString("webConfig"));
+                webConfigBean.setHelloWord(object.opt("helloWord"));
+                webConfigBean.setRobotName(object.opt("robotName"));
+                webConfigBean.setLogoUrl(object.opt("logoUrl"));
+                webConfigBean.setLeadingWord(object.opt("leadingWord"));
+            }
+        }catch (Exception e){
+
+        }
+        return webConfigBean;
+    }
 
 }

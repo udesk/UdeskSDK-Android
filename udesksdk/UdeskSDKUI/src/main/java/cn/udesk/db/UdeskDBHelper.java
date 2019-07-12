@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class UdeskDBHelper extends SQLiteOpenHelper {
 
     public static String DATABASE_NAME = "udesk_sdk";
-    public final static int DATABASE_VERSION = 6;
+    public final static int DATABASE_VERSION = 7;
 
 
     public static String UdeskMessage = "udeskMessageInfo";
@@ -33,7 +33,10 @@ public class UdeskDBHelper extends SQLiteOpenHelper {
                     + "PlayedFlag INTEGER,Direction INTEGER,LocalPath Text,"
                     + "Duration INTEGER,Receive_AgentJid TEXT,created_at TEXT,"
                     + "updated_at TEXT,reply_user TEXT,reply_userurl TEXT,"
-                    + "subsessionid TEXT,seqNum INTEGER,fileName TEXT,fileSize TEXT)");
+                    + "subsessionid TEXT,seqNum INTEGER,fileName TEXT,fileSize TEXT,"
+                    + "switchStaffType INTEGER,switchStaffTips TEXT,topAsk TEXT,"
+                    + "logId INTEGER,webConfig TEXT,sender TEXT,flowId INTEGER,"
+                    + "flowTitle TEXT,flowContent TEXT,question_id TEXT)");
 
 
             db.execSQL("CREATE TABLE IF NOT EXISTS "
@@ -125,6 +128,18 @@ public class UdeskDBHelper extends SQLiteOpenHelper {
                     case 5:
                         db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN  fileName TEXT ");
                         db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN  fileSize TEXT ");
+                        break;
+                    case 6:
+                        db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN  switchStaffType INTEGER ");
+                        db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN  switchStaffTips TEXT ");
+                        db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN  topAsk TEXT ");
+                        db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN  logId INTEGER ");
+                        db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN  webConfig TEXT ");
+                        db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN  sender TEXT ");
+                        db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN  flowId INTEGER ");
+                        db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN  flowTitle TEXT ");
+                        db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN  flowContent TEXT ");
+                        db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN  question_id TEXT ");
                         break;
                 }
             }

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,8 +49,10 @@ public class NavigationFragment extends Fragment {
             navigationAdapter.setOnItemClickListener(new NavigationAdapter.OnRecyclerViewItemClickListener() {
                 @Override
                 public void onItemClick(View view, NavigationMode data) {
-                    if (UdeskSDKManager.getInstance().getUdeskConfig().navigationItemClickCallBack != null && activity != null) {
+                    if (TextUtils.equals(currentView,UdeskConst.CurrentFragment.agent)&&UdeskSDKManager.getInstance().getUdeskConfig().navigationItemClickCallBack != null && activity != null) {
                         UdeskSDKManager.getInstance().getUdeskConfig().navigationItemClickCallBack.callBack(activity.getApplicationContext(), activity.udeskViewMode, data,currentView);
+                    }else if (TextUtils.equals(currentView,UdeskConst.CurrentFragment.robot)&&UdeskSDKManager.getInstance().getUdeskConfig().robotNavigationItemClickCallBack != null && activity != null){
+                        UdeskSDKManager.getInstance().getUdeskConfig().robotNavigationItemClickCallBack.callBack(activity.getApplicationContext(), activity.udeskViewMode, data,currentView);
                     }
                 }
             });

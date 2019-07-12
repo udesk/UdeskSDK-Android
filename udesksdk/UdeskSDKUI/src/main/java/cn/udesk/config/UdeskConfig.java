@@ -56,7 +56,16 @@ public class UdeskConfig {
     public int udeskCommitysubtitleColorResId = DEFAULT;
     //    商品咨询页面中，发送链接的字样颜色
     public int udeskCommityLinkColorResId = DEFAULT;
-    public int udeskProductNameLinkColorResId = DEFAULT;
+    // 商品消息背景左侧
+    public int udeskProductLeftBgResId = DEFAULT;
+    // 商品消息背景右侧
+    public int udeskProductRightBgResId = DEFAULT;
+    //商品消息的 带有链接时的  商品名字显示的颜色 右侧
+    public int udeskProductRightNameLinkColorResId = DEFAULT;
+    //商品消息的 带有链接时的  商品名字显示的颜色 左侧
+    public int udeskProductLeftNameLinkColorResId = DEFAULT;
+    //商品消息名称最大显示行数
+    public int udeskProductMaxLines = 0;
     //配置 是否使用推送服务  true 表示使用  false表示不使用
     public boolean isUserSDkPush = true;
     //配置放弃排队的策略
@@ -123,6 +132,8 @@ public class UdeskConfig {
     public List<FunctionMode> extreFunctions;
     //支持客户在导航处添加自定义按钮的点击回调事件   必须组合设置额外的自定义按钮
     public INavigationItemClickCallBack navigationItemClickCallBack;
+    //支持客户在机器人导航处添加自定义按钮的点击回调事件
+    public INavigationItemClickCallBack robotNavigationItemClickCallBack;
     //约定传递的自定义按钮集合
     public List<NavigationMode> navigationModes;
     //约定传递的自定义按钮集合
@@ -167,7 +178,11 @@ public class UdeskConfig {
         this.udeskCommityTitleColorResId = builder.udeskCommityTitleColorResId;
         this.udeskCommitysubtitleColorResId = builder.udeskCommitysubtitleColorResId;
         this.udeskCommityLinkColorResId = builder.udeskCommityLinkColorResId;
-        this.udeskProductNameLinkColorResId = builder.udeskProductNameLinkColorResId;
+        this.udeskProductLeftBgResId = builder.udeskProductLeftBgResId;
+        this.udeskProductRightBgResId = builder.udeskProductRightBgResId;
+        this.udeskProductRightNameLinkColorResId = builder.udeskProductRightNameLinkColorResId;
+        this.udeskProductLeftNameLinkColorResId = builder.udeskProductLeftNameLinkColorResId;
+        this.udeskProductMaxLines = builder.udeskProductMaxLines;
         this.isUserSDkPush = builder.isUserSDkPush;
         this.UdeskQuenuMode = builder.UdeskQuenuMode;
         this.isUseVoice = builder.isUseVoice;
@@ -201,6 +216,7 @@ public class UdeskConfig {
         this.functionItemClickCallBack = builder.functionItemClickCallBack;
         this.extreFunctions = builder.extreFunctions;
         this.navigationItemClickCallBack = builder.navigationItemClickCallBack;
+        this.robotNavigationItemClickCallBack = builder.robotNavigationItemClickCallBack;
         this.navigationModes = builder.navigationModes;
         this.robotnavigationModes = builder.robotnavigationModes;
         this.locationMessageClickCallBack = builder.locationMessageClickCallBack;
@@ -251,8 +267,16 @@ public class UdeskConfig {
         private int udeskCommitysubtitleColorResId = DEFAULT;
         //    商品咨询页面中，发送链接的字样颜色
         private int udeskCommityLinkColorResId = DEFAULT;
-        // 商品消息的 带有链接时的  商品名字显示的颜色
-        private int udeskProductNameLinkColorResId = R.color.color_1850cc;
+        // 商品消息背景左侧
+        public int udeskProductLeftBgResId = DEFAULT;
+         // 商品消息背景右侧
+        public int udeskProductRightBgResId = DEFAULT;
+        // 商品消息的 带有链接时的  商品名字显示的颜色 右侧
+        private int udeskProductRightNameLinkColorResId = R.color.color_1850cc;
+        // 商品消息的 带有链接时的  商品名字显示的颜色 左侧
+        private int udeskProductLeftNameLinkColorResId = R.color.color_1850cc;
+        //商品消息名称最大显示行数
+        public int udeskProductMaxLines = 0;
         //配置 是否使用推送服务  true 表示使用  false表示不使用
         private boolean isUserSDkPush = true;
         //配置放弃排队的策略
@@ -318,6 +342,8 @@ public class UdeskConfig {
         private List<FunctionMode> extreFunctions;
         //支持客户在导航处添加自定义按钮的点击回调事件
         private INavigationItemClickCallBack navigationItemClickCallBack;
+        //支持客户在机器人导航处添加自定义按钮的点击回调事件
+        private INavigationItemClickCallBack robotNavigationItemClickCallBack;
         //约定传递的自定义按钮集合
         private List<NavigationMode> navigationModes;
         //约定传递的自定义按钮集合
@@ -479,14 +505,54 @@ public class UdeskConfig {
         /**
          * 设置商品信息 带链接时显示的颜色
          *
-         * @param udeskProductNameLinkColorResId
+         * @param udeskProductRightNameLinkColorResId
          * @return
          */
-        public Builder setUdeskProductLinkColorResId(int udeskProductNameLinkColorResId) {
-            this.udeskProductNameLinkColorResId = udeskProductNameLinkColorResId;
+        public Builder setUdeskProductRightNameLinkColorResId(int udeskProductRightNameLinkColorResId) {
+            this.udeskProductRightNameLinkColorResId = udeskProductRightNameLinkColorResId;
+            return this;
+        }
+         /**
+         * 设置商品信息 带链接时显示的颜色 左侧
+         *
+         * @param udeskProductLeftNameLinkColorResId
+         * @return
+         */
+        public Builder setUdeskProductLeftNameLinkColorResId(int udeskProductLeftNameLinkColorResId) {
+            this.udeskProductLeftNameLinkColorResId = udeskProductLeftNameLinkColorResId;
             return this;
         }
 
+        /**
+         * 设置商品消息左侧背景布局
+         * @param udeskProductBgResId
+         * @return
+         */
+        public Builder setUdeskProductLeftBgResId(int udeskProductBgResId) {
+            this.udeskProductLeftBgResId = udeskProductBgResId;
+            return this;
+        }
+
+        /**
+         * 设置商品消息右侧背景布局
+         *
+         * @param udeskProductBgResId
+         * @return
+         */
+        public Builder setUdeskProductRightBgResId(int udeskProductBgResId) {
+            this.udeskProductRightBgResId = udeskProductBgResId;
+            return this;
+        }
+
+        /**
+         * 商品消息名称最大显示行数
+         * @param maxLines
+         * @return
+         */
+        public Builder setUdeskProductMaxLines(int maxLines) {
+            this.udeskProductMaxLines = maxLines;
+            return this;
+        }
         /**
          * @param userSDkPush 配置 是否使用推送服务  true 表示使用  false表示不使用
          * @return
@@ -744,7 +810,7 @@ public class UdeskConfig {
                                       INavigationItemClickCallBack navigationItemClickCallBack) {
             this.isUseRobotNavigationRootView = useRobotNavigationRootView;
             this.robotnavigationModes = robotNavigationModes;
-            this.navigationItemClickCallBack = navigationItemClickCallBack;
+            this.robotNavigationItemClickCallBack = navigationItemClickCallBack;
             return this;
         }
 
@@ -844,6 +910,7 @@ public class UdeskConfig {
     public static class UdeskQueueFlag {
         public static final String Mark = "mark";
         public static final String FORCE_QUIT = "force_quit";
+        public static final String CANNEL_MARK = "cannel_mark";
     }
 
     public static class UdeskPushFlag {

@@ -194,7 +194,6 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                                 MessageInfo cacheMsg = sendingMsgCache.get(msg.getMsgId());
                                 // 发送2次也算成功，有服务端代发通知客服,等同于收到xmpp回执
                                 if (cacheMsg != null && (cacheMsg.getCount() + 1) >= 2) {
-                                    Log.d("aac","secondSave====="+msg.getMsgId());
                                     postMessage(msg.getMsgId(),UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmppMessageReceived);
                                 }
                             } catch (Exception e) {
@@ -236,7 +235,6 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                                     if (status == 1000) {
                                         //保存成功 等同于xmpp发送成功
                                         UdeskDBManager.getInstance().updateMsgSendFlagDB(msg.getMsgId(), UdeskConst.SendFlag.RESULT_SUCCESS);
-                                        Log.i("aac", " sendQueueMessage =" + msg.getMsgId());
                                         postMessage(msg.getMsgId(),UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmppMessageReceived);
                                         return;
                                     }
@@ -316,15 +314,13 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
     public void putLeavesMsg(String msg, final String msgId) {
         try {
             UdeskHttpFacade.getInstance().putReplies(
-                    domain, secretKey, sdktoken, appid, msg,
+                    domain, secretKey, sdktoken, appid, msg,msgId,
                     new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
                             //修改消息状态
                             try {
                                 UdeskDBManager.getInstance().updateMsgSendFlagDB(msgId, UdeskConst.SendFlag.RESULT_SUCCESS);
-                                Log.i("aac", " putLeavesMsg =" + msgId);
-
                                 postMessage(msgId,UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmppMessageReceived);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -336,6 +332,42 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                             try {
                                 UdeskDBManager.getInstance().updateMsgSendFlagDB(msgId, UdeskConst.SendFlag.RESULT_FAIL);
                                 postMessage(msgId,UdeskConst.LiveDataType.Send_Message_Failure);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //提交留言消息
+    public void putIMLeavesMsg(String msg, final String msgId,String msgType) {
+        try {
+            if (TextUtils.isEmpty(customerId) || TextUtils.isEmpty(msg)) {
+                return;
+            }
+            UdeskHttpFacade.getInstance().putIMReplies(
+                    domain, secretKey, sdktoken, appid, msg,msgId,msgType,
+                    new UdeskCallBack() {
+                        @Override
+                        public void onSuccess(String message) {
+                            //修改消息状态
+                            try {
+                                UdeskDBManager.getInstance().updateMsgSendFlagDB(msgId, UdeskConst.SendFlag.RESULT_SUCCESS);
+                                postMessage(msgId, UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmppMessageReceived);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFail(String msg) {
+                            try {
+                                UdeskDBManager.getInstance().updateMsgSendFlagDB(msgId, UdeskConst.SendFlag.RESULT_FAIL);
+                                postMessage(msgId, UdeskConst.LiveDataType.Send_Message_Failure);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

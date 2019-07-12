@@ -6,11 +6,14 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
+import cn.udesk.JsonUtils;
 import cn.udesk.UdeskSDKManager;
 import udesk.core.UdeskConst;
 import udesk.core.model.AgentInfo;
@@ -93,15 +96,12 @@ public class UdeskDBManager {
         if (messages == null || getSQLiteDatabase() == null) {
             return false;
         }
-        if (messages.size()>20){
-            messages=messages.subList(messages.size()-20,messages.size());
-        }
         getSQLiteDatabase().beginTransaction();
         try {
             for (MessageInfo msg : messages) {
-                if (isExitMessage(msg.getMsgId()) == null) {
+//                if (isExitMessage(msg.getMsgId()) == null) {
                     addMessageInfo(msg);
-                }
+//                }
             }
             getSQLiteDatabase().setTransactionSuccessful();
         } catch (Exception e) {
@@ -144,9 +144,11 @@ public class UdeskDBManager {
             String sql = "replace into "
                     + UdeskDBHelper.UdeskMessage
                     + "(MsgID ,Time ,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,"
-                    + "Direction,LocalPath,Duration,Receive_AgentJid,created_at," +
-                    "updated_at,reply_user,reply_userurl,subsessionid,seqNum,fileName,fileSize)"
-                    + " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                    + "Direction,LocalPath,Duration,Receive_AgentJid,created_at,"
+                    + "updated_at,reply_user,reply_userurl,subsessionid,seqNum,fileName,fileSize,"
+                    + "switchStaffType,switchStaffTips,topAsk,logId,webConfig,sender,flowId,"
+                    + "flowTitle,flowContent,question_id)"
+                    + " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
             getSQLiteDatabase().execSQL(
                     sql,
@@ -158,7 +160,10 @@ public class UdeskDBManager {
                             msg.getmAgentJid(), msg.getCreatedTime(),
                             msg.getUpdateTime(), msg.getReplyUser(),
                             msg.getUser_avatar(), msg.getSubsessionid(),
-                            msg.getSeqNum(), msg.getFilename(), msg.getFilesize()
+                            msg.getSeqNum(), msg.getFilename(), msg.getFilesize(),
+                            msg.getSwitchStaffType(),msg.getSwitchStaffTips(), JsonUtils.parseTopAskToJson(msg.getTopAsk()),
+                            msg.getLogId(),JsonUtils.parseWebConfigBeanToJson(msg.getWebConfig()),msg.getSender(),
+                            msg.getFlowId(),msg.getFlowTitle(),msg.getFlowContent(),msg.getQuestion_id()
                     });
             return true;
         } catch (SQLException e) {
@@ -381,6 +386,17 @@ public class UdeskDBManager {
                 int seqNum = cursor.getInt(16);
                 String fileName = UdeskUtils.objectToString(cursor.getString(17));
                 String fileSize = UdeskUtils.objectToString(cursor.getString(18));
+                int switchStaffType = UdeskUtils.objectToInt(cursor.getInt(19));
+                String switchStaffTips = UdeskUtils.objectToString(cursor.getString(20));
+                String topAsk = UdeskUtils.objectToString(cursor.getString(21));
+                int logId = UdeskUtils.objectToInt(cursor.getInt(22));
+                String webConfig = UdeskUtils.objectToString(cursor.getString(23));
+                String sender = UdeskUtils.objectToString(cursor.getString(24));
+                int flowId = UdeskUtils.objectToInt(cursor.getInt(25));
+                String flowTitle = UdeskUtils.objectToString(cursor.getString(26));
+                String flowContent = UdeskUtils.objectToString(cursor.getString(27));
+                String question_id = UdeskUtils.objectToString(cursor.getString(28));
+
                 msg = new MessageInfo(time, msgId, msgtype, msgContent,
                         readFlag, sendFlag, playFlag, direction, localPath,
                         duration, agentJid);
@@ -390,6 +406,20 @@ public class UdeskDBManager {
                 msg.setReplyUser(replyUser);
                 msg.setFilename(fileName);
                 msg.setFilesize(fileSize);
+                msg.setSwitchStaffType(switchStaffType);
+                msg.setSwitchStaffTips(switchStaffTips);
+                if (!TextUtils.isEmpty(topAsk)){
+                    msg.setTopAsk(JsonUtils.parseTopAsk(new JSONObject(topAsk)));
+                }
+                msg.setLogId(logId);
+                if (!TextUtils.isEmpty(webConfig)){
+                    msg.setWebConfig(JsonUtils.parseWebConfigBean(webConfig));
+                }
+                msg.setSender(sender);
+                msg.setFlowId(flowId);
+                msg.setFlowTitle(flowTitle);
+                msg.setFlowContent(flowContent);
+                msg.setQuestion_id(question_id);
                 if (!TextUtils.isEmpty(agentJid.trim())) {
                     String[] urlAndNick = getAgentUrlAndNick(agentJid);
                     if (urlAndNick != null) {
@@ -470,6 +500,16 @@ public class UdeskDBManager {
                 int seqNum = cursor.getInt(16);
                 String fileName = UdeskUtils.objectToString(cursor.getString(17));
                 String fileSize = UdeskUtils.objectToString(cursor.getString(18));
+                int switchStaffType = UdeskUtils.objectToInt(cursor.getInt(19));
+                String switchStaffTips = UdeskUtils.objectToString(cursor.getString(20));
+                String topAsk = UdeskUtils.objectToString(cursor.getString(21));
+                int logId = UdeskUtils.objectToInt(cursor.getInt(22));
+                String webConfig = UdeskUtils.objectToString(cursor.getString(23));
+                String sender = UdeskUtils.objectToString(cursor.getString(24));
+                int flowId = UdeskUtils.objectToInt(cursor.getInt(25));
+                String flowTitle = UdeskUtils.objectToString(cursor.getString(26));
+                String flowContent = UdeskUtils.objectToString(cursor.getString(27));
+                String question_id = UdeskUtils.objectToString(cursor.getString(28));
 
                 if (sendFlag == UdeskConst.SendFlag.RESULT_SEND && System.currentTimeMillis() - time > 30 * 1000) {
                     sendFlag = UdeskConst.SendFlag.RESULT_FAIL;
@@ -485,6 +525,20 @@ public class UdeskDBManager {
                 message.setUpdateTime(updatedTime);
                 message.setReplyUser(replyUser);
                 message.setUser_avatar(reply_userurl);
+                message.setSwitchStaffType(switchStaffType);
+                message.setSwitchStaffTips(switchStaffTips);
+                if (!TextUtils.isEmpty(topAsk)){
+                    message.setTopAsk(JsonUtils.parseTopAsk(new JSONObject(topAsk)));
+                }
+                message.setLogId(logId);
+                if (!TextUtils.isEmpty(webConfig)){
+                    message.setWebConfig(JsonUtils.parseWebConfigBean(webConfig));
+                }
+                message.setSender(sender);
+                message.setFlowId(flowId);
+                message.setFlowTitle(flowTitle);
+                message.setFlowContent(flowContent);
+                message.setQuestion_id(question_id);
                 if (!TextUtils.isEmpty(agentJid.trim())) {
                     String[] urlAndNick = getAgentUrlAndNick(agentJid);
                     if (urlAndNick != null) {
@@ -558,6 +612,16 @@ public class UdeskDBManager {
                 int seqNum = cursor.getInt(16);
                 String fileName = UdeskUtils.objectToString(cursor.getString(17));
                 String fileSize = UdeskUtils.objectToString(cursor.getString(18));
+                int switchStaffType = UdeskUtils.objectToInt(cursor.getInt(19));
+                String switchStaffTips = UdeskUtils.objectToString(cursor.getString(20));
+                String topAsk = UdeskUtils.objectToString(cursor.getString(21));
+                int logId = UdeskUtils.objectToInt(cursor.getInt(22));
+                String webConfig = UdeskUtils.objectToString(cursor.getString(23));
+                String sender = UdeskUtils.objectToString(cursor.getString(24));
+                int flowId = UdeskUtils.objectToInt(cursor.getInt(25));
+                String flowTitle = UdeskUtils.objectToString(cursor.getString(26));
+                String flowContent = UdeskUtils.objectToString(cursor.getString(27));
+                String question_id = UdeskUtils.objectToString(cursor.getString(28));
                 msgInfo = new MessageInfo(time, msgId, msgtype,
                         msgContent, readFlag, sendFlag, playFlag, direction,
                         localPath, duration, agentJid);
@@ -567,7 +631,20 @@ public class UdeskDBManager {
                 msgInfo.setSeqNum(seqNum);
                 msgInfo.setReplyUser(replyUser);
                 msgInfo.setUser_avatar(reply_userurl);
-
+                msgInfo.setSwitchStaffType(switchStaffType);
+                msgInfo.setSwitchStaffTips(switchStaffTips);
+                if (!TextUtils.isEmpty(topAsk)){
+                    msgInfo.setTopAsk(JsonUtils.parseTopAsk(new JSONObject(topAsk)));
+                }
+                msgInfo.setLogId(logId);
+                if (!TextUtils.isEmpty(webConfig)){
+                    msgInfo.setWebConfig(JsonUtils.parseWebConfigBean(webConfig));
+                }
+                msgInfo.setSender(sender);
+                msgInfo.setFlowId(flowId);
+                msgInfo.setFlowTitle(flowTitle);
+                msgInfo.setFlowContent(flowContent);
+                msgInfo.setQuestion_id(question_id);
                 if (!TextUtils.isEmpty(agentJid.trim())) {
                     String[] urlAndNick = getAgentUrlAndNick(agentJid);
                     if (urlAndNick != null) {
@@ -645,6 +722,16 @@ public class UdeskDBManager {
                 int seqNum = cursor.getInt(16);
                 String fileName = UdeskUtils.objectToString(cursor.getString(17));
                 String fileSize = UdeskUtils.objectToString(cursor.getString(18));
+                int switchStaffType = UdeskUtils.objectToInt(cursor.getInt(19));
+                String switchStaffTips = UdeskUtils.objectToString(cursor.getString(20));
+                String topAsk = UdeskUtils.objectToString(cursor.getString(21));
+                int logId = UdeskUtils.objectToInt(cursor.getInt(22));
+                String webConfig = UdeskUtils.objectToString(cursor.getString(23));
+                String sender = UdeskUtils.objectToString(cursor.getString(24));
+                int flowId = UdeskUtils.objectToInt(cursor.getInt(25));
+                String flowTitle = UdeskUtils.objectToString(cursor.getString(26));
+                String flowContent = UdeskUtils.objectToString(cursor.getString(27));
+                String question_id = UdeskUtils.objectToString(cursor.getString(28));
                 msgInfo = new MessageInfo(time, msgId, msgtype,
                         msgContent, readFlag, sendFlag, playFlag, direction,
                         localPath, duration, agentJid);
@@ -654,6 +741,20 @@ public class UdeskDBManager {
                 msgInfo.setSubsessionid(subSeessionId);
                 msgInfo.setReplyUser(replyUser);
                 msgInfo.setUser_avatar(reply_userurl);
+                msgInfo.setSwitchStaffType(switchStaffType);
+                msgInfo.setSwitchStaffTips(switchStaffTips);
+                if (!TextUtils.isEmpty(topAsk)){
+                    msgInfo.setTopAsk(JsonUtils.parseTopAsk(new JSONObject(topAsk)));
+                }
+                msgInfo.setLogId(logId);
+                if (!TextUtils.isEmpty(webConfig)){
+                    msgInfo.setWebConfig(JsonUtils.parseWebConfigBean(webConfig));
+                }
+                msgInfo.setSender(sender);
+                msgInfo.setFlowId(flowId);
+                msgInfo.setFlowTitle(flowTitle);
+                msgInfo.setFlowContent(flowContent);
+                msgInfo.setQuestion_id(question_id);
                 if (!TextUtils.isEmpty(agentJid.trim())) {
                     String[] urlAndNick = getAgentUrlAndNick(agentJid);
                     if (urlAndNick != null) {

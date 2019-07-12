@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import cn.udesk.R;
@@ -188,18 +190,28 @@ public class MessageAdatper extends BaseAdapter {
             }
             if (list.size()>0){
                 List<MessageInfo> newMessages=new ArrayList<>();
-                newMessages.addAll(messages);
                 for (MessageInfo info:list){
                     for (MessageInfo newInfo:messages){
                         if (TextUtils.equals(info.getMsgId(),newInfo.getMsgId())){
-                            newMessages.remove(newInfo);
+                            newMessages.add(info);
                         }
                     }
                 }
-                list.addAll(newMessages);
-            }else {
-                list.addAll(messages);
+                list.removeAll(newMessages);
             }
+            list.addAll(messages);
+            Collections.sort(list, new Comparator<MessageInfo>() {
+                @Override
+                public int compare(MessageInfo o1, MessageInfo o2) {
+                    if (o1.getTime()>o2.getTime()){
+                        return 1;
+                    }
+                    if (o1.getTime()==o2.getTime()){
+                        return 0;
+                    }
+                    return -1;
+                }
+            });
             notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();

@@ -198,7 +198,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
             File file = new File(filePath);
             final String alikey = dir + fileName;
             MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-            builder.addFormDataPart("key", URLEncoder.encode(alikey,"UTF-8"));
+            builder.addFormDataPart("key", dir+URLEncoder.encode(fileName,"UTF-8"));
             builder.addFormDataPart("OSSAccessKeyId", accessid);
             builder.addFormDataPart("bucket", bucket);
             builder.addFormDataPart("policy", policy);
@@ -298,7 +298,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
         try {
             concurrentHashMap.remove(messageInfo.getMsgId());
             updateFailure(messageInfo.getMsgId());
-            UdeskDBManager.getInstance().updateMsgSendFlagDB(messageInfo.getMsgId(),
+            UdeskDBManager.getInstance().updateMsgSendFlag(messageInfo.getMsgId(),
                     UdeskConst.SendFlag.RESULT_FAIL);
         }catch (Exception e){
             e.printStackTrace();
@@ -423,7 +423,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                 @Override
                 public void onSuccess(byte[] t) {
                     try {
-                        UdeskDBManager.getInstance().updateMsgLoaclUrlDB(info.getMsgId(), file.getAbsolutePath());
+                        UdeskDBManager.getInstance().updateMsgLoaclUrl(info.getMsgId(), file.getAbsolutePath());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

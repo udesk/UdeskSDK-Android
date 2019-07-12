@@ -211,6 +211,18 @@ public class UdeskViewMode extends ViewModel {
         }
     }
 
+    //发送对话留言消息
+    public void sendIMLeaveMessage(String message) {
+        try {
+            MessageInfo msg = UdeskUtil.buildSendMessage(
+                    UdeskConst.ChatMsgTypeString.TYPE_LEAVEMSG_IM,
+                    System.currentTimeMillis(), message);
+            postMessage(msg, UdeskConst.LiveDataType.AddIMLeaveMsg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     //发送原图图片消息
     public void sendBitmapMessage(Bitmap bitmap, Context context) {
         try {
@@ -299,6 +311,13 @@ public class UdeskViewMode extends ViewModel {
     public void putLeavesMsg(MessageInfo info) {
         try {
             sendMessageLiveData.putLeavesMsg(info.getMsgContent(), info.getMsgId());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void putIMLeavesMsg(MessageInfo info) {
+        try {
+            sendMessageLiveData.putIMLeavesMsg(info.getMsgContent(), info.getMsgId(),"");
         }catch (Exception e){
             e.printStackTrace();
         }
