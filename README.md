@@ -1034,9 +1034,9 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 7. 修改阿里上传策略问题
 8. webview适配非http/https 开头的链接
 9. 修改人工导航点击问题
-10.修改无消息对话过滤状态发送消息问题
-11.添加和修改商品消息背景，字体颜色，行数设置api
-12.修改4.x版本覆盖安装5.x 请求客服问题
+10. 修改无消息对话过滤状态发送消息问题
+11. 添加和修改商品消息背景，字体颜色，行数设置api
+12. 修改4.x版本覆盖安装5.x 请求客服问题
 
 ### sdk v5.0.0版本更新功能: ###
 
