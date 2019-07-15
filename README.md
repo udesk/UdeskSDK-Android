@@ -1,5 +1,7 @@
 
-# UdeskSDK Android 4.1.0+ 开发者文档
+# UdeskSDK Android 4.x 开发者文档
+
+[androidX 版本地址](https://github.com/udesk/UdeskSDK-Android/tree/master_androidX)
 
 ## 目录 ##
 - [一、特别提醒](#1)
@@ -206,12 +208,18 @@
 | isOnlyUseRobot                         | setOnlyUseRobot                                            | 设置是否只使用机器人 不用其它功能                                 | 
 | mProduct                                | setProduct                                                   | 设置商品消息         
 | channel                                | setChannel                                                   | SDK支持自定义渠道（只支持字符数字，不支持特殊支持）        
+| udeskProductBgResId                    | setUdeskProductBgResId                                       | 设置商品消息背景
+| udeskProductMaxLines					 | setUdeskProductMaxLines                                    | 设置商品消息名称最大显示行数
 
 
 **一个完整的参考例子**
    ``` java 
 
    private UdeskConfig.Builder makeBuilder() {
+        if (!TextUtils.isEmpty(edit_language.getText().toString())){
+            LocalManageUtil.saveSelectLanguage(getApplicationContext(),new Locale(edit_language.getText().toString()));
+        }
+
         UdeskConfig.Builder builder = new UdeskConfig.Builder();
         builder.setUdeskTitlebarBgResId(R.color.udesk_titlebar_bg1) //设置标题栏TitleBar的背景色
                 .setUdeskTitlebarTextLeftRightResId(R.color.udesk_color_navi_text1) //设置标题栏TitleBar，左右两侧文字的颜色
@@ -225,6 +233,8 @@
                 .setUdeskCommityTitleColorResId(R.color.udesk_color_im_commondity_title1) // 商品介绍Title的字样颜色
                 .setUdeskCommitysubtitleColorResId(R.color.udesk_color_im_commondity_subtitle1)// 商品咨询页面中，商品介绍子Title的字样颜色
                 .setUdeskCommityLinkColorResId(R.color.udesk_color_im_commondity_link1) //商品咨询页面中，发送链接的字样颜色
+                .setUdeskProductBgResId(R.drawable.udesk_im_item_bg_right) //商品消息背景
+                .setUdeskProductMaxLines(2) //商品消息名称最大显示行数
                 .setUserSDkPush(set_sdkpush.isChecked()) // 配置 是否使用推送服务  true 表示使用  false表示不使用
                 .setOnlyUseRobot(set_use_onlyrobot.isChecked())//配置是否只使用机器人功能 只使用机器人功能,只使用机器人功能;  其它功能不使用。
                 .setUdeskQuenuMode(force_quit.isChecked() ? UdeskConfig.UdeskQuenuFlag.FORCE_QUIT : UdeskConfig.UdeskQuenuFlag.Mark)  //  配置放弃排队的策略
@@ -264,16 +274,16 @@
                 .setRobot_modelKey(robot_modelKey.getText().toString()) // udesk 机器人配置插件 对应的Id值
                 .setConcatRobotUrlWithCustomerInfo(robpt_customer_info.getText().toString())
                 .setCommodity(set_use_commodity.isChecked() ? createCommodity() : null)//配置发送商品链接的mode
+                .setProduct(set_use_prouct.isChecked() ? createProduct() : null)//配置发送商品链接的mode
                 .setExtreFunctions(getExtraFunctions(), new IFunctionItemClickCallBack() {
                     @Override
                     public void callBack(Context context, ChatActivityPresenter mPresenter, int id, String name) {
-
-                        if (id == 21) {
-                            UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
-                            mPresenter.sendTxtMessage("打开帮助中心");
-                        } else if (id == 22) {
-                            mPresenter.sendTxtMessage("打开表单留言");
-                            UdeskSDKManager.getInstance().goToForm(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
+                        if (id == 22) {
+                            mPresenter.sendCommodityMessage(createCommodity());
+                        } else if (id == 23) {
+                            UdeskSDKManager.getInstance().disConnectXmpp();
+                        } else if (id == 24) {
+                            mPresenter.sendProductMessage(createProduct());
                         }
                     }
                 })//在more 展开面板中设置额外的功能按钮
@@ -281,7 +291,7 @@
                     @Override
                     public void callBack(Context context, ChatActivityPresenter mPresenter, NavigationMode navigationMode) {
                         if (navigationMode.getId() == 1) {
-                            UdeskSDKManager.getInstance().toLanuchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
+                            mPresenter.sendProductMessage(createProduct());
                         } else if (navigationMode.getId() == 2) {
                             mPresenter.sendTxtMessage(UUID.randomUUID().toString());
                             mPresenter.sendTxtMessage("www.baidu.com");
@@ -307,6 +317,7 @@
                         Toast.makeText(getApplicationContext(), "结构化消息控件点击事件回调", Toast.LENGTH_SHORT).show();
                     }
                 })//设置结构化消息控件点击事件回调接口.
+                .setChannel(channel.getText().toString())
         ;
 
         return builder;
@@ -901,6 +912,12 @@ RedirectViewHolder  显示转移提示语信息；
 | event        | string   | 事件类型，'redirect' 客服转接，'close'对话关闭，'survey'发送满意度调查 |
 
 <h1 id="7">七、更新日志</h1>
+
+### 4.3.0 修复内容
+1. 商品消息添加设置背景和标题行数api
+2. 聊天界面底部间隙调整
+3. 输入框样式调整
+4. 商品链接样式设置
 
 ### 4.1.9 修复内容
 1. 修改数据库添加问题
