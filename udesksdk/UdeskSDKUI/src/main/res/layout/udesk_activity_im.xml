@@ -123,9 +123,11 @@
                     android:id="@+id/udesk_bottom_input"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:background="@null"
-                    android:drawableBottom="@drawable/udesk_selector_edit_focus"
+                    android:background="@drawable/udesk_im_input_bg"
                     android:hint="@string/udesk_edit_hint_msg"
+                    android:paddingStart="@dimen/udesk_8"
+                    android:paddingEnd="@dimen/udesk_8"
+                    android:gravity="center_vertical"
                     android:textColor="@color/udesk_edit_input_msg_cololr1"
                     android:textColorHint="@color/udesk_edit_input_hint_msg_cololr1"
                     android:visibility="visible" />
