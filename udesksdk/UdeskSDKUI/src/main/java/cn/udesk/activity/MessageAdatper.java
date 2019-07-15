@@ -449,6 +449,8 @@ public class MessageAdatper extends BaseAdapter {
                         productViewHolder.product_name = (TextView) convertView.findViewById(R.id.product_name);
                         productViewHolder.productView = convertView.findViewById(R.id.product_view);
                         productViewHolder.imgView = (SimpleDraweeView) convertView.findViewById(R.id.udesk_product_icon);
+                        productViewHolder.rootView = (LinearLayout) convertView.findViewById(R.id.product_view);
+                        UdekConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductBgResId, productViewHolder.rootView);
                         convertView.setTag(productViewHolder);
                         break;
                     case RICH_TEXT:
@@ -888,6 +890,8 @@ public class MessageAdatper extends BaseAdapter {
         View productView;
         SimpleDraweeView imgView;
         String productUrl;
+        LinearLayout rootView;
+        String productName;
 
         @Override
         void bind(Context context) {
@@ -900,21 +904,31 @@ public class MessageAdatper extends BaseAdapter {
                     imgView.setVisibility(View.GONE);
                 }
                 productUrl = jsonObject.optString("url");
-                product_name.setText(jsonObject.optString("name"));
-                if (!TextUtils.isEmpty(productUrl)) {
-                    product_name.setTextColor(mContext.getResources().getColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductNameLinkColorResId));
-                    product_name.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick != null) {
-                                UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick.txtMsgOnclick(productUrl);
-                            } else {
+                productName = jsonObject.optString("name");
+                rootView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick != null) {
+                            UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick.txtMsgOnclick(productUrl);
+                        } else {
+                            if (!TextUtils.isEmpty(productUrl)){
                                 Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
                                 intent.putExtra(UdeskConst.WELCOME_URL, productUrl);
                                 mContext.startActivity(intent);
                             }
                         }
-                    });
+                    }
+                });
+                if (!TextUtils.isEmpty(productName)) {
+                    product_name.setVisibility(View.VISIBLE);
+                    if (UdeskSDKManager.getInstance().getUdeskConfig().udeskProductMaxLines > 0 ){
+                        product_name.setMaxLines(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductMaxLines);
+                        product_name.setEllipsize(TextUtils.TruncateAt.END);
+                    }
+                    product_name.setText(productName);
+                    product_name.setTextColor(mContext.getResources().getColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductNameLinkColorResId));
+                }else {
+                    product_name.setVisibility(View.GONE);
                 }
 
                 StringBuilder builder = new StringBuilder();
@@ -926,8 +940,16 @@ public class MessageAdatper extends BaseAdapter {
                         if (TextUtils.isEmpty(data.optString("text"))) {
                             continue;
                         }
-                        String textStr = "<font color=" + data.optString("color") +
-                                "  size=" + 2 * data.optInt("size") + ">" + data.optString("text") + "</font>";
+                        String color = data.optString("color");
+                        int size = data.optInt("size");
+                        if (TextUtils.isEmpty(color)){
+                            color = "#000000";
+                        }
+                        if (size==0){
+                            size = 12;
+                        }
+                        String textStr = "<font color=" + color +
+                                "  size=" + UdeskUtil.dip2px(mContext,size) + ">" + data.optString("text") + "</font>";
                         if (data.optBoolean("fold")) {
                             textStr = "<b>" + textStr + "</b>";
                         }
@@ -939,7 +961,12 @@ public class MessageAdatper extends BaseAdapter {
                 }
                 String htmlString = builder.toString().replaceAll("font", HtmlTagHandler.TAG_FONT);
                 Spanned fromHtml = Html.fromHtml(htmlString, null, new HtmlTagHandler());
-                tvMsg.setText(fromHtml);
+                if (TextUtils.isEmpty(fromHtml)){
+                    tvMsg.setVisibility(View.GONE);
+                }else {
+                    tvMsg.setVisibility(View.VISIBLE);
+                    tvMsg.setText(fromHtml);
+                }
 //                //设置消息长按事件  复制文本
 //                tvMsg.setOnLongClickListener(new OnLongClickListener() {
 //
@@ -962,7 +989,6 @@ public class MessageAdatper extends BaseAdapter {
             }
         }
     }
-
 
     /**
      * 展示文件消息

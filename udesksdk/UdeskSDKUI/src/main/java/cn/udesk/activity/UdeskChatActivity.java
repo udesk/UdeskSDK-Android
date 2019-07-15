@@ -26,6 +26,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -180,6 +182,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
 
     //咨询对象的展示界面
     private View commodityView;
+    private RelativeLayout commodityRoot;
     public SimpleDraweeView commodityThumbnail;
     public TextView commodityTitle;
     public TextView commoditySubTitle;
@@ -688,10 +691,14 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
             commodityView = findViewById(R.id.commodity_rl);
             commodityView.setVisibility(View.GONE);
             commodityThumbnail = (SimpleDraweeView) findViewById(R.id.udesk_im_commondity_thumbnail);
+            commodityRoot = (RelativeLayout) findViewById(R.id.udesk_commit_root);
             commodityTitle = (TextView) findViewById(R.id.udesk_im_commondity_title);
             commoditySubTitle = (TextView) findViewById(R.id.udesk_im_commondity_subtitle);
             commodityLink = (TextView) findViewById(R.id.udesk_im_commondity_link);
-
+            UdekConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskCommityBgResId, commodityRoot);
+            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskCommityTitleColorResId, commodityTitle);
+            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskCommitysubtitleColorResId, commoditySubTitle);
+            UdekConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskCommityLinkColorResId, commodityLink);
             popWindow = new UdeskConfirmPopWindow(this);
             sendBtn = (TextView) findViewById(R.id.udesk_bottom_send);
             sendBtn.setOnClickListener(this);
@@ -778,6 +785,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
                 }
             });
             mListView = (UDPullGetMoreListView) findViewById(R.id.udesk_conversation);
+            mListView.addFooterView(LayoutInflater.from(this).inflate(R.layout.udesk_im_footview,null));
             expandableLayout = (UdeskExpandableLayout) findViewById(R.id.udesk_change_status_info);
 
             mContentLinearLayout = (LinearLayout) findViewById(R.id.udesk_content_ll);
