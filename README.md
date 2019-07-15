@@ -1,5 +1,7 @@
 
-# UdeskSDK Android 4.1.0+ 开发者文档
+# UdeskSDK Android 4.x 开发者文档
+
+[androidX 版本地址](https://github.com/udesk/UdeskSDK-Android/tree/master_androidX)
 
 ## 目录 ##
 - [一、特别提醒](#1)
@@ -208,6 +210,8 @@
 | channel                                | setChannel                                                   | SDK支持自定义渠道（只支持字符数字，不支持特殊支持）        
 | udeskProductBgResId                    | setUdeskProductBgResId                                       | 设置商品消息背景
 | udeskProductMaxLines					 | setUdeskProductMaxLines                                    | 设置商品消息名称最大显示行数
+
+
 **一个完整的参考例子**
    ``` java 
 
