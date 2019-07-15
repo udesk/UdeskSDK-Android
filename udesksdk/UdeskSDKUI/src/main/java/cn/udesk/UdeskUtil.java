@@ -23,7 +23,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;

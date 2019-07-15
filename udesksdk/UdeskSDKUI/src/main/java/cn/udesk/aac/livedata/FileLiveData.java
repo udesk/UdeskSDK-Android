@@ -1,10 +1,11 @@
 package cn.udesk.aac.livedata;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
+
 import android.text.TextUtils;
 import android.util.Log;
 

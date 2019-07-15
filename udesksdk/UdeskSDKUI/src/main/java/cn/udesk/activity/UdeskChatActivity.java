@@ -3,8 +3,6 @@ package cn.udesk.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.Context;
@@ -20,13 +18,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -43,6 +34,16 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -309,7 +310,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             groupId = UdeskSDKManager.getInstance().getUdeskConfig().groupId;
             agentId = UdeskSDKManager.getInstance().getUdeskConfig().agentId;
             PreferenceHelper.write(getApplicationContext(), UdeskConst.SharePreParams.Udesk_Sharepre_Name,
-                        UdeskConst.SharePreParams.Udesk_Group_Id, groupId);
+                    UdeskConst.SharePreParams.Udesk_Group_Id, groupId);
             if (!TextUtils.isEmpty(agentId)) {
                 PreferenceHelper.write(getApplicationContext(), UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                         UdeskConst.SharePreParams.Udesk_Agent_Id, agentId);
@@ -2552,8 +2553,8 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                     setTitlebar(getApplicationContext().getResources().getString(R.string.udesk_in_the_line), queue);
                     setUdeskImContainerVis(View.VISIBLE);
                     mHandler.postDelayed(myRunnable, QUEUE_RETEY_TIME);
-                    udeskViewMode.sendPrefilterMsg(true);
                     fragment.clearInputContent();
+                    udeskViewMode.sendPrefilterMsg(true);
                     if (!hasSendCommodity) {
                         hasSendCommodity = true;
                         sendCommodityMsg(UdeskSDKManager.getInstance().getUdeskConfig().commodity);

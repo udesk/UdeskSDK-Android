@@ -1,7 +1,7 @@
 package cn.udesk.aac.livedata;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
+
+import androidx.lifecycle.MutableLiveData;
 import android.text.TextUtils;
 import android.util.Log;
 

@@ -6,7 +6,7 @@
     android:layoutDirection="ltr"
     android:background="@color/udesk_black">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/udesk_rv_photos"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

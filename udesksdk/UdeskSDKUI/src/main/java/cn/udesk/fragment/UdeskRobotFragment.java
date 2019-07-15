@@ -4,13 +4,12 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -23,11 +22,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import cn.udesk.R;
@@ -42,12 +36,9 @@ import cn.udesk.emotion.LQREmotionKit;
 import cn.udesk.model.FunctionMode;
 import cn.udesk.permission.RequestCode;
 import cn.udesk.permission.XPermissionUtils;
-import cn.udesk.voice.AudioRecordButton;
 import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.utils.UdeskUtils;
-
-import static android.app.Activity.RESULT_OK;
 
 public class UdeskRobotFragment extends UdeskbaseFragment implements View.OnClickListener {
 
