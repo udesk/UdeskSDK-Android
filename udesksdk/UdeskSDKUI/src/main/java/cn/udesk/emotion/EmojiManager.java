@@ -7,11 +7,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.text.TextUtilsCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.LayoutDirection;
-import android.util.Log;
 import android.util.LruCache;
 import android.util.Xml;
 
@@ -22,10 +19,8 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 

@@ -44,7 +44,7 @@
         android:layout_height="0.5dp"
         android:background="#f3f3f3" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_text_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -64,7 +64,7 @@
         android:textSize="14sp"
         android:visibility="gone" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_options_tags"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

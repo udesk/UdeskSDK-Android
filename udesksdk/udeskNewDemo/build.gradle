@@ -38,7 +38,7 @@ android {
 }
 
 dependencies {
-    api 'com.android.support:multidex:1.0.0'
+    api 'androidx.multidex:multidex:2.0.0'
     api files('libs/jpush-android-2.2.0.jar')
     api files('libs/AMap2DMap_5.2.0_AMapSearch_5.3.0_AMapLocation_3.5.0_20170814.jar')
     //    implementation project(path: ':UdeskSDKUI', configuration: 'default')
