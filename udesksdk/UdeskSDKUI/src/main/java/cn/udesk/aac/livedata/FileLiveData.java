@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -23,6 +24,7 @@ import cn.udesk.JsonUtils;
 import cn.udesk.UdeskUtil;
 import cn.udesk.aac.MergeMode;
 import cn.udesk.aac.MergeModeManager;
+import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.db.UdeskDBManager;
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -51,6 +53,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
     private String sdktoken = "";
     private String appid = "";
     OkHttpClient okHttpClient;
+    private UdeskChatActivity.MyHandler  myHandler;
 
     private Map<String, Call> concurrentHashMap = new ConcurrentHashMap();
 
@@ -62,7 +65,9 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
         this.sdktoken = sdktoken;
         this.appid = appid;
     }
-
+    public void setHandler(UdeskChatActivity.MyHandler handler){
+        myHandler=handler;
+    }
     public void cancleUploadFile(MessageInfo message) {
         try {
             concurrentHashMap.remove(message.getMsgId());
@@ -323,16 +328,25 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
     private  void addCustomRequestBody (MultipartBody.Builder builder,  File file ,final MessageInfo messageInfo, String fileName) {
         try {
             builder.addFormDataPart("file", URLEncoder.encode(fileName,"UTF-8"), createCustomRequestBody(file, new ProgressListener() {
+                int lastProgress = 0;
                 @Override
                 public void onProgress(long totalBytes, long remainingBytes, boolean done) {
                     try {
                         if (done) {
+                            lastProgress=0;
                             return;
                         }
                         float percent = (totalBytes - remainingBytes) * 100 / totalBytes;
                         int progress = Float.valueOf(percent).intValue();
-                        messageInfo.setPrecent(progress);
-                        fileProgress(messageInfo);
+                        if (progress != lastProgress ){
+                            lastProgress=progress;
+                            messageInfo.setPrecent(progress);
+                            if (myHandler!=null){
+                                Message message = myHandler.obtainMessage(UdeskConst.LiveDataType.UpLoadFileLiveData_progress);
+                                message.obj = messageInfo;
+                                myHandler.sendMessage(message);
+                            }
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -442,8 +456,11 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                     double percent = current / (double) count;
                     int progress = Double.valueOf(percent * 100).intValue();
                     info.setPrecent(progress);
-                    fileProgress(info);
-
+                    if (myHandler!=null){
+                        Message message = myHandler.obtainMessage(UdeskConst.LiveDataType.UpLoadFileLiveData_progress);
+                        message.obj = info;
+                        myHandler.sendMessage(message);
+                    }
                 }
             });
         } catch (Exception e) {

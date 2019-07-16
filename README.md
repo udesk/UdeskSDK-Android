@@ -1039,6 +1039,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 10. 修改无消息对话过滤状态发送消息问题
 11. 添加和修改商品消息背景，字体颜色，行数设置api
 12. 修改4.x版本覆盖安装5.x 请求客服问题
+13. 修改文件上传进度显示策略
 
 ### sdk v5.0.0版本更新功能: ###
 

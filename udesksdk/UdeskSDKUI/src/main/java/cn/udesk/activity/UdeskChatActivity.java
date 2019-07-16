@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
@@ -51,6 +52,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -168,7 +170,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     private final int CAPTURE_IMAGE_SMALLVIDEO_ACTIVITY_REQUEST_CODE = 107;
     private final int IM_GROUP_REQUEST_CODE = 108;
 
-    private Handler mHandler;
+    private MyHandler mHandler;
     private BroadcastReceiver mConnectivityChangedReceiver = null;
     private boolean isSurvyOperate = false;//如果是收到客服的满意度调查，则在onresume 处不在请求分配客服
 //    public boolean isInitComplete = false; //标识进入请求分配客服的流程是否结束
@@ -223,6 +225,33 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     private boolean isExit=true;
     private RelativeLayout commodityRoot;
 
+    public static class MyHandler extends  Handler {
+        WeakReference<UdeskChatActivity> mWeakActivity;
+        public MyHandler(UdeskChatActivity activity) {
+            mWeakActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                UdeskChatActivity udeskChatActivity = mWeakActivity.get();
+                if (udeskChatActivity == null){
+                    return;
+                }
+                switch (msg.what){
+                    case UdeskConst.LiveDataType.UpLoadFileLiveData_progress:
+                        MessageInfo progressMsg = (MessageInfo) msg.obj;
+                        udeskChatActivity.changeFileProgress(progressMsg.getMsgId(), progressMsg.getPrecent(), 0, true);
+                        break;
+
+                    default:
+                        break;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
     class ConnectivtyChangedReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -261,7 +290,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            mHandler = new Handler();
+            mHandler = new MyHandler(this);
             initUdeskViewMode();
             UdeskUtils.resetTime();
             UdeskUtil.setOrientation(this);
@@ -435,6 +464,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                     UdeskSDKManager.getInstance().getSdkToken(getApplicationContext()),
                     UdeskSDKManager.getInstance().getAppId(getApplicationContext())
             );
+            udeskViewMode.setHandler(mHandler);
             udeskViewMode.getLiveDataMerger().observeForever(new Observer<MergeMode>() {
                 @Override
                 public void onChanged(@Nullable MergeMode mergeMode) {
@@ -718,6 +748,15 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                             }
                             if (!TextUtils.isEmpty(customerId)) {
                                 fileMessage.setCustomerId(customerId);
+                            }
+                            if (getPressionStatus()) {
+                                JSONObject preMessage = JsonObjectUtils.buildPreSessionInfo(fileMessage.getMsgtype(),
+                                        fileMessage.getMsgContent(), fileMessage.getMsgId(),
+                                        fileMessage.getDuration(), pre_session_id, fileMessage.getFilename(),
+                                        fileMessage.getFilesize());
+                                udeskViewMode.getApiLiveData().getAgentInfo(pre_session_id, preMessage);
+                                udeskViewMode.addPressionMsg(fileMessage);
+                                return;
                             }
                             mChatAdapter.addItem(fileMessage);
                             mListView.smoothScrollToPosition(mChatAdapter.getCount());
