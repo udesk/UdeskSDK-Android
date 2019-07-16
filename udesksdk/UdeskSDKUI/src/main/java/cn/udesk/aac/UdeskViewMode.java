@@ -21,9 +21,10 @@ import cn.udesk.UdeskUtil;
 import cn.udesk.aac.livedata.APILiveData;
 import cn.udesk.aac.livedata.DBLiveData;
 import cn.udesk.aac.livedata.FileLiveData;
+import cn.udesk.aac.livedata.ReceiveLivaData;
 import cn.udesk.aac.livedata.RobotApiData;
 import cn.udesk.aac.livedata.SendMessageLiveData;
-import cn.udesk.aac.livedata.ReceiveLivaData;
+import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.model.UdeskCommodityItem;
 import udesk.core.UdeskConst;
@@ -127,7 +128,9 @@ public class UdeskViewMode extends ViewModel {
         upLoadFileLiveData.setBaseValue(domain, secretKey, sdktoken, appid);
         robotApiData.setBaseValue(domain, secretKey, sdktoken, appid);
     }
-
+    public void setHandler(UdeskChatActivity.MyHandler handler){
+        upLoadFileLiveData.setHandler(handler);
+    }
     public void setCustomerId(String customerId) {
         apiLiveData.setCustomerId(customerId);
         sendMessageLiveData.setCustomerId(customerId);
