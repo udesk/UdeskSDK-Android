@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <!--内容显示区-->
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/vpEmotioin"
         android:layout_width="match_parent"
         android:layout_height="0dp"
