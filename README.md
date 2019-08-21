@@ -340,6 +340,8 @@
 //udesk
 -keep class udesk.** {*;} 
 -keep class cn.udesk.**{*; } 
+//JSONobject
+-keep class org.json.** {*; }
 //七牛
 -keep class okhttp3.** {*;} 
 -keep class okio.** {*;} 
@@ -912,6 +914,11 @@ RedirectViewHolder  显示转移提示语信息；
 | event        | string   | 事件类型，'redirect' 客服转接，'close'对话关闭，'survey'发送满意度调查 |
 
 <h1 id="7">七、更新日志</h1>
+
+### 4.3.1
+1. webview 加载逻辑调整
+2. 机器人聊天界面滑动隐藏键盘
+3. 调整emoji名称
 
 ### 4.3.0 修复内容
 1. 商品消息添加设置背景和标题行数api
