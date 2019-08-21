@@ -27,6 +27,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.facebook.binaryresource.BinaryResource;
@@ -1189,4 +1190,20 @@ public class UdeskUtil {
         }
     }
 
+    public static void hideSoftInput(Context context,View view) {
+        try {
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(),0);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public static void showSoftInput(Context context,View view) {
+        try {
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(view,InputMethodManager.SHOW_FORCED);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }
