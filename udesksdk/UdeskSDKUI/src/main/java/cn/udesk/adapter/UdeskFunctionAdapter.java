@@ -1,6 +1,8 @@
 package cn.udesk.adapter;
 
 import android.content.Context;
+import androidx.core.text.TextUtilsCompat;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

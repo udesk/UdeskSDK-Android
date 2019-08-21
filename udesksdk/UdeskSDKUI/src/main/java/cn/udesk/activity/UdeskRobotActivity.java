@@ -1,11 +1,14 @@
 package cn.udesk.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 
 import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
@@ -30,6 +33,27 @@ public class UdeskRobotActivity extends UdeskBaseWebViewActivity {
             UdeskUtil.setOrientation(this);
             initData();
             loadingView();
+            mwebView.setOnTouchListener(new View.OnTouchListener() {
+                private float y1;
+                private float x1;
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()){
+                        case MotionEvent.ACTION_DOWN:
+                            x1 = event.getX();
+                            y1 = event.getY();
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            float x2 = event.getX();
+                            float y2 = event.getY();
+                            if (Math.abs(y2-y1)>100 || Math.abs(x2-x1)>100){
+                                UdeskUtil.hideSoftInput(getApplicationContext(),mwebView);
+                            }
+                            break;
+                    }
+                    return false;
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }

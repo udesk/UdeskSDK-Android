@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import androidx.core.text.TextUtilsCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.LruCache;
@@ -29,7 +30,7 @@ import java.util.regex.Pattern;
  */
 public class EmojiManager {
 
-    private static final String EMOT_DIR = "emoji/";
+    private static final String EMOT_DIR = "udeskemoji/";
 
     private static final int CACHE_MAX_SIZE = 1024;
     private static Pattern mPattern;
