@@ -539,7 +539,7 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
                     });
                     mMediaPlayer.setLooping(true);
                     mMediaPlayer.prepare();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
