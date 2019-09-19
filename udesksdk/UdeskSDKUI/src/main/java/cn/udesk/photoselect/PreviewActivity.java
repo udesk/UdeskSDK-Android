@@ -21,6 +21,7 @@ import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
@@ -125,6 +126,10 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
                             SelectResult.allLocalMedia.get(lastPosition).setSelected(false);
                             SelectResult.removePhoto(SelectResult.allLocalMedia.get(lastPosition));
                         } else {
+                            if (SelectResult.count() >= UdeskConst.count){
+                                Toast.makeText(getApplicationContext(), getString(R.string.udesk_max_tips), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             SelectResult.allLocalMedia.get(lastPosition).setSelected(true);
                             SelectResult.addPhoto(SelectResult.allLocalMedia.get(lastPosition));
                         }
@@ -133,6 +138,10 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
                             SelectResult.selectLocalMedia.get(lastPosition).setSelected(false);
                             SelectResult.removePhoto(SelectResult.selectLocalMedia.get(lastPosition));
                         } else {
+                            if (SelectResult.count() >= UdeskConst.count){
+                                Toast.makeText(getApplicationContext(), getString(R.string.udesk_max_tips), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             SelectResult.selectLocalMedia.get(lastPosition).setSelected(true);
                             SelectResult.addPhoto(SelectResult.selectLocalMedia.get(lastPosition));
                         }
@@ -160,7 +169,6 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
                     super.onScrollStateChanged(recyclerView, newState);
                     int leftViewPosition = snapHelper.findTargetSnapPosition(linearLayoutManager, 1, rvPhotos.getHeight() / 2);
                     int rightViewPosition = snapHelper.findTargetSnapPosition(linearLayoutManager, rvPhotos.getWidth() - 1, rvPhotos.getHeight() / 2);
-
                     if (leftViewPosition == rightViewPosition) {
                         if (lastPosition == leftViewPosition - 1) {
                             return;
@@ -179,6 +187,14 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (previewFragment != null){
+            toggleSelector();
+        }
     }
 
     @Override
@@ -373,6 +389,7 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
                         setIndexNum(lastPosition + 1);
                         previewFragment.setSelectedPosition(position);
                         previewFragment.notifyDataSetChanged();
+                        selectorCheckBox.setChecked(true);
                         return;
                     }
                 }
@@ -384,6 +401,7 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
                         setIndexNum(lastPosition + 1);
                         previewFragment.setSelectedPosition(position);
                         previewFragment.notifyDataSetChanged();
+                        selectorCheckBox.setChecked(true);
                         return;
                     }
                 }

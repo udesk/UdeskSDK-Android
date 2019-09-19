@@ -39,7 +39,7 @@ public class PreviewFragment extends Fragment implements PreviewPhotosFragmentAd
                 UdeskUtil.frescoInit(getContext().getApplicationContext());
             }
             rvPhotos = (RecyclerView) rootView.findViewById(R.id.rv_preview_selected_photos);
-            adapter = new PreviewPhotosFragmentAdapter(getActivity(), this);
+            adapter = new PreviewPhotosFragmentAdapter(getActivity().getApplicationContext(), this);
             rvPhotos.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
             rvPhotos.setAdapter(adapter);
         } catch (Exception e) {

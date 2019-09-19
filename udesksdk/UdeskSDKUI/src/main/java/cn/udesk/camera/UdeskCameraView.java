@@ -196,6 +196,10 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
                     machine.confirm();
                 }
             });
+            resetState(TYPE_DEFAULT); //重置状态
+            CameraInterface.getInstance().registerSensorManager(mContext);
+            CameraInterface.getInstance().setSwitchView(mSwitchCamera);
+            machine.start(mVideoView.getHolder(), screenProp);
         } catch (Resources.NotFoundException e) {
             e.printStackTrace();
         }
@@ -226,30 +230,34 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
 
     //生命周期onResume
     public void onResume() {
-        try {
-            resetState(TYPE_DEFAULT); //重置状态
-            CameraInterface.getInstance().registerSensorManager(mContext);
-            CameraInterface.getInstance().setSwitchView(mSwitchCamera);
-            machine.start(mVideoView.getHolder(), screenProp);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            resetState(TYPE_DEFAULT); //重置状态
+//            CameraInterface.getInstance().registerSensorManager(mContext);
+//            CameraInterface.getInstance().setSwitchView(mSwitchCamera);
+//            machine.start(mVideoView.getHolder(), screenProp);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     //生命周期onPause
     public void onPause() {
+//        try {
+//            stopVideo();
+//            resetState(TYPE_PICTURE);
+//            CameraInterface.getInstance().isPreview(false);
+//            CameraInterface.getInstance().unregisterSensorManager(mContext);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+    }
+
+    public void ondestory() {
         try {
             stopVideo();
             resetState(TYPE_PICTURE);
             CameraInterface.getInstance().isPreview(false);
             CameraInterface.getInstance().unregisterSensorManager(mContext);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void ondestory(){
-        try {
             CameraInterface.getInstance().doDestroyCamera();
             CameraInterface.getInstance().destroyCameraInterface();
         } catch (Exception e) {
@@ -259,12 +267,16 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
 
     //SurfaceView生命周期
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
+    public void surfaceCreated(final SurfaceHolder holder) {
 
         new Thread() {
             @Override
             public void run() {
                 try {
+                    if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                        mMediaPlayer.setDisplay(holder);
+                        return;
+                    }
                     CameraInterface.getInstance().doOpenCamera(UdeskCameraView.this);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -541,6 +553,7 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
                 mMediaPlayer.stop();
                 mMediaPlayer.release();
                 mMediaPlayer = null;
+                CameraInterface.getInstance().doOpenCamera(UdeskCameraView.this);
             }
         } catch (IllegalStateException e) {
             e.printStackTrace();
