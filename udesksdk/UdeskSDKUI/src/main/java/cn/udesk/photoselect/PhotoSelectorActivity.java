@@ -8,12 +8,10 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.udesk.R;
-import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.permission.RequestCode;
 import cn.udesk.permission.XPermissionUtils;
@@ -59,6 +56,7 @@ public class PhotoSelectorActivity extends FragmentActivity implements View.OnCl
     PhotosAdapter photosAdapter;
     private List<LocalMediaFolder> foldersList = new ArrayList<>();
     private List<LocalMedia> localMedias = new ArrayList<>();
+    private boolean hasLoaded = false;
     private View udesk_rl_bottom;
 
 
@@ -204,7 +202,8 @@ public class PhotoSelectorActivity extends FragmentActivity implements View.OnCl
                     @Override
                     public void loadComplete(List<LocalMediaFolder> folders) {
 
-                        if (folders.size() > 0) {
+                        if (folders.size() > 0 && !hasLoaded) {
+                            hasLoaded = true;
                             foldersList = folders;
                             LocalMediaFolder folder = folders.get(0);
                             setFolderTitile(folder.getName());

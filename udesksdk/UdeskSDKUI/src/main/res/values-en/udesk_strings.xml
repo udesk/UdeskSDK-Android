@@ -121,4 +121,7 @@
     <string name="udesk_in_the_line">in the queue</string>
     <string name="udesk_in_the_line_max_send">Up to 20 messages can be sent in the queue</string>
     <string name="udesk_file_not_exist">File does not exist</string>
+
+    <string name="summit_must_survey">Please comment on the current service, thank you !!</string>
+    <string name="summit_out_of_range">Text length is out of range</string>
 </resources>

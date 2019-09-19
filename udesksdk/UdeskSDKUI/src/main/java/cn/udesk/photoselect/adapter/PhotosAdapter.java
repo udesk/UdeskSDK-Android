@@ -71,7 +71,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 contentHolder.ll_check.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (!image.isSelected() && SelectResult.count() == UdeskConst.count) {
+                        if (!image.isSelected() && SelectResult.count() >= UdeskConst.count) {
                             imageSelectChangedListener.onSelectorOutOfMax();
                             return;
                         }

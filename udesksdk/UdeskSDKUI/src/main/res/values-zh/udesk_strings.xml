@@ -124,4 +124,8 @@
     <string name="udesk_in_the_line">排队中</string>
     <string name="udesk_in_the_line_max_send">排队中最多允许发送二十条消息</string>
     <string name="udesk_file_not_exist">文件不存在</string>
+
+    <string name="summit_must_survey">请对当前服务做个评价，谢谢!!</string>
+    <string name="summit_out_of_range">内容超出最大长度</string>
+
 </resources>
