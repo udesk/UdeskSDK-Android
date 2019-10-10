@@ -46,11 +46,6 @@
     在UdeskSDKUI下的build.gradle文件下  修改dependencies fresco版本号 不能根据androidstudio提示更新到最新
     
 ```
-### okhttp的版本
-
-'com.qiniu:qiniu-android-sdk:7.3.+' 采用7.3.+的方式  okhttp需要大于当前七牛依赖的okhttp版本号， 而不能选择小的。
-
-**打包时会下载最新版本, 需要集成方在打包时注意测试上传图片和语言文件的功能,看你们app使用的okhttp和七牛依赖的需要的okhttp是否兼容.**
 
 
 ### customer_token， sdk_token 仅支持字母、数字及下划线,禁用特殊字符
@@ -271,7 +266,7 @@
                 .setUpdatedefinedUserRoplist(getUpdateDefinedRoplist()) //设置用户更新自定义列表字段信息
                 .setFirstMessage(firstMessage.getText().toString()) //设置带入一条消息  会话分配就发送给客服
                 .setCustomerUrl(customerUrl.getText().toString()) //设置客户的头像地址
-                .setRobot_modelKey(robot_modelKey.getText().toString()) // udesk 机器人配置插件 对应的Id值
+                .setRobot_modelKey(robot_modelKey.getText().toString()) // udesk 机器人配置常见问题 对应的Id值
                 .setConcatRobotUrlWithCustomerInfo(robpt_customer_info.getText().toString())
                 .setCommodity(set_use_commodity.isChecked() ? createCommodity() : null)//配置发送商品链接的mode
                 .setProduct(set_use_prouct.isChecked() ? createProduct() : null)//配置发送商品链接的mode
@@ -342,11 +337,11 @@
 -keep class cn.udesk.**{*; } 
 //JSONobject
 -keep class org.json.** {*; }
-//七牛
+//okhttp
 -keep class okhttp3.** {*;} 
 -keep class okio.** {*;} 
--keep class com.qiniu.**{*;}
--keep class com.qiniu.**{public <init>();}
+//okgo
+-keep class com.lzy.okgo.** {*;} 
 -ignorewarnings
 //smack
 -keep class org.jxmpp.** {*;} 
@@ -394,6 +389,7 @@
 -dontwarn javax.annotation.**
 -dontwarn com.android.volley.toolbox.**
 -dontwarn com.facebook.infer.**
+-dontwarn com.lzy.okgo.**
 
 
  //bugly
@@ -424,9 +420,6 @@
   **更多功参考demo。**
   
 
-### demo下载
-
-[demo下载](https://s.beta.myapp.com/myapp/rdmexp/exp/file2/2018/11/26/udesksdkdemo_1.0_032e649f-e3ce-568d-8524-46fd7cb55fbe.apk)
 
 <h1 id="3">三、SDK中功能项说明</h1>
 
@@ -915,14 +908,17 @@ RedirectViewHolder  显示转移提示语信息；
 
 <h1 id="7">七、更新日志</h1>
 
-### 4.3.2 ###
+### 4.3.3 修复内容###
+1. 修改上传策略
+
+### 4.3.2 修复内容###
 1. 修改拍摄功能问题
 2. 修改相册功能问题
 3. 修改键盘高度问题
 4. 修改评价备注问题
 5. 添加导航追踪
 
-### 4.3.1
+### 4.3.1 修复内容
 1. webview 加载逻辑调整
 2. 机器人聊天界面滑动隐藏键盘
 3. 调整emoji名称

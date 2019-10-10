@@ -104,7 +104,7 @@ public class UdeskConfig {
     public Map<String, String> updatedefinedUserRoplist;
     //设置带入一条消息  会话分配就发送给客服
     public String firstMessage;
-    //udesk 机器人配置欢迎语 对应的Id值
+    //udesk 机器人配置常见问题 对应的Id值
     public String robot_modelKey;
     //udesk 用于机器人页面收集客户信息
     public String concatRobotUrlWithCustomerInfo;
@@ -297,7 +297,7 @@ public class UdeskConfig {
         private Map<String, String> updatedefinedUserRoplist;
         //设置带入一条消息  会话分配就发送给客服
         private String firstMessage;
-        //udesk 机器人配置欢迎语 对应的Id值
+        //udesk 机器人配置常见问题 对应的Id值
         private String robot_modelKey;
         private String concatRobotUrlWithCustomerInfo;
         //设置客户的头像地址
@@ -670,7 +670,7 @@ public class UdeskConfig {
         }
 
         /**
-         * @param robot_modelKey udesk 机器人配置欢迎语 对应的Id值
+         * @param robot_modelKey udesk 机器人配置常见问题 对应的Id值
          */
         public Builder setRobot_modelKey(String robot_modelKey) {
             this.robot_modelKey = robot_modelKey;

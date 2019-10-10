@@ -206,7 +206,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 .setUpdatedefinedUserRoplist(getUpdateDefinedRoplist()) //设置用户更新自定义列表字段信息
                 .setFirstMessage(firstMessage.getText().toString()) //设置带入一条消息  会话分配就发送给客服
                 .setCustomerUrl(customerUrl.getText().toString()) //设置客户的头像地址
-                .setRobot_modelKey(robot_modelKey.getText().toString()) // udesk 机器人配置插件 对应的Id值
+                .setRobot_modelKey(robot_modelKey.getText().toString()) // udesk 机器人配置常见问题 对应的Id值
                 .setConcatRobotUrlWithCustomerInfo(robpt_customer_info.getText().toString())
                 .setCommodity(set_use_commodity.isChecked() ? createCommodity() : null)//配置发送商品链接的mode
                 .setProduct(set_use_prouct.isChecked() ? createProduct() : null)//配置发送商品链接的mode
