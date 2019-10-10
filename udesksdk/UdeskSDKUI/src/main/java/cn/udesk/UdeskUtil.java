@@ -95,7 +95,7 @@ public class UdeskUtil {
 
     }
 
-    public static File cameaFile(Context context) {
+    public static File cameraFile(Context context) {
         try {
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             File imageFile = new File(UdeskUtils.getDirectoryPath(context, UdeskConst.FileImg) + File.separator + timeStamp + UdeskConst.IMG_SUF);

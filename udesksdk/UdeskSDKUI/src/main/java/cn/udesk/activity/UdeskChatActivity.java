@@ -1831,7 +1831,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IChatActivit
         try {
             if (isNeedOpenLocalCamera || Build.VERSION.SDK_INT < 21 || !UdeskSDKManager.getInstance().getUdeskConfig().isUseSmallVideo) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                cameraFile = UdeskUtil.cameaFile(UdeskChatActivity.this);
+                cameraFile = UdeskUtil.cameraFile(getApplicationContext());
                 photoUri = UdeskUtil.getOutputMediaFileUri(UdeskChatActivity.this, cameraFile);
                 if (Build.VERSION.SDK_INT >= 24) {
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
