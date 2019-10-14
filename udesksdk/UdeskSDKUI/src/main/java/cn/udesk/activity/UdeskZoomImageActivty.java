@@ -92,6 +92,10 @@ public class UdeskZoomImageActivty extends UdeskBaseActivity implements
             } else if (v.getId() == R.id.udesk_original_photos) {
                 File file = UdeskUtil.getFileFromDiskCache(UdeskZoomImageActivty.this.getApplicationContext(), uri);
                 if (file == null) {
+                    if (!UdeskUtils.isNetworkConnected(getApplicationContext())) {
+                        UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.udesk_has_wrong_net));
+                        return;
+                    }
                     String oldPath = uri.getPath();
                     file = new File(oldPath);
                 }

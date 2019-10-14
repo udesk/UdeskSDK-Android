@@ -100,6 +100,8 @@
     <string name="service_valuation">服务评价</string>
     <string name="summit_remark">提交评价</string>
     <string name="summit_must_remark">评价备注必需填写</string>
+    <string name="summit_must_survey">请对当前服务做个评价，谢谢!!</string>
+    <string name="summit_out_of_range">内容超出最大长度</string>
 
     <string name="udesk_img_video">图片和视频</string>
     <string name="udesk_all_video">所有视频</string>

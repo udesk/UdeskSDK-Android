@@ -96,6 +96,8 @@
 
     <string name="summit_remark">Submit Feedback</string>
     <string name="summit_must_remark">Remarks are required</string>
+    <string name="summit_must_survey">Please comment on the current service, thank you !!</string>
+    <string name="summit_out_of_range">Text length is out of range</string>
 
     <string name="udesk_img_video">Photos</string>
     <string name="udesk_all_video">Videos</string>

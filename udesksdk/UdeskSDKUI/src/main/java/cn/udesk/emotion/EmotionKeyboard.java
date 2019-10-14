@@ -1,14 +1,17 @@
 package cn.udesk.emotion;
 
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -18,6 +21,8 @@ import java.lang.reflect.Field;
 
 import udesk.core.event.InvokeEventContainer;
 
+import static android.view.View.NO_ID;
+
 /**
  * 表情键盘协调工具
  */
@@ -25,16 +30,16 @@ import udesk.core.event.InvokeEventContainer;
 public class EmotionKeyboard {
 
     private static final String SHARE_PREFERENCE_NAME = "EmotionKeyBoard";
-    private static final String SHARE_PREFERENCE_SOFT_INPUT_HEIGHT = "sofe_input_height";
+    private static final String FULLSCREEN_SHARE_PREFERENCE_SOFT_INPUT_HEIGHT = "fullscreen_sofe_input_height";
+    private static final String CLASSICSCREEN_SHARE_PREFERENCE_SOFT_INPUT_HEIGHT = "Classicscreen_sofe_input_height";
     private Activity mActivity;
     private InputMethodManager mInputManager;//软键盘管理类
     private SharedPreferences mSp;
     private View mEmotionLayout;//表情布局
     private EditText mEditText;
     private View mContentView;//内容布局view,即除了表情布局或者软键盘布局以外的布局，用于固定bar的高度，防止跳闪
-
-    //9.0系统 底部的虚拟bar高度
-    private int bottomBarheight;
+    private int tempContentViewHeight;
+    private int tempInputHeight;
 
     public EmotionKeyboard() {
     }
@@ -68,14 +73,8 @@ public class EmotionKeyboard {
                     if (event.getAction() == MotionEvent.ACTION_UP && mEmotionLayout.isShown()) {
                         lockContentHeight();//显示软件盘时，锁定内容高度，防止跳闪。
                         hideEmotionLayout(true);//隐藏表情布局，显示软件盘
+                        unlockContentHeightDelayed();
                         InvokeEventContainer.getInstance().eventui_OnHideLayout.invoke(true);
-                        //软件盘显示后，释放内容高度
-                        mEditText.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                unlockContentHeightDelayed();
-                            }
-                        }, 200L);
                     }
                     return false;
                 }
@@ -85,7 +84,6 @@ public class EmotionKeyboard {
         }
         return this;
     }
-
     /**
      * 绑定表情按钮（可以有多个表情按钮）
      *
@@ -191,17 +189,18 @@ public class EmotionKeyboard {
     private void showEmotionLayout() {
         try {
             int softInputHeight = getSupportSoftInputHeight();
-            if (softInputHeight == 0) {
-                if (Build.VERSION.SDK_INT >= 28){
-                    softInputHeight = mSp.getInt(SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, dip2Px(310));
-                }else {
-                    softInputHeight = mSp.getInt(SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, dip2Px(292));
+            if (softInputHeight <= 0) {
+                if (!isNavigationBarExist(mActivity)) {
+                    // 是全屏
+                    softInputHeight = mSp.getInt(FULLSCREEN_SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, dip2Px(294));
+                } else {
+                    softInputHeight = mSp.getInt(CLASSICSCREEN_SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, dip2Px(294));
                 }
             }
-            softInputHeight += bottomBarheight;
+            softInputHeight = softInputHeight >= dip2Px(240) ? softInputHeight : dip2Px(294);
+            tempInputHeight = softInputHeight;
             hideSoftInput();
-            mEmotionLayout.getLayoutParams().height = softInputHeight >=  dip2Px(240) ? softInputHeight
-                    : ( bottomBarheight > 0 ? dip2Px(292) : dip2Px(310));
+            mEmotionLayout.getLayoutParams().height = softInputHeight;
             mEmotionLayout.setVisibility(View.VISIBLE);
         } catch (Exception e) {
             e.printStackTrace();
@@ -238,6 +237,7 @@ public class EmotionKeyboard {
     public void lockContentHeight() {
         try {
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mContentView.getLayoutParams();
+            tempContentViewHeight = mContentView.getHeight();
             params.height = mContentView.getHeight();
             params.weight = 0.0F;
         } catch (Exception e) {
@@ -274,11 +274,53 @@ public class EmotionKeyboard {
                     mInputManager.showSoftInput(mEditText, 0);
                 }
             });
+            mEditText.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    int softInputHeight;
+                    if(isNavigationBarExist(mActivity)){
+                        if (mSp.getInt(CLASSICSCREEN_SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, 0) == 0){
+                            getSupportSoftInputHeight();
+                        }
+                        softInputHeight = mSp.getInt(CLASSICSCREEN_SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, 0);
+                    }else {
+                        if (mSp.getInt(FULLSCREEN_SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, 0) == 0){
+                            getSupportSoftInputHeight();
+                        }
+                        // 是全屏
+                        softInputHeight = mSp.getInt(FULLSCREEN_SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, 0);
+                    }
+                    if (softInputHeight > 0){
+                        int diff = tempInputHeight-softInputHeight;
+                        if (diff != 0){
+                            startAnimation(diff);
+                        }
+                    }
+                }
+            },150L);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    private void startAnimation(int diff) {
+        //属性动画对象
+        ValueAnimator va;
+        va = ValueAnimator.ofInt(tempContentViewHeight, tempContentViewHeight+diff);
+        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                //获取当前的height值
+                int h =(Integer)valueAnimator.getAnimatedValue();
+                //动态更新view的高度
+                mContentView.getLayoutParams().height = h;
+                mContentView.requestLayout();
+            }
+        });
+        va.setDuration(2000);
+        //开始动画
+        va.start();
+    }
     /**
      * 隐藏软件盘
      */
@@ -322,24 +364,66 @@ public class EmotionKeyboard {
              * 这是因为高度是包括了虚拟按键栏的(例如华为系列)，所以在API Level高于20时，
              * 我们需要减去底部虚拟按键栏的高度（如果有的话）
              */
-            if (Build.VERSION.SDK_INT >= 20 && softInputHeight>0 ) {
-                // When SDK Level >= 20 (Android L), the softInputHeight will contain the height of softButtonsBar (if has)
-                softInputHeight = softInputHeight - getSoftButtonsBarHeight();
+            if (!isNavigationBarExist(mActivity)) {
+                mSp.edit().putInt(CLASSICSCREEN_SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, 0).apply();
+                // 是全屏
+                //存一份到本地
+                if (softInputHeight > 400) {
+                    mSp.edit().putInt(FULLSCREEN_SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, softInputHeight).apply();
+                }
+            } else {
+                mSp.edit().putInt(FULLSCREEN_SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, 0).apply();
+                if (Build.VERSION.SDK_INT >= 20 && softInputHeight > 0) {
+                    // When SDK Level >= 20 (Android L), the softInputHeight will contain the height of softButtonsBar (if has)
+                    softInputHeight = softInputHeight - isNavigationHeight(mActivity);
+                }
+                //存一份到本地
+                if (softInputHeight > 400) {
+                    mSp.edit().putInt(CLASSICSCREEN_SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, softInputHeight).apply();
+                }
             }
-            if (softInputHeight < 0){
-                bottomBarheight = Math.abs(softInputHeight);
-            }
-            if (softInputHeight == 0){
-                bottomBarheight = 0 ;
-            }
-            //存一份到本地
-            if (softInputHeight > 0) {
-                mSp.edit().putInt(SHARE_PREFERENCE_SOFT_INPUT_HEIGHT, softInputHeight).apply();
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return softInputHeight;
+    }
+    private static final String NAVIGATION = "navigationBarBackground";
+
+    private boolean isNavigationBarExist(Activity activity) {
+        try {
+            ViewGroup vp = (ViewGroup) activity.getWindow().getDecorView();
+            if (vp != null) {
+                for (int i = 0; i < vp.getChildCount(); i++) {
+                    vp.getChildAt(i).getContext().getPackageName();
+                    if (vp.getChildAt(i).getId() != NO_ID && NAVIGATION.equals(activity.getResources().getResourceEntryName(vp.getChildAt(i).getId()))) {
+                        if (vp.getChildAt(i).getHeight() != 0){
+                            return true;
+                        }
+                    }
+                }
+            }
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private int isNavigationHeight(Activity activity) {
+        try {
+            ViewGroup vp = (ViewGroup) activity.getWindow().getDecorView();
+            if (vp != null) {
+                for (int i = 0; i < vp.getChildCount(); i++) {
+                    vp.getChildAt(i).getContext().getPackageName();
+                    if (vp.getChildAt(i).getId() != NO_ID && NAVIGATION.equals(activity.getResources().getResourceEntryName(vp.getChildAt(i).getId()))) {
+                        return vp.getChildAt(i).getHeight();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     /**

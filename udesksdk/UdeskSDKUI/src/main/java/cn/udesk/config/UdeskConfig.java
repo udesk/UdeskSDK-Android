@@ -1,9 +1,7 @@
 package cn.udesk.config;
 
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import cn.udesk.R;
@@ -110,7 +108,7 @@ public class UdeskConfig {
     public Map<String, String> definedUserRoplist;
     //设置带入一条消息  会话分配就发送给客服
     public String firstMessage;
-    //udesk 机器人配置欢迎语 对应的Id值
+    //udesk 机器人常见问题 对应的Id值
     public String robot_modelKey;
     //udesk 用于机器人页面收集客户信息
     public String concatRobotUrlWithCustomerInfo;
@@ -160,7 +158,6 @@ public class UdeskConfig {
     public boolean isShowCustomerNickname;
     //是否显示客户头像
     public boolean isShowCustomerHead = true;
-
 
     UdeskConfig(Builder builder) {
 
@@ -230,7 +227,6 @@ public class UdeskConfig {
         this.channel = builder.channel;
         this.isShowCustomerNickname = builder.isShowCustomerNickname;
         this.isShowCustomerHead = builder.isShowCustomerHead;
-
     }
 
     public static UdeskConfig createDefualt() {
@@ -321,7 +317,7 @@ public class UdeskConfig {
         private Map<String, String> definedUserRoplist;
         //设置带入一条消息  会话分配就发送给客服
         private String firstMessage;
-        //udesk 机器人配置欢迎语 对应的Id值
+        //udesk 机器人常见问题 对应的Id值
         private String robot_modelKey;
         private String concatRobotUrlWithCustomerInfo;
         //设置客户的头像地址
@@ -684,7 +680,7 @@ public class UdeskConfig {
         /**
          * @param defaultUserInfo 创建用户的基本信息
          */
-        public Builder setdefaultUserInfo(Map<String, String> defaultUserInfo) {
+        public Builder setDefaultUserInfo(Map<String, String> defaultUserInfo) {
             this.defaultUserInfo = defaultUserInfo;
             return this;
         }
@@ -714,7 +710,7 @@ public class UdeskConfig {
         }
 
         /**
-         * @param robot_modelKey udesk 机器人配置欢迎语 对应的Id值
+         * @param robot_modelKey udesk 机器人常见问题 对应的Id值
          */
         public Builder setRobot_modelKey(String robot_modelKey) {
             this.robot_modelKey = robot_modelKey;
@@ -891,7 +887,6 @@ public class UdeskConfig {
             this.isShowCustomerHead = isShowCustomerHead;
             return this;
         }
-
 
         public UdeskConfig build() {
             return new UdeskConfig(this);

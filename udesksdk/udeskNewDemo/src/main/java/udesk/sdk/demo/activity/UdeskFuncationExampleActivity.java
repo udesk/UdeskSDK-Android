@@ -214,12 +214,12 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 .setOrientation(landscape.isChecked() ? UdeskConfig.OrientationValue.landscape :
                         (user.isChecked() ? UdeskConfig.OrientationValue.user : UdeskConfig.OrientationValue.portrait)) //设置默认屏幕显示习惯
                 .setUserForm(true) //在没有请求到管理员在后端对sdk使用配置下，在默认的情况下，是否需要表单留言，true需要， false 不需要
-                .setdefaultUserInfo(getdefaultUserInfo()) // 创建用户基本信息
+                .setDefaultUserInfo(getdefaultUserInfo()) // 创建用户基本信息
                 .setDefinedUserTextField(getDefinedUserTextField()) //创建用户自定义的文本信息
                 .setDefinedUserRoplist(getDefinedUserRoplist()) //创建用户自定义的列表信息
                 .setFirstMessage(firstMessage.getText().toString()) //设置带入一条消息  会话分配就发送给客服
                 .setCustomerUrl(customerUrl.getText().toString()) //设置客户的头像地址
-                .setRobot_modelKey(robot_modelKey.getText().toString()) // udesk 机器人配置插件 对应的Id值
+                .setRobot_modelKey(robot_modelKey.getText().toString()) // udesk 机器人常见问题 对应的Id值
                 .setConcatRobotUrlWithCustomerInfo(robpt_customer_info.getText().toString())
                 .setCommodity(set_use_commodity.isChecked() ? createCommodity() : null)//配置发送商品链接的mode
                 .setProduct(set_use_prouct.isChecked() ? createProduct() : null)//配置发送商品链接的mode
@@ -283,7 +283,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 })//设置结构化消息控件点击事件回调接口.
                 .setChannel(channel.getText().toString())
                 .isShowCustomerNickname(show_customer_nickname.isChecked())//设置是否显示昵称
-                .isShowCustomerHead(show_customer_head.isChecked());//设置是否显示头像
+                .isShowCustomerHead(show_customer_head.isChecked()); //设置是否显示头像
 
         return builder;
     }
@@ -352,6 +352,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
 
     private Map<String, String> getDefinedUserRoplist() {
         Map<String, String> definedRoplistInfos = new HashMap<>();
+        // key 是后台自定义字段id  value 是列表角标值
         return definedRoplistInfos;
     }
 

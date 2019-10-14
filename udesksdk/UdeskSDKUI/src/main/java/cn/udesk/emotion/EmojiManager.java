@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  */
 public class EmojiManager {
 
-    private static final String EMOT_DIR = "emoji/";
+    private static final String EMOT_DIR = "udeskemoji/";
 
     private static final int CACHE_MAX_SIZE = 1024;
     private static Pattern mPattern;

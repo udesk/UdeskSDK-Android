@@ -121,7 +121,7 @@ public class UdeskUtil {
 
     }
 
-    public static File cameaFile(Context context) {
+    public static File cameraFile(Context context) {
         try {
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             File imageFile = new File(UdeskUtils.getDirectoryPath(context, UdeskConst.FileImg) + File.separator + timeStamp + UdeskConst.IMG_SUF);
@@ -472,6 +472,11 @@ public class UdeskUtil {
             File file = getFileFromDiskCache(context, uri);
             if (file != null) {
                 uri = Uri.fromFile(file);
+            }else {
+                if (!UdeskUtils.isNetworkConnected(context.getApplicationContext())){
+                    UdeskUtils.showToast(context.getApplicationContext(), context.getResources().getString(R.string.udesk_has_wrong_net));
+                    return;
+                }
             }
             PipelineDraweeControllerBuilder controller = Fresco.newDraweeControllerBuilder();
             controller.setUri(uri);
@@ -499,6 +504,11 @@ public class UdeskUtil {
             File file = getFileFromDiskCache(context, httpUri);
             if (file != null) {
                 httpUri = Uri.fromFile(file);
+            }else {
+                if (!UdeskUtils.isNetworkConnected(context.getApplicationContext())){
+                    UdeskUtils.showToast(context.getApplicationContext(), context.getResources().getString(R.string.udesk_has_wrong_net));
+                    return;
+                }
             }
             //初始化圆角圆形参数对象
             RoundingParams rp = new RoundingParams();
@@ -579,6 +589,11 @@ public class UdeskUtil {
             File file = getFileFromDiskCache(context, httpUri);
             if (file != null) {
                 httpUri = Uri.fromFile(file);
+            }else {
+                if (!UdeskUtils.isNetworkConnected(context.getApplicationContext())){
+                    UdeskUtils.showToast(context.getApplicationContext(), context.getResources().getString(R.string.udesk_has_wrong_net));
+                    return;
+                }
             }
             final ViewGroup.LayoutParams layoutParams = simpleDraweeView.getLayoutParams();
             ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
@@ -646,6 +661,11 @@ public class UdeskUtil {
             File file = getFileFromDiskCache(context, httpUri);
             if (file != null) {
                 httpUri = Uri.fromFile(file);
+            }else {
+                if (!UdeskUtils.isNetworkConnected(context.getApplicationContext())){
+                    UdeskUtils.showToast(context.getApplicationContext(), context.getResources().getString(R.string.udesk_has_wrong_net));
+                    return;
+                }
             }
             DraweeController controller = Fresco.newDraweeControllerBuilder()
                     .setUri(httpUri)
@@ -672,6 +692,11 @@ public class UdeskUtil {
             File file = getFileFromDiskCache(context, httpUri);
             if (file != null) {
                 httpUri = Uri.fromFile(file);
+            }else {
+                if (!UdeskUtils.isNetworkConnected(context.getApplicationContext())){
+                    UdeskUtils.showToast(context.getApplicationContext(), context.getResources().getString(R.string.udesk_has_wrong_net));
+                    return;
+                }
             }
             ImageRequest request = ImageRequestBuilder.newBuilderWithSource(httpUri)
                     //根据View的尺寸放缩图片
@@ -1369,10 +1394,11 @@ public class UdeskUtil {
         model.setDefault_option_id(0);
         model.setRobot(true);
         List<OptionsModel> options=new ArrayList<>();
-        int id=0;
-        options.add(new OptionsModel(++id,true,context.getResources().getString(R.string.udesk_statify),context.getResources().getString(R.string.udesk_statify),UdeskConst.REMARK_OPTION_HIDE));
+        //评价选项ID (1：未评价 2：满意 3：一般 4：不满意)
+        int id=1;
+        options.add(new OptionsModel(++id,true,context.getResources().getString(R.string.udesk_statify),context.getResources().getString(R.string.udesk_statify),UdeskConst.REMARK_OPTION_OPTIONAL));
         options.add(new OptionsModel(++id,true,context.getResources().getString(R.string.udesk_common),context.getResources().getString(R.string.udesk_common),UdeskConst.REMARK_OPTION_OPTIONAL));
-        options.add(new OptionsModel(++id,true,context.getResources().getString(R.string.udesk_unstatify),context.getResources().getString(R.string.udesk_unstatify),UdeskConst.REMARK_OPTION_REQUIRED));
+        options.add(new OptionsModel(++id,true,context.getResources().getString(R.string.udesk_unstatify),context.getResources().getString(R.string.udesk_unstatify),UdeskConst.REMARK_OPTION_OPTIONAL));
         model.setOptions(options);
         return model;
     }

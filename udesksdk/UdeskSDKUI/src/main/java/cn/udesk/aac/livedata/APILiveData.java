@@ -244,11 +244,11 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
                                 } catch (Exception e) {
                                     imStatus = "off";
                                 }
-                                if (imStatus.equals("on")) {
-                                    dealAgentInfo(agentInfo);
-                                    return;
-                                }
-                                imStatus(imStatus);
+//                                if (imStatus.equals("on")) {
+//                                    dealAgentInfo(agentInfo);
+//                                    return;
+//                                }
+                                imStatus(imStatus,agentInfo);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -256,7 +256,7 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
 
                         @Override
                         public void onFail(String s) {
-                            imStatus("off");
+                            imStatus("off",agentInfo);
                         }
                     }
             );
@@ -266,9 +266,9 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
     }
 
 
-    public void imStatus(String imStatus) {
+    public void imStatus(String imStatus,AgentInfo agentInfo) {
         try {
-            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.IMSTATUS, imStatus,UUID.randomUUID().toString());
+            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.IMSTATUS, agentInfo,UUID.randomUUID().toString(),imStatus);
             MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
         }catch (Exception e){
             e.printStackTrace();

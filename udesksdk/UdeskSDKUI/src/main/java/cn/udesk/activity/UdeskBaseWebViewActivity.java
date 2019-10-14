@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.webkit.DownloadListener;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebSettings;
@@ -42,7 +44,7 @@ public class UdeskBaseWebViewActivity extends UdeskBaseActivity {
             });
             linearLayout = (LinearLayout) findViewById(R.id.udesk_webview_root);
             mTitlebar = (UdeskTitleBar) findViewById(R.id.udesktitlebar);
-            mwebView = new WebView(getApplicationContext());
+            mwebView = new WebView(this);
             LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.
                     LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
             mwebView.setLayoutParams(param);
@@ -174,8 +176,15 @@ public class UdeskBaseWebViewActivity extends UdeskBaseActivity {
     @Override
     protected void onDestroy() {
         try {
-            mwebView.removeAllViews();
-            mwebView = null;
+            if (mwebView != null) {
+                ViewParent parent = mwebView.getParent();
+                if (parent != null) {
+                    ((ViewGroup) parent).removeView(mwebView);
+                }
+                mwebView.removeAllViews();
+                mwebView.destroy();
+                mwebView = null;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

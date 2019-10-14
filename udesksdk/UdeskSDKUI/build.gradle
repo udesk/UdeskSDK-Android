@@ -39,5 +39,5 @@ dependencies {
     api 'com.squareup.okhttp3:logging-interceptor:3.8.1'
     api 'com.squareup.okhttp3:okhttp:3.12.1'
     api 'org.ccil.cowan.tagsoup:tagsoup:1.2.1'
-    api files('libs/udesk_sdk_5.1.0.jar')
+    api files('libs/udesk_sdk_5.1.1.jar')
 }

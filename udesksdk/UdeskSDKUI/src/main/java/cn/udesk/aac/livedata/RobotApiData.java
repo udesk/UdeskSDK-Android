@@ -76,7 +76,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
                     info.getMsgContent(), info.getMsgId(), info.getDuration(), info.getSeqNum(), info.getFilename(), info.getFilename(), new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
-                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotMessageSuccess, message,UUID.randomUUID().toString());
+                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotMessageSuccess, message,UUID.randomUUID().toString(),info.getMsgId());
                             MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
                         }

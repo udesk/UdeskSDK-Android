@@ -31,7 +31,6 @@ import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
 import udesk.core.model.MessageInfo;
 import udesk.core.model.TraceInitBean;
-import udesk.core.model.TracesModel;
 import udesk.core.utils.UdeskUtils;
 
 
@@ -351,8 +350,8 @@ public class UdeskSDKManager {
                 setSdkPushStatus(domain,app_Key, sdkToken,
                         UdeskConfig.UdeskPushFlag.OFF, UdeskBaseInfo.registerId, app_Id);
             }
-            releaseDB();
             disConnectXmpp();
+            releaseDB();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -529,6 +528,30 @@ public class UdeskSDKManager {
         }
     }
 
+    /**
+     * 清除缓存的agentId
+     * @param context
+     */
+    public void cleanCacheAgentId(Context context) {
+        try {
+            PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                    UdeskConst.SharePreParams.Udesk_Agent_Id, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * 清除缓存的menuId
+     * @param context
+     */
+    public void cleanCacheMenuId(Context context) {
+        try {
+            PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+                    UdeskConst.SharePreParams.Udesk_Menu_Id, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     //先预留开关，当后期管理员可配置时，方便修改
     public boolean getEnableSendMessageWhenQueue() {
         return true;

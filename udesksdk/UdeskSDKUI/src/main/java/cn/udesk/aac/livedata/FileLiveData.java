@@ -1,5 +1,6 @@
 package cn.udesk.aac.livedata;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -127,7 +128,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
 
     }
 
-    private void minioUpload(final String url, final String fields, final String filePath, final MessageInfo messageInfo, String referer){
+    private void minioUpload(final String url, final String fields, final String filePath, final MessageInfo messageInfo,String referer){
         if (okHttpClient == null) {
             okHttpClient = new OkHttpClient.Builder().addInterceptor
                     (new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)).build();
@@ -193,7 +194,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
 
     private void aliUpload(final String url, final String filePath, final String accessid, final String bucket, final String policy,
                            final String signature, final String dir,
-                           final String expire, final String fileName, final MessageInfo messageInfo, String referer) {
+                           final String expire, final String fileName, final MessageInfo messageInfo,String referer) {
         try{
             if (okHttpClient == null) {
                 okHttpClient = new OkHttpClient.Builder().addInterceptor
@@ -248,7 +249,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
     }
 
     private void qiNiuUpload(final String url, final String filePath, final String token, final String bucket,
-                             final MessageInfo messageInfo, final String fileName, String referer) {
+                             final MessageInfo messageInfo, final String fileName,String referer) {
         try{
             if (okHttpClient == null) {
                 okHttpClient = new OkHttpClient();
@@ -278,11 +279,11 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                             String key = jsonObject.optString("key");
                             StringBuilder builder = new StringBuilder();
                             if (bucket.equals("udesk")) {
-                                builder.append("https://qn-private.udesk.cn/").append(key).append("?attname=");
+                                builder.append("https://dn-udeskpvt.qbox.me/").append(key).append("?attname=");
                             } else if (bucket.equals("udeskpub")) {
-                                builder.append("https://qn-public.udesk.cn/").append(key);
+                                builder.append("https://dn-udeskpub.qbox.me/").append(key);
                             } else if (bucket.equals("udeskim")) {
-                                builder.append("https://qn-im.udesk.cn/").append(key);
+                                builder.append("https://dn-udeskim.qbox.me/").append(key);
                             }
                             UdeskDBManager.getInstance().updateMsgContentDB(messageInfo.getMsgId(), builder.toString());
                             messageInfo.setMsgContent(builder.toString());
@@ -310,7 +311,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
     }
 
     @NonNull
-    private Call getCall(String url, MessageInfo messageInfo, MultipartBody.Builder builder, String referer) {
+    private Call getCall(String url, MessageInfo messageInfo, MultipartBody.Builder builder,String referer) {
         RequestBody requestBody = builder.build();
         Request request = new Request.Builder()
                 .url(url)
@@ -323,7 +324,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
     }
 
     @NonNull
-    private  void addCustomRequestBody (MultipartBody.Builder builder, File file , final MessageInfo messageInfo, String fileName) {
+    private  void addCustomRequestBody (MultipartBody.Builder builder,  File file ,final MessageInfo messageInfo, String fileName) {
         try {
             builder.addFormDataPart("file", URLEncoder.encode(fileName,"UTF-8"), createCustomRequestBody(file, new ProgressListener() {
                 int lastProgress = 0;
@@ -392,7 +393,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
 
     public void fileProgress(MessageInfo info) {
         MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.UpLoadFileLiveData_progress, info,UUID.randomUUID().toString());
-        MergeModeManager.getmInstance().putMergeMode(mergeMode, FileLiveData.this);
+        MergeModeManager.getmInstance().putMergeMode(mergeMode,FileLiveData.this);
     }
 
 
@@ -416,7 +417,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
             final File file = new File(UdeskUtils.getDirectoryPath(context, UdeskConst.FileVideo),
                     UdeskUtils.getFileName(info.getMsgContent(), UdeskConst.FileVideo));
 
-            UdeskHttpFacade.getInstance().downloadFile(file.getAbsolutePath(), info.getMsgContent(), UdeskConst.REFERER_VALUE, new UdeskHttpCallBack() {
+            UdeskHttpFacade.getInstance().downloadFile(file.getAbsolutePath(), info.getMsgContent(),UdeskConst.REFERER_VALUE, new UdeskHttpCallBack() {
 
             });
         } catch (Exception e) {
@@ -429,7 +430,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
         try {
             final File file = new File(UdeskUtils.getDirectoryPath(context, UdeskConst.File_File),
                     UdeskUtils.getFileName(info.getMsgContent(), UdeskConst.File_File));
-            UdeskHttpFacade.getInstance().downloadFile(file.getAbsolutePath(), info.getMsgContent(), UdeskConst.REFERER_VALUE, new UdeskHttpCallBack() {
+            UdeskHttpFacade.getInstance().downloadFile(file.getAbsolutePath(), info.getMsgContent(),UdeskConst.REFERER_VALUE, new UdeskHttpCallBack() {
 
 
                 @Override
@@ -444,7 +445,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                 @Override
                 public void onFailure(int errorNo, String strMsg) {
                     MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.DownFileError, info.getMsgId(),UUID.randomUUID().toString());
-                    MergeModeManager.getmInstance().putMergeMode(mergeMode, FileLiveData.this);
+                    MergeModeManager.getmInstance().putMergeMode(mergeMode,FileLiveData.this);
 
                 }
 
@@ -478,7 +479,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                     if (bitmap != null) {
                         UdeskUtils.saveBitmap(context, info.getMsgContent(), bitmap);
                         MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.ChangeVideoThumbnail, info.getMsgId(),UUID.randomUUID().toString());
-                        MergeModeManager.getmInstance().putMergeMode(mergeMode, FileLiveData.this);
+                        MergeModeManager.getmInstance().putMergeMode(mergeMode,FileLiveData.this);
 
                     }
                 } catch (Exception e) {
@@ -491,14 +492,14 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
     private void addMessage(MessageInfo msg) {
         UdeskUtils.printStackTrace();
         MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.AddMessage, msg,UUID.randomUUID().toString());
-        MergeModeManager.getmInstance().putMergeMode(mergeMode, FileLiveData.this);
+        MergeModeManager.getmInstance().putMergeMode(mergeMode,FileLiveData.this);
 
     }
 
     private void updateFailure(String msgId) {
         UdeskUtils.printStackTrace();
         MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.Send_Message_Failure, msgId,UUID.randomUUID().toString());
-        MergeModeManager.getmInstance().putMergeMode(mergeMode, FileLiveData.this);
+        MergeModeManager.getmInstance().putMergeMode(mergeMode,FileLiveData.this);
 
     }
 
