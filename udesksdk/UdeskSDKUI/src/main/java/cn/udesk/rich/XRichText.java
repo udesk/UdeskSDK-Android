@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -25,8 +26,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
-import androidx.appcompat.widget.AppCompatTextView;
-
 import org.xml.sax.Attributes;
 
 import java.io.IOException;
@@ -40,7 +39,6 @@ import cn.udesk.R;
 import cn.udesk.UdeskUtil;
 import cn.udesk.model.SpanModel;
 import udesk.core.UdeskConst;
-import udesk.core.event.InvokeEventContainer;
 import udesk.core.utils.UdeskUtils;
 
 

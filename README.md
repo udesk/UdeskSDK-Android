@@ -5,7 +5,7 @@ SDK原生机器人功能在 5.x 分支下。
 ### SDK下载地址
 [Udesk-Android 源码下载地址](https://github.com/udesk/UdeskSDK-Android)
 
-[demo 下载地址](https://qn-im.udesk.cn/udesksdk_5.1.0_1562996506_628.apk)
+[demo 下载地址](https://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/udesksdk_5.1.1_androidX_1571034062_343.apk)
 
 ## 目录
 - [一、特别声明](#1)
@@ -20,24 +20,6 @@ SDK原生机器人功能在 5.x 分支下。
 <h1 id="1">一、特别声明</h1>
 
 ### 5.1.0 设置商品消息背景、字体api发生调整 请注意更改 ###
-
-### SDK 表单留言模式下 配置工单客户字段 需要特别注意，
-
-	如果需要使用 字段类型是下拉框，级联， 复选框 的字段；需要修改UdeskBaseWebViewActivity类中的initView
-	   
-	需要修改UdeskBaseWebViewActivity类中的initView()放法中初始化Webview中上下文参数。
-	   
-	mwebView = new WebView(getApplicationContext());  
-	   
-	改成 
-	
-	mwebView = new WebView(this);
-	
-	修改原因解释：
-	   
-	WebView传入Activity上下文可能会出现内存泄漏的隐患。 如果传入Application的上下文，使用下拉框字段会出，
-	  
-	下拉框需要创建对话框，对话框创建不能用getApplicationContext()得到的context,必须用Activity，否则会出现异常。
 
 ### SDK 采用AAC框架 ###
 ### fresco版本问题 ###
@@ -179,11 +161,11 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 | useMapType                             | setUseMapSetting                                           | 设置使用那种地图                                             | 
 | Orientation                            | setOrientation                                             | 设置默认屏幕显示习惯                                          |  
 | isUserForm                             | setUserForm                                                | 本地配置是否需要表单留言，true需要， false 不需要               |  
-| defaultUserInfo                        | setDefualtUserInfo                                         | 创建用户的基本信息                                           |  
+| defaultUserInfo                        | setDefaultUserInfo                                         | 创建用户的基本信息                                           |  
 | definedUserTextField                   | setDefinedUserTextField                                    | 创建自定义的文本信息                                         |
 | definedUserRoplist                     | setDefinedUserRoplist                                      | 创建自定义的列表信息                                         |    
 | firstMessage                           | setFirstMessage                                            | 设置带入一条消息  会话分配就发送给客服                         |  
-| robot_modelKey                         | setRobot_modelKey                                          |  udesk 机器人配置欢迎语 对应的Id值                            |  
+| robot_modelKey                         | setRobot_modelKey                                          |  udesk 机器人常见问题 对应的Id值                            |  
 | concatRobotUrlWithCustomerInfo         | setConcatRobotUrlWithCustomerInfo                          |  用于机器人页面收集客户信息                                   |  
 | customerUrl                            | setCustomerUrl                                             |  设置客户的头像地址                                          |    
 | commodity                              | setCommodity                                               |  配置发送商品链接的mode                                      |  
@@ -264,12 +246,12 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
                 .setOrientation(landscape.isChecked() ? UdeskConfig.OrientationValue.landscape :
                         (user.isChecked() ? UdeskConfig.OrientationValue.user : UdeskConfig.OrientationValue.portrait)) //设置默认屏幕显示习惯
                 .setUserForm(true) //在没有请求到管理员在后端对sdk使用配置下，在默认的情况下，是否需要表单留言，true需要， false 不需要
-                .setdefaultUserInfo(getdefaultUserInfo()) // 创建用户基本信息
+                .setDefaultUserInfo(getdefaultUserInfo()) // 创建用户基本信息
                 .setDefinedUserTextField(getDefinedUserTextField()) //创建用户自定义的文本信息
                 .setDefinedUserRoplist(getDefinedUserRoplist()) //创建用户自定义的列表信息
                 .setFirstMessage(firstMessage.getText().toString()) //设置带入一条消息  会话分配就发送给客服
                 .setCustomerUrl(customerUrl.getText().toString()) //设置客户的头像地址
-                .setRobot_modelKey(robot_modelKey.getText().toString()) // udesk 机器人配置插件 对应的Id值
+                .setRobot_modelKey(robot_modelKey.getText().toString()) // udesk 机器人常见问题 对应的Id值
                 .setConcatRobotUrlWithCustomerInfo(robpt_customer_info.getText().toString())
                 .setCommodity(set_use_commodity.isChecked() ? createCommodity() : null)//配置发送商品链接的mode
                 .setProduct(set_use_prouct.isChecked() ? createProduct() : null)//配置发送商品链接的mode
@@ -333,10 +315,11 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
                 })//设置结构化消息控件点击事件回调接口.
                 .setChannel(channel.getText().toString())
                 .isShowCustomerNickname(show_customer_nickname.isChecked())//设置是否显示昵称
-                .isShowCustomerHead(show_customer_head.isChecked());//设置是否显示头像
+                .isShowCustomerHead(show_customer_head.isChecked()); //设置是否显示头像
 
         return builder;
     }
+
 
 
 ### 3 进入页面分配会话
@@ -1015,17 +998,30 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
       	     MultiDex.install(this);
 	  }
      
-    5.h5接入参考例子
+   5.h5接入参考例子
+
     https://github.com/udesk/udesk_android_sdk_h5
 	
    6.有些消息显示不全
+
 	由于5.1.0 数据库升级，添加一些新的字段，之前版本的数据库没有。覆盖安装时读取本地数据库历史消息，消息有些字段没有读取到，造成显示不全。 卸载重装一下就可以了。
 	
 <h1 id="8">八、更新记录</h1>
 
 ### 更新日志 ###
 
-### sdk v5.1.0 版本功能： ###
+### 5.1.1 版本更新： ###
+
+1. 修改emoji文件夹名称
+2. 修改webView上下文
+3. 修改留言问题
+4. 修改满意度评价问题
+5. 修改键盘高度问题
+6. 修改相册问题
+7. 修改拍摄问题
+8. 修改七牛下载问题
+
+### 5.1.0 版本更新： ###
 
 1. 支持对话留言
 2. 支持模板消息
@@ -1041,7 +1037,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 12. 修改4.x版本覆盖安装5.x 请求客服问题
 13. 修改文件上传进度显示策略
 
-### sdk v5.0.0版本更新功能: ###
+### 5.0.0版本更新: ###
 
 1.支持原生机器人
 
@@ -1190,52 +1186,51 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 <h1 id="9">九、部分功能截图</h1>
 
 ### 1.原生机器人 ###
-![udesk](http://qn-im.udesk.cn/image_1554795197_196.png?imageMogr2/auto-orient)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/1_1571025112_783.png?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ##### 后台配置 #####
-![udesk](http://qn-im.udesk.cn/%E6%9C%BA%E5%99%A8%E4%BA%BA_1554859742_673.png?imageMogr2/auto-orient/)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/2_1571025171_804.png?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ### 2.输入联想 ###
-![udesk](http://qn-public.udesk.cn/667521150399125915804ae4c2c-9fff-4faf-a8c1-692eeab01c24_a2927d95d64c169fe7207af35fb65d62_upload.jpg)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/3_1571025223_508.jpg?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ### 3.语音识别 ###
-![udesk](http://qn-public.udesk.cn/667521150399125915953572dc9-0f5d-4ee0-afe6-63c155318ebe_ed0c33dfe9439aa916444f60539ec53a_upload.jpg)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/4_1571025270_523.jpg?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ### 4.三方会话 ###
-![udesk](http://qn-im.udesk.cn/image_1554796278_175.png?imageMogr2/auto-orient%3E)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/5_1571025306_362.png?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ### 5.商品链接 自定义导航及服务评价 自定义表情 ###
-![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554803534_500.png?imageMogr2/auto-orient/%3E)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/6_1571025346_475.png?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ### 6.自定义按钮 ###
-![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554803735_637.png?imageMogr2/auto-orient/%3E)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/7_1571025383_939.png?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ### 7.转人工导航设置 ###
-![udesk](http://qn-public.udesk.cn/667782297295624605007225530-427c-4995-9d80-cd1eae597912_8921c0b36b5c6b06d7d1707884285080_upload.jpg?imageMogr2/auto-orient/)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/8_1571025424_407.jpg?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ##### 后台配置 #####
-![后台配置](http://qn-im.udesk.cn/11111_1554803134_488.jpg?imageMogr2/auto-orient/%3E)
+![后台配置](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/9_1571025469_867.jpg?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ### 8.表单留言 ###
-![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554803920_860.png?imageMogr2/auto-orient)
-![udesk](http://qn-public.udesk.cn/667782297295624605267b1134e-8935-437f-8327-123f500ca74b_cad93b0de4c60075f08f5ad081f05e19_upload.jpg?imageMogr2/auto-orient/)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/10_1571025521_212.jpg?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ### 9.直接留言 ###
-![udesk](http://qn-public.udesk.cn/667782297295624605592ee242a-6dbc-472a-b741-e8666642712f_2f0b7f6ffac2ab1ba4866f35c6946b57_upload.jpg?imageMogr2/auto-orient)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/11_1571025556_230.jpg?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ##### 后台配置 #####
-![后台配置](http://qn-im.udesk.cn/%E7%95%99%E8%A8%80_1554804116_771.jpg?imageMogr2/auto-orient)
+![后台配置](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/12_1571031537_681.jpg?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ### 10.满意度评价 ###
-![udesk](http://qn-public.udesk.cn/6677822972956246049a403c35c-ffa3-431a-8749-171a997eca4b_64011a5f3d16dd6c54b3e067f60a938b_upload.jpg?imageMogr2/auto-orient)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/13_1571031586_139.jpg?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ### 11.无消息对话过滤 ###
-![udesk](http://qn-public.udesk.cn/6677822972956246053d7d398a2-ce59-4c9a-a6a4-4e48a454523a_642c49230fd6f95c10eb7f1ede237933_upload.jpg?imageMogr2/auto-orient/%3E)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/14_1571031624_463.jpg?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ##### 后台配置 #####
-![后台配置](http://qn-im.udesk.cn/%E6%97%A0%E6%B6%88%E6%81%AF_1554804585_561.jpg?imageMogr2/auto-orient)
+![后台配置](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/15_1571031682_360.jpg?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ### 12.消息类型展示 ###
 ##### 商品消息 地图 文件 小视频类型 #####
-![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554874972_482.png?imageMogr2/auto-orient/)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/16_1571031722_733.png?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ##### 富文本 图文带推荐消息 #####
-![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554875445_398.png?imageMogr2/auto-orient)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/17_1571031770_240.png?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ##### 纯文本 流程消息 #####
-![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554875651_102.png?imageMogr2/auto-orient)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/18_1571031810_174.png?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ##### 商品选择 商品回复 #####
 ![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554875805_806.png?imageMogr2/auto-orient/)
 ##### 问题带推荐 推荐带分类 #####
-![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554875975_407.png?imageMogr2/auto-orient/)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/19_1571031855_373.png?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ##### 图片 链接 语音消息 转人工提示 答案评价 #####
-![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554876248_214.png?imageMogr2/auto-orient/)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/20_1571031994_662.png?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ##### 转接 结构化消息 #####
-![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554876415_486.png?imageMogr2/auto-orient/)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/21_1571032049_234.png?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ##### 转人工 留言事件 #####
-![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554876592_867.png?imageMogr2/auto-orient/)
+![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/22_1571032094_261.png?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ##### 视频直播 #####
 ![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/image_1554878719_504.png?x-oss-process=image/auto-orient,1/)

@@ -9,11 +9,9 @@ import android.graphics.Movie;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
-
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -90,7 +88,6 @@ public class XPhotoView extends AppCompatImageView implements IXphotoView {
         mSingleTabListener = listener;
     }
 
-    @Override
     public void setImageResource(@DrawableRes int resId) {
         Drawable drawable = this.getContext().getResources().getDrawable(resId);
         if(drawable == null) {

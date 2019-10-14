@@ -3,9 +3,8 @@ package udesk.sdk.demo.jpush;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.util.Log;
-
 import androidx.multidex.MultiDex;
+import android.util.Log;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.udesk.UdeskSDKManager;

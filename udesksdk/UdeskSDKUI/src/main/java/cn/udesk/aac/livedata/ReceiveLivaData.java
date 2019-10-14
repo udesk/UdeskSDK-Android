@@ -1,22 +1,9 @@
 package cn.udesk.aac.livedata;
 
-
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import android.text.TextUtils;
-import android.util.Log;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 import cn.udesk.aac.MergeMode;
-import cn.udesk.aac.MergeModeManager;
-import cn.udesk.db.UdeskDBManager;
-import cn.udesk.messagemanager.UdeskXmppManager;
-import udesk.core.UdeskConst;
-import udesk.core.event.InvokeEventContainer;
-import udesk.core.model.MessageInfo;
-import udesk.core.utils.UdeskUtils;
 
 
 /**

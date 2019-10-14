@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
-
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.LayoutInflater;

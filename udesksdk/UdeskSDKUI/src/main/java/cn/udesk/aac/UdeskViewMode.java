@@ -1,12 +1,12 @@
 package cn.udesk.aac;
 
-import androidx.annotation.Nullable;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import android.content.Context;
 import android.graphics.Bitmap;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 

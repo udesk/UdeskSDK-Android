@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,7 +44,7 @@ public class UdeskSurvyPopwindow extends PopupWindow {
 
     private View mMenuView, remarkView, remarkTips;
     private TextView title, starDes, summit;
-    private ImageView cancle;
+    private LinearLayout cancle;
     private RecyclerView contentRecyclerView, optionTagRecycele;
     private EditText remarkEt;
     private SurvyAdapter contentAdapter;
@@ -65,7 +65,7 @@ public class UdeskSurvyPopwindow extends PopupWindow {
             mMenuView = inflater.inflate(R.layout.udesk_survy_view, null);
             title = (TextView) mMenuView.findViewById(R.id.udesk_title);
             starDes = (TextView) mMenuView.findViewById(R.id.star_des);
-            cancle = (ImageView) mMenuView.findViewById(R.id.udesk_survy_cancle);
+            cancle = (LinearLayout) mMenuView.findViewById(R.id.udesk_survy_cancle);
             contentRecyclerView = (RecyclerView) mMenuView.findViewById(R.id.rv_text_list);
             optionTagRecycele = (RecyclerView) mMenuView.findViewById(R.id.rv_options_tags);
             remarkView = mMenuView.findViewById(R.id.udesk_remark_rl);
@@ -139,6 +139,7 @@ public class UdeskSurvyPopwindow extends PopupWindow {
                         //取消标记
                         setTags(new ArrayList<Tag>());
                         remarkView.setVisibility(View.GONE);
+                        remarkTips.setVisibility(View.GONE);
                         if (choiceTags != null) {
                             choiceTags.clear();
                         }
@@ -184,15 +185,19 @@ public class UdeskSurvyPopwindow extends PopupWindow {
                 public void onClick(View view) {
 
                     if (callBack != null && choiceOptionsModel != null) {
-
                         if (choiceOptionsModel.getRemark_option().equals(UdeskConst.REMARK_OPTION_REQUIRED) && TextUtils.isEmpty(remarkEt.getText().toString())) {
                             Toast.makeText(context.getApplicationContext(), context.getString(R.string.summit_must_remark), Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        if(remarkEt.getText().toString().length() > 255) {
+                            Toast.makeText(context.getApplicationContext(), context.getString(R.string.summit_out_of_range), Toast.LENGTH_LONG).show();
                             return;
                         }
                         callBack.sumbitSurvyCallBack(surveyOptions.isRobot(),String.valueOf(choiceOptionsModel.getId()), surveyOptions.getType(), remarkEt.getText().toString(), listToString(choiceTags));
                         dismiss();
                     } else {
-                        dismiss();
+                        Toast.makeText(context.getApplicationContext(), context.getString(R.string.summit_must_survey), Toast.LENGTH_LONG).show();
+                        return;
                     }
                 }
             });

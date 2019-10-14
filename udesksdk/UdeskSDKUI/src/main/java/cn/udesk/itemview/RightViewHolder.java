@@ -260,6 +260,10 @@ public class RightViewHolder extends BaseViewHolder {
                 itemReplyProduct.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                            UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                            return;
+                        }
                         Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
                         intent.putExtra(UdeskConst.WELCOME_URL,productListBean.getUrl());
                         mContext.startActivity(intent);
@@ -523,14 +527,24 @@ public class RightViewHolder extends BaseViewHolder {
                     Uri imgUri = null;
                     if (!TextUtils.isEmpty(message.getLocalPath())) {
                         imgUri = Uri.fromFile(new File(message.getLocalPath()));
+                        UdeskUtil.previewPhoto(mContext, imgUri);
                     } else if (!TextUtils.isEmpty(message.getMsgContent())) {
                         try {
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
+                                UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                                return;
+                            }
                             imgUri = Uri.parse(UdeskUtils.uRLEncoder(message.getMsgContent()));
+                            UdeskUtil.previewPhoto(mContext, imgUri);
                         } catch (Exception e) {
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
+                                UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                                return;
+                            }
                             imgUri = Uri.parse(message.getMsgContent());
+                            UdeskUtil.previewPhoto(mContext, imgUri);
                         }
                     }
-                    UdeskUtil.previewPhoto(mContext, imgUri);
                 }
             });
             ivStatus.setOnClickListener(new View.OnClickListener() {
@@ -683,6 +697,10 @@ public class RightViewHolder extends BaseViewHolder {
                 String loaclpath = UdeskUtils.getPathByUrl(mContext, UdeskConst.FileImg, message.getMsgContent());
                 UdeskUtil.loadViewBySize(mContext, smallVideoImgView, Uri.fromFile(new File(loaclpath)), UdeskUtil.dip2px(mContext, 130), UdeskUtil.dip2px(mContext, 200));
             } else {
+                if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                    UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                    return;
+                }
                 ((UdeskChatActivity) mContext).showVideoThumbnail(message);
             }
             smallVideoImgView.setTag(message.getTime());
@@ -701,6 +719,10 @@ public class RightViewHolder extends BaseViewHolder {
                         if (file != null && UdeskUtils.getFileSize(file) > 0) {
                             path = file.getPath();
                         } else {
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                                UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                                return;
+                            }
                             ((UdeskChatActivity) mContext).downLoadVideo(message);
                             path = message.getMsgContent();
                         }
@@ -861,6 +883,10 @@ public class RightViewHolder extends BaseViewHolder {
                         UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick.txtMsgOnclick(productUrl);
                     } else {
                         if (!TextUtils.isEmpty(productUrl)){
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                                UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                                return;
+                            }
                             Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
                             intent.putExtra(UdeskConst.WELCOME_URL, productUrl);
                             mContext.startActivity(intent);

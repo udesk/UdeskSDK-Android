@@ -1,18 +1,11 @@
 package cn.udesk.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +14,11 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.udesk.R;
 import cn.udesk.UdeskUtil;
-import cn.udesk.activity.UdeskWebViewUrlAcivity;
 import cn.udesk.widget.UdeskRecycleView;
 import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;

@@ -55,28 +55,27 @@ import cn.udesk.adapter.BrandDivider;
 import cn.udesk.adapter.StrucTableAdapter;
 import cn.udesk.config.UdeskConfigUtil;
 import cn.udesk.emotion.MoonUtils;
-import cn.udesk.fragment.UdeskResendDialog;
 import cn.udesk.model.SpanModel;
 import cn.udesk.model.StructModel;
 import cn.udesk.model.UdeskQueueItem;
+import cn.udesk.photoselect.PictureVideoPlayActivity;
+import cn.udesk.provider.UdeskFileProvider;
 import cn.udesk.rich.XRichText;
+import cn.udesk.widget.CircleProgressBar;
 import cn.udesk.widget.HtmlTagHandler;
 import cn.udesk.widget.RecycleViewDivider;
 import cn.udesk.widget.UdeskRecycleView;
+import udesk.core.UdeskConst;
+import udesk.core.event.InvokeEventContainer;
 import udesk.core.model.InfoListBean;
 import udesk.core.model.LinkBean;
+import udesk.core.model.MessageInfo;
 import udesk.core.model.OptionsListBean;
 import udesk.core.model.ProductListBean;
 import udesk.core.model.ShowProductBean;
 import udesk.core.model.StrucTableBean;
 import udesk.core.model.TemplateMsgBean;
 import udesk.core.model.TopAskBean;
-import cn.udesk.photoselect.PictureVideoPlayActivity;
-import cn.udesk.provider.UdeskFileProvider;
-import cn.udesk.widget.CircleProgressBar;
-import udesk.core.UdeskConst;
-import udesk.core.event.InvokeEventContainer;
-import udesk.core.model.MessageInfo;
 import udesk.core.model.WebConfigBean;
 import udesk.core.model.WechatImageBean;
 import udesk.core.utils.UdeskUtils;
@@ -499,6 +498,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                         UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick.txtMsgOnclick(productUrl);
                     } else {
                         if (!TextUtils.isEmpty(productUrl)){
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                                UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                                return;
+                            }
                             Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
                             intent.putExtra(UdeskConst.WELCOME_URL, productUrl);
                             mContext.startActivity(intent);
@@ -572,6 +575,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 tvTransferAgent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                            UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                            return;
+                        }
                         InvokeEventContainer.getInstance().event_OnTransferClick.invoke(message);
                     }
                 });
@@ -618,6 +625,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                         if (message.isUsefulClicked()){
                             UdeskUtils.showToast(mContext,mContext.getResources().getString(R.string.udesk_answer_has_survey));
                         }else {
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                                UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                                return;
+                            }
                             InvokeEventContainer.getInstance().event_OnAnswerClick.invoke(message.getLogId(),"1");
                             robotImgUseful.setImageResource(R.drawable.udesk_useful_clicked);
                             robotImgUseless.setImageResource(R.drawable.udesk_useless);
@@ -634,6 +645,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                         if (message.isUsefulClicked()){
                             UdeskUtils.showToast(mContext,mContext.getResources().getString(R.string.udesk_answer_has_survey));
                         }else {
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                                UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                                return;
+                            }
                             InvokeEventContainer.getInstance().event_OnAnswerClick.invoke(message.getLogId(),"2");
                             robotImgUseful.setVisibility(View.GONE);
                             robotImgUseless.setVisibility(View.VISIBLE);
@@ -704,6 +719,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                         childView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                                    UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                                    return;
+                                }
                                 InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(), optionsListBean.getQuestion(), optionsListBean.getQuestionId());
                             }
                         });
@@ -736,6 +755,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                                 childView.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+                                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                                            UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                                            return;
+                                        }
                                         InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(), optionsListBean.getQuestion(), optionsListBean.getQuestionId());
                                     }
                                 });
@@ -817,6 +840,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 itemLink.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                            UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                            return;
+                        }
                         Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
                         intent.putExtra(UdeskConst.WELCOME_URL, linkBean.getAnswerUrl());
                         mContext.startActivity(intent);
@@ -862,6 +889,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                        UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                        return;
+                    }
                     Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
                     intent.putExtra(UdeskConst.WELCOME_URL, url);
                     mContext.startActivity(intent);
@@ -1043,6 +1074,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                             textView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+                                    if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                                        UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                                        return;
+                                    }
                                     Intent intent = new Intent(mContext, WorkOrderWebViewActivity.class);
                                     intent.putExtra(UdeskConst.WORK_ORDER_URL,btnsBean.getData().getUrl());
                                     intent.putExtra(UdeskConst.WORK_ORDER_TITLE,templateMsgBean.getTitle());
@@ -1261,14 +1296,24 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     Uri imgUri = null;
                     if (!TextUtils.isEmpty(message.getLocalPath())) {
                         imgUri = Uri.fromFile(new File(message.getLocalPath()));
+                        UdeskUtil.previewPhoto(mContext, imgUri);
                     } else if (!TextUtils.isEmpty(message.getMsgContent())) {
                         try {
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
+                                UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                                return;
+                            }
                             imgUri = Uri.parse(UdeskUtils.uRLEncoder(message.getMsgContent()));
+                            UdeskUtil.previewPhoto(mContext, imgUri);
                         } catch (Exception e) {
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
+                                UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                                return;
+                            }
                             imgUri = Uri.parse(message.getMsgContent());
+                            UdeskUtil.previewPhoto(mContext, imgUri);
                         }
                     }
-                    UdeskUtil.previewPhoto(mContext, imgUri);
                 }
             });
         } catch (Exception e) {
@@ -1385,6 +1430,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 String loaclpath = UdeskUtils.getPathByUrl(mContext, UdeskConst.FileImg, message.getMsgContent());
                 UdeskUtil.loadViewBySize(mContext, smallVideoImgView, Uri.fromFile(new File(loaclpath)), UdeskUtil.dip2px(mContext, 130), UdeskUtil.dip2px(mContext, 200));
             } else {
+                if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                    UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                    return;
+                }
                 ((UdeskChatActivity) mContext).showVideoThumbnail(message);
             }
             dealTransfer(itemSmallVideo);
@@ -1405,6 +1454,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                         if (file != null && UdeskUtils.getFileSize(file) > 0) {
                             path = file.getPath();
                         } else {
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                                UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                                return;
+                            }
                             ((UdeskChatActivity) mContext).downLoadVideo(message);
                             path = message.getMsgContent();
                         }
@@ -1591,6 +1644,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 itemReplyProduct.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                            UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                            return;
+                        }
                         Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
                         intent.putExtra(UdeskConst.WELCOME_URL,productListBean.getUrl());
                         mContext.startActivity(intent);
@@ -1731,6 +1788,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             try {
                 switch (mStructBtn.getType()) {
                     case UdeskConst.StructBtnTypeString.link:
+                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                            UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                            return;
+                        }
                         Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
                         intent.putExtra(UdeskConst.WELCOME_URL, mStructBtn.getValue());
                         mContext.startActivity(intent);
@@ -1850,6 +1911,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 leaveingMsg.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                            UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                            return;
+                        }
                         ((UdeskChatActivity) mContext).leaveMessage();
                     }
                 });

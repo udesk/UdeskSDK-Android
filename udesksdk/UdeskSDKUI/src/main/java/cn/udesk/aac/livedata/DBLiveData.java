@@ -1,15 +1,12 @@
 package cn.udesk.aac.livedata;
 
-
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.util.Log;
 
-import androidx.lifecycle.MutableLiveData;
-
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.aac.MergeMode;

@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +70,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 contentHolder.ll_check.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (!image.isSelected() && SelectResult.count() == UdeskConst.count) {
+                        if (!image.isSelected() && SelectResult.count() >= UdeskConst.count) {
                             imageSelectChangedListener.onSelectorOutOfMax();
                             return;
                         }

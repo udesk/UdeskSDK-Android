@@ -12,12 +12,10 @@ import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
-
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
-
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -58,6 +56,7 @@ public class PhotoSelectorActivity extends FragmentActivity implements View.OnCl
     PhotosAdapter photosAdapter;
     private List<LocalMediaFolder> foldersList = new ArrayList<>();
     private List<LocalMedia> localMedias = new ArrayList<>();
+    private boolean hasLoaded = false;
     private View udesk_rl_bottom;
 
 
@@ -85,7 +84,7 @@ public class PhotoSelectorActivity extends FragmentActivity implements View.OnCl
             disPlayHeghit = wm1.getDefaultDisplay().getHeight();
             setContentView(R.layout.udesk_activity_select);
             if (!Fresco.hasBeenInitialized()) {
-                  UdeskUtil.frescoInit(this);
+                UdeskUtil.frescoInit(this);
             }
             initView();
         } catch (Exception e) {
@@ -203,7 +202,8 @@ public class PhotoSelectorActivity extends FragmentActivity implements View.OnCl
                     @Override
                     public void loadComplete(List<LocalMediaFolder> folders) {
 
-                        if (folders.size() > 0) {
+                        if (folders.size() > 0 && !hasLoaded) {
+                            hasLoaded = true;
                             foldersList = folders;
                             LocalMediaFolder folder = folders.get(0);
                             setFolderTitile(folder.getName());
@@ -359,9 +359,9 @@ public class PhotoSelectorActivity extends FragmentActivity implements View.OnCl
             if (REQUEST_PREVIEW_ACTIVITY == requestCode) {
                 Bundle bundle = data.getBundleExtra(UdeskConst.SEND_BUNDLE);
                 if (bundle != null) {
-                    boolean isOrigin = bundle.getBoolean(UdeskConst.SEND_PHOTOS_IS_ORIGIN, false);
+                    boolean isOrgin = bundle.getBoolean(UdeskConst.SEND_PHOTOS_IS_ORIGIN, false);
                     boolean isSend = bundle.getBoolean(UdeskConst.IS_SEND, false);
-                    checkBox.setChecked(isOrigin);
+                    checkBox.setChecked(isOrgin);
                     if (isSend) {
                         sendPhotos();
                     } else {

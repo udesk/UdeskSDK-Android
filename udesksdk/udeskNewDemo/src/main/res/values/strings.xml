@@ -55,7 +55,7 @@
     <string name="udesk_set_cn">设置中文</string>
     <string name="udesk_set_customer_head_url">设置客户的头像地址</string>
     <string name="udesk_set_message">设置带入一条消息 会话分配就发送给客服</string>
-    <string name="udesk_set_robot_id">udesk 机器人配置欢迎语 对应的Id值</string>
+    <string name="udesk_set_robot_id">udesk 机器人常见问题 对应的Id值</string>
     <string name="udesk_set_baseinfo">创建用户的基本信息</string>
     <string name="udesk_set_basetextinfo">创建用户的自定义的文本信息</string>
     <string name="udesk_set_info_key">自定义字段的key</string>

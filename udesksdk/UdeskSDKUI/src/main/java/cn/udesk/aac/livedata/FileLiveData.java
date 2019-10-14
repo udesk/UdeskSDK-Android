@@ -1,12 +1,11 @@
 package cn.udesk.aac.livedata;
 
-
-import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.graphics.Bitmap;
-
 import android.os.Message;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -280,11 +279,11 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                             String key = jsonObject.optString("key");
                             StringBuilder builder = new StringBuilder();
                             if (bucket.equals("udesk")) {
-                                builder.append("https://qn-private.udesk.cn/").append(key).append("?attname=");
+                                builder.append("https://dn-udeskpvt.qbox.me/").append(key).append("?attname=");
                             } else if (bucket.equals("udeskpub")) {
-                                builder.append("https://qn-public.udesk.cn/").append(key);
+                                builder.append("https://dn-udeskpub.qbox.me/").append(key);
                             } else if (bucket.equals("udeskim")) {
-                                builder.append("https://qn-im.udesk.cn/").append(key);
+                                builder.append("https://dn-udeskim.qbox.me/").append(key);
                             }
                             UdeskDBManager.getInstance().updateMsgContentDB(messageInfo.getMsgId(), builder.toString());
                             messageInfo.setMsgContent(builder.toString());
@@ -333,7 +332,6 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                 public void onProgress(long totalBytes, long remainingBytes, boolean done) {
                     try {
                         if (done) {
-                            lastProgress=0;
                             return;
                         }
                         float percent = (totalBytes - remainingBytes) * 100 / totalBytes;
@@ -461,6 +459,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                         message.obj = info;
                         myHandler.sendMessage(message);
                     }
+
                 }
             });
         } catch (Exception e) {

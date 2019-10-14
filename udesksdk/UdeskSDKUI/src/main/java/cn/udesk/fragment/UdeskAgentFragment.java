@@ -269,7 +269,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                             mMoreImg.setVisibility(View.GONE);
                         } else {
                             sendBtn.setVisibility(View.GONE);
-                            if (!udeskChatActivity.isleaveMessageTypeMsg() || udeskChatActivity.currentStatusIsOnline || udeskChatActivity.isNeedQueueMessageSave()) {
+                            if (!(udeskChatActivity.imSetting != null && udeskChatActivity.imSetting.getEnable_web_im_feedback()) || TextUtils.equals(udeskChatActivity.curentStatus,UdeskConst.Status.chatting) || udeskChatActivity.isNeedQueueMessageSave()) {
                                 mMoreImg.setVisibility(View.VISIBLE);
                             }
                         }
@@ -382,9 +382,11 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                     && UdeskSDKManager.getInstance().getUdeskConfig().navigationModes.size() > 0) {
                 addNavigationFragment();
             }
-            if (UdeskSDKManager.getInstance().getUdeskConfig().isUseNavigationSurvy && udeskChatActivity.mAgentInfo != null &&
-                    udeskChatActivity.imSetting != null
-                    && udeskChatActivity.imSetting.getEnable_im_survey()) {
+            if (UdeskSDKManager.getInstance().getUdeskConfig().isUseNavigationSurvy
+                    && udeskChatActivity.mAgentInfo != null
+                    && udeskChatActivity.imSetting != null
+                    && udeskChatActivity.imSetting.getEnable_im_survey()
+                    && udeskChatActivity.currentStatusIsOnline) {
                 navigation_survy.setVisibility(View.VISIBLE);
             } else {
                 navigation_survy.setVisibility(View.GONE);
@@ -492,7 +494,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                 functionItems.add(videoItem);
             }
 
-            if (udeskChatActivity.mAgentInfo != null && udeskChatActivity.imSetting != null && udeskChatActivity.imSetting.getEnable_im_survey()) {
+            if (udeskChatActivity.mAgentInfo != null && udeskChatActivity.imSetting != null && udeskChatActivity.imSetting.getEnable_im_survey() && udeskChatActivity.currentStatusIsOnline) {
                 FunctionMode survyItem = new FunctionMode(getString(R.string.survy), UdeskConst.UdeskFunctionFlag.Udesk_Survy, R.drawable.udesk_survy_normal);
                 functionItems.add(survyItem);
             }
@@ -551,7 +553,11 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                 }
             }
             if (UdeskSDKManager.getInstance().getUdeskConfig().isUseNavigationRootView) {
-                navigationRootView.setVisibility(vis);
+                if (vis == View.VISIBLE){
+                    setNavigationViewVis();
+                }else {
+                    navigationRootView.setVisibility(vis);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -741,25 +747,27 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                             getString(R.string.udesk_send_message_empty));
                     return;
                 }
-                if (udeskChatActivity.currentStatusIsOnline || udeskChatActivity.getPressionStatus() || udeskChatActivity.isNeedQueueMessageSave()) {
+                if (TextUtils.equals(udeskChatActivity.curentStatus,UdeskConst.Status.chatting) || udeskChatActivity.getPressionStatus() || udeskChatActivity.isNeedQueueMessageSave()) {
                     udeskViewMode.sendTxtMessage(getInputContent().toString());
                     if (!udeskChatActivity.getPressionStatus()){
                         clearInputContent();
                     }
 
-                } else if (udeskChatActivity.imSetting != null
-                        && (udeskChatActivity.imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.directMsg)
-                        || udeskChatActivity.imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.imMsg))) {
-                    if (!udeskViewMode.isLeavingMsg()) {
-                        udeskChatActivity.addCustomerLeavMsg();
-                        udeskViewMode.setLeavingMsg(true);
+                } else if (udeskChatActivity.imSetting != null && udeskChatActivity.imSetting.getEnable_web_im_feedback()) {
+                    if (udeskChatActivity.isleaveMessageTypeMsg()) {
+                        if (!udeskViewMode.isLeavingMsg()) {
+                            udeskChatActivity.addCustomerLeavMsg();
+                            udeskViewMode.setLeavingMsg(true);
+                        }
+                        if (udeskChatActivity.imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.directMsg)) {
+                            udeskViewMode.sendLeaveMessage(mInputEditView.getText().toString());
+                        } else if (udeskChatActivity.imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.imMsg)) {
+                            udeskViewMode.sendIMLeaveMessage(mInputEditView.getText().toString());
+                        }
+                        clearInputContent();
+                    }else{
+                        udeskChatActivity.confirmToForm();
                     }
-                    if (udeskChatActivity.imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.directMsg)){
-                        udeskViewMode.sendLeaveMessage(mInputEditView.getText().toString());
-                    }else if (udeskChatActivity.imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.imMsg)){
-                        udeskViewMode.sendIMLeaveMessage(mInputEditView.getText().toString());
-                    }
-                    clearInputContent();
                 }
             } else if (R.id.navigation_survy == v.getId()) {
                 if (udeskChatActivity.getPressionStatus()) {
@@ -833,7 +841,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                 return true;
             }
 
-            if (!udeskChatActivity.currentStatusIsOnline && !udeskChatActivity.isleaveMessageTypeMsg()) {
+            if (!TextUtils.equals(udeskChatActivity.curentStatus,UdeskConst.Status.chatting) && !udeskChatActivity.isleaveMessageTypeMsg()) {
                 udeskChatActivity.confirmToForm();
                 return false;
             }
