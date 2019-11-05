@@ -2888,9 +2888,14 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             } else if (getPressionStatus()) {
                 UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.udesk_agent_connecting));
                 udeskViewMode.sendTxtMessage(linkMsg);
-            } else if (imSetting != null
-                    && (imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.directMsg)
-                    || imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.imMsg))) {
+            }  else if (isNeedQueueMessageSave()) {
+                if (isMoreThan20) {
+                    UdeskUtils.showToast(getApplicationContext(), getMoreThanSendTip());
+                    return;
+                }
+                //排队中需要发送消息
+                udeskViewMode.sendTxtMessage(linkMsg);
+            }else if (isleaveMessageTypeMsg()) {
                 if (!udeskViewMode.isLeavingMsg()) {
                     addCustomerLeavMsg();
                     udeskViewMode.setLeavingMsg(true);
@@ -2900,13 +2905,6 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 }else if (imSetting.getLeave_message_type().equals(UdeskConst.LeaveMsgType.imMsg)){
                     udeskViewMode.sendIMLeaveMessage(linkMsg);
                 }
-            } else if (isNeedQueueMessageSave()) {
-                if (isMoreThan20) {
-                    UdeskUtils.showToast(getApplicationContext(), getMoreThanSendTip());
-                    return;
-                }
-                //排队中需要发送消息
-                udeskViewMode.sendTxtMessage(linkMsg);
             } else {
                 confirmToForm();
             }
