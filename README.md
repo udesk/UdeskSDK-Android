@@ -5,7 +5,7 @@ SDK原生机器人功能在 5.x 分支下。
 ### SDK下载地址
 [Udesk-Android 源码下载地址](https://github.com/udesk/UdeskSDK-Android)
 
-[demo 下载地址](https://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/udesksdk_5.1.1_1571024356_182.apk)
+[demo 下载地址](https://pro-cs.kefutoutiao.com/doc/im/tid3055/udesksdk_5.1.2_1572948462536_651ag.apk)
 
 ## 目录
 - [一、特别声明](#1)
@@ -1009,6 +1009,11 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 <h1 id="8">八、更新记录</h1>
 
 ### 更新日志 ###
+
+
+### 5.1.2 版本更新： ###
+
+1. 修改发送商品链接引发留言问题
 
 ### 5.1.1 版本更新： ###
 
