@@ -69,6 +69,10 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
     }
     public void cancleUploadFile(MessageInfo message) {
         try {
+            Call call = concurrentHashMap.get(message.getMsgId());
+            if (call != null ){
+                call.cancel();
+            }
             concurrentHashMap.remove(message.getMsgId());
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,7 +110,11 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                                 String token = upload_token.getToken();
                                 String bucket = upload_token.getBucket();
                                 String host = upload_token.getHost();
-                                qiNiuUpload(host, filePath, token, bucket, messageInfo, fileName,referer);
+                                String download_host = upload_token.getDownload_host();
+                                if (!download_host.endsWith("/")){
+                                    download_host += "/";
+                                }
+                                qiNiuUpload(host, filePath, token, bucket, messageInfo, fileName,referer,download_host);
                             }
                         }
                     } catch (Exception e) {
@@ -249,7 +257,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
     }
 
     private void qiNiuUpload(final String url, final String filePath, final String token, final String bucket,
-                             final MessageInfo messageInfo, final String fileName,String referer) {
+                             final MessageInfo messageInfo, final String fileName, String referer, final String download_host) {
         try{
             if (okHttpClient == null) {
                 okHttpClient = new OkHttpClient();
@@ -279,11 +287,9 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                             String key = jsonObject.optString("key");
                             StringBuilder builder = new StringBuilder();
                             if (bucket.equals("udesk")) {
-                                builder.append("https://dn-udeskpvt.qbox.me/").append(key).append("?attname=");
-                            } else if (bucket.equals("udeskpub")) {
-                                builder.append("https://dn-udeskpub.qbox.me/").append(key);
-                            } else if (bucket.equals("udeskim")) {
-                                builder.append("https://dn-udeskim.qbox.me/").append(key);
+                                builder.append(download_host).append(key).append("?attname=");
+                            } else {
+                                builder.append(download_host).append(key);
                             }
                             UdeskDBManager.getInstance().updateMsgContentDB(messageInfo.getMsgId(), builder.toString());
                             messageInfo.setMsgContent(builder.toString());

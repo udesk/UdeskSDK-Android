@@ -344,13 +344,13 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
     }
 
     //提交留言消息
-    public void putIMLeavesMsg(String msg, final String msgId,String msgType) {
+    public void putIMLeavesMsg(String msg, final String msgId,String msgType,String agentId,String groupId,String menuId) {
         try {
             if (TextUtils.isEmpty(customerId) || TextUtils.isEmpty(msg)) {
                 return;
             }
             UdeskHttpFacade.getInstance().putIMReplies(
-                    domain, secretKey, sdktoken, appid, msg,msgId,msgType,
+                    domain, secretKey, sdktoken, appid, msg,msgId,msgType,agentId,groupId,menuId,
                     new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {

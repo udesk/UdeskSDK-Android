@@ -1082,7 +1082,7 @@ class HtmlToSpannedConverter implements ContentHandler {
     private void startCssStyle(Editable text, Attributes attributes) {
         String style = attributes.getValue("", "style");
         if (style != null) {
-            Matcher m = getForegroundColorPattern().matcher(style);
+            Matcher m = getForegroundColorPattern().matcher(style.replaceAll(" ",""));
             if (m.find()) {
                 int c = getHtmlColor(m.group(1));
                 if (c != -1) {
@@ -1090,7 +1090,7 @@ class HtmlToSpannedConverter implements ContentHandler {
                 }
             }
 
-            m = getBackgroundColorPattern().matcher(style);
+            m = getBackgroundColorPattern().matcher(style.replaceAll(" ",""));
             if (m.find()) {
                 int c = getHtmlColor(m.group(1));
                 if (c != -1) {
@@ -1199,7 +1199,7 @@ class HtmlToSpannedConverter implements ContentHandler {
         }
         if (color.toLowerCase().contains("rgba")||color.toLowerCase().contains("rgb")){
             if (color.contains(")")){
-                color=color.substring(0,color.length()-1);
+                color=color.substring(0,color.indexOf(")"));
             }
             String s=color.replaceAll(" ","").substring(color.indexOf("(")+1);
             String[] split = s.split(",");

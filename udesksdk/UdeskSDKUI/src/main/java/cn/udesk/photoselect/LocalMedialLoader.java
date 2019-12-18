@@ -81,7 +81,7 @@ public class LocalMedialLoader {
         activity.getSupportLoaderManager().initLoader(0, null, new LoaderManager.LoaderCallbacks<Cursor>() {
             @Override
             public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-                String all_condition = getSelectionArgsForAllMediaCondition(getDurationCondition(0, 0), true);
+                String all_condition = getSelectionArgsForAllMediaCondition(getDurationCondition(0, 0), false);
                 CursorLoader cursorLoader = new CursorLoader(activity, QUERY_URI, PROJECTION, all_condition, SELECTION_ALL_ARGS, ORDER_BY);
                 return cursorLoader;
             }

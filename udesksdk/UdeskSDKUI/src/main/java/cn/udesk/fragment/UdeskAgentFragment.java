@@ -161,7 +161,8 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
             } else {
                 mAudioImg.setVisibility(View.GONE);
             }
-            showEmoji();
+            setEmojiVis(View.VISIBLE);
+            setMoreVis(View.VISIBLE);
             initEmotionKeyboard();
         }catch (Exception e){
             e.printStackTrace();
@@ -169,6 +170,28 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
 
     }
 
+    /**
+     * emoji的显示隐藏
+     */
+    private void setEmojiVis(int vis){
+        if (View.VISIBLE == vis && UdeskSDKManager.getInstance().getUdeskConfig().isUseEmotion && LQREmotionKit.getEmotionPath() != null){
+            mEmojiImg.setVisibility(vis);
+        }else {
+            mEmojiImg.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 更多控件的显示隐藏
+     * @param vis
+     */
+    private void setMoreVis(int vis){
+        if (View.VISIBLE == vis && UdeskSDKManager.getInstance().getUdeskConfig().isUseMore){
+            mMoreImg.setVisibility(vis);
+        }else {
+            mMoreImg.setVisibility(View.GONE);
+        }
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -266,11 +289,11 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                     try {
                         if (mInputEditView.getText().toString().trim().length() > 0) {
                             sendBtn.setVisibility(View.VISIBLE);
-                            mMoreImg.setVisibility(View.GONE);
+                            setMoreVis(View.GONE);
                         } else {
                             sendBtn.setVisibility(View.GONE);
                             if (!(udeskChatActivity.imSetting != null && udeskChatActivity.imSetting.getEnable_web_im_feedback()) || TextUtils.equals(udeskChatActivity.curentStatus,UdeskConst.Status.chatting) || udeskChatActivity.isNeedQueueMessageSave()) {
-                                mMoreImg.setVisibility(View.VISIBLE);
+                                setMoreVis(View.VISIBLE);
                             }
                         }
 
@@ -338,7 +361,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
         try {
             mBtnAudio.setVisibility(View.GONE);
             mInputEditView.setVisibility(View.VISIBLE);
-            mEmojiImg.setVisibility(View.VISIBLE);
+            setEmojiVis(View.VISIBLE);
             mAudioImg.setImageResource(R.drawable.udesk_chat_voice);
         } catch (Exception e) {
             e.printStackTrace();
@@ -532,22 +555,22 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                 mAudioImg.setVisibility(vis);
                 if (vis == View.GONE) {
                     mInputEditView.setVisibility(View.VISIBLE);
-                    mEmojiImg.setVisibility(View.VISIBLE);
+                    setEmojiVis(View.VISIBLE);
                     mBtnAudio.setVisibility(View.GONE);
                 }
             }
-            showEmoji();
+            setEmojiVis(View.VISIBLE);
             if (UdeskSDKManager.getInstance().getUdeskConfig().isUseMore) {
-                mMoreImg.setVisibility(vis);
+                setMoreVis(vis);
                 if (vis == View.GONE) {
                     hideMoreLayout();
                     mEmotionKeyboard.hideEmotionLayout(true);
                 }else if (vis==View.VISIBLE){
                     if (mInputEditView.getText().toString().length()>0){
-                        mMoreImg.setVisibility(View.GONE);
+                        setMoreVis(View.GONE);
                         sendBtn.setVisibility(View.VISIBLE);
                     }else {
-                        mMoreImg.setVisibility(View.VISIBLE);
+                        setMoreVis(View.VISIBLE);
                         sendBtn.setVisibility(View.GONE);
                     }
                 }
@@ -582,20 +605,6 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
         return false;
     }
 
-    /**
-     * emoji的显示隐藏
-     */
-    private void showEmoji() {
-        try {
-            if (UdeskSDKManager.getInstance().getUdeskConfig().isUseEmotion && LQREmotionKit.getEmotionPath() != null) {
-                mEmojiImg.setVisibility(View.VISIBLE);
-            } else {
-                mEmojiImg.setVisibility(View.GONE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected int getLayoutId() {
@@ -792,7 +801,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
         try {
             mBtnAudio.setVisibility(View.VISIBLE);
             mInputEditView.setVisibility(View.GONE);
-            mEmojiImg.setVisibility(View.GONE);
+            setEmojiVis(View.GONE);
             mAudioImg.setImageResource(R.drawable.udesk_chat_voice_keyboard);
 
             if (mBottomFramlayout.isShown()) {
