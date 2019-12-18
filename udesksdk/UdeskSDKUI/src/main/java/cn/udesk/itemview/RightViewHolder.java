@@ -967,13 +967,16 @@ public class RightViewHolder extends BaseViewHolder {
             if (state == UdeskConst.SendFlag.RESULT_SUCCESS) {
                 ivStatus.setVisibility(View.GONE);
                 pbWait.setVisibility(View.GONE);
+                cancleImg.setVisibility(View.GONE);
             } else {
                 if (state == UdeskConst.SendFlag.RESULT_RETRY || state == UdeskConst.SendFlag.RESULT_SEND) {
                     ivStatus.setVisibility(View.GONE);
                     pbWait.setVisibility(View.VISIBLE);
+                    cancleImg.setVisibility(View.GONE);
                 } else if (state == UdeskConst.SendFlag.RESULT_FAIL) {
                     ivStatus.setVisibility(View.VISIBLE);
                     pbWait.setVisibility(View.GONE);
+                    cancleImg.setVisibility(View.GONE);
                 }
             }
         } catch (Exception e) {

@@ -223,6 +223,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     private boolean isExit=true;
     private RelativeLayout commodityRoot;
     private MessageInfo robotTransferMsg;
+    private boolean isInAgentFragment;
 
     public static class MyHandler extends  Handler {
         WeakReference<UdeskChatActivity> mWeakActivity;
@@ -1020,7 +1021,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                     mChatAdapter.addItem(imLeaveMsg);
                     mListView.smoothScrollToPosition(mChatAdapter.getCount());
                     udeskViewMode.getDbLiveData().saveMessageDB(imLeaveMsg);
-                    udeskViewMode.putIMLeavesMsg(imLeaveMsg);
+                    udeskViewMode.putIMLeavesMsg(imLeaveMsg,getAgentId(),getGroupId(),getMenuId());
                     fragment.clearInputContent();
                 }
             }
@@ -1083,7 +1084,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     }
 
     private void dealReceiveMsg(MessageInfo receiveMsg) {
-        if (receiveMsg == null || TextUtils.equals(curentStatus,UdeskConst.Status.robot)) {
+        if (receiveMsg == null || ((TextUtils.equals(curentStatus,UdeskConst.Status.robot) && !isInAgentFragment))) {
             return;
         }
         if (receiveMsg.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT)) {
@@ -1266,9 +1267,11 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 robotSengMsgCount = 0;
                 usefulMap.clear();
                 transferMap.clear();
+                isInAgentFragment = true;
             } else if (TextUtils.equals(UdeskConst.CurrentFragment.robot, from)) {
                 fragment = new UdeskRobotFragment();
                 curentStatus = UdeskConst.Status.robot;
+                isInAgentFragment = false;
             }
             transaction.replace(R.id.udesk_fragment_container, fragment).commitNowAllowingStateLoss();
         } catch (Exception e) {
@@ -2945,7 +2948,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                             }
                         }else if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_LEAVEMSG_IM)){
                             if (!TextUtils.isEmpty(customerId)) {
-                                udeskViewMode.putIMLeavesMsg(message);
+                                udeskViewMode.putIMLeavesMsg(message,getAgentId(),getGroupId(),getMenuId());
                             }
                         }
                     }

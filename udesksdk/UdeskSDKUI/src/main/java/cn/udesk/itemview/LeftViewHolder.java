@@ -1739,9 +1739,15 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
     @Override
     public boolean onLinkClick(String url) {
         try {
-            Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
-            intent.putExtra(UdeskConst.WELCOME_URL, url);
-            mContext.startActivity(intent);
+            if (url.contains("tel:")) {
+                Uri uri = Uri.parse(url);
+                Intent intent = new Intent(Intent.ACTION_DIAL, uri);
+                mContext.startActivity(intent);
+            }else {
+                Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
+                intent.putExtra(UdeskConst.WELCOME_URL, url);
+                mContext.startActivity(intent);
+            }
             return true;
         }catch (Exception e){
             e.printStackTrace();

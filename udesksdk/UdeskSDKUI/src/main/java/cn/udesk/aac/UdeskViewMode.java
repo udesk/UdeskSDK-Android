@@ -318,9 +318,9 @@ public class UdeskViewMode extends ViewModel {
             e.printStackTrace();
         }
     }
-    public void putIMLeavesMsg(MessageInfo info) {
+    public void putIMLeavesMsg(MessageInfo info,String agentId,String groupId,String menuId) {
         try {
-            sendMessageLiveData.putIMLeavesMsg(info.getMsgContent(), info.getMsgId(),"");
+            sendMessageLiveData.putIMLeavesMsg(info.getMsgContent(), info.getMsgId(),"",agentId,groupId,menuId);
         }catch (Exception e){
             e.printStackTrace();
         }

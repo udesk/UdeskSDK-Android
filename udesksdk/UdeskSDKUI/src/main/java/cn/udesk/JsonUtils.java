@@ -862,6 +862,7 @@ public class JsonUtils {
                     uploadTokenBean.setSignature(upload_token.opt("signature"));
                     uploadTokenBean.setStorage_policy(upload_token.opt("storage_policy"));
                     uploadTokenBean.setToken(upload_token.opt("token"));
+                    uploadTokenBean.setDownload_host(upload_token.opt("download_host"));
                     uploadBean.setUpload_token(uploadTokenBean);
                 }
             }
@@ -1097,6 +1098,7 @@ public class JsonUtils {
                 imSetting.setInvestigation_when_leave(settingsJsonObject.opt("investigation_when_leave"));
                 imSetting.setNo_reply_hint(settingsJsonObject.opt("no_reply_hint"));
                 imSetting.setVcall(settingsJsonObject.opt("vcall"));
+                imSetting.setSdk_vcall(settingsJsonObject.opt("sdk_vcall"));
                 imSetting.setVc_app_id(settingsJsonObject.opt("vc_app_id"));
                 imSetting.setVcall_token_url(settingsJsonObject.opt("vcall_token_url"));
                 imSetting.setAgora_app_id(settingsJsonObject.opt("agora_app_id"));
