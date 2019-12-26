@@ -901,6 +901,18 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 		MergeModeManager  mergedata 管理类
 
 
+### 9 清除缓存的agentId
+
+	UdeskSDKManager.getInstance().cleanCacheAgentId(getApplicationContext());
+
+### 10 清除缓存的groupId
+
+	UdeskSDKManager.getInstance().cleanCacheGroupId(getApplicationContext());
+
+### 11 清除缓存的menuId
+	
+	UdeskSDKManager.getInstance().cleanCacheMenuId(getApplicationContext());
+
 <h1 id="6">六、消息推送</h1>
 
 当前仅支持一种推送方案，即Udesk务端发送消息至开发者的服务端，开发者再推送消息到 App。
