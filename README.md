@@ -900,6 +900,17 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 		questionMergeMode MergeMode 子类拓展 处理点击问题
 		MergeModeManager  mergedata 管理类
 
+### 9 清除缓存的agentId
+
+	UdeskSDKManager.getInstance().cleanCacheAgentId(getApplicationContext());
+
+### 10 清除缓存的groupId
+
+	UdeskSDKManager.getInstance().cleanCacheGroupId(getApplicationContext());
+
+### 11 清除缓存的menuId
+	
+	UdeskSDKManager.getInstance().cleanCacheMenuId(getApplicationContext());
 
 <h1 id="6">六、消息推送</h1>
 
