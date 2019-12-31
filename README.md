@@ -5,7 +5,7 @@ SDK原生机器人功能在 5.x 分支下。
 ### SDK下载地址
 [Udesk-Android 源码下载地址](https://github.com/udesk/UdeskSDK-Android)
 
-[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.1.3_androidX_1576657942203_pnpbg.apk)
+[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.1.4_androidQ_1577794274942_2t505.apk)
 
 ## 目录
 - [一、特别声明](#1)
@@ -22,16 +22,6 @@ SDK原生机器人功能在 5.x 分支下。
 ### 5.1.0 设置商品消息背景、字体api发生调整 请注意更改 ###
 
 ### SDK 采用AAC框架 ###
-### fresco版本问题 ###
-	如果你的项目打包指定了so库的加载配置了，
-     ndk{
-            abiFilters "armeabi"
-     }
-     
-    你需要特别注意fresco版本号 在fresco 1.9.0 以后的的 Application.mk APP_ABI := armeabi-v7a armeabi arm64-v8a x86 x86_64,
-    不在包含armeabi 
-    
-    在UdeskSDKUI下的build.gradle文件下  修改dependencies fresco版本号 不能根据androidstudio提示更新到最新
 
 ### customer_token， sdk_token 仅支持字母、数字及下划线,禁用特殊字符
 
@@ -49,6 +39,14 @@ SDK原生机器人功能在 5.x 分支下。
 
 	dependencies {
 	    api project(':UdeskSDKUI')
+	}
+
+在 root build.gradle 文件中加入：
+
+	allprojects {
+		repositories {
+        	maven { url "https://jitpack.io" }
+    	}
 	}
 
 ### 用户创建及更新逻辑:
@@ -340,7 +338,11 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 	-keep class org.xmlpull.** {*;} 
 	-dontwarn org.xbill.**
 	-keep class org.xbill.** {*;} 
-	
+	//JSONobject
+	-keep class org.json.** {*; }
+	//okhttp
+	-keep class okhttp3.** {*;} 
+	-keep class okio.** {*;} 
 	//eventbus
 	-keepattributes *Annotation*
 	-keepclassmembers class ** {
@@ -352,22 +354,19 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 	-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
 	    <init>(java.lang.Throwable);
 	}
-	
-	//freso
-	-keep class com.facebook.** {*; }  
-	-keep class com.facebook.imagepipeline.** {*; } 
-	-keep class com.facebook.animated.gif.** {*; }  
-	-keep class com.facebook.drawee.** {*; }  
-	-keep class com.facebook.drawee.backends.pipeline.** {*; }  
-	-keep class com.facebook.imagepipeline.** {*; }  
-	-keep class bolts.** {*; }  
-	-keep class me.relex.photodraweeview.** {*; }  
-	
-	-keep,allowobfuscation @interface com.facebook.common.internal.DoNotStrip
-	-keep @com.facebook.common.internal.DoNotStrip class *
-	-keepclassmembers class * {
-	    @com.facebook.common.internal.DoNotStrip *;
+	//glide
+	-keep class com.bumptech.glide.Glide { *; }
+	-keep public class * implements com.bumptech.glide.module.GlideModule
+	-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  	**[] $VALUES;
+ 	 public *;
 	}
+
+	# for DexGuard only
+	-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+	//agora
+	-keep class io.agora.**{*;}
+
 	# Keep native methods
 	-keepclassmembers class * {
 	    native <methods>;
@@ -378,14 +377,8 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 	-dontwarn okhttp3.**
 	-dontwarn javax.annotation.**
 	-dontwarn com.android.volley.toolbox.**
-	-dontwarn com.facebook.infer.**
-	
-	
-	 //bugly
-	-keep class com.tencent.bugly.** {*; } 
-	
-	 //agora
-	-keep class io.agora.**{*;}
+	-dontwarn com.bumptech.glide.**
+
 
 <h1 id="4">四、Udesk SDK 自定义配置</h1>
 
@@ -1021,6 +1014,13 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 <h1 id="8">八、更新记录</h1>
 
 ### 更新日志 ###
+
+### 5.1.4 版本更新（5.x_android_Q 分支）：
+
+1. 适配android Q
+2. 修改接收满意度问题
+3. 修改视频通话问题
+4. 修改底部显示问题
 
 ### 5.1.3 版本更新： ###
 

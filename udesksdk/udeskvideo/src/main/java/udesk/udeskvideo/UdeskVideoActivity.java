@@ -149,7 +149,11 @@ public class UdeskVideoActivity extends Activity implements View.OnClickListener
             initview();
             if (isInvete) {
                 initinvite();
-                MessageManager.getMessageManager().invite(UdeskConst.IMAgentJid, UdeskSocketContants.ToResId, UdeskSocketContants.CallType.video, channelID, Util.objectToInt(UdeskConst.IMBussinessId));
+                if (UdeskConst.FIRST_OPEN){
+                    UdeskVideoCallManager.getInstance().connectWebsocket(this);
+                }else {
+                    MessageManager.getMessageManager().invite(UdeskConst.IMAgentJid, UdeskSocketContants.ToResId, UdeskSocketContants.CallType.video, channelID, Util.objectToInt(UdeskConst.IMBussinessId));
+                }
             } else {
                 initReceiveVideo();
                 startAlarm();
@@ -477,7 +481,10 @@ public class UdeskVideoActivity extends Activity implements View.OnClickListener
             }
             switch (methodEnum) {
                 case LOGIN:
-
+                    if (UdeskConst.FIRST_OPEN){
+                        UdeskConst.FIRST_OPEN= false;
+                        MessageManager.getMessageManager().invite(UdeskConst.IMAgentJid, UdeskSocketContants.ToResId, UdeskSocketContants.CallType.video, channelID, Util.objectToInt(UdeskConst.IMBussinessId));
+                    }
                     break;
                 case INVITE:
                     if (event.getMsg_type().equals(UdeskSocketContants.MsgType.Rep)) {

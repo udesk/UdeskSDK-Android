@@ -3,8 +3,6 @@ package cn.udesk.fragment;
 import android.Manifest;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -17,6 +15,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +84,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                         UdeskSDKManager.getInstance().getRegisterId(getActivity().getApplicationContext()),
                         UdeskSDKManager.getInstance().getAppId(getActivity().getApplicationContext()));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -92,8 +93,8 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            InvokeEventContainer.getInstance().eventui_OnHideLayout.bind(this,"onHideBottomLayout");
-        }catch (Exception e){
+            InvokeEventContainer.getInstance().eventui_OnHideLayout.bind(this, "onHideBottomLayout");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -113,29 +114,32 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
         }
         super.onDestroy();
     }
+
     /**
      * 隐藏表情 更多布局 图标恢复默认
+     *
      * @param isHide
      */
-    public void onHideBottomLayout(Boolean isHide){
+    public void onHideBottomLayout(Boolean isHide) {
         try {
-            if (isHide){
+            if (isHide) {
                 mBottomFramlayout.setVisibility(View.GONE);
                 hideEmotionLayout();
                 hideMoreLayout();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         try {
             initFunctionAdapter();
             setNavigationViewVis();
-            mBtnAudio.init(UdeskUtils.getDirectoryPath(getActivity().getApplicationContext(), UdeskConst.FileAudio));
+            mBtnAudio.init(UdeskUtil.getDirectoryPath(getActivity().getApplicationContext(), UdeskConst.FileAudio));
             mBtnAudio.setRecordingListener(new AudioRecordButton.OnRecordingListener() {
                 @Override
                 public void recordStart() {
@@ -148,7 +152,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
 
                 @Override
                 public void recordFinish(String audioFilePath, long recordTime) {
-                    udeskViewMode.sendRecordAudioMsg(audioFilePath, recordTime);
+                    udeskViewMode.sendRecordAudioMsg(udeskChatActivity.getApplicationContext(), audioFilePath, recordTime);
                 }
 
                 @Override
@@ -164,7 +168,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
             setEmojiVis(View.VISIBLE);
             setMoreVis(View.VISIBLE);
             initEmotionKeyboard();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -250,7 +254,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                                     hideAudioButton();
                                     return true;
                                 }
-                            }else if (mMoreLayout.isShown()&&!mEmotionlayout.isShown()){
+                            } else if (mMoreLayout.isShown() && !mEmotionlayout.isShown()) {
                                 mMoreImg.setImageResource(R.drawable.udesk_chat_add);
                                 return false;
                             }
@@ -423,7 +427,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
     public void addNavigationFragment() {
         try {
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            NavigationFragment navigationFragment=new NavigationFragment();
+            NavigationFragment navigationFragment = new NavigationFragment();
             navigationFragment.setCurrentView(UdeskConst.CurrentFragment.agent);
             transaction.replace(R.id.fragment_view, navigationFragment);
             transaction.commit();
@@ -473,6 +477,8 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
         try {
             if (mEmotionlayout.isShown() || mMoreLayout.isShown()) {
                 mEmotionKeyboard.interceptBackPress();
+                hideEmotionLayout();
+                hideMoreLayout();
             } else {
                 udeskChatActivity.finishAcitivty();
             }
@@ -576,9 +582,9 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                 }
             }
             if (UdeskSDKManager.getInstance().getUdeskConfig().isUseNavigationRootView) {
-                if (vis == View.VISIBLE){
+                if (vis == View.VISIBLE) {
                     setNavigationViewVis();
-                }else {
+                } else {
                     navigationRootView.setVisibility(vis);
                 }
             }
@@ -596,7 +602,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
     private boolean isOpenVideo() {
         try {
             return udeskChatActivity.imSetting != null
-                    &&udeskChatActivity.imSetting.getVcall()
+                    && udeskChatActivity.imSetting.getVcall()
                     && udeskChatActivity.imSetting.getSdk_vcall()
                     && UdeskUtil.isClassExists("udesk.udeskvideo.UdeskVideoActivity");
         } catch (Exception e) {
@@ -756,9 +762,9 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                             getString(R.string.udesk_send_message_empty));
                     return;
                 }
-                if (TextUtils.equals(udeskChatActivity.curentStatus,UdeskConst.Status.chatting) || udeskChatActivity.getPressionStatus() || udeskChatActivity.isNeedQueueMessageSave()) {
+                if (TextUtils.equals(udeskChatActivity.curentStatus, UdeskConst.Status.chatting) || udeskChatActivity.getPressionStatus() || udeskChatActivity.isNeedQueueMessageSave()) {
                     udeskViewMode.sendTxtMessage(getInputContent().toString());
-                    if (!udeskChatActivity.getPressionStatus()){
+                    if (!udeskChatActivity.getPressionStatus()) {
                         clearInputContent();
                     }
 
@@ -774,7 +780,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                             udeskViewMode.sendIMLeaveMessage(mInputEditView.getText().toString());
                         }
                         clearInputContent();
-                    }else{
+                    } else {
                         udeskChatActivity.confirmToForm();
                     }
                 }
@@ -828,7 +834,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                         getResources().getString(R.string.udesk_has_wrong_net));
                 return false;
             }
-            if (udeskChatActivity.curentStatus.equals(UdeskConst.Status.over)||udeskChatActivity.initCustomer==null) {
+            if (udeskChatActivity.curentStatus.equals(UdeskConst.Status.over) || udeskChatActivity.initCustomer == null) {
                 udeskChatActivity.reCreateIMCustomerInfo();
                 return false;
             }
@@ -850,7 +856,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                 return true;
             }
 
-            if (!TextUtils.equals(udeskChatActivity.curentStatus,UdeskConst.Status.chatting) && !udeskChatActivity.isleaveMessageTypeMsg()) {
+            if (!TextUtils.equals(udeskChatActivity.curentStatus, UdeskConst.Status.chatting) && !udeskChatActivity.isleaveMessageTypeMsg()) {
                 udeskChatActivity.confirmToForm();
                 return false;
             }

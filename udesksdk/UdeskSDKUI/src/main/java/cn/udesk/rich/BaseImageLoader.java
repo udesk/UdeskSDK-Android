@@ -5,15 +5,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
-import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -30,10 +24,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
-import udesk.core.UdeskConst;
-import udesk.core.utils.UdeskUtils;
 
 
 public class BaseImageLoader implements ImageLoader {
@@ -59,9 +50,9 @@ public class BaseImageLoader implements ImageLoader {
     @Override
     public Bitmap getBitmap(final String url) throws IOException {
 
-//        if (UdeskUtils.fileIsExitByUrl(context, UdeskConst.FileImg, url)) {
+//        if (UdeskUtil.fileIsExitByUrl(context, UdeskConst.FileImg, url)) {
 //
-//            Bitmap localBitMap = UdeskUtil.compressRatio(BitmapFactory.decodeFile(UdeskUtils.getPathByUrl(context, UdeskConst.FileImg, url)));
+//            Bitmap localBitMap = UdeskUtil.compressRatio(BitmapFactory.decodeFile(UdeskUtil.getPathByUrl(context, UdeskConst.FileImg, url)));
 //            int bitmapSize = UdeskUtil.getBitmapSize(localBitMap);
 //            Log.i("xxxx", "bitmapsize = " + bitmapSize);
 //            if (localBitMap != null && bitmapSize > 0) {

@@ -4,8 +4,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -14,14 +12,12 @@ import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.VideoView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-
-import java.io.File;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import cn.udesk.R;
 import cn.udesk.UdeskUtil;
 import udesk.core.UdeskConst;
-import udesk.core.utils.UdeskUtils;
 
 /**
  * Created by user on 2018/3/8.
@@ -31,7 +27,7 @@ public class PictureVideoPlayActivity extends AppCompatActivity implements Media
 
     private String path;
     private ImageView picture_left_back;
-    private SimpleDraweeView video_img;
+    private ImageView video_img;
     private ProgressBar progressBar;
     private MediaController mMediaController;
     private VideoView mVideoView;
@@ -51,7 +47,7 @@ public class PictureVideoPlayActivity extends AppCompatActivity implements Media
             path = bundle.getString(UdeskConst.PREVIEW_Video_Path);
             picture_left_back = (ImageView) findViewById(R.id.picture_left_back);
             mVideoView = (VideoView) findViewById(R.id.udesk_video_view);
-            video_img = (SimpleDraweeView) findViewById(R.id.video_img);
+            video_img = findViewById(R.id.video_img);
             progressBar = (ProgressBar) findViewById(R.id.udesk_wait);
             mMediaController = new MediaController(this);
             mVideoView.setOnCompletionListener(this);
@@ -63,12 +59,12 @@ public class PictureVideoPlayActivity extends AppCompatActivity implements Media
                     finish();
                 }
             });
-            if (!TextUtils.isEmpty(path) && UdeskUtils.isExitFileByPath(path)) {
-                UdeskUtil.loadNoChangeView(getApplicationContext(), video_img, Uri.fromFile(new File(path)));
-            } else if (UdeskUtils.fileIsExitByUrl(getApplicationContext(), UdeskConst.FileImg, path)) {
-                UdeskUtil.loadNoChangeView(getApplicationContext(), video_img, Uri.fromFile(
-                        UdeskUtils.getFileByUrl(getApplicationContext(), UdeskConst.FileImg, path)
-                ));
+            if (!TextUtils.isEmpty(path) && UdeskUtil.isExitFileByPath(this.getApplicationContext(), path)) {
+                UdeskUtil.loadImage(getApplicationContext(), video_img, path);
+            } else if (UdeskUtil.fileIsExitByUrl(getApplicationContext(), UdeskConst.FileImg, path)) {
+                UdeskUtil.loadImage(getApplicationContext(), video_img, Uri.fromFile(
+                        UdeskUtil.getFileByUrl(getApplicationContext(), UdeskConst.FileImg, path)
+                ).toString());
             }
             mVideoView.setVideoPath(path);
         } catch (Exception e) {

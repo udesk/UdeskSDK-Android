@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/udesk_80"
     android:layout_height="@dimen/udesk_80"
     android:layoutDirection="ltr">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/udesk_iv_picture"
         android:layout_width="@dimen/udesk_80"
         android:layout_height="@dimen/udesk_80"
-        fresco:actualImageScaleType="fitXY"
-        fresco:placeholderImage="@drawable/udesk_image_placeholder" />
+        android:scaleType="fitXY" />
 
     <ImageView
         android:id="@+id/video_tip"

@@ -23,7 +23,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 
 import cn.udesk.R;
 import cn.udesk.UdeskUtil;
@@ -69,9 +68,6 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
             disPlayWidth = wm1.getDefaultDisplay().getWidth();
             disPlayHeghit = wm1.getDefaultDisplay().getHeight();
             setContentView(R.layout.udesk_activity_preview);
-            if (!Fresco.hasBeenInitialized()) {
-                UdeskUtil.frescoInit(this);
-            }
             hideActionBar();
             initData();
             initView();

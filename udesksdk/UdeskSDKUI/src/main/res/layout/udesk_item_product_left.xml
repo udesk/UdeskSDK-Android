@@ -8,12 +8,11 @@
     android:padding="@dimen/udesk_8"
     android:visibility="gone">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/udesk_product_icon"
         android:layout_width="@dimen/udesk_50"
         android:layout_height="@dimen/udesk_50"
         android:layout_margin="@dimen/udesk_5" />
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

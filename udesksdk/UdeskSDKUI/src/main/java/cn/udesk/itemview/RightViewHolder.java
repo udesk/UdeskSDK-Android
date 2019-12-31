@@ -23,8 +23,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -42,9 +40,9 @@ import cn.udesk.config.UdeskConfigUtil;
 import cn.udesk.emotion.MoonUtils;
 import cn.udesk.fragment.UdeskResendDialog;
 import cn.udesk.photoselect.PictureVideoPlayActivity;
-import cn.udesk.provider.UdeskFileProvider;
 import cn.udesk.widget.CircleProgressBar;
 import cn.udesk.widget.HtmlTagHandler;
+import cn.udesk.widget.UdeskImageView;
 import udesk.core.UdeskConst;
 import udesk.core.model.InfoListBean;
 import udesk.core.model.ProductListBean;
@@ -58,7 +56,7 @@ public class RightViewHolder extends BaseViewHolder {
     private RelativeLayout itemAudio;
     private TextView tvDuration;
     private LinearLayout itemImg;
-    private SimpleDraweeView imgView;
+    private UdeskImageView imgView;
     private LinearLayout itemFile;
     private TextView fielTitle;
     private LinearLayout itemSmallVideo;
@@ -66,17 +64,17 @@ public class RightViewHolder extends BaseViewHolder {
     private CircleProgressBar circleProgressBar;
     private RelativeLayout itemLocation;
     private TextView locationValue;
-    private SimpleDraweeView cropBitMap;
+    private ImageView cropBitMap;
     private LinearLayout itemProduct;
     private TextView productMsg;
     private TextView productName;
-    private SimpleDraweeView productIcon;
+    private ImageView productIcon;
     private TextView leaveMsg;
     private ImageView cancleImg;
     private String productUrl;
-    public static final int[] RESIDS={R.drawable.udesk_im_txt_right_default,R.drawable.udesk_im_txt_right_up,R.drawable.udesk_im_txt_right_down,R.drawable.udesk_im_txt_right_mid};
+    public static final int[] RESIDS = {R.drawable.udesk_im_txt_right_default, R.drawable.udesk_im_txt_right_up, R.drawable.udesk_im_txt_right_down, R.drawable.udesk_im_txt_right_mid};
     private LinearLayout itemReplyProduct;
-    private SimpleDraweeView replyProductImg;
+    private ImageView replyProductImg;
     private TextView replyProductTitle;
     private RelativeLayout replyProductMid;
     private TextView replyProductInfoOne;
@@ -84,14 +82,14 @@ public class RightViewHolder extends BaseViewHolder {
     private TextView replyProductInfoThree;
     private LinearLayout itemText;
     private LinearLayout itemLeaveMsg;
-    private SimpleDraweeView ivHeader;
+    private ImageView ivHeader;
     private TextView customerNickName;
     private LinearLayout llBody;
 
     @Override
     public void initView(Activity mContext, View convertView) {
         try {
-            this.mContext=mContext;
+            this.mContext = mContext;
             tvTime = convertView.findViewById(R.id.udesk_tv_time);
             UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMTimeTextColorResId, tvTime);
             //头像
@@ -120,7 +118,7 @@ public class RightViewHolder extends BaseViewHolder {
             record_play = (ImageView) convertView.findViewById(R.id.udesk_im_item_record_play);
             //image消息
             itemImg = (LinearLayout) convertView.findViewById(R.id.udesk_item_img);
-            imgView = (SimpleDraweeView) convertView.findViewById(R.id.udesk_im_image);
+            imgView = convertView.findViewById(R.id.udesk_im_image);
             imagePercent = (TextView) convertView.findViewById(R.id.udesk_precent);
             //file消息
             itemFile = (LinearLayout) convertView.findViewById(R.id.udesk_file_view);
@@ -130,19 +128,19 @@ public class RightViewHolder extends BaseViewHolder {
             mProgress = (ProgressBar) convertView.findViewById(R.id.udesk_progress);
             //smallvideo
             itemSmallVideo = (LinearLayout) convertView.findViewById(R.id.udesk_item_smallvideo);
-            smallVideoImgView = (SimpleDraweeView) convertView.findViewById(R.id.udesk_im_smallvideo_image);
+            smallVideoImgView = convertView.findViewById(R.id.udesk_im_smallvideo_image);
             smallVideoTip = (ImageView) convertView.findViewById(R.id.video_tip);
             circleProgressBar = (CircleProgressBar) convertView.findViewById(R.id.video_upload_bar);
             //location
             itemLocation = (RelativeLayout) convertView.findViewById(R.id.udesk_item_location);
             locationValue = (TextView) convertView.findViewById(R.id.postion_value);
-            cropBitMap = (SimpleDraweeView) convertView.findViewById(R.id.udesk_location_image);
+            cropBitMap = (ImageView) convertView.findViewById(R.id.udesk_location_image);
             //product
             itemProduct = (LinearLayout) convertView.findViewById(R.id.udesk_item_product);
             UdeskConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductRightBgResId, itemProduct);
             productMsg = (TextView) convertView.findViewById(R.id.udesk_product_msg);
             productName = (TextView) convertView.findViewById(R.id.product_name);
-            productIcon = (SimpleDraweeView) convertView.findViewById(R.id.udesk_product_icon);
+            productIcon = (ImageView) convertView.findViewById(R.id.udesk_product_icon);
 
             //商品回复
             itemReplyProduct = convertView.findViewById(R.id.udesk_item_reply_product);
@@ -172,18 +170,19 @@ public class RightViewHolder extends BaseViewHolder {
             itemLocation.setVisibility(View.GONE);
             itemProduct.setVisibility(View.GONE);
             itemReplyProduct.setVisibility(View.GONE);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     @Override
     public void bind() {
         try {
             hideAllView();
             showHead(true);
             changeUiState(message.getSendFlag());
-            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.topMargin=UdeskUtil.dip2px(mContext,10);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.topMargin = UdeskUtil.dip2px(mContext, 10);
             llHead.setLayoutParams(params);
             switch (UdeskConst.parseTypeForMessage(message.getMsgtype())) {
                 case UdeskConst.ChatMsgTypeInt.TYPE_TEXT:
@@ -233,45 +232,45 @@ public class RightViewHolder extends BaseViewHolder {
     private void dealReplyProduct() {
         try {
             itemReplyProduct.setVisibility(View.VISIBLE);
-            final ProductListBean productListBean=JsonUtils.parseReplyProduct(message.getMsgContent());
-            if (productListBean!=null){
+            final ProductListBean productListBean = JsonUtils.parseReplyProduct(message.getMsgContent());
+            if (productListBean != null) {
                 replyProductTitle.setText(productListBean.getName());
-                if (!TextUtils.isEmpty(productListBean.getImage())){
-                    UdeskUtil.loadNoChangeView(mContext, replyProductImg, Uri.parse(productListBean.getImage()));
+                if (!TextUtils.isEmpty(productListBean.getImage())) {
+                    UdeskUtil.loadImage(mContext, replyProductImg, productListBean.getImage());
                 }
-                if (productListBean.getInfoList()!=null&&productListBean.getInfoList().size()>0){
+                if (productListBean.getInfoList() != null && productListBean.getInfoList().size() > 0) {
                     List<InfoListBean> infoList = productListBean.getInfoList();
-                    for (int j=0;j<infoList.size();j++){
-                        SpannableString spannableString=UdeskUtil.setSpan(infoList.get(j).getInfo(),UdeskUtils.objectToString(infoList.get(j).getColor()),infoList.get(j).getBoldFlag());
-                        if (j==0){
+                    for (int j = 0; j < infoList.size(); j++) {
+                        SpannableString spannableString = UdeskUtil.setSpan(infoList.get(j).getInfo(), UdeskUtils.objectToString(infoList.get(j).getColor()), infoList.get(j).getBoldFlag());
+                        if (j == 0) {
                             replyProductMid.setVisibility(View.VISIBLE);
                             replyProductInfoOne.setText(spannableString);
-                        }else if (j==1){
+                        } else if (j == 1) {
                             replyProductInfoTwo.setText(spannableString);
-                        }else if (j==2){
+                        } else if (j == 2) {
                             replyProductInfoThree.setVisibility(View.VISIBLE);
                             replyProductInfoThree.setText(spannableString);
                         }
                     }
-                }else {
+                } else {
                     replyProductMid.setVisibility(View.GONE);
                     replyProductInfoThree.setVisibility(View.GONE);
                 }
                 itemReplyProduct.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                             UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                             return;
                         }
                         Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
-                        intent.putExtra(UdeskConst.WELCOME_URL,productListBean.getUrl());
+                        intent.putExtra(UdeskConst.WELCOME_URL, productListBean.getUrl());
                         mContext.startActivity(intent);
                     }
                 });
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -282,7 +281,7 @@ public class RightViewHolder extends BaseViewHolder {
     private void dealTextMsg() {
         try {
             itemText.setVisibility(View.VISIBLE);
-            setTextBackgroud(itemText,RESIDS);
+            setTextBackgroud(itemText, RESIDS);
             //设置文本消息内容，表情符转换对应的表情,没表情的另外处理
             if (MoonUtils.isHasEmotions(message.getMsgContent())) {
                 tvMsg.setText(MoonUtils.replaceEmoticons(mContext, message.getMsgContent(), (int) tvMsg.getTextSize()));
@@ -320,14 +319,14 @@ public class RightViewHolder extends BaseViewHolder {
 
                 @Override
                 public void onClick(View v) {
-                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    UdeskResendDialog dialog = UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg), mContext.getString(R.string.udesk_cancel), message);
                     dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
                         @Override
                         public void onRetry() {
                             ((UdeskChatActivity) mContext).retrySendMsg(message);
                         }
                     });
-                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                    dialog.show(((UdeskChatActivity) mContext), "UdeskResendDialog");
                 }
             });
         } catch (Exception e) {
@@ -377,14 +376,14 @@ public class RightViewHolder extends BaseViewHolder {
 
                 @Override
                 public void onClick(View v) {
-                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    UdeskResendDialog dialog = UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg), mContext.getString(R.string.udesk_cancel), message);
                     dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
                         @Override
                         public void onRetry() {
                             ((UdeskChatActivity) mContext).retrySendMsg(message);
                         }
                     });
-                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                    dialog.show(((UdeskChatActivity) mContext), "UdeskResendDialog");
                 }
             });
         } catch (Exception e) {
@@ -404,14 +403,14 @@ public class RightViewHolder extends BaseViewHolder {
 
                 @Override
                 public void onClick(View v) {
-                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    UdeskResendDialog dialog = UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg), mContext.getString(R.string.udesk_cancel), message);
                     dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
                         @Override
                         public void onRetry() {
                             ((UdeskChatActivity) mContext).startVideo();
                         }
                     });
-                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                    dialog.show(((UdeskChatActivity) mContext), "UdeskResendDialog");
                 }
             });
         } catch (Exception e) {
@@ -441,14 +440,14 @@ public class RightViewHolder extends BaseViewHolder {
 
                 @Override
                 public void onClick(View v) {
-                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    UdeskResendDialog dialog = UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg), mContext.getString(R.string.udesk_cancel), message);
                     dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
                         @Override
                         public void onRetry() {
                             ((UdeskChatActivity) mContext).retrySendMsg(message);
                         }
                     });
-                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                    dialog.show(((UdeskChatActivity) mContext), "UdeskResendDialog");
                 }
             });
             long duration = message.getDuration();
@@ -509,14 +508,13 @@ public class RightViewHolder extends BaseViewHolder {
                     || message.getSendFlag() == UdeskConst.SendFlag.RESULT_FAIL) {
                 imagePercent.setVisibility(View.GONE);
             }
-            if (!TextUtils.isEmpty(message.getLocalPath()) && UdeskUtils.isExitFileByPath(message.getLocalPath())) {
-                int[] wh = UdeskUtil.getImageWH(message.getLocalPath());
-                UdeskUtil.loadFileFromSdcard(mContext, imgView, Uri.fromFile(new File(message.getLocalPath())), wh[0], wh[1],true);
+            if (!TextUtils.isEmpty(message.getLocalPath()) && UdeskUtil.isExitFileByPath(mContext, message.getLocalPath())) {
+                UdeskUtil.loadScaleImage(mContext, imgView, message.getLocalPath(), true);
             } else {
-                UdeskUtil.loadImageView(mContext, imgView, Uri.parse(UdeskUtils.uRLEncoder(message.getMsgContent())),true);
+                UdeskUtil.loadScaleImage(mContext, imgView, UdeskUtils.uRLEncoder(message.getMsgContent()), true);
             }
 
-            imgView.setTag(message.getTime());
+//            imgView.setTag(message.getTime());
             imgView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -526,7 +524,7 @@ public class RightViewHolder extends BaseViewHolder {
                     }
                     Uri imgUri = null;
                     if (!TextUtils.isEmpty(message.getLocalPath())) {
-                        imgUri = Uri.fromFile(new File(message.getLocalPath()));
+                        imgUri = UdeskUtil.getUriFromPath(mContext, message.getLocalPath());
                         UdeskUtil.previewPhoto(mContext, imgUri);
                     } else if (!TextUtils.isEmpty(message.getMsgContent())) {
                         try {
@@ -551,14 +549,14 @@ public class RightViewHolder extends BaseViewHolder {
 
                 @Override
                 public void onClick(View v) {
-                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    UdeskResendDialog dialog = UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg), mContext.getString(R.string.udesk_cancel), message);
                     dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
                         @Override
                         public void onRetry() {
                             ((UdeskChatActivity) mContext).retrySendMsg(message);
                         }
                     });
-                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                    dialog.show(((UdeskChatActivity) mContext), "UdeskResendDialog");
                 }
             });
         } catch (Exception e) {
@@ -576,13 +574,13 @@ public class RightViewHolder extends BaseViewHolder {
             itemFile.setVisibility(View.VISIBLE);
             if (message.getDirection() == UdeskConst.ChatMsgDirection.Send) {
                 if (TextUtils.isEmpty(message.getFilename())) {
-                    fielTitle.setText(UdeskUtil.getFileName(message.getLocalPath()));
+                    fielTitle.setText(UdeskUtil.getFileName(mContext, message.getLocalPath()));
                 } else {
                     fielTitle.setText(message.getFilename());
                 }
 
                 if (TextUtils.isEmpty(message.getFilesize())) {
-                    fielSize.setText(UdeskUtil.getFileSizeByLoaclPath(message.getLocalPath()));
+                    fielSize.setText(UdeskUtil.getFileSizeByLoaclPath(mContext, message.getLocalPath()));
                 } else {
                     fielSize.setText(message.getFilesize());
                 }
@@ -596,8 +594,8 @@ public class RightViewHolder extends BaseViewHolder {
             } else {
                 fielTitle.setText(message.getFilename());
                 fielSize.setText(message.getFilesize());
-                if (UdeskUtils.fileIsExitByUrl(mContext, UdeskConst.File_File, message.getMsgContent())
-                        && UdeskUtils.getFileSize(UdeskUtils.getFileByUrl(mContext, UdeskConst.File_File, message.getMsgContent())) > 0) {
+                if (UdeskUtil.fileIsExitByUrl(mContext, UdeskConst.File_File, message.getMsgContent())
+                        && UdeskUtil.getFileSize(UdeskUtil.getFileByUrl(mContext, UdeskConst.File_File, message.getMsgContent())) > 0) {
                     mProgress.setProgress(100);
                     operater.setText(mContext.getString(R.string.udesk_has_downed));
                 } else {
@@ -617,22 +615,34 @@ public class RightViewHolder extends BaseViewHolder {
                 public void onClick(View view) {
                     try {
                         Intent intent = new Intent(Intent.ACTION_VIEW);
-                        File file;
+                        File file = null;
+                        Uri contentUri;
+                        String type;
                         if (message.getDirection() == UdeskConst.ChatMsgDirection.Send) {
-                            file = new File(message.getLocalPath());
+                            if (UdeskUtil.isAndroidQ()) {
+                                contentUri = Uri.parse(UdeskUtil.getFilePathQ(mContext, message.getLocalPath()));
+                                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            } else {
+                                file = new File(message.getLocalPath());
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                    contentUri = UdeskUtil.getOutputMediaFileUri(mContext, file);
+                                } else {
+                                    contentUri = Uri.fromFile(file);
+                                }
+                            }
                         } else {
-                            file = UdeskUtils.getFileByUrl(mContext, UdeskConst.File_File, message.getMsgContent());
-                            if (file == null || UdeskUtils.getFileSize(file) <= 0) {
+                            file = UdeskUtil.getFileByUrl(mContext, UdeskConst.File_File, message.getMsgContent());
+                            if (file == null || UdeskUtil.getFileSizeQ(mContext.getApplicationContext(), file.getAbsolutePath()) <= 0) {
                                 Toast.makeText(mContext.getApplicationContext(), mContext.getString(R.string.udesk_has_uncomplete_tip), Toast.LENGTH_SHORT).show();
                                 return;
                             }
-                        }
-                        Uri contentUri;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                            contentUri = UdeskFileProvider.getUriForFile(mContext, UdeskUtil.getFileProviderName(mContext), file);
-                        } else {
-                            contentUri = Uri.fromFile(file);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                contentUri = UdeskUtil.getOutputMediaFileUri(mContext, file);
+                            } else {
+                                contentUri = Uri.fromFile(file);
+                            }
                         }
                         if (contentUri == null) {
                             return;
@@ -640,7 +650,11 @@ public class RightViewHolder extends BaseViewHolder {
                         if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_SHORT_VIDEO)) {
                             intent.setDataAndType(contentUri, "video/mp4");
                         } else {
-                            String type = UdeskUtil.getMIMEType(file);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                type = UdeskUtil.getMIMEType(mContext, contentUri);
+                            }else {
+                                type = UdeskUtil.getMIMEType(file);
+                            }
                             intent.setDataAndType(contentUri, type);
                         }
                         mContext.startActivity(intent);
@@ -657,14 +671,14 @@ public class RightViewHolder extends BaseViewHolder {
 
                 @Override
                 public void onClick(View v) {
-                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    UdeskResendDialog dialog = UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg), mContext.getString(R.string.udesk_cancel), message);
                     dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
                         @Override
                         public void onRetry() {
                             ((UdeskChatActivity) mContext).retrySendMsg(message);
                         }
                     });
-                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                    dialog.show(((UdeskChatActivity) mContext), "UdeskResendDialog");
                 }
             });
         } catch (Exception e) {
@@ -690,20 +704,19 @@ public class RightViewHolder extends BaseViewHolder {
                     showFailureView();
                 }
             }
-
-            if (!TextUtils.isEmpty(message.getLocalPath()) && UdeskUtils.isExitFileByPath(message.getLocalPath())) {
-                UdeskUtil.loadViewBySize(mContext, smallVideoImgView, Uri.fromFile(new File(message.getLocalPath())), UdeskUtil.dip2px(mContext, 130), UdeskUtil.dip2px(mContext, 200));
-            } else if (UdeskUtils.fileIsExitByUrl(mContext, UdeskConst.FileImg, message.getMsgContent())) {
-                String loaclpath = UdeskUtils.getPathByUrl(mContext, UdeskConst.FileImg, message.getMsgContent());
-                UdeskUtil.loadViewBySize(mContext, smallVideoImgView, Uri.fromFile(new File(loaclpath)), UdeskUtil.dip2px(mContext, 130), UdeskUtil.dip2px(mContext, 200));
+            if (!TextUtils.isEmpty(message.getLocalPath()) && UdeskUtil.isExitFileByPath(mContext, message.getLocalPath())) {
+                UdeskUtil.loadViewBySize(mContext, smallVideoImgView, message.getLocalPath(), UdeskUtil.dip2px(mContext, 130), UdeskUtil.dip2px(mContext, 200));
+            } else if (UdeskUtil.fileIsExitByUrl(mContext, UdeskConst.FileImg, message.getMsgContent())) {
+                String loaclpath = UdeskUtil.getPathByUrl(mContext, UdeskConst.FileImg, message.getMsgContent());
+                UdeskUtil.loadViewBySize(mContext, smallVideoImgView, loaclpath, UdeskUtil.dip2px(mContext, 130), UdeskUtil.dip2px(mContext, 200));
             } else {
-                if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                     UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                     return;
                 }
                 ((UdeskChatActivity) mContext).showVideoThumbnail(message);
             }
-            smallVideoImgView.setTag(message.getTime());
+//            smallVideoImgView.setTag(message.getTime());
             smallVideoImgView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -712,14 +725,14 @@ public class RightViewHolder extends BaseViewHolder {
                         return;
                     }
                     String path = "";
-                    if (!TextUtils.isEmpty(message.getLocalPath()) && UdeskUtils.isExitFileByPath(message.getLocalPath())) {
+                    if (!TextUtils.isEmpty(message.getLocalPath()) && UdeskUtil.isExitFileByPath(mContext, message.getLocalPath())) {
                         path = message.getLocalPath();
                     } else if (!TextUtils.isEmpty(message.getMsgContent())) {
-                        File file = UdeskUtils.getFileByUrl(mContext, UdeskConst.FileVideo, message.getMsgContent());
-                        if (file != null && UdeskUtils.getFileSize(file) > 0) {
+                        File file = UdeskUtil.getFileByUrl(mContext, UdeskConst.FileVideo, message.getMsgContent());
+                        if (file != null && UdeskUtil.getFileSize(file) > 0) {
                             path = file.getPath();
                         } else {
-                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                                 UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                                 return;
                             }
@@ -740,14 +753,14 @@ public class RightViewHolder extends BaseViewHolder {
 
                 @Override
                 public void onClick(View v) {
-                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    UdeskResendDialog dialog = UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg), mContext.getString(R.string.udesk_cancel), message);
                     dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
                         @Override
                         public void onRetry() {
                             ((UdeskChatActivity) mContext).retrySendMsg(message);
                         }
                     });
-                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                    dialog.show(((UdeskChatActivity) mContext), "UdeskResendDialog");
                 }
             });
 
@@ -828,13 +841,13 @@ public class RightViewHolder extends BaseViewHolder {
             itemLocation.setVisibility(View.VISIBLE);
             final String[] locationMessage = message.getMsgContent().split(";");
             locationValue.setText(locationMessage[locationMessage.length - 1]);
-            cropBitMap.setImageURI(Uri.fromFile(new File(message.getLocalPath())));
+            UdeskUtil.loadImage(mContext,cropBitMap,message.getLocalPath());
             cropBitMap.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
                     if (UdeskSDKManager.getInstance().getUdeskConfig().locationMessageClickCallBack != null) {
-                        UdeskSDKManager.getInstance().getUdeskConfig().locationMessageClickCallBack.luanchMap(mContext, Double.valueOf(locationMessage[0]),
+                        UdeskSDKManager.getInstance().getUdeskConfig().locationMessageClickCallBack.launchMap(mContext, Double.valueOf(locationMessage[0]),
                                 Double.valueOf(locationMessage[1]), locationMessage[locationMessage.length - 1]);
                     }
                 }
@@ -845,14 +858,14 @@ public class RightViewHolder extends BaseViewHolder {
 
                 @Override
                 public void onClick(View v) {
-                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    UdeskResendDialog dialog = UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg), mContext.getString(R.string.udesk_cancel), message);
                     dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
                         @Override
                         public void onRetry() {
                             ((UdeskChatActivity) mContext).retrySendMsg(message);
                         }
                     });
-                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                    dialog.show(((UdeskChatActivity) mContext), "UdeskResendDialog");
                 }
             });
         } catch (Exception e) {
@@ -870,20 +883,20 @@ public class RightViewHolder extends BaseViewHolder {
             JSONObject jsonObject = new JSONObject(message.getMsgContent());
             if (!TextUtils.isEmpty(jsonObject.optString("imgUrl"))) {
                 productIcon.setVisibility(View.VISIBLE);
-                UdeskUtil.loadNoChangeView(mContext.getApplicationContext(), productIcon, Uri.parse(jsonObject.optString("imgUrl")));
+                UdeskUtil.loadImage(mContext.getApplicationContext(), productIcon, jsonObject.optString("imgUrl"));
             } else {
                 productIcon.setVisibility(View.GONE);
             }
             productUrl = jsonObject.optString("url");
-            String name =jsonObject.optString("name");
+            String name = jsonObject.optString("name");
             itemProduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick != null) {
                         UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick.txtMsgOnclick(productUrl);
                     } else {
-                        if (!TextUtils.isEmpty(productUrl)){
-                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                        if (!TextUtils.isEmpty(productUrl)) {
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                                 UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                                 return;
                             }
@@ -896,13 +909,13 @@ public class RightViewHolder extends BaseViewHolder {
             });
             if (!TextUtils.isEmpty(name)) {
                 productName.setVisibility(View.VISIBLE);
-                if (UdeskSDKManager.getInstance().getUdeskConfig().udeskProductMaxLines > 0 ){
+                if (UdeskSDKManager.getInstance().getUdeskConfig().udeskProductMaxLines > 0) {
                     productName.setMaxLines(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductMaxLines);
                     productName.setEllipsize(TextUtils.TruncateAt.END);
                 }
                 productName.setText(name);
                 productName.setTextColor(mContext.getResources().getColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductRightNameLinkColorResId));
-            }else {
+            } else {
                 productName.setVisibility(View.GONE);
             }
 
@@ -917,14 +930,14 @@ public class RightViewHolder extends BaseViewHolder {
                     }
                     String color = data.optString("color");
                     int size = data.optInt("size");
-                    if (TextUtils.isEmpty(color)){
+                    if (TextUtils.isEmpty(color)) {
                         color = "#000000";
                     }
-                    if (size==0){
+                    if (size == 0) {
                         size = 12;
                     }
                     String textStr = "<font color=" + color +
-                            "  size=" + UdeskUtil.dip2px(mContext,size) + ">" + data.optString("text") + "</font>";
+                            "  size=" + UdeskUtil.dip2px(mContext, size) + ">" + data.optString("text") + "</font>";
                     if (data.optBoolean("fold")) {
                         textStr = "<b>" + textStr + "</b>";
                     }
@@ -936,9 +949,9 @@ public class RightViewHolder extends BaseViewHolder {
             }
             String htmlString = builder.toString().replaceAll("font", HtmlTagHandler.TAG_FONT);
             Spanned fromHtml = Html.fromHtml(htmlString, null, new HtmlTagHandler());
-            if (TextUtils.isEmpty(fromHtml)){
+            if (TextUtils.isEmpty(fromHtml)) {
                 productMsg.setVisibility(View.GONE);
-            }else {
+            } else {
                 productMsg.setVisibility(View.VISIBLE);
                 productMsg.setText(fromHtml);
             }
@@ -947,14 +960,14 @@ public class RightViewHolder extends BaseViewHolder {
 
                 @Override
                 public void onClick(View v) {
-                    UdeskResendDialog dialog=UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg),mContext.getString(R.string.udesk_cancel),message);
+                    UdeskResendDialog dialog = UdeskResendDialog.newInstance(mContext.getString(R.string.udesk_resend_msg), mContext.getString(R.string.udesk_cancel), message);
                     dialog.setRetryListner(new UdeskResendDialog.RetryListner() {
                         @Override
                         public void onRetry() {
                             ((UdeskChatActivity) mContext).retrySendMsg(message);
                         }
                     });
-                    dialog.show(((UdeskChatActivity) mContext),"UdeskResendDialog");
+                    dialog.show(((UdeskChatActivity) mContext), "UdeskResendDialog");
                 }
             });
         } catch (Exception e) {
@@ -1007,11 +1020,11 @@ public class RightViewHolder extends BaseViewHolder {
 
     @Override
     protected void showTextHead(boolean b) {
-        if (b){
+        if (b) {
             showHead(b);
-        }else {
+        } else {
             llHead.setVisibility(View.GONE);
-            if (!(UdeskSDKManager.getInstance().getUdeskConfig().isShowCustomerHead || isShowCustomerNickName())){
+            if (!(UdeskSDKManager.getInstance().getUdeskConfig().isShowCustomerHead || isShowCustomerNickName())) {
                 setBodyTopMargin(3);
             }
         }
@@ -1026,13 +1039,13 @@ public class RightViewHolder extends BaseViewHolder {
         try {
             if (isShow && (UdeskSDKManager.getInstance().getUdeskConfig().isShowCustomerHead || isShowCustomerNickName())) {
                 llHead.setVisibility(View.VISIBLE);
-                setBodyTopMargin( 3);
-                if (!UdeskSDKManager.getInstance().getUdeskConfig().isShowCustomerHead){
+                setBodyTopMargin(3);
+                if (!UdeskSDKManager.getInstance().getUdeskConfig().isShowCustomerHead) {
                     ivHeader.setVisibility(View.GONE);
-                }else {
+                } else {
                     ivHeader.setVisibility(View.VISIBLE);
                     if (!TextUtils.isEmpty(UdeskSDKManager.getInstance().getUdeskConfig().customerUrl)) {
-                        UdeskUtil.loadHeadView(mContext, ivHeader, Uri.parse(UdeskSDKManager.getInstance().getUdeskConfig().customerUrl));
+                        UdeskUtil.loadImage(mContext, ivHeader, UdeskSDKManager.getInstance().getUdeskConfig().customerUrl);
                     }
                 }
                 if (!isShowCustomerNickName()) {
@@ -1046,7 +1059,7 @@ public class RightViewHolder extends BaseViewHolder {
                 llHead.setVisibility(View.GONE);
                 setBodyTopMargin(10);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -1057,7 +1070,7 @@ public class RightViewHolder extends BaseViewHolder {
         llBody.setLayoutParams(params);
     }
 
-    private String getCustomerNickName(){
+    private String getCustomerNickName() {
         Map<String, String> defaultUserInfo = UdeskSDKManager.getInstance().getUdeskConfig().defaultUserInfo;
         if (defaultUserInfo != null && defaultUserInfo.containsKey(UdeskConst.UdeskUserInfo.NICK_NAME)
                 && !TextUtils.isEmpty(defaultUserInfo.get(UdeskConst.UdeskUserInfo.NICK_NAME))) {
@@ -1066,10 +1079,10 @@ public class RightViewHolder extends BaseViewHolder {
         return "";
     }
 
-    private boolean isShowCustomerNickName(){
-        if (UdeskSDKManager.getInstance().getUdeskConfig().isShowCustomerNickname && !TextUtils.isEmpty(getCustomerNickName())){
+    private boolean isShowCustomerNickName() {
+        if (UdeskSDKManager.getInstance().getUdeskConfig().isShowCustomerNickname && !TextUtils.isEmpty(getCustomerNickName())) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }

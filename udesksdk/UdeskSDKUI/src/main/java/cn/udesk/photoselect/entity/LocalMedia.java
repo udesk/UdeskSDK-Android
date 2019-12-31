@@ -14,16 +14,18 @@ public class LocalMedia implements Parcelable {
     private String pictureType;
     private int width;
     private int height;
+    private int orientation;
 
     private boolean selected;//是否被选中,内部使用,无需关心
     private boolean selectedOriginal;//用户选择时是否选择了原图选项
 
-    public LocalMedia(String path, long duration,  String pictureType, int width, int height) {
+    public LocalMedia(String path, long duration,  String pictureType, int width, int height,int orientation) {
         this.path = path;
         this.duration = duration;
         this.pictureType = pictureType;
         this.width = width;
         this.height = height;
+        this.orientation = orientation;
     }
 
     protected LocalMedia(Parcel in) {
@@ -32,6 +34,7 @@ public class LocalMedia implements Parcelable {
         pictureType = in.readString();
         width = in.readInt();
         height = in.readInt();
+        orientation = in.readInt();
         selected = in.readByte() != 0;
         selectedOriginal = in.readByte() != 0;
     }
@@ -43,6 +46,7 @@ public class LocalMedia implements Parcelable {
         dest.writeString(pictureType);
         dest.writeInt(width);
         dest.writeInt(height);
+        dest.writeInt(orientation);
         dest.writeByte((byte) (selected ? 1 : 0));
         dest.writeByte((byte) (selectedOriginal ? 1 : 0));
     }
@@ -120,6 +124,11 @@ public class LocalMedia implements Parcelable {
         this.height = height;
     }
 
+    public int getOrientation() {
+        return orientation;
+    }
 
-
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
+    }
 }

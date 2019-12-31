@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.udesk.UdeskUtil;
 import cn.udesk.camera.callback.CameraOpenOverCallback;
 import cn.udesk.camera.callback.ErrorListener;
 import cn.udesk.camera.callback.FocusCallback;
@@ -283,8 +284,8 @@ public class CameraInterface implements Camera.PreviewCallback {
     private synchronized void openCamera(int id) {
         try {
             if (mCamera != null) {
-                mCamera .stopPreview();
-                mCamera .release();
+                mCamera.stopPreview();
+                mCamera.release();
                 mCamera = null;
             }
             this.mCamera = Camera.open(id);
@@ -483,7 +484,7 @@ public class CameraInterface implements Camera.PreviewCallback {
 
             videoFileName = "video_" + System.currentTimeMillis() + ".mp4";
             if (saveVideoPath.equals("")) {
-                saveVideoPath = UdeskUtils.getDirectoryPath(context.getApplicationContext(), UdeskConst.FileVideo);
+                saveVideoPath = UdeskUtil.getDirectoryPath(context.getApplicationContext(), UdeskConst.FileVideo);
             }
             Log.i("udesksdk", "saveVideoPath = " + saveVideoPath);
             videoFileAbsPath = saveVideoPath + File.separator + videoFileName;

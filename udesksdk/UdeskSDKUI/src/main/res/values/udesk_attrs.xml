@@ -30,5 +30,12 @@
         <attr name="udeskvoiceTextColor" format="color" />
         <attr name="udeskvoiceTextSize" format="dimension" />
     </declare-styleable>
-    
+    <declare-styleable name="UdeskImageView">
+        <attr name="android:src" />
+        <attr name="udesk_iv_isCircle" format="boolean" />
+        <attr name="udesk_iv_cornerRadius" format="reference|dimension" />
+        <attr name="udesk_iv_isSquare" format="boolean" />
+        <attr name="udesk_iv_borderWidth" format="reference|dimension" />
+        <attr name="udesk_iv_borderColor" format="reference|color" />
+    </declare-styleable>
 </resources>

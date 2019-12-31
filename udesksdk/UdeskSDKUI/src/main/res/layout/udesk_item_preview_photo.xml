@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:layoutDirection="ltr">
 
-    <me.relex.photodraweeview.PhotoDraweeView
+    <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/udesk_iv_photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

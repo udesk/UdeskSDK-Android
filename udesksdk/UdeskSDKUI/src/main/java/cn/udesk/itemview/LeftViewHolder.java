@@ -10,10 +10,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.RequiresApi;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -22,6 +18,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +29,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -59,11 +59,11 @@ import cn.udesk.model.SpanModel;
 import cn.udesk.model.StructModel;
 import cn.udesk.model.UdeskQueueItem;
 import cn.udesk.photoselect.PictureVideoPlayActivity;
-import cn.udesk.provider.UdeskFileProvider;
 import cn.udesk.rich.XRichText;
 import cn.udesk.widget.CircleProgressBar;
 import cn.udesk.widget.HtmlTagHandler;
 import cn.udesk.widget.RecycleViewDivider;
+import cn.udesk.widget.UdeskImageView;
 import cn.udesk.widget.UdeskRecycleView;
 import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
@@ -81,16 +81,16 @@ import udesk.core.model.WechatImageBean;
 import udesk.core.utils.UdeskUtils;
 
 
-public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback{
+public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback {
 
-    private SimpleDraweeView ivHeader;
+    private UdeskImageView ivHeader;
     private TextView agentnickName;
     private TextView videoMsg;
     private LinearLayout itemAudio;
     private LinearLayout audioTop;
     private TextView tvDuration;
     private LinearLayout itemImg;
-    private SimpleDraweeView imgView;
+    private UdeskImageView imgView;
     private TextView fielTitle;
     private LinearLayout itemFile;
     private LinearLayout itemSmallVideo;
@@ -101,7 +101,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
     private LinearLayout structImgView;
     private LinearLayout structTextView;
     private LinearLayout structBtnLineayLayout;
-    private SimpleDraweeView structImg;
+    private ImageView structImg;
     private TextView structTitle;
     private TextView structDes;
     private TextView events;
@@ -112,7 +112,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
     private XRichText leaveMsg;
     public static final int[] RESIDS = {R.drawable.udesk_im_txt_left_default, R.drawable.udesk_im_txt_left_up, R.drawable.udesk_im_txt_left_down, R.drawable.udesk_im_txt_left_mid};
     private LinearLayout robotItemImgTxt;
-    private SimpleDraweeView robotImgTxtImg;
+    private ImageView robotImgTxtImg;
     private RelativeLayout robotImgTxtTop;
     private TextView robotImgTxtTitle;
     private TextView robotImgTxtDes;
@@ -139,7 +139,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
     private TextView structTableLine;
     private LinearLayout structTableChange;
     private LinearLayout itemReplyProduct;
-    private SimpleDraweeView replyProductImg;
+    private ImageView replyProductImg;
     private TextView replyProductTitle;
     private RelativeLayout replyProductMid;
     private TextView replyProductInfoOne;
@@ -147,7 +147,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
     private TextView replyProductInfoThree;
     private StrucTableAdapter strucTableAdapter;
     private LinearLayout itemLink;
-    private SimpleDraweeView linkImg;
+    private ImageView linkImg;
     private TextView linkTitle;
     private LinearLayout itemLeaveMsg;
     private LinearLayout itemRich;
@@ -180,7 +180,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
     private LinearLayout itemProduct;
     private TextView productMsg;
     private TextView productName;
-    private SimpleDraweeView productIcon;
+    private ImageView productIcon;
 
 
     @Override
@@ -196,7 +196,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             UdeskConfigUtil.setUITextColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskIMAgentNickNameColorResId, agentnickName);
             //有用
             robotLlUseful = convertView.findViewById(R.id.udesk_robot_ll_useful);
-            robotImgUseful= convertView.findViewById(R.id.udesk_useful);
+            robotImgUseful = convertView.findViewById(R.id.udesk_useful);
             robotImgUseless = convertView.findViewById(R.id.udesk_useless);
             //是的
             robotLlOk = convertView.findViewById(R.id.udesk_im_ll_ok);
@@ -339,7 +339,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             UdeskConfigUtil.setUIbgDrawable(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductLeftBgResId, itemProduct);
             productMsg = (TextView) convertView.findViewById(R.id.udesk_product_msg);
             productName = (TextView) convertView.findViewById(R.id.product_name);
-            productIcon = (SimpleDraweeView) convertView.findViewById(R.id.udesk_product_icon);
+            productIcon = (ImageView) convertView.findViewById(R.id.udesk_product_icon);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -375,7 +375,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             itemLink.setVisibility(View.GONE);
             itemTemplate.setVisibility(View.GONE);
             itemProduct.setVisibility(View.GONE);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -384,17 +384,17 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
     public void bind() {
         try {
             hideAllView();
-            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.topMargin=UdeskUtil.dip2px(mContext,10);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.topMargin = UdeskUtil.dip2px(mContext, 10);
             llHead.setLayoutParams(params);
             if (message instanceof UdeskQueueItem) {
                 dealQueue();
                 return;
             }
-            if (!TextUtils.isEmpty(message.getFlowContent())&&message.getFlowId()!=0){
+            if (!TextUtils.isEmpty(message.getFlowContent()) && message.getFlowId() != 0) {
                 message.setMsgtype(UdeskConst.ChatMsgTypeString.TYPE_FLOW);
             }
-            if (TextUtils.isEmpty(message.getMsgContent())&&(TextUtils.isEmpty(message.getFlowContent())||message.getFlowId()==0)){
+            if (TextUtils.isEmpty(message.getMsgContent()) && (TextUtils.isEmpty(message.getFlowContent()) || message.getFlowId() == 0)) {
                 message.setMsgtype(UdeskConst.ChatMsgTypeString.TYPE_ROBOT_CLASSIFY);
             }
             switch (UdeskConst.parseTypeForMessage(message.getMsgtype())) {
@@ -485,20 +485,20 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             JSONObject jsonObject = new JSONObject(message.getMsgContent());
             if (!TextUtils.isEmpty(jsonObject.optString("imgUrl"))) {
                 productIcon.setVisibility(View.VISIBLE);
-                UdeskUtil.loadNoChangeView(mContext.getApplicationContext(), productIcon, Uri.parse(jsonObject.optString("imgUrl")));
+                UdeskUtil.loadImage(mContext.getApplicationContext(), productIcon, jsonObject.optString("imgUrl"));
             } else {
                 productIcon.setVisibility(View.GONE);
             }
             final String productUrl = jsonObject.optString("url");
-            String name =jsonObject.optString("name");
+            String name = jsonObject.optString("name");
             itemProduct.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick != null) {
                         UdeskSDKManager.getInstance().getUdeskConfig().productMessageClick.txtMsgOnclick(productUrl);
                     } else {
-                        if (!TextUtils.isEmpty(productUrl)){
-                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                        if (!TextUtils.isEmpty(productUrl)) {
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                                 UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                                 return;
                             }
@@ -511,13 +511,13 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             });
             if (!TextUtils.isEmpty(name)) {
                 productName.setVisibility(View.VISIBLE);
-                if (UdeskSDKManager.getInstance().getUdeskConfig().udeskProductMaxLines > 0 ){
+                if (UdeskSDKManager.getInstance().getUdeskConfig().udeskProductMaxLines > 0) {
                     productName.setMaxLines(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductMaxLines);
                     productName.setEllipsize(TextUtils.TruncateAt.END);
                 }
                 productName.setText(name);
                 productName.setTextColor(mContext.getResources().getColor(UdeskSDKManager.getInstance().getUdeskConfig().udeskProductLeftNameLinkColorResId));
-            }else {
+            } else {
                 productName.setVisibility(View.GONE);
             }
 
@@ -532,14 +532,14 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     }
                     String color = data.optString("color");
                     int size = data.optInt("size");
-                    if (TextUtils.isEmpty(color)){
+                    if (TextUtils.isEmpty(color)) {
                         color = "#000000";
                     }
-                    if (size==0){
+                    if (size == 0) {
                         size = 12;
                     }
                     String textStr = "<font color=" + color +
-                            "  size=" + UdeskUtil.dip2px(mContext,size) + ">" + data.optString("text") + "</font>";
+                            "  size=" + UdeskUtil.dip2px(mContext, size) + ">" + data.optString("text") + "</font>";
                     if (data.optBoolean("fold")) {
                         textStr = "<b>" + textStr + "</b>";
                     }
@@ -551,9 +551,9 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             }
             String htmlString = builder.toString().replaceAll("font", HtmlTagHandler.TAG_FONT);
             Spanned fromHtml = Html.fromHtml(htmlString, null, new HtmlTagHandler());
-            if (TextUtils.isEmpty(fromHtml)){
+            if (TextUtils.isEmpty(fromHtml)) {
                 productMsg.setVisibility(View.GONE);
-            }else {
+            } else {
                 productMsg.setVisibility(View.VISIBLE);
                 productMsg.setText(fromHtml);
             }
@@ -568,53 +568,54 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
     private boolean dealTransfer(ViewGroup itemView) {
         try {
             Map<String, Boolean> transferMap = ((UdeskChatActivity) mContext).getTransferMap();
-            if (transferMap.containsKey(message.getMsgId())){
+            if (transferMap.containsKey(message.getMsgId())) {
                 dealUseful();
                 tvTransferAgent.setVisibility(View.VISIBLE);
                 tvTransferAgent.setText(message.getSwitchStaffTips());
                 tvTransferAgent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                             UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                             return;
                         }
                         InvokeEventContainer.getInstance().event_OnTransferClick.invoke(message);
                     }
                 });
-                if(itemView!=null){
-                    RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(UdeskUtil.dip2px(mContext,310),RelativeLayout.LayoutParams.WRAP_CONTENT);
+                if (itemView != null) {
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(UdeskUtil.dip2px(mContext, 310), RelativeLayout.LayoutParams.WRAP_CONTENT);
                     itemView.setLayoutParams(params);
                 }
                 return true;
-            }else {
+            } else {
                 tvTransferAgent.setVisibility(View.GONE);
                 return false;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
-     /**
+
+    /**
      * 处理有用
      */
     private boolean dealUseful() {
         try {
             Map<String, Boolean> usefulMap = ((UdeskChatActivity) mContext).getUsefulMap();
-            if (usefulMap.containsKey(message.getMsgId())){
+            if (usefulMap.containsKey(message.getMsgId())) {
                 robotLlUseful.setVisibility(View.VISIBLE);
                 robotImgUseful.setVisibility(View.VISIBLE);
                 robotImgUseless.setVisibility(View.VISIBLE);
-                if (TextUtils.equals(message.getUsefulType(),UdeskConst.UsefulTpye.useful)){
+                if (TextUtils.equals(message.getUsefulType(), UdeskConst.UsefulTpye.useful)) {
                     robotImgUseful.setImageResource(R.drawable.udesk_useful_clicked);
                     robotImgUseless.setImageResource(R.drawable.udesk_useless);
                     robotImgUseless.setVisibility(View.GONE);
-                }else if (TextUtils.equals(message.getUsefulType(),UdeskConst.UsefulTpye.useless)){
+                } else if (TextUtils.equals(message.getUsefulType(), UdeskConst.UsefulTpye.useless)) {
                     robotImgUseful.setImageResource(R.drawable.udesk_useful);
                     robotImgUseful.setVisibility(View.GONE);
                     robotImgUseless.setImageResource(R.drawable.udesk_useless_clicked);
-                }else {
+                } else {
                     robotImgUseful.setImageResource(R.drawable.udesk_useful);
                     robotImgUseless.setImageResource(R.drawable.udesk_useless);
                 }
@@ -622,14 +623,14 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 robotImgUseful.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (message.isUsefulClicked()){
-                            UdeskUtils.showToast(mContext,mContext.getResources().getString(R.string.udesk_answer_has_survey));
-                        }else {
-                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                        if (message.isUsefulClicked()) {
+                            UdeskUtils.showToast(mContext, mContext.getResources().getString(R.string.udesk_answer_has_survey));
+                        } else {
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                                 UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                                 return;
                             }
-                            InvokeEventContainer.getInstance().event_OnAnswerClick.invoke(message.getLogId(),"1");
+                            InvokeEventContainer.getInstance().event_OnAnswerClick.invoke(message.getLogId(), "1");
                             robotImgUseful.setImageResource(R.drawable.udesk_useful_clicked);
                             robotImgUseless.setImageResource(R.drawable.udesk_useless);
                             robotImgUseful.setVisibility(View.VISIBLE);
@@ -642,14 +643,14 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 robotImgUseless.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (message.isUsefulClicked()){
-                            UdeskUtils.showToast(mContext,mContext.getResources().getString(R.string.udesk_answer_has_survey));
-                        }else {
-                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                        if (message.isUsefulClicked()) {
+                            UdeskUtils.showToast(mContext, mContext.getResources().getString(R.string.udesk_answer_has_survey));
+                        } else {
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                                 UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                                 return;
                             }
-                            InvokeEventContainer.getInstance().event_OnAnswerClick.invoke(message.getLogId(),"2");
+                            InvokeEventContainer.getInstance().event_OnAnswerClick.invoke(message.getLogId(), "2");
                             robotImgUseful.setVisibility(View.GONE);
                             robotImgUseless.setVisibility(View.VISIBLE);
                             robotImgUseful.setImageResource(R.drawable.udesk_useful);
@@ -660,16 +661,17 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     }
                 });
                 return true;
-            }else {
+            } else {
                 robotLlUseful.setVisibility(View.GONE);
                 return false;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-      return false;
+        return false;
     }
- /**
+
+    /**
      * 处理是的
      */
     private void dealOk() {
@@ -684,10 +686,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             showHead(true);
             robotItemQueClassify.setVisibility(View.VISIBLE);
             WebConfigBean webConfig = message.getWebConfig();
-            if (webConfig!=null&&!TextUtils.isEmpty(webConfig.getLeadingWord())){
-                robotTxtQueTitle.callback(this).text(mContext,webConfig.getLeadingWord());
+            if (webConfig != null && !TextUtils.isEmpty(webConfig.getLeadingWord())) {
+                robotTxtQueTitle.callback(this).text(mContext, webConfig.getLeadingWord());
             } else {
-                robotTxtQueTitle.callback(this).text(mContext,mContext.getResources().getString(R.string.udesk_robot_recommendation_question));
+                robotTxtQueTitle.callback(this).text(mContext, mContext.getResources().getString(R.string.udesk_robot_recommendation_question));
             }
             dealTransfer(robotItemQueClassify);
             showRecommended(containerClassify);
@@ -695,6 +697,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             e.printStackTrace();
         }
     }
+
     //显示推荐问题
     private boolean showRecommended(final LinearLayout container) {
         try {
@@ -702,64 +705,64 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             List<TopAskBean> topAsk = message.getTopAsk();
             container.removeAllViews();
             if (topAsk != null && topAsk.size() > 0) {
-                if (dealUseful()){
-                    viewParams=new LinearLayout.LayoutParams(UdeskUtil.dip2px(mContext,310),ViewGroup.LayoutParams.WRAP_CONTENT);
-                }else {
-                    viewParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+                if (dealUseful()) {
+                    viewParams = new LinearLayout.LayoutParams(UdeskUtil.dip2px(mContext, 310), ViewGroup.LayoutParams.WRAP_CONTENT);
+                } else {
+                    viewParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 }
                 container.setLayoutParams(viewParams);
-                if (topAsk.size()==1&&topAsk.get(0).getOptionsList()!=null&&topAsk.get(0).getOptionsList().size()>0){
+                if (topAsk.size() == 1 && topAsk.get(0).getOptionsList() != null && topAsk.get(0).getOptionsList().size() > 0) {
                     List<OptionsListBean> optionsList = topAsk.get(0).getOptionsList();
-                    for (int j=0;j<optionsList.size();j++){
-                        final OptionsListBean optionsListBean=optionsList.get(j);
-                        View childView = LayoutInflater.from(mContext).inflate(R.layout.udesk_view_que_classify_child, container,false);
-                        TextView childTitle=childView.findViewById(R.id.udesk_robot_tv_que_child);
+                    for (int j = 0; j < optionsList.size(); j++) {
+                        final OptionsListBean optionsListBean = optionsList.get(j);
+                        View childView = LayoutInflater.from(mContext).inflate(R.layout.udesk_view_que_classify_child, container, false);
+                        TextView childTitle = childView.findViewById(R.id.udesk_robot_tv_que_child);
                         childTitle.setText(optionsListBean.getQuestion());
                         container.addView(childView);
                         childView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                                if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                                     UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                                     return;
                                 }
-                                InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(), optionsListBean.getQuestion(), optionsListBean.getQuestionId());
+                                InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(), message.getLogId(), optionsListBean.getQuestion(), optionsListBean.getQuestionId());
                             }
                         });
                     }
 
-                }else {
-                    for (int i=0;i<topAsk.size();i++){
-                        TextView lineView=new TextView(mContext);
-                        LinearLayout.LayoutParams lineParams=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,UdeskUtil.dip2px(mContext,1));
+                } else {
+                    for (int i = 0; i < topAsk.size(); i++) {
+                        TextView lineView = new TextView(mContext);
+                        LinearLayout.LayoutParams lineParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, UdeskUtil.dip2px(mContext, 1));
                         lineView.setLayoutParams(lineParams);
                         lineView.setBackgroundResource(R.color.udesk_color_ffebedf0);
-                        View groupView = LayoutInflater.from(mContext).inflate(R.layout.udesk_view_que_classify_group, container,false);
-                        TextView groupTitle=groupView.findViewById(R.id.udesk_robot_que_group_title);
+                        View groupView = LayoutInflater.from(mContext).inflate(R.layout.udesk_view_que_classify_group, container, false);
+                        TextView groupTitle = groupView.findViewById(R.id.udesk_robot_que_group_title);
                         groupTitle.setText(topAsk.get(i).getQuestionType());
-                        final ImageView arrow=groupView.findViewById(R.id.udesk_robot_que_group_arrow);
+                        final ImageView arrow = groupView.findViewById(R.id.udesk_robot_que_group_arrow);
                         container.addView(lineView);
                         container.addView(groupView);
-                        if (topAsk.get(i).getOptionsList()!=null&&topAsk.get(i).getOptionsList().size()>0){
-                            final LinearLayout childContainer=new LinearLayout(mContext);
-                            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+                        if (topAsk.get(i).getOptionsList() != null && topAsk.get(i).getOptionsList().size() > 0) {
+                            final LinearLayout childContainer = new LinearLayout(mContext);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                             childContainer.setLayoutParams(params);
                             childContainer.setOrientation(LinearLayout.VERTICAL);
                             List<OptionsListBean> optionsList = topAsk.get(i).getOptionsList();
-                            for (int j=0;j<optionsList.size();j++){
-                                final OptionsListBean optionsListBean=optionsList.get(j);
-                                View childView = LayoutInflater.from(mContext).inflate(R.layout.udesk_view_que_classify_child, container,false);
-                                TextView childTitle=childView.findViewById(R.id.udesk_robot_tv_que_child);
+                            for (int j = 0; j < optionsList.size(); j++) {
+                                final OptionsListBean optionsListBean = optionsList.get(j);
+                                View childView = LayoutInflater.from(mContext).inflate(R.layout.udesk_view_que_classify_child, container, false);
+                                TextView childTitle = childView.findViewById(R.id.udesk_robot_tv_que_child);
                                 childTitle.setText(optionsListBean.getQuestion());
                                 childContainer.addView(childView);
                                 childView.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                                             UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                                             return;
                                         }
-                                        InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(), optionsListBean.getQuestion(), optionsListBean.getQuestionId());
+                                        InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(), message.getLogId(), optionsListBean.getQuestion(), optionsListBean.getQuestionId());
                                     }
                                 });
                             }
@@ -767,26 +770,26 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                             if (i == 0) {
                                 childContainer.setVisibility(View.VISIBLE);
                                 arrow.setImageResource(R.drawable.udesk_fold);
-                            }else {
+                            } else {
                                 childContainer.setVisibility(View.GONE);
                                 arrow.setImageResource(R.drawable.udesk_expand);
                             }
-                            final int groupPositon=i;
+                            final int groupPositon = i;
                             groupView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    for (int k = 3; k<= container.getChildCount(); k=k+3){
-                                        if (k!=(groupPositon*3+3)){
-                                            container.getChildAt(k-1).setVisibility(View.GONE);
+                                    for (int k = 3; k <= container.getChildCount(); k = k + 3) {
+                                        if (k != (groupPositon * 3 + 3)) {
+                                            container.getChildAt(k - 1).setVisibility(View.GONE);
                                             View childAt = container.getChildAt(k - 2);
                                             ImageView groupArrow = childAt.findViewById(R.id.udesk_robot_que_group_arrow);
                                             groupArrow.setImageResource(R.drawable.udesk_expand);
                                         }
                                     }
-                                    if (childContainer.isShown()){
+                                    if (childContainer.isShown()) {
                                         childContainer.setVisibility(View.GONE);
                                         arrow.setImageResource(R.drawable.udesk_expand);
-                                    }else {
+                                    } else {
                                         childContainer.setVisibility(View.VISIBLE);
                                         arrow.setImageResource(R.drawable.udesk_fold);
                                     }
@@ -798,11 +801,11 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     }
                 }
                 return true;
-            }else {
-                viewParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            } else {
+                viewParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 container.setLayoutParams(viewParams);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -819,7 +822,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             List<MessageInfo> list = new ArrayList();
             BrandAdapter adapter = new BrandAdapter(mContext, list);
             robotRvBrand.setAdapter(adapter);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -834,13 +837,13 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             dealTransfer(itemLink);
             showRecommended(containerLink);
             final LinkBean linkBean = JsonUtils.parseLinkBean(message.getMsgContent());
-            if (linkBean!=null){
-                UdeskUtil.loadNoChangeView(mContext,linkImg,Uri.parse(linkBean.getFaviconUrl()));
+            if (linkBean != null) {
+                UdeskUtil.loadImage(mContext, linkImg, linkBean.getFaviconUrl());
                 linkTitle.setText(linkBean.getTitle());
                 itemLink.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                             UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                             return;
                         }
@@ -850,10 +853,11 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     }
                 });
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     /**
      * 处理图文消息
      */
@@ -863,19 +867,19 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             dealUseful();
             robotItemImgTxt.setVisibility(View.VISIBLE);
             final WechatImageBean wechatImageBean = JsonUtils.parseWechatImage(message.getMsgContent());
-            if (wechatImageBean!=null){
-                UdeskUtil.loadNoChangeView(mContext,robotImgTxtImg,Uri.parse(wechatImageBean.getCoverUrl()));
+            if (wechatImageBean != null) {
+                UdeskUtil.loadImage(mContext, robotImgTxtImg, wechatImageBean.getCoverUrl());
                 robotImgTxtTitle.setText(wechatImageBean.getContent());
                 robotImgTxtDes.setText(wechatImageBean.getDescription());
-                if (!TextUtils.isEmpty(wechatImageBean.getContent())){
+                if (!TextUtils.isEmpty(wechatImageBean.getContent())) {
                     robotImgTxtTitle.setVisibility(View.VISIBLE);
                     robotImgTxtTitle.setText(wechatImageBean.getContent());
-                }else {
+                } else {
                     robotImgTxtTitle.setVisibility(View.GONE);
                 }
-                onWebClick(robotImgTxtTitle,wechatImageBean.getAnswerUrl());
-                onWebClick(robotImgTxtDes,wechatImageBean.getAnswerUrl());
-                onWebClick(robotImgTxtTop,wechatImageBean.getAnswerUrl());
+                onWebClick(robotImgTxtTitle, wechatImageBean.getAnswerUrl());
+                onWebClick(robotImgTxtDes, wechatImageBean.getAnswerUrl());
+                onWebClick(robotImgTxtTop, wechatImageBean.getAnswerUrl());
             }
             dealTransfer(containerImgTxt);
             showRecommended(containerImgTxt);
@@ -884,12 +888,12 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
         }
     }
 
-    private void onWebClick(View view, final String url){
+    private void onWebClick(View view, final String url) {
         try {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                    if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                         UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                         return;
                     }
@@ -898,11 +902,12 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     mContext.startActivity(intent);
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+
     /**
      * 机器人text消息处理
      */
@@ -910,9 +915,9 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
         try {
             showHead(true);
             robotItemTxt.setVisibility(View.VISIBLE);
-            RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             robotItemTxt.setLayoutParams(layoutParams);
-            if (!robotLlUseful.isShown()){
+            if (!robotLlUseful.isShown()) {
                 setTextBackgroud(robotItemTxt, RESIDS);
             }
             //设置文本消息内容，表情符转换对应的表情,没表情的另外处理
@@ -996,11 +1001,11 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     robotItemTxt.setLayoutParams(params);
                     robotItemTxt.setGravity(Gravity.CENTER_VERTICAL);
                 }
-            }else {
-                RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+            } else {
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 robotItemTxt.setLayoutParams(layoutParams);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -1014,14 +1019,14 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
         try {
             showHead(true);
             itemLeaveMsg.setVisibility(View.VISIBLE);
-            RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             itemLeaveMsg.setLayoutParams(layoutParams);
             String msg = message.getMsgContent();
             //设置文本消息内容，表情符转换对应的表情,没表情的另外处理
             if (MoonUtils.isHasEmotions(msg)) {
                 msg = MoonUtils.replaceEmoticons(mContext, msg, (int) leaveMsg.getTextSize()).toString();
             }
-            leaveMsg.callback(this).text(mContext,msg);
+            leaveMsg.callback(this).text(mContext, msg);
             dealTransfer(itemLeaveMsg);
             showRecommended(containerLeavemsg);
             dealSingleLine(itemLeaveMsg);
@@ -1048,44 +1053,44 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             itemTemplate.setVisibility(View.VISIBLE);
             final TemplateMsgBean templateMsgBean = JsonUtils.parseTemplateMsg(message.getMsgContent());
             templateTitle.setText(templateMsgBean.getTitle());
-            templateContent.callback(this).text(mContext,templateMsgBean.getContent());
+            templateContent.callback(this).text(mContext, templateMsgBean.getContent());
             List<TemplateMsgBean.BtnsBean> btns = templateMsgBean.getBtns();
-            if (btns!=null && btns.size()>0){
+            if (btns != null && btns.size() > 0) {
                 templateLine.setVisibility(View.VISIBLE);
                 templateContainer.setVisibility(View.VISIBLE);
                 templateContainer.removeAllViews();
-                for (int i = 0; i<btns.size();i++){
+                for (int i = 0; i < btns.size(); i++) {
                     final TemplateMsgBean.BtnsBean btnsBean = btns.get(i);
-                    if (btnsBean !=null){
-                        if (i !=0){
-                            TextView line =new TextView(mContext);
-                            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(UdeskUtil.dip2px(mContext,1),LinearLayout.LayoutParams.MATCH_PARENT);
+                    if (btnsBean != null) {
+                        if (i != 0) {
+                            TextView line = new TextView(mContext);
+                            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(UdeskUtil.dip2px(mContext, 1), LinearLayout.LayoutParams.MATCH_PARENT);
                             line.setLayoutParams(layoutParams);
                             line.setBackgroundColor(mContext.getResources().getColor(R.color.udesk_color_E8ECED));
                             templateContainer.addView(line);
                         }
-                        TextView textView =new TextView(mContext);
-                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT,1.0f);
+                        TextView textView = new TextView(mContext);
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
                         textView.setLayoutParams(layoutParams);
                         textView.setTextColor(mContext.getResources().getColor(R.color.udesk_color_307AE8));
                         textView.setTextSize(15);
                         textView.setGravity(Gravity.CENTER);
-                        if (TextUtils.equals("link",btnsBean.getType()) && btnsBean.getData()!=null && !TextUtils.isEmpty(btnsBean.getData().getUrl())){
+                        if (TextUtils.equals("link", btnsBean.getType()) && btnsBean.getData() != null && !TextUtils.isEmpty(btnsBean.getData().getUrl())) {
                             textView.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                                    if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                                         UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                                         return;
                                     }
                                     Intent intent = new Intent(mContext, WorkOrderWebViewActivity.class);
-                                    intent.putExtra(UdeskConst.WORK_ORDER_URL,btnsBean.getData().getUrl());
-                                    intent.putExtra(UdeskConst.WORK_ORDER_TITLE,templateMsgBean.getTitle());
+                                    intent.putExtra(UdeskConst.WORK_ORDER_URL, btnsBean.getData().getUrl());
+                                    intent.putExtra(UdeskConst.WORK_ORDER_TITLE, templateMsgBean.getTitle());
                                     mContext.startActivity(intent);
                                 }
                             });
                         }
-                        if (!TextUtils.isEmpty(btnsBean.getName())){
+                        if (!TextUtils.isEmpty(btnsBean.getName())) {
                             textView.setText(btnsBean.getName());
                         }
                         templateContainer.addView(textView);
@@ -1093,10 +1098,11 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
 
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     /**
      * 富文本消息处理
      */
@@ -1104,10 +1110,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
         try {
             showHead(true);
             itemRich.setVisibility(View.VISIBLE);
-            RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             itemRich.setLayoutParams(layoutParams);
             String msg = message.getMsgContent();
-            richMsg.callback(this).text(mContext,msg);
+            richMsg.callback(this).text(mContext, msg);
             dealTransfer(itemRich);
             showRecommended(containerRich);
             dealSingleLine(itemRich);
@@ -1118,6 +1124,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             error.printStackTrace();
         }
     }
+
     /**
      * 流程消息处理
      */
@@ -1126,7 +1133,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             showHead(true);
             itemFlow.setVisibility(View.VISIBLE);
             String msg = message.getFlowContent();
-            flowMsg.callback(this).text(mContext,msg);
+            flowMsg.callback(this).text(mContext, msg);
             dealTransfer(itemFlow);
             showRecommended(containerFlow);
         } catch (Exception e) {
@@ -1163,15 +1170,15 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
         try {
             showHead(true);
             itemAudio.setVisibility(View.VISIBLE);
-            RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             itemAudio.setLayoutParams(layoutParams);
             checkPlayBgWhenBind();
             if (message.getDuration() > 0) {
                 char symbol = 34;
                 tvDuration.setText(String.format("%d%s", message.getDuration(), String.valueOf(symbol)));
-            }else {
+            } else {
                 long audioDuration = getAudioDuration();
-                if (audioDuration>0){
+                if (audioDuration > 0) {
                     char symbol = 34;
                     tvDuration.setText(String.format("%d%s", audioDuration, String.valueOf(symbol)));
                 }
@@ -1192,7 +1199,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             int step = (int) ((duration < 10) ? duration : (duration / 10 + 9));
             audioTop.getLayoutParams().width = (step == 0) ? min
                     : (min + (max - min) / 17 * step);//计算17份  2份是给背景图尖角预留位置
-           dealSingleLine(itemAudio);
+            dealSingleLine(itemAudio);
         } catch (Exception e) {
             e.printStackTrace();
         } catch (OutOfMemoryError error) {
@@ -1202,18 +1209,19 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
 
     /**
      * 获取语音时长
+     *
      * @return
      */
-    private long  getAudioDuration() {
+    private long getAudioDuration() {
         MediaPlayer mediaPlayer = new MediaPlayer();
-        long duration=0L;
+        long duration = 0L;
         try {
             mediaPlayer.setDataSource(message.getMsgContent());
             mediaPlayer.prepare();
-            return UdeskUtils.objectToLong(mediaPlayer.getDuration()/1000);
+            return UdeskUtils.objectToLong(mediaPlayer.getDuration() / 1000);
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             mediaPlayer.release();
         }
         return duration;
@@ -1277,15 +1285,14 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     || message.getSendFlag() == UdeskConst.SendFlag.RESULT_FAIL) {
                 imagePercent.setVisibility(View.GONE);
             }
-            if (!TextUtils.isEmpty(message.getLocalPath()) && UdeskUtils.isExitFileByPath(message.getLocalPath())) {
-                int[] wh = UdeskUtil.getImageWH(message.getLocalPath());
-                UdeskUtil.loadFileFromSdcard(mContext, imgView, Uri.fromFile(new File(message.getLocalPath())), wh[0], wh[1], true);
+            if (!TextUtils.isEmpty(message.getLocalPath()) && UdeskUtil.isExitFileByPath(mContext, message.getLocalPath())) {
+                UdeskUtil.loadScaleImage(mContext, imgView, message.getLocalPath(), true);
             } else {
-                UdeskUtil.loadImageView(mContext, imgView, Uri.parse(UdeskUtils.uRLEncoder(message.getMsgContent())), true);
+                UdeskUtil.loadScaleImage(mContext, imgView, UdeskUtils.uRLEncoder(message.getMsgContent()), true);
             }
             dealTransfer(itemImg);
             showRecommended(containerImg);
-            imgView.setTag(message.getTime());
+//            imgView.setTag(message.getTime());
             imgView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -1295,7 +1302,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     }
                     Uri imgUri = null;
                     if (!TextUtils.isEmpty(message.getLocalPath())) {
-                        imgUri = Uri.fromFile(new File(message.getLocalPath()));
+                        UdeskUtil.getUriFromPath(mContext,message.getLocalPath());
                         UdeskUtil.previewPhoto(mContext, imgUri);
                     } else if (!TextUtils.isEmpty(message.getMsgContent())) {
                         try {
@@ -1332,13 +1339,13 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             itemFile.setVisibility(View.VISIBLE);
             if (message.getDirection() == UdeskConst.ChatMsgDirection.Send) {
                 if (TextUtils.isEmpty(message.getFilename())) {
-                    fielTitle.setText(UdeskUtil.getFileName(message.getLocalPath()));
+                    fielTitle.setText(UdeskUtil.getFileName(mContext, message.getLocalPath()));
                 } else {
                     fielTitle.setText(message.getFilename());
                 }
 
                 if (TextUtils.isEmpty(message.getFilesize())) {
-                    fielSize.setText(UdeskUtil.getFileSizeByLoaclPath(message.getLocalPath()));
+                    fielSize.setText(UdeskUtil.getFileSizeByLoaclPath(mContext, message.getLocalPath()));
                 } else {
                     fielSize.setText(message.getFilesize());
                 }
@@ -1352,8 +1359,8 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             } else {
                 fielTitle.setText(message.getFilename());
                 fielSize.setText(message.getFilesize());
-                if (UdeskUtils.fileIsExitByUrl(mContext, UdeskConst.File_File, message.getMsgContent())
-                        && UdeskUtils.getFileSize(UdeskUtils.getFileByUrl(mContext, UdeskConst.File_File, message.getMsgContent())) > 0) {
+                if (UdeskUtil.fileIsExitByUrl(mContext, UdeskConst.File_File, message.getMsgContent())
+                        && UdeskUtil.getFileSize(UdeskUtil.getFileByUrl(mContext, UdeskConst.File_File, message.getMsgContent())) > 0) {
                     mProgress.setProgress(100);
                     operater.setText(mContext.getString(R.string.udesk_has_downed));
                 } else {
@@ -1374,22 +1381,34 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 public void onClick(View view) {
                     try {
                         Intent intent = new Intent(Intent.ACTION_VIEW);
-                        File file;
+                        File file = null;
+                        Uri contentUri;
+                        String type;
                         if (message.getDirection() == UdeskConst.ChatMsgDirection.Send) {
-                            file = new File(message.getLocalPath());
+                            if (UdeskUtil.isAndroidQ()) {
+                                contentUri = Uri.parse(UdeskUtil.getFilePathQ(mContext, message.getLocalPath()));
+                                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            } else {
+                                file = new File(message.getLocalPath());
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                    contentUri = UdeskUtil.getOutputMediaFileUri(mContext, file);
+                                } else {
+                                    contentUri = Uri.fromFile(file);
+                                }
+                            }
                         } else {
-                            file = UdeskUtils.getFileByUrl(mContext, UdeskConst.File_File, message.getMsgContent());
-                            if (file == null || UdeskUtils.getFileSize(file) <= 0) {
+                            file = UdeskUtil.getFileByUrl(mContext, UdeskConst.File_File, message.getMsgContent());
+                            if (file == null || UdeskUtil.getFileSizeQ(mContext.getApplicationContext(), file.getAbsolutePath()) <= 0) {
                                 Toast.makeText(mContext.getApplicationContext(), mContext.getString(R.string.udesk_has_uncomplete_tip), Toast.LENGTH_SHORT).show();
                                 return;
                             }
-                        }
-                        Uri contentUri;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                            contentUri = UdeskFileProvider.getUriForFile(mContext, UdeskUtil.getFileProviderName(mContext), file);
-                        } else {
-                            contentUri = Uri.fromFile(file);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                contentUri = UdeskUtil.getOutputMediaFileUri(mContext, file);
+                            } else {
+                                contentUri = Uri.fromFile(file);
+                            }
                         }
                         if (contentUri == null) {
                             return;
@@ -1397,7 +1416,11 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                         if (message.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_SHORT_VIDEO)) {
                             intent.setDataAndType(contentUri, "video/mp4");
                         } else {
-                            String type = UdeskUtil.getMIMEType(file);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                type = UdeskUtil.getMIMEType(mContext, contentUri);
+                            }else {
+                                type = UdeskUtil.getMIMEType(file);
+                            }
                             intent.setDataAndType(contentUri, type);
                         }
                         mContext.startActivity(intent);
@@ -1424,13 +1447,13 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             showHead(true);
             itemSmallVideo.setVisibility(View.VISIBLE);
             showSuccessView();
-            if (!TextUtils.isEmpty(message.getLocalPath()) && UdeskUtils.isExitFileByPath(message.getLocalPath())) {
-                UdeskUtil.loadViewBySize(mContext, smallVideoImgView, Uri.fromFile(new File(message.getLocalPath())), UdeskUtil.dip2px(mContext, 130), UdeskUtil.dip2px(mContext, 200));
-            } else if (UdeskUtils.fileIsExitByUrl(mContext, UdeskConst.FileImg, message.getMsgContent())) {
-                String loaclpath = UdeskUtils.getPathByUrl(mContext, UdeskConst.FileImg, message.getMsgContent());
-                UdeskUtil.loadViewBySize(mContext, smallVideoImgView, Uri.fromFile(new File(loaclpath)), UdeskUtil.dip2px(mContext, 130), UdeskUtil.dip2px(mContext, 200));
+            if (!TextUtils.isEmpty(message.getLocalPath()) && UdeskUtil.isExitFileByPath(mContext, message.getLocalPath())) {
+                UdeskUtil.loadViewBySize(mContext, smallVideoImgView, message.getLocalPath(), UdeskUtil.dip2px(mContext, 130), UdeskUtil.dip2px(mContext, 200));
+            } else if (UdeskUtil.fileIsExitByUrl(mContext, UdeskConst.FileImg, message.getMsgContent())) {
+                String loaclpath = UdeskUtil.getPathByUrl(mContext, UdeskConst.FileImg, message.getMsgContent());
+                UdeskUtil.loadViewBySize(mContext, smallVideoImgView, loaclpath, UdeskUtil.dip2px(mContext, 130), UdeskUtil.dip2px(mContext, 200));
             } else {
-                if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                     UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                     return;
                 }
@@ -1438,7 +1461,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             }
             dealTransfer(itemSmallVideo);
             showRecommended(containerSmallvideo);
-            smallVideoImgView.setTag(message.getTime());
+//            smallVideoImgView.setTag(message.getTime());
             smallVideoImgView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -1447,14 +1470,14 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                         return;
                     }
                     String path = "";
-                    if (!TextUtils.isEmpty(message.getLocalPath()) && UdeskUtils.isExitFileByPath(message.getLocalPath())) {
+                    if (!TextUtils.isEmpty(message.getLocalPath()) && UdeskUtil.isExitFileByPath(mContext, message.getLocalPath())) {
                         path = message.getLocalPath();
                     } else if (!TextUtils.isEmpty(message.getMsgContent())) {
-                        File file = UdeskUtils.getFileByUrl(mContext, UdeskConst.FileVideo, message.getMsgContent());
-                        if (file != null && UdeskUtils.getFileSize(file) > 0) {
+                        File file = UdeskUtil.getFileByUrl(mContext, UdeskConst.FileVideo, message.getMsgContent());
+                        if (file != null && UdeskUtil.getFileSize(file) > 0) {
                             path = file.getPath();
                         } else {
-                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                                 UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                                 return;
                             }
@@ -1509,24 +1532,25 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             itemStructTable.setVisibility(View.VISIBLE);
             structTableLine.setVisibility(View.VISIBLE);
             structTableChange.setVisibility(View.GONE);
-            StrucTableBean strucTableBean=JsonUtils.parseStrucTable(message.getMsgContent());
-            if (strucTableBean!=null){
+            StrucTableBean strucTableBean = JsonUtils.parseStrucTable(message.getMsgContent());
+            if (strucTableBean != null) {
                 structTableTitle.setText(strucTableBean.getTitle());
-                GridLayoutManager gridLayoutManager=new GridLayoutManager(mContext,strucTableBean.getColumnNumber());
+                GridLayoutManager gridLayoutManager = new GridLayoutManager(mContext, strucTableBean.getColumnNumber());
                 structRv.setLayoutManager(gridLayoutManager);
-                structRv.setPadding(UdeskUtil.dip2px(mContext,8),UdeskUtil.dip2px(mContext,8),UdeskUtil.dip2px(mContext,8),UdeskUtil.dip2px(mContext,8));
-                structRv.addItemDecoration(new RecycleViewDivider(mContext,GridLayoutManager.HORIZONTAL,0,mContext.getResources().getColor(R.color.white),false));
-                if (strucTableBean.getOptionList()!=null&&strucTableBean.getOptionList().size()>0){
-                    StrucTableAdapter strucTableAdapter=new StrucTableAdapter(mContext,strucTableBean.getOptionList(),UdeskConst.ChatMsgTypeInt.TYPE_SELECTIVE_TABLE);
+                structRv.setPadding(UdeskUtil.dip2px(mContext, 8), UdeskUtil.dip2px(mContext, 8), UdeskUtil.dip2px(mContext, 8), UdeskUtil.dip2px(mContext, 8));
+                structRv.addItemDecoration(new RecycleViewDivider(mContext, GridLayoutManager.HORIZONTAL, 0, mContext.getResources().getColor(R.color.white), false));
+                if (strucTableBean.getOptionList() != null && strucTableBean.getOptionList().size() > 0) {
+                    StrucTableAdapter strucTableAdapter = new StrucTableAdapter(mContext, strucTableBean.getOptionList(), UdeskConst.ChatMsgTypeInt.TYPE_SELECTIVE_TABLE);
                     structRv.setAdapter(strucTableAdapter);
                 }
             }
             dealTransfer(containerTable);
             showRecommended(containerTable);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     /**
      * 处理商品列表
      */
@@ -1536,14 +1560,14 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             itemStructTable.setVisibility(View.VISIBLE);
             structTableLine.setVisibility(View.VISIBLE);
             structTableChange.setVisibility(View.GONE);
-            StrucTableBean strucTableBean=JsonUtils.parseStrucTable(message.getMsgContent());
+            StrucTableBean strucTableBean = JsonUtils.parseStrucTable(message.getMsgContent());
             if (strucTableBean != null) {
                 structTableTitle.setText(strucTableBean.getTitle());
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
                 linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                 structRv.setLayoutManager(linearLayoutManager);
-                structRv.setPadding(0,0,0,0);
-                structRv.addItemDecoration(new RecycleViewDivider(mContext,LinearLayoutManager.HORIZONTAL,UdeskUtil.dip2px(mContext,1),mContext.getResources().getColor(R.color.udesk_color_E8ECED),false));
+                structRv.setPadding(0, 0, 0, 0);
+                structRv.addItemDecoration(new RecycleViewDivider(mContext, LinearLayoutManager.HORIZONTAL, UdeskUtil.dip2px(mContext, 1), mContext.getResources().getColor(R.color.udesk_color_E8ECED), false));
                 if (strucTableBean.getOptionList() != null && strucTableBean.getOptionList().size() > 0) {
                     StrucTableAdapter strucTableAdapter = new StrucTableAdapter(mContext, strucTableBean.getOptionList(), UdeskConst.ChatMsgTypeInt.TYPE_SELECTIVE_LIST);
                     structRv.setAdapter(strucTableAdapter);
@@ -1551,14 +1575,15 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             }
             dealTransfer(containerTable);
             showRecommended(containerTable);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     /**
      * 处理商品消息  商品选择消息
      */
-    private void  dealStrucProduct() {
+    private void dealStrucProduct() {
         try {
             showHead(true);
             itemStructTable.setVisibility(View.VISIBLE);
@@ -1566,48 +1591,49 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             structTableChange.setVisibility(View.GONE);
             dealTransfer(containerTable);
             showRecommended(containerTable);
-            final ShowProductBean showProductBean=JsonUtils.parseShowProduct(message.getMsgContent());
-            if (showProductBean!=null){
+            final ShowProductBean showProductBean = JsonUtils.parseShowProduct(message.getMsgContent());
+            if (showProductBean != null) {
                 structTableTitle.setText(showProductBean.getTitle());
-                LinearLayoutManager linearLayoutManager=new LinearLayoutManager(mContext);
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
                 linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                 structRv.setLayoutManager(linearLayoutManager);
-                structRv.setPadding(0,0,0,0);
-                structRv.addItemDecoration(new RecycleViewDivider(mContext,LinearLayoutManager.HORIZONTAL,UdeskUtil.dip2px(mContext,1),mContext.getResources().getColor(R.color.udesk_color_E8ECED),false));
+                structRv.setPadding(0, 0, 0, 0);
+                structRv.addItemDecoration(new RecycleViewDivider(mContext, LinearLayoutManager.HORIZONTAL, UdeskUtil.dip2px(mContext, 1), mContext.getResources().getColor(R.color.udesk_color_E8ECED), false));
                 if (showProductBean.getProductList() != null && showProductBean.getProductList().size() > 0) {
                     final List<ProductListBean> productList = showProductBean.getProductList();
-                    if (productList.size()>showProductBean.getShowSize()){
+                    if (productList.size() > showProductBean.getShowSize()) {
                         structTableChange.setVisibility(View.VISIBLE);
                         List<Integer> randomNum = UdeskUtil.getRandomNum(showProductBean.getShowSize(), productList.size());
-                        if (((UdeskChatActivity)mContext).getRandomList().size()==0) {
+                        if (((UdeskChatActivity) mContext).getRandomList().size() == 0) {
                             for (Integer i : randomNum) {
-                                ((UdeskChatActivity)mContext).getRandomList().add(productList.get(i));
+                                ((UdeskChatActivity) mContext).getRandomList().add(productList.get(i));
                             }
                         }
-                        strucTableAdapter = new StrucTableAdapter(mContext, ((UdeskChatActivity)mContext).getRandomList(),UdeskConst.ChatMsgTypeInt.TYPE_SHOW_PRODUCT);
+                        strucTableAdapter = new StrucTableAdapter(mContext, ((UdeskChatActivity) mContext).getRandomList(), UdeskConst.ChatMsgTypeInt.TYPE_SHOW_PRODUCT);
                         structTableChange.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 List<Integer> randomNum = UdeskUtil.getRandomNum(showProductBean.getShowSize(), productList.size());
-                                ((UdeskChatActivity)mContext).getRandomList().clear();
-                                for (Integer i:randomNum){
-                                    ((UdeskChatActivity)mContext).getRandomList().add(productList.get(i));
+                                ((UdeskChatActivity) mContext).getRandomList().clear();
+                                for (Integer i : randomNum) {
+                                    ((UdeskChatActivity) mContext).getRandomList().add(productList.get(i));
                                 }
-                                strucTableAdapter = new StrucTableAdapter(mContext, ((UdeskChatActivity)mContext).getRandomList(),UdeskConst.ChatMsgTypeInt.TYPE_SHOW_PRODUCT);
+                                strucTableAdapter = new StrucTableAdapter(mContext, ((UdeskChatActivity) mContext).getRandomList(), UdeskConst.ChatMsgTypeInt.TYPE_SHOW_PRODUCT);
                                 structRv.setAdapter(strucTableAdapter);
                             }
                         });
-                    }else {
+                    } else {
                         structTableChange.setVisibility(View.GONE);
-                        strucTableAdapter = new StrucTableAdapter(mContext,productList,UdeskConst.ChatMsgTypeInt.TYPE_SHOW_PRODUCT);
+                        strucTableAdapter = new StrucTableAdapter(mContext, productList, UdeskConst.ChatMsgTypeInt.TYPE_SHOW_PRODUCT);
                     }
                     structRv.setAdapter(strucTableAdapter);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     /**
      * 处理商品回复消息
      */
@@ -1617,47 +1643,48 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             itemReplyProduct.setVisibility(View.VISIBLE);
             dealTransfer(containerReplyProduct);
             showRecommended(containerReplyProduct);
-            final ProductListBean productListBean=JsonUtils.parseReplyProduct(message.getMsgContent());
-            if (productListBean!=null){
+            final ProductListBean productListBean = JsonUtils.parseReplyProduct(message.getMsgContent());
+            if (productListBean != null) {
                 replyProductTitle.setText(productListBean.getName());
-                if (!TextUtils.isEmpty(productListBean.getImage())){
-                    UdeskUtil.loadNoChangeView(mContext, replyProductImg, Uri.parse(productListBean.getImage()));
+                if (!TextUtils.isEmpty(productListBean.getImage())) {
+                    UdeskUtil.loadImage(mContext, replyProductImg, productListBean.getImage());
                 }
-                if (productListBean.getInfoList()!=null&&productListBean.getInfoList().size()>0){
+                if (productListBean.getInfoList() != null && productListBean.getInfoList().size() > 0) {
                     List<InfoListBean> infoList = productListBean.getInfoList();
-                    for (int j=0;j<infoList.size();j++){
-                        SpannableString spannableString=UdeskUtil.setSpan(infoList.get(j).getInfo(),UdeskUtils.objectToString(infoList.get(j).getColor()),infoList.get(j).getBoldFlag());
-                        if (j==0){
+                    for (int j = 0; j < infoList.size(); j++) {
+                        SpannableString spannableString = UdeskUtil.setSpan(infoList.get(j).getInfo(), UdeskUtils.objectToString(infoList.get(j).getColor()), infoList.get(j).getBoldFlag());
+                        if (j == 0) {
                             replyProductMid.setVisibility(View.VISIBLE);
                             replyProductInfoOne.setText(spannableString);
-                        }else if (j==1){
+                        } else if (j == 1) {
                             replyProductInfoTwo.setText(spannableString);
-                        }else if (j==2){
+                        } else if (j == 2) {
                             replyProductInfoThree.setVisibility(View.VISIBLE);
                             replyProductInfoThree.setText(spannableString);
                         }
                     }
-                }else {
+                } else {
                     replyProductMid.setVisibility(View.GONE);
                     replyProductInfoThree.setVisibility(View.GONE);
                 }
                 itemReplyProduct.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                             UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                             return;
                         }
                         Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
-                        intent.putExtra(UdeskConst.WELCOME_URL,productListBean.getUrl());
+                        intent.putExtra(UdeskConst.WELCOME_URL, productListBean.getUrl());
                         mContext.startActivity(intent);
                     }
                 });
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     /**
      * 结构化消息处理
      */
@@ -1730,7 +1757,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             if (urlList.size() > 0) {
                 UdeskUtil.previewPhoto(mContext, Uri.parse(urlList.get(position)));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -1749,17 +1776,17 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 mContext.startActivity(intent);
             }
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-       return false;
+        return false;
     }
 
     @Override
     public void onFix(XRichText.ImageHolder holder) {
         try {
             holder.setStyle(XRichText.Style.LEFT);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -1767,10 +1794,10 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
     @Override
     public void onStepClick(SpanModel model) {
         try {
-            if (TextUtils.equals(UdeskConst.ChatMsgTypeString.TYPE_FLOW,message.getMsgtype())&&model!=null&&UdeskUtils.objectToInt(model.getDataId())!=0){
-                InvokeEventContainer.getInstance().event_OnFlowClick.invoke(message,UdeskUtils.objectToInt(model.getDataId()),model.getContent());
+            if (TextUtils.equals(UdeskConst.ChatMsgTypeString.TYPE_FLOW, message.getMsgtype()) && model != null && UdeskUtils.objectToInt(model.getDataId()) != 0) {
+                InvokeEventContainer.getInstance().event_OnFlowClick.invoke(message, UdeskUtils.objectToInt(model.getDataId()), model.getContent());
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -1794,7 +1821,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             try {
                 switch (mStructBtn.getType()) {
                     case UdeskConst.StructBtnTypeString.link:
-                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                             UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                             return;
                         }
@@ -1859,12 +1886,12 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
      * @param structImgView
      * @param structImg
      */
-    private void showStructImg(final Context mContext, StructModel structModel, LinearLayout structImgView, SimpleDraweeView structImg) {
+    private void showStructImg(final Context mContext, StructModel structModel, LinearLayout structImgView, ImageView structImg) {
         try {
             final String imgUrl = structModel.getImg_url();
             if (!TextUtils.isEmpty(imgUrl)) {
                 structImgView.setVisibility(View.VISIBLE);
-                UdeskUtil.loadImageView(mContext, structImg, Uri.parse(imgUrl), false);
+                UdeskUtil.loadScaleImage(mContext, structImg, imgUrl, false);
                 structImgView.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -1917,7 +1944,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 leaveingMsg.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
+                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
                             UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                             return;
                         }
@@ -1945,7 +1972,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 agentnickName.setVisibility(View.VISIBLE);
                 ivHeader.setImageResource(R.drawable.udesk_im_default_agent_avatar);
                 if (message.getUser_avatar() != null && !TextUtils.isEmpty(message.getUser_avatar().trim())) {
-                    UdeskUtil.loadHeadView(mContext, ivHeader, Uri.parse(message.getUser_avatar()));
+                    UdeskUtil.loadImage(mContext, ivHeader, message.getUser_avatar());
                 }
                 if (!TextUtils.isEmpty(message.getReplyUser())) {
                     agentnickName.setVisibility(View.VISIBLE);
@@ -1956,7 +1983,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             } else {
                 llHead.setVisibility(View.GONE);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

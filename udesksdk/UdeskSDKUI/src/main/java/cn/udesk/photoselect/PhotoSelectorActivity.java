@@ -24,9 +24,6 @@ import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.facebook.drawee.backends.pipeline.Fresco;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,9 +80,6 @@ public class PhotoSelectorActivity extends FragmentActivity implements View.OnCl
             disPlayWidth = wm1.getDefaultDisplay().getWidth();
             disPlayHeghit = wm1.getDefaultDisplay().getHeight();
             setContentView(R.layout.udesk_activity_select);
-            if (!Fresco.hasBeenInitialized()) {
-                UdeskUtil.frescoInit(this);
-            }
             initView();
         } catch (Exception e) {
             e.printStackTrace();
@@ -114,8 +108,7 @@ public class PhotoSelectorActivity extends FragmentActivity implements View.OnCl
 
             udesk_rl_bottom = findViewById(R.id.udesk_rl_bottom);
 
-
-            picture_recycler = (RecyclerView) findViewById(R.id.udesk_picture_recycler);
+            picture_recycler = findViewById(R.id.udesk_picture_recycler);
             picture_recycler.setHasFixedSize(true);
             picture_recycler.addItemDecoration(new GridSpacingItemDecoration(4,
                     UdeskUtil.dip2px(this, 2), false));

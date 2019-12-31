@@ -71,7 +71,6 @@ public class UdeskSDKManager {
     private IUdeskNewMessage newMessage;
 
     private ExecutorService singleExecutor;
-    private ExecutorService fixedThread;
 
     InitCustomerBean initCustomerBean;
 
@@ -81,7 +80,6 @@ public class UdeskSDKManager {
 
     private UdeskSDKManager() {
         singleExecutor = Executors.newSingleThreadExecutor();
-        fixedThread = Executors.newFixedThreadPool(3);
     }
 
     public static UdeskSDKManager getInstance() {
@@ -92,9 +90,6 @@ public class UdeskSDKManager {
         return singleExecutor;
     }
 
-    public ExecutorService getFixedThread() {
-        return fixedThread;
-    }
 
     /**
      * 创建应用生成的key值和appid
@@ -107,6 +102,7 @@ public class UdeskSDKManager {
     public void initApiKey(Context context, String domain, String appkey, String appid) {
         try {
             appContext=context.getApplicationContext();
+            UdeskUtils.setContext(appContext);
             UdeskSDKManager.domain = domain;
             UdeskSDKManager.app_Key = appkey;
             UdeskSDKManager.app_Id = appid;
@@ -119,7 +115,6 @@ public class UdeskSDKManager {
                         UdeskConst.SharePreParams.Udesk_App_Id, app_Id);
             }
             LQREmotionKit.init(context.getApplicationContext());
-            UdeskUtil.frescoInit(context);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -203,7 +198,6 @@ public class UdeskSDKManager {
             initDB(context, sdkToken);
             PreferenceHelper.write(context, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                     UdeskConst.SharePreParams.Udesk_SdkToken, sdkToken);
-            UdeskUtil.initCrashReport(context);
             initCustomer(context);
         } catch (Exception e) {
             e.printStackTrace();

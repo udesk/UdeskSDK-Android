@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:udesk="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -25,13 +25,13 @@
         android:layout_marginTop="@dimen/udesk_10"
         android:gravity="center_vertical">
 
-        <com.facebook.drawee.view.SimpleDraweeView
+        <cn.udesk.widget.UdeskImageView
             android:id="@+id/udesk_iv_head"
             android:layout_width="@dimen/udesk_25"
             android:layout_height="@dimen/udesk_25"
-            fresco:actualImageScaleType="centerCrop"
-            fresco:placeholderImage="@drawable/udesk_im_default_agent_avatar"
-            fresco:roundAsCircle="true" />
+            android:scaleType="centerCrop"
+            udesk:udesk_iv_isCircle="true"
+            />
 
         <TextView
             android:id="@+id/udesk_nick_name"

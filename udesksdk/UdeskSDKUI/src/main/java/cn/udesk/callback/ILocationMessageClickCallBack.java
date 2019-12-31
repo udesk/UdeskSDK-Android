@@ -8,5 +8,5 @@ import android.content.Context;
 
 public interface ILocationMessageClickCallBack {
 
-    void luanchMap(Context context, double latitude, double longitude, String selctLoactionValue);
+    void launchMap(Context context, double latitude, double longitude, String selctLoactionValue);
 }

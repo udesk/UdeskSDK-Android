@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:id="@+id/udesk_item_location"
     android:layout_width="@dimen/udesk_220"
     android:layout_height="wrap_content"
@@ -19,14 +18,13 @@
         android:textColor="@color/udesk_edit_input_msg_cololr1"
         android:textSize="@dimen/udesk_sp16" />
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/udesk_location_image"
         android:layout_width="@dimen/udesk_220"
         android:layout_height="@dimen/udesk_140"
         android:layout_below="@+id/postion_value"
-        fresco:actualImageScaleType="centerCrop"
-        fresco:failureImage="@drawable/udesk_defualt_failure"
-        fresco:failureImageScaleType="centerCrop"
-        fresco:placeholderImage="@drawable/udesk_defalut_image_loading"
-        fresco:placeholderImageScaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        />
+
+
 </RelativeLayout>

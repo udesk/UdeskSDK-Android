@@ -193,7 +193,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 .setUseMap(set_usemap.isChecked()) //是否使用发送位置功能  true表示使用 false表示不使用
                 .setUseMapSetting(UdeskConfig.UdeskMapType.GaoDe, LocationActivity.class, new ILocationMessageClickCallBack() {
                     @Override
-                    public void luanchMap(Context context, double latitude, double longitude, String selctLoactionValue) {
+                    public void launchMap(Context context, double latitude, double longitude, String selctLoactionValue) {
                         Intent intent = new Intent();
                         intent.putExtra(UdeskConfig.UdeskMapIntentName.Position, selctLoactionValue);
                         intent.putExtra(UdeskConfig.UdeskMapIntentName.Latitude, latitude);

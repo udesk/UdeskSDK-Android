@@ -1,5 +1,7 @@
 package cn.udesk.photoselect;
 
+import android.content.ContentUris;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,7 +43,9 @@ public class LocalMedialLoader {
             MediaStore.MediaColumns.MIME_TYPE,
             MediaStore.MediaColumns.WIDTH,
             MediaStore.MediaColumns.HEIGHT,
-            DURATION};
+            MediaStore.MediaColumns.DURATION,
+            MediaStore.MediaColumns.ORIENTATION,
+            };
 
     // 获取图片or视频
     private static final String[] SELECTION_ALL_ARGS = {
@@ -78,7 +82,7 @@ public class LocalMedialLoader {
 
     public void loadAllMedia(final FragmentActivity activity, final LocalMediaLoadListener imageLoadListener) {
 
-        activity.getSupportLoaderManager().initLoader(0, null, new LoaderManager.LoaderCallbacks<Cursor>() {
+        LoaderManager.getInstance(activity).initLoader(0, null, new LoaderManager.LoaderCallbacks<Cursor>() {
             @Override
             public Loader<Cursor> onCreateLoader(int id, Bundle args) {
                 String all_condition = getSelectionArgsForAllMediaCondition(getDurationCondition(0, 0), false);
@@ -100,9 +104,10 @@ public class LocalMedialLoader {
                         if (count > 0) {
                             data.moveToFirst();
                             do {
-                                String path = data.getString
+                                long id = data.getLong
+                                        (data.getColumnIndexOrThrow(PROJECTION[0]));
+                                String filePath = data.getString
                                         (data.getColumnIndexOrThrow(PROJECTION[1]));
-
                                 String pictureType = data.getString
                                         (data.getColumnIndexOrThrow(PROJECTION[2]));
 
@@ -114,15 +119,26 @@ public class LocalMedialLoader {
 
                                 int duration = data.getInt
                                         (data.getColumnIndexOrThrow(PROJECTION[5]));
-
+                                int orientation = data.getInt
+                                        (data.getColumnIndexOrThrow(PROJECTION[6]));
+                                String path;
+                                final int mediaMimeType = UdeskUtil.isPictureType(pictureType);
+                                if (UdeskUtil.isAndroidQ()){
+                                    if (mediaMimeType == UdeskUtil.TYPE_IMAGE){
+                                        path= ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,id).toString();
+                                    }else {
+                                        path= ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,id).toString();
+                                    }
+                                }else {
+                                    path = filePath;
+                                }
                                 LocalMedia file = new LocalMedia
-                                        (path, duration, pictureType, w, h);
+                                        (path, duration, pictureType, w, h,orientation);
 
-                                LocalMediaFolder folder = getImageFolder(path, fileFolders);
+                                LocalMediaFolder folder = getImageFolder(activity.getApplicationContext(),path,filePath,fileFolders);
                                 List<LocalMedia> files = folder.getMedia();
                                 files.add(file);
                                 allfiles.add(file);
-                                final int mediaMimeType = UdeskUtil.isPictureType(pictureType);
                                 if (mediaMimeType == UdeskUtil.TYPE_SHORT_VIDEO){
                                     allvideos.add(file);
                                 }
@@ -166,10 +182,10 @@ public class LocalMedialLoader {
      * @param imageFolders
      * @return
      */
-    private LocalMediaFolder getImageFolder(String path, List<LocalMediaFolder> imageFolders) {
+    private LocalMediaFolder getImageFolder(Context context,String path,String filePath, List<LocalMediaFolder> imageFolders) {
         LocalMediaFolder newFolder = new LocalMediaFolder();
         try {
-            File imageFile = new File(path);
+            File imageFile = new File(filePath);
             File folderFile = imageFile.getParentFile();
             for (LocalMediaFolder folder : imageFolders) {
                 // 同一个文件夹下，返回自己，否则创建新文件夹

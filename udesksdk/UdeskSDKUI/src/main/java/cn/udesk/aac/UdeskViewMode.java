@@ -1,14 +1,15 @@
 package cn.udesk.aac;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.text.TextUtils;
+import android.util.Log;
+
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
-import android.content.Context;
-import android.graphics.Bitmap;
-import androidx.annotation.Nullable;
-import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,18 +22,18 @@ import cn.udesk.UdeskUtil;
 import cn.udesk.aac.livedata.APILiveData;
 import cn.udesk.aac.livedata.DBLiveData;
 import cn.udesk.aac.livedata.FileLiveData;
+import cn.udesk.aac.livedata.ReceiveLivaData;
 import cn.udesk.aac.livedata.RobotApiData;
 import cn.udesk.aac.livedata.SendMessageLiveData;
-import cn.udesk.aac.livedata.ReceiveLivaData;
 import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.model.UdeskCommodityItem;
+import cn.udesk.rich.LoaderTask;
 import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
 import udesk.core.model.AgentInfo;
 import udesk.core.model.MessageInfo;
 import udesk.core.model.Product;
-import udesk.core.utils.UdeskUtils;
 
 public class UdeskViewMode extends ViewModel {
 
@@ -128,21 +129,25 @@ public class UdeskViewMode extends ViewModel {
         upLoadFileLiveData.setBaseValue(domain, secretKey, sdktoken, appid);
         robotApiData.setBaseValue(domain, secretKey, sdktoken, appid);
     }
-    public void setHandler(UdeskChatActivity.MyHandler handler){
+
+    public void setHandler(UdeskChatActivity.MyHandler handler) {
         upLoadFileLiveData.setHandler(handler);
     }
+
     public void setCustomerId(String customerId) {
         apiLiveData.setCustomerId(customerId);
         sendMessageLiveData.setCustomerId(customerId);
         robotApiData.setCustomerId(customerId);
     }
-    public void setSessionId(int sessionId){
+
+    public void setSessionId(int sessionId) {
         robotApiData.setSessionId(sessionId);
     }
 
-    public void setRobotUrl(String robotUrl){
+    public void setRobotUrl(String robotUrl) {
         robotApiData.setRobotUrl(robotUrl);
     }
+
     public void setAgentInfo(AgentInfo agentInfo) {
         apiLiveData.setAgentInfo(agentInfo);
         sendMessageLiveData.setAgentInfo(agentInfo);
@@ -239,7 +244,7 @@ public class UdeskViewMode extends ViewModel {
                         System.currentTimeMillis(), "", scaleImageFile.getPath(), "", "");
                 postMessage(msgInfo, UdeskConst.LiveDataType.AddFileMessage);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -253,15 +258,15 @@ public class UdeskViewMode extends ViewModel {
      *                 文件:UdeskConst.ChatMsgTypeString.TYPE_File
      *                 MP4视频: UdeskConst.ChatMsgTypeString.TYPE_SHORT_VIDEO
      */
-    public synchronized void  sendFileMessage(String filepath, String msgType) {
+    public synchronized void sendFileMessage(Context context, String filepath, String msgType) {
         try {
             if (TextUtils.isEmpty(filepath)) {
                 return;
             }
-            String fileName = (UdeskUtils.getFileName(filepath, msgType));
-            String fileSzie = UdeskUtils.getFileSizeByLoaclPath(filepath);
+            String fileName = (UdeskUtil.getFileName(context, filepath, msgType));
+            String fileSize = UdeskUtil.getFileSizeByLoaclPath(context, filepath);
             MessageInfo msgInfo = UdeskUtil.buildSendMessage(msgType,
-                    System.currentTimeMillis(), "", filepath, fileName, fileSzie);
+                    System.currentTimeMillis(), "", filepath, fileName, fileSize);
             postMessage(msgInfo, UdeskConst.LiveDataType.AddFileMessage);
         } catch (Exception e) {
             e.printStackTrace();
@@ -271,26 +276,26 @@ public class UdeskViewMode extends ViewModel {
     }
 
     //发送图片消息
-    public void scaleBitmap(final String path, final Context context) {
+    public void scaleBitmap(final Context context,final String path,final int orientation) {
         try {
             if (!TextUtils.isEmpty(path)) {
-                File scaleImageFile = UdeskUtil.getScaleFile(path, context);
+                File scaleImageFile = UdeskUtil.getScaleFile(context,path, orientation);
                 if (scaleImageFile != null) {
-                    sendFileMessage(scaleImageFile.getPath(), UdeskConst.ChatMsgTypeString.TYPE_IMAGE);
+                    sendFileMessage(context, scaleImageFile.getPath(), UdeskConst.ChatMsgTypeString.TYPE_IMAGE);
                 } else {
-                    sendFileMessage(path, UdeskConst.ChatMsgTypeString.TYPE_IMAGE);
+                    sendFileMessage(context, path, UdeskConst.ChatMsgTypeString.TYPE_IMAGE);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
     // 发送录音信息
-    public void sendRecordAudioMsg(String audiopath, long duration) {
+    public void sendRecordAudioMsg(Context context, String audiopath, long duration) {
         try {
-            String fileName = (UdeskUtils.getFileName(audiopath, UdeskConst.FileAudio));
+            String fileName = (UdeskUtil.getFileName(context, audiopath, UdeskConst.FileAudio));
             MessageInfo msgInfo = UdeskUtil.buildSendMessage(
                     UdeskConst.ChatMsgTypeString.TYPE_AUDIO,
                     System.currentTimeMillis(), "", audiopath, fileName, "");
@@ -306,7 +311,7 @@ public class UdeskViewMode extends ViewModel {
     public void sendCommodityMessage(UdeskCommodityItem commodity) {
         try {
             sendMessageLiveData.sendCommodityMessage(commodity);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -314,7 +319,7 @@ public class UdeskViewMode extends ViewModel {
     public void putLeavesMsg(MessageInfo info) {
         try {
             sendMessageLiveData.putLeavesMsg(info.getMsgContent(), info.getMsgId());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -328,19 +333,19 @@ public class UdeskViewMode extends ViewModel {
 
     private void postMessage(MessageInfo msg, int type) {
         try {
-            MergeMode mergeMode = new MergeMode(type, msg,UUID.randomUUID().toString());
-            MergeModeManager.getmInstance().putMergeMode(mergeMode,mutableLiveData);
-        }catch (Exception e){
+            MergeMode mergeMode = new MergeMode(type, msg, UUID.randomUUID().toString());
+            MergeModeManager.getmInstance().putMergeMode(mergeMode, mutableLiveData);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void postNextMessage(MergeMode mergeMode){
+    public void postNextMessage(MergeMode mergeMode) {
         try {
-            if (mergeMode!=null){
-                MergeModeManager.getmInstance().dealMergeMode(mergeMode,mutableLiveData);
+            if (mergeMode != null) {
+                MergeModeManager.getmInstance().dealMergeMode(mergeMode, mutableLiveData);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -378,21 +383,20 @@ public class UdeskViewMode extends ViewModel {
                     if (isRetry) {
                         startRetryMsg(messageInfo);
                     } else {
-                        new Thread(new Runnable() {
+                        LoaderTask.getThreadPoolExecutor().execute(new Runnable() {
                             @Override
                             public void run() {
                                 UdeskDBManager.getInstance().updateMsgSendFlagDB(messageInfo.getMsgId(), UdeskConst.SendFlag.RESULT_FAIL);
-                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.Send_Message_Failure, messageInfo.getMsgId(),UUID.randomUUID().toString());
-                                MergeModeManager.getmInstance().putMergeMode(mergeMode,mutableLiveData);
+                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.Send_Message_Failure, messageInfo.getMsgId(), UUID.randomUUID().toString());
+                                MergeModeManager.getmInstance().putMergeMode(mergeMode, mutableLiveData);
                             }
-                        }).start();
-
+                        });
                     }
                 }
                 cachePreMsg.clear();
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

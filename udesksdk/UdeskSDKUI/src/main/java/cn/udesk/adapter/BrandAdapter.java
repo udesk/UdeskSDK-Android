@@ -6,10 +6,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +56,7 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
         private LinearLayout llBrand;
         private LinearLayout llBrandImg;
         private LinearLayout llBrandLook;
-        private SimpleDraweeView ivBrand;
+        private ImageView ivBrand;
         private TextView txtBrand;
         public BrandViewHold(@NonNull View itemView) {
             super(itemView);

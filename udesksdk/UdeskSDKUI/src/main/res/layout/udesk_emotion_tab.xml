@@ -5,13 +5,11 @@
     android:layout_width="55dp"
     android:layout_height="35dp">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/ivIcon"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_centerInParent="true"
-       />
-
+        android:layout_width="@dimen/udesk_25"
+        android:layout_height="@dimen/udesk_25"
+        android:layout_centerInParent="true"/>
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"

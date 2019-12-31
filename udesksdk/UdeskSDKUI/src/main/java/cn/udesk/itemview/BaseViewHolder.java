@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,21 +12,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.udesk.R;
 import cn.udesk.UdeskUtil;
 import cn.udesk.model.UdeskQueueItem;
+import cn.udesk.widget.UdeskImageView;
 import udesk.core.UdeskConst;
 import udesk.core.model.MessageInfo;
-import udesk.core.utils.UdeskUtils;
 
 
-public abstract class BaseViewHolder{
+public abstract class BaseViewHolder {
 
     public TextView tvTime;
     public MessageInfo message;
@@ -39,7 +35,7 @@ public abstract class BaseViewHolder{
     //audio
     public ImageView record_play;
     //smallvideo
-    public SimpleDraweeView smallVideoImgView;
+    public UdeskImageView smallVideoImgView;
     //file
     public TextView fielSize;
     public TextView operater;
@@ -55,14 +51,14 @@ public abstract class BaseViewHolder{
     //两条消息间隔 用于文本背景设置
     public static final long TEXT_SPACE_TIME = 20 * 1000;
 
-    public void setData(Context context,List<MessageInfo> list, int position) {
+    public void setData(Context context, List<MessageInfo> list, int position) {
         try {
             this.list = list;
-            this.position=position;
-            this.message=getItem(position);
-            preMessage=getItem(position-1);
-            nextMessage=getItem(position+1);
-        }catch (Exception e){
+            this.position = position;
+            this.message = getItem(position);
+            preMessage = getItem(position - 1);
+            nextMessage = getItem(position + 1);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -72,14 +68,14 @@ public abstract class BaseViewHolder{
      */
     public boolean tryShowTime(MessageInfo msgInfo, int position) {
         try {
-            if (msgInfo!=null){
+            if (msgInfo != null) {
                 if (msgInfo instanceof UdeskQueueItem) {
                     tvTime.setVisibility(View.VISIBLE);
                     tvTime.setText(UdeskUtil.formatLongTypeTimeToString(mContext, System.currentTimeMillis()));
                     return true;
                 } else if (msgInfo.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_EVENT)) {
                     tvTime.setVisibility(View.GONE);
-                } else if (needShowTime(position,SPACE_TIME)) {
+                } else if (needShowTime(position, SPACE_TIME)) {
                     tvTime.setVisibility(View.VISIBLE);
                     tvTime.setText(UdeskUtil.formatLongTypeTimeToString(mContext, msgInfo.getTime()));
                     return true;
@@ -92,7 +88,8 @@ public abstract class BaseViewHolder{
         }
         return false;
     }
-    public boolean needShowTime(int position,long time) {
+
+    public boolean needShowTime(int position, long time) {
         try {
             if (position == 0) {
                 return true;
@@ -116,6 +113,7 @@ public abstract class BaseViewHolder{
         }
         return false;
     }
+
     public MessageInfo getItem(int position) {
         if (position < 0 || position >= list.size()) {
             return null;
@@ -135,7 +133,7 @@ public abstract class BaseViewHolder{
      */
     public void startAnimationDrawable() {
         try {
-            if (message!=null){
+            if (message != null) {
                 message.isPlaying = true;
                 Drawable playDrawable = record_play.getDrawable();
                 if (playDrawable instanceof AnimationDrawable) {
@@ -156,7 +154,7 @@ public abstract class BaseViewHolder{
      */
     public void endAnimationDrawable() {
         try {
-            if (message!=null){
+            if (message != null) {
                 message.isPlaying = false;
                 Drawable playDrawable = record_play.getDrawable();
                 if (playDrawable != null
@@ -194,7 +192,7 @@ public abstract class BaseViewHolder{
                 }
             }
             if (fileSize > 0) {
-                fielSize.setText(UdeskUtils.formetFileSize(fileSize));
+                fielSize.setText(UdeskUtil.formetFileSize(fileSize));
             }
             if (!isSuccess) {
                 Toast.makeText(mContext.getApplicationContext(), mContext.getString(R.string.udesk_download_failure), Toast.LENGTH_SHORT).show();
@@ -225,50 +223,52 @@ public abstract class BaseViewHolder{
 
     /**
      * 简文本设置文字背景
+     *
      * @param resIds text的四个背景
      */
-    public void setTextBackgroud(View view,int[] resIds) {
+    public void setTextBackgroud(View view, int[] resIds) {
         try {
-            LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.topMargin=UdeskUtil.dip2px(mContext,10);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.topMargin = UdeskUtil.dip2px(mContext, 10);
             llHead.setLayoutParams(params);
-            if (tryShowTime(message, position)){
+            if (tryShowTime(message, position)) {
                 showTextHead(true);
-                setTextBackgroudByNext(view,resIds[0],resIds[1]);
-            }else {
-                if (preMessage==null){
+                setTextBackgroudByNext(view, resIds[0], resIds[1]);
+            } else {
+                if (preMessage == null) {
                     showTextHead(true);
-                    setTextBackgroudByNext(view,resIds[0],resIds[1]);
-                }else {
-                    if (UdeskConst.parseTypeForMessage(preMessage.getMsgtype())==UdeskConst.ChatMsgTypeInt.TYPE_TEXT){
-                        if (needShowTime(position,TEXT_SPACE_TIME)){
+                    setTextBackgroudByNext(view, resIds[0], resIds[1]);
+                } else {
+                    if (UdeskConst.parseTypeForMessage(preMessage.getMsgtype()) == UdeskConst.ChatMsgTypeInt.TYPE_TEXT) {
+                        if (needShowTime(position, TEXT_SPACE_TIME)) {
                             showTextHead(true);
-                            setTextBackgroudByNext(view,resIds[0],resIds[1]);
-                        }else {
-                            if (isSameSide(message,preMessage)){
-                                LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-                                layoutParams.topMargin=UdeskUtil.dip2px(mContext,3);
+                            setTextBackgroudByNext(view, resIds[0], resIds[1]);
+                        } else {
+                            if (isSameSide(message, preMessage)) {
+                                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                layoutParams.topMargin = UdeskUtil.dip2px(mContext, 3);
                                 llHead.setLayoutParams(layoutParams);
                                 showTextHead(false);
-                                setTextBackgroudByNext(view,resIds[2],resIds[3]);
-                            }else {
+                                setTextBackgroudByNext(view, resIds[2], resIds[3]);
+                            } else {
                                 showTextHead(true);
-                                setTextBackgroudByNext(view,resIds[0],resIds[1]);
+                                setTextBackgroudByNext(view, resIds[0], resIds[1]);
                             }
                         }
-                    }else {
+                    } else {
                         showTextHead(true);
-                        setTextBackgroudByNext(view,resIds[0],resIds[1]);
+                        setTextBackgroudByNext(view, resIds[0], resIds[1]);
                     }
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
      * 根据后面是否有数据设置文字背景
+     *
      * @param view
      * @param resId1
      * @param resId2
@@ -279,13 +279,13 @@ public abstract class BaseViewHolder{
                 view.setBackgroundResource(resId1);
             } else {
                 if (UdeskConst.parseTypeForMessage(nextMessage.getMsgtype()) == UdeskConst.ChatMsgTypeInt.TYPE_TEXT) {
-                    if (isSameSide(message,nextMessage)){
+                    if (isSameSide(message, nextMessage)) {
                         if (needShowTime(position + 1, TEXT_SPACE_TIME)) {
                             view.setBackgroundResource(resId1);
                         } else {
                             view.setBackgroundResource(resId2);
                         }
-                    }else {
+                    } else {
                         view.setBackgroundResource(resId1);
                     }
                 } else {
@@ -298,7 +298,7 @@ public abstract class BaseViewHolder{
     }
 
     private boolean isSameSide(MessageInfo message, MessageInfo nextMessage) {
-        return message.getDirection()==nextMessage.getDirection()&&TextUtils.equals(message.getmAgentJid(),nextMessage.getmAgentJid());
+        return message.getDirection() == nextMessage.getDirection() && TextUtils.equals(message.getmAgentJid(), nextMessage.getmAgentJid());
     }
 
     protected abstract void showTextHead(boolean b);
@@ -313,9 +313,9 @@ public abstract class BaseViewHolder{
 
     public boolean changeVideoThumbnail(String msgId) {
         if (message != null && msgId.equals(message.getMsgId())) {
-            if (UdeskUtils.fileIsExitByUrl(mContext, UdeskConst.FileImg, message.getMsgContent())) {
-                String loaclpath = UdeskUtils.getPathByUrl(mContext, UdeskConst.FileImg, message.getMsgContent());
-                UdeskUtil.loadViewBySize(mContext, smallVideoImgView, Uri.fromFile(new File(loaclpath)), UdeskUtil.dip2px(mContext, 130), UdeskUtil.dip2px(mContext, 200));
+            if (UdeskUtil.fileIsExitByUrl(mContext, UdeskConst.FileImg, message.getMsgContent())) {
+                String loaclpath = UdeskUtil.getPathByUrl(mContext, UdeskConst.FileImg, message.getMsgContent());
+                UdeskUtil.loadViewBySize(mContext, smallVideoImgView, loaclpath, UdeskUtil.dip2px(mContext, 130), UdeskUtil.dip2px(mContext, 200));
             }
             return true;
         }

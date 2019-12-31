@@ -49,16 +49,18 @@ public class UDPullGetMoreListView extends ListView implements OnScrollListener 
 
     private boolean isRefreshable;
     private boolean isPush;
-
+    private Context mContext;
 
     public UDPullGetMoreListView(Context context) {
         super(context);
         init(context);
+        mContext = context;
     }
 
     public UDPullGetMoreListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
+        mContext = context;
     }
 
     private void init(Context context) {
@@ -101,10 +103,8 @@ public class UDPullGetMoreListView extends ListView implements OnScrollListener 
 
         switch(arg1){
             case OnScrollListener.SCROLL_STATE_IDLE://空闲状态
-                UdeskUtil.imageResume();
                 break;
             case OnScrollListener.SCROLL_STATE_FLING://滚动状态
-                UdeskUtil.imagePause();
                 break;
             case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL://触摸后滚动
                 break;

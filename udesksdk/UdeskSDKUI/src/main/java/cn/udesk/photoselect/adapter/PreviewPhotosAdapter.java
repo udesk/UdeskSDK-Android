@@ -2,16 +2,18 @@ package cn.udesk.photoselect.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import java.io.File;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.github.chrisbanes.photoview.OnPhotoTapListener;
+import com.github.chrisbanes.photoview.OnScaleChangedListener;
+import com.github.chrisbanes.photoview.PhotoView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,9 +21,6 @@ import cn.udesk.R;
 import cn.udesk.UdeskUtil;
 import cn.udesk.photoselect.PictureVideoPlayActivity;
 import cn.udesk.photoselect.entity.LocalMedia;
-import me.relex.photodraweeview.OnPhotoTapListener;
-import me.relex.photodraweeview.OnScaleChangeListener;
-import me.relex.photodraweeview.PhotoDraweeView;
 import udesk.core.UdeskConst;
 
 /**
@@ -65,15 +64,15 @@ public class PreviewPhotosAdapter extends RecyclerView.Adapter<RecyclerView.View
             final LocalMedia image = images.get(position);
             if (image != null) {
                 final int mediaMimeType = UdeskUtil.isPictureType(image.getPictureType());
-                UdeskUtil.loadImage(context, contentHolder.iv_picture, Uri.fromFile(new File(image.getPath())));
+                UdeskUtil.loadImage(context, contentHolder.iv_picture, image.getPath());
                 contentHolder.video_tip.setVisibility(mediaMimeType == UdeskUtil.TYPE_SHORT_VIDEO ? View.VISIBLE : View.GONE);
                 contentHolder.iv_picture.setOnPhotoTapListener(new OnPhotoTapListener() {
                     @Override
-                    public void onPhotoTap(View view, float x, float y) {
+                    public void onPhotoTap(ImageView view, float x, float y) {
                         listener.onPhotoClick();
                     }
                 });
-                contentHolder.iv_picture.setOnScaleChangeListener(new OnScaleChangeListener() {
+                contentHolder.iv_picture.setOnScaleChangeListener(new OnScaleChangedListener() {
                     @Override
                     public void onScaleChange(float scaleFactor, float focusX, float focusY) {
                         listener.onPhotoScaleChanged();
@@ -109,7 +108,7 @@ public class PreviewPhotosAdapter extends RecyclerView.Adapter<RecyclerView.View
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        PhotoDraweeView iv_picture;
+        PhotoView iv_picture;
         ImageView video_tip;
 
         View contentView;
@@ -117,8 +116,8 @@ public class PreviewPhotosAdapter extends RecyclerView.Adapter<RecyclerView.View
         public ViewHolder(View itemView) {
             super(itemView);
             contentView = itemView;
-            iv_picture = (PhotoDraweeView) itemView.findViewById(R.id.udesk_iv_photo);
-            video_tip = (ImageView) itemView.findViewById(R.id.video_tip);
+            iv_picture = itemView.findViewById(R.id.udesk_iv_photo);
+            video_tip = itemView.findViewById(R.id.video_tip);
 
         }
     }

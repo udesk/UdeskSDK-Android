@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -96,16 +97,53 @@
             android:name="cn.udesk.camera.UdeskCameraActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/Udesk_Theme"
-            />
+            android:theme="@style/Udesk_Theme" />
+
         <provider
-            android:name="cn.udesk.provider.UdeskFileProvider"
-            android:authorities="${applicationId}.udeskfileprovider"
+            android:name="cn.udesk.provider.UdeskExternalFileProvider"
+            android:authorities="${applicationId}.udesk_external_file_provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/udesk_provider_paths" />
+                android:resource="@xml/udesk_provider_paths_external_file" />
+        </provider>
+         <provider
+            android:name="cn.udesk.provider.UdeskExternalCacheProvider"
+            android:authorities="${applicationId}.udesk_external_cache_provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/udesk_provider_paths_external_cache" />
+        </provider>
+
+        <provider
+            android:name="cn.udesk.provider.UdeskExternalProvider"
+            android:authorities="${applicationId}.udesk_external_provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/udesk_provider_paths_external" />
+        </provider>
+        <provider
+            android:name="cn.udesk.provider.UdeskInternalFileProvider"
+            android:authorities="${applicationId}.udesk_internal_file_provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/udesk_provider_paths_internal_file" />
+        </provider>
+        <provider
+            android:name="cn.udesk.provider.UdeskInternalCacheProvider"
+            android:authorities="${applicationId}.udesk_internal_cache_provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/udesk_provider_paths_internal_cache" />
         </provider>
 
 

@@ -265,10 +265,10 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
             Bitmap rawBmp=Bitmap.createBitmap(imageWidthHeight[0],imageWidthHeight[1],Bitmap.Config.ARGB_8888);
             rawBmp.eraseColor(getResources().getColor(R.color.transparent));
             return fillBmp(drawable,holder,rawBmp);
-        }else if (richWidth > 0 && UdeskUtils.fileIsExitByUrl(getContext(), UdeskConst.FileImg, holder.getSrc())) {
+        }else if (richWidth > 0 && UdeskUtil.fileIsExitByUrl(getContext(), UdeskConst.FileImg, holder.getSrc())) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(UdeskUtils.getPathByUrl(getContext(), UdeskConst.FileImg,
+            BitmapFactory.decodeFile(UdeskUtil.getPathByUrl(getContext(), UdeskConst.FileImg,
                     holder.getSrc()),options);
             if (options.outWidth>0&&options.outHeight>0){
                 int[] imageWidthHeight = UdeskUtil.getImageWidthHeight(new int[]{options.outWidth,options.outHeight});
@@ -426,9 +426,9 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
                             }
                         }
                         Log.i("xxxx", "richWidth = " + richWidth);
-                        if (richWidth > 0 && UdeskUtils.fileIsExitByUrl(getContext(), UdeskConst.FileImg, holder.getSrc())) {
+                        if (richWidth > 0 && UdeskUtil.fileIsExitByUrl(getContext(), UdeskConst.FileImg, holder.getSrc())) {
 
-                            Bitmap localBitMap = UdeskUtil.compressRatio(BitmapFactory.decodeFile(UdeskUtils.getPathByUrl(getContext(), UdeskConst.FileImg,
+                            Bitmap localBitMap = UdeskUtil.compressRatio(BitmapFactory.decodeFile(UdeskUtil.getPathByUrl(getContext(), UdeskConst.FileImg,
                                     holder.getSrc())));
                             int bitmapSize = UdeskUtil.getBitmapSize(localBitMap);
                             Log.i("xxxx", "bitmapsize = " + bitmapSize);

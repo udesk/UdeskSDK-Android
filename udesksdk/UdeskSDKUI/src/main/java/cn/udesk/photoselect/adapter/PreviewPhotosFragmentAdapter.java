@@ -2,17 +2,14 @@ package cn.udesk.photoselect.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
-
-import java.io.File;
 
 import cn.udesk.R;
 import cn.udesk.UdeskUtil;
@@ -51,7 +48,7 @@ public class PreviewPhotosFragmentAdapter extends RecyclerView.Adapter<RecyclerV
             Drawable drawable = ContextCompat.getDrawable(context, R.drawable.udesk_video_icon);
             UdeskUtil.modifyTextViewDrawable(contentHolder.tv_duration, drawable, 0);
             contentHolder.tv_duration.setVisibility(mediaMimeType == UdeskUtil.TYPE_SHORT_VIDEO ? View.VISIBLE : View.GONE);
-            UdeskUtil.loadViewBySize(context, contentHolder.iv_picture, Uri.fromFile(new File(path)), UdeskUtil.dip2px(context, 60), UdeskUtil.dip2px(context, 60));
+            UdeskUtil.loadViewBySize(context, contentHolder.iv_picture, path, UdeskUtil.dip2px(context, 60), UdeskUtil.dip2px(context, 60));
             if (checkedPosition == position) {
                 contentHolder.v_selector.setVisibility(View.VISIBLE);
             } else {
@@ -83,14 +80,14 @@ public class PreviewPhotosFragmentAdapter extends RecyclerView.Adapter<RecyclerV
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        SimpleDraweeView iv_picture;
+        ImageView iv_picture;
         TextView tv_duration;
         View contentView, v_selector;
 
         public ViewHolder(View itemView) {
             super(itemView);
             contentView = itemView;
-            iv_picture = (SimpleDraweeView) itemView.findViewById(R.id.udesk_iv_picture);
+            iv_picture =  itemView.findViewById(R.id.udesk_iv_picture);
             tv_duration = (TextView) itemView.findViewById(R.id.udesk_duration);
             v_selector = itemView.findViewById(R.id.udesk_v_selector);
         }

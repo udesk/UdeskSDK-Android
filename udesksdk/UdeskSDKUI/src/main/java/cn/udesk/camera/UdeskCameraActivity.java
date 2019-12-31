@@ -3,23 +3,17 @@ package cn.udesk.camera;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-
-import java.io.File;
-
 import cn.udesk.R;
+import cn.udesk.UdeskUtil;
 import cn.udesk.camera.callback.ErrorListener;
 import cn.udesk.camera.callback.UdeskCameraListener;
 import udesk.core.UdeskConst;
-import udesk.core.utils.UdeskUtils;
 
 /**
  * Created by user on 2018/3/10.
@@ -41,7 +35,7 @@ public class UdeskCameraActivity extends Activity {
         try {
             udeskCameraView = (UdeskCameraView) findViewById(R.id.udesk_cameraview);
             //设置视频保存路径
-            udeskCameraView.setSaveVideoPath(UdeskUtils.getDirectoryPath(getApplicationContext(), UdeskConst.FileVideo));
+            udeskCameraView.setSaveVideoPath(UdeskUtil.getDirectoryPath(getApplicationContext(), UdeskConst.FileVideo));
             //设置只能录像或只能拍照或两种都可以（默认两种都可以）
             udeskCameraView.setFeatures(UdeskCameraView.BUTTON_STATE_BOTH);
 
@@ -70,7 +64,7 @@ public class UdeskCameraActivity extends Activity {
                 public void captureSuccess(Bitmap bitmap) {
 
                     if (bitmap != null) {
-                        String path = UdeskUtils.saveBitmap(UdeskCameraActivity.this.getApplicationContext(), bitmap);
+                        String path = UdeskUtil.saveBitmap(UdeskCameraActivity.this.getApplicationContext(), bitmap);
                         finishActivity(null, path);
                     } else {
                         finish();

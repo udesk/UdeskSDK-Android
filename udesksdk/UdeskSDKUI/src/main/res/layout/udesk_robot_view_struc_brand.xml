@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:id="@+id/udesk_robot_view_struc_brand"
     android:orientation="vertical"
     android:layout_width="@dimen/udesk_80"
@@ -21,17 +20,12 @@
             android:layout_height="@dimen/udesk_50"
             android:gravity="center"
             >
-            <com.facebook.drawee.view.SimpleDraweeView
+            <ImageView
                 android:id="@+id/udesk_robot_img_struc_brand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                fresco:actualImageScaleType="centerInside"
-                fresco:failureImage="@drawable/udesk_defualt_failure"
-                fresco:failureImageScaleType="centerInside"
-                fresco:placeholderImage="@drawable/udesk_defalut_image_loading"
-                fresco:placeholderImageScaleType="centerInside"
-                />
+                android:layout_gravity="center"
+                android:scaleType="centerInside"/>
         </LinearLayout>
         <TextView
             android:id="@+id/udesk_robot_txt_struc_brand"

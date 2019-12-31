@@ -1,17 +1,14 @@
 package cn.udesk.photoselect.adapter;
 
 import android.content.Context;
-import android.net.Uri;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,8 +61,8 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         final LocalMediaFolder folder = floders.get(position);
         try {
             if (folder != null) {
-                UdeskUtil.loadViewBySize(context, contentHolder.iv_picture, Uri.fromFile(new File(folder.getFirstFilePath())),
-                        UdeskUtil.dip2px(context, 80), UdeskUtil.dip2px(context, 80),false);
+                UdeskUtil.loadDontAnimateAndResizeImage(context, contentHolder.iv_picture, folder.getFirstFilePath(),
+                        UdeskUtil.dip2px(context, 80), UdeskUtil.dip2px(context, 80));
                 contentHolder.name.setText(folder.getName());
                 contentHolder.count.setText(String.valueOf(folder.getNum()));
                 if (position == 1) {
@@ -96,7 +93,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        SimpleDraweeView iv_picture;
+        ImageView iv_picture;
         ImageView video_tip;
         TextView name;
         TextView count;
@@ -105,7 +102,7 @@ public class FolderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public ViewHolder(View itemView) {
             super(itemView);
             contentView = itemView;
-            iv_picture = (SimpleDraweeView) itemView.findViewById(R.id.udesk_iv_picture);
+            iv_picture = itemView.findViewById(R.id.udesk_iv_picture);
             video_tip = (ImageView) itemView.findViewById(R.id.video_tip);
             name = (TextView) itemView.findViewById(R.id.udesk_name);
             count = (TextView) itemView.findViewById(R.id.udesk_size);

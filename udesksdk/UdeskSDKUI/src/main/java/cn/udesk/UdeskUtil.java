@@ -1,18 +1,22 @@
 package cn.udesk;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
-import android.graphics.drawable.Animatable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
 import android.net.ConnectivityManager;
@@ -23,49 +27,32 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import androidx.annotation.RequiresApi;
+import android.provider.OpenableColumns;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.binaryresource.BinaryResource;
-import com.facebook.binaryresource.FileBinaryResource;
-import com.facebook.cache.common.CacheKey;
-import com.facebook.cache.disk.DiskCacheConfig;
-import com.facebook.common.internal.Supplier;
-import com.facebook.common.util.ByteConstants;
-import com.facebook.datasource.DataSource;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
-import com.facebook.drawee.controller.BaseControllerListener;
-import com.facebook.drawee.controller.ControllerListener;
-import com.facebook.drawee.generic.GenericDraweeHierarchy;
-import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
-import com.facebook.drawee.generic.RoundingParams;
-import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
-import com.facebook.imagepipeline.cache.MemoryCacheParams;
-import com.facebook.imagepipeline.common.ResizeOptions;
-import com.facebook.imagepipeline.common.RotationOptions;
-import com.facebook.imagepipeline.core.ImagePipeline;
-import com.facebook.imagepipeline.core.ImagePipelineConfig;
-import com.facebook.imagepipeline.core.ImagePipelineFactory;
-import com.facebook.imagepipeline.image.ImageInfo;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.tencent.bugly.crashreport.CrashReport;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
+
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -86,24 +73,30 @@ import java.util.regex.Pattern;
 import cn.udesk.activity.UdeskZoomImageActivty;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.db.UdeskDBManager;
-import cn.udesk.model.TicketReplieMode;
+import cn.udesk.imageloader.UdeskImage;
+import cn.udesk.imageloader.UdeskImageLoader;
 import cn.udesk.model.ImSetting;
 import cn.udesk.model.OptionsModel;
 import cn.udesk.model.SurveyOptionsModel;
+import cn.udesk.model.TicketReplieMode;
+import cn.udesk.provider.UdeskExternalCacheProvider;
+import cn.udesk.provider.UdeskExternalFileProvider;
+import cn.udesk.provider.UdeskExternalProvider;
+import cn.udesk.provider.UdeskInternalCacheProvider;
+import cn.udesk.provider.UdeskInternalFileProvider;
 import udesk.core.JsonObjectUtils;
 import udesk.core.LocalManageUtil;
-import udesk.core.model.Content;
-import cn.udesk.provider.UdeskFileProvider;
-import me.relex.photodraweeview.PhotoDraweeView;
 import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.model.AgentInfo;
+import udesk.core.model.Content;
 import udesk.core.model.LogBean;
 import udesk.core.model.MessageInfo;
 import udesk.core.model.ProductListBean;
 import udesk.core.model.RobotInit;
 import udesk.core.utils.UdeskIdBuild;
 import udesk.core.utils.UdeskUtils;
+
 
 public class UdeskUtil {
 
@@ -121,7 +114,7 @@ public class UdeskUtil {
     public static File cameraFile(Context context) {
         try {
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            File imageFile = new File(UdeskUtils.getDirectoryPath(context, UdeskConst.FileImg) + File.separator + timeStamp + UdeskConst.IMG_SUF);
+            File imageFile = new File(getDirectoryPath(context, UdeskConst.FileImg) + File.separator + timeStamp + UdeskConst.IMG_SUF);
             return imageFile;
         } catch (Exception e) {
             e.printStackTrace();
@@ -130,29 +123,70 @@ public class UdeskUtil {
 
     }
 
-    public static Uri getOutputMediaFileUri(Context context, File cameaFile) {
+    /**
+     * 获取存储路径目录
+     *
+     * @param context
+     * @param folderName
+     * @return
+     */
+    public static String getDirectoryPath(Context context, String folderName) {
+        String directoryPath = "";
+        if (context == null) {
+            return "";
+        }
+        try {
+            if (UdeskUtils.checkSDcard() && context.getExternalFilesDir(UdeskConst.EXTERNAL_FOLDER) != null) {
+                directoryPath = context.getExternalFilesDir(UdeskConst.EXTERNAL_FOLDER).getAbsolutePath() + File.separator + folderName;
+            } else {
+                directoryPath = context.getFilesDir() + File.separator + UdeskConst.EXTERNAL_FOLDER + File.separator + folderName;
+            }
+        } catch (Exception e) {
+            directoryPath = context.getFilesDir() + File.separator + UdeskConst.EXTERNAL_FOLDER + File.separator + folderName;
+        }
+        File file = new File(directoryPath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return directoryPath;
+    }
+
+    /**
+     * 提供给拍照的Uri
+     *
+     * @param context
+     * @param file
+     * @return
+     */
+    public static Uri getOutputMediaFileUri(Context context, File file) {
+        if (file == null) {
+            return null;
+        }
         try {
             if (Build.VERSION.SDK_INT >= 24) {
-                return UdeskFileProvider.getUriForFile(context, getFileProviderName(context), cameaFile);
-            } else {
-                if (cameaFile != null) {
-                    return Uri.fromFile(cameaFile);
-                } else {
-                    return null;
+                if (context.getExternalFilesDir("") != null
+                        && file.getAbsolutePath().contains(context.getExternalFilesDir("").getAbsolutePath())) {
+                    return UdeskExternalFileProvider.getUriForFile(context, getExternalFileProviderName(context), file);
+                } else if (file.getAbsolutePath().contains(context.getExternalCacheDir().getAbsolutePath())) {
+                    return UdeskExternalCacheProvider.getUriForFile(context, getExternalCacheProviderName(context), file);
+                } else if (file.getAbsolutePath().contains(context.getFilesDir().getAbsolutePath())) {
+                    return UdeskInternalFileProvider.getUriForFile(context, getInternalFileProviderName(context), file);
+                } else if (file.getAbsolutePath().contains(context.getCacheDir().getAbsolutePath())) {
+                    return UdeskInternalCacheProvider.getUriForFile(context, getInternalCacheProviderName(context), file);
+                } else if (file.getAbsolutePath().contains(Environment.getExternalStorageDirectory().getAbsolutePath())) {
+                    return UdeskExternalProvider.getUriForFile(context, getExternalProviderName(context), file);
                 }
+            } else {
+                return Uri.fromFile(file);
             }
         } catch (Exception e) {
             return null;
         }
-
-    }
-
-    public static String getFileProviderName(Context context) {
-        return context.getPackageName() + ".udeskfileprovider";
+        return null;
     }
 
     /**
-     * 提供的Uri 解析出文件绝对路径
+     * 解析拍照返回的路径
      *
      * @param uri
      * @return
@@ -161,9 +195,36 @@ public class UdeskUtil {
         if (uri == null) {
             return "";
         }
+        if (isAndroidQ()) {
+            return uri.toString();
+        }
         String path = "";
         try {
-            if (TextUtils.equals(uri.getAuthority(), getFileProviderName(context))) {
+            if (TextUtils.equals(uri.getAuthority(), getExternalFileProviderName(context))) {
+                if (cameraFile != null) {
+                    return cameraFile.getAbsolutePath();
+                } else {
+                    path = new File(context.getExternalFilesDir(""), uri.getPath().replace("my_external/", "")).getAbsolutePath();
+                }
+            } else if (TextUtils.equals(uri.getAuthority(), getExternalCacheProviderName(context))) {
+                if (cameraFile != null) {
+                    return cameraFile.getAbsolutePath();
+                } else {
+                    path = new File(context.getExternalCacheDir(), uri.getPath().replace("my_external/", "")).getAbsolutePath();
+                }
+            } else if (TextUtils.equals(uri.getAuthority(), getInternalFileProviderName(context))) {
+                if (cameraFile != null) {
+                    return cameraFile.getAbsolutePath();
+                } else {
+                    path = new File(context.getFilesDir(), uri.getPath().replace("my_external/", "")).getAbsolutePath();
+                }
+            } else if (TextUtils.equals(uri.getAuthority(), getInternalCacheProviderName(context))) {
+                if (cameraFile != null) {
+                    return cameraFile.getAbsolutePath();
+                } else {
+                    path = new File(context.getCacheDir(), uri.getPath().replace("my_external/", "")).getAbsolutePath();
+                }
+            } else if (TextUtils.equals(uri.getAuthority(), getExternalProviderName(context))) {
                 if (cameraFile != null) {
                     return cameraFile.getAbsolutePath();
                 } else {
@@ -176,6 +237,283 @@ public class UdeskUtil {
             e.printStackTrace();
         }
         return path;
+    }
+
+    /**
+     * 本地输出文件路径
+     *
+     * @param context
+     * @param filePath
+     * @return
+     */
+    public static String getFilePathQ(Context context, String filePath) {
+        try {
+            if (context == null) {
+                return "";
+            }
+            if (!filePath.startsWith("http")
+                    && !filePath.startsWith("https")
+                    && !filePath.startsWith("content")
+                    && isAndroidQ()) {
+                File file;
+                if (filePath.startsWith("file")) {
+                    file = new File(new URI(filePath));
+                } else {
+                    file = new File(filePath);
+                }
+                if (context.getExternalFilesDir("") != null
+                        && filePath.contains(context.getExternalFilesDir("").getAbsolutePath())) {
+                    return UdeskExternalFileProvider.getUriForFile(context, getExternalFileProviderName(context), file).toString();
+                } else if (file.getAbsolutePath().contains(context.getExternalCacheDir().getAbsolutePath())) {
+                    return UdeskExternalCacheProvider.getUriForFile(context, getExternalCacheProviderName(context), file).toString();
+                } else if (filePath.contains(context.getFilesDir().getAbsolutePath())) {
+                    return UdeskInternalFileProvider.getUriForFile(context, getInternalFileProviderName(context), file).toString();
+                } else if (filePath.contains(context.getCacheDir().getAbsolutePath())) {
+                    return UdeskInternalCacheProvider.getUriForFile(context, getInternalCacheProviderName(context), file).toString();
+                } else if (file.getAbsolutePath().contains(Environment.getExternalStorageDirectory().getAbsolutePath())) {
+                    return UdeskExternalProvider.getUriForFile(context, getExternalProviderName(context), file).toString();
+                }
+            }
+        } catch (Exception e) {
+            return "";
+        }
+        return filePath;
+    }
+
+    public static Uri getUriFromPathBelowQ(Context context, String path) {
+        try {
+            if (TextUtils.isEmpty(path)) {
+                return null;
+            }
+            if (path.startsWith("http") || path.startsWith("https") || path.startsWith("file") || path.startsWith("content")) {
+                return Uri.parse(path);
+            } else {
+                return Uri.fromFile(new File(path));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Uri getUriFromPath(Context context, String path) {
+        try {
+            if (isAndroidQ()) {
+                return Uri.parse(getFilePathQ(context, path));
+            } else {
+                return getUriFromPathBelowQ(context, path);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String getExternalFileProviderName(Context context) {
+        return context.getPackageName() + ".udesk_external_file_provider";
+    }
+
+    public static String getExternalCacheProviderName(Context context) {
+        return context.getPackageName() + ".udesk_external_cache_provider";
+    }
+
+    public static String getInternalFileProviderName(Context context) {
+        return context.getPackageName() + ".udesk_internal_file_provider";
+    }
+
+    public static String getInternalCacheProviderName(Context context) {
+        return context.getPackageName() + ".udesk_internal_cache_provider";
+    }
+
+    public static String getExternalProviderName(Context context) {
+        return context.getPackageName() + ".udesk_external_provider";
+    }
+
+    /**
+     * 根据文件类型和路径 创建目录和判断文件是否存在
+     *
+     * @param context
+     * @param fileType
+     * @param url
+     * @return
+     */
+    public static boolean fileIsExitByUrl(Context context, String fileType, String url) {
+        try {
+            if (TextUtils.isEmpty(url)) {
+                return false;
+            }
+            String fileName = getFileName(context, url, fileType);
+            String filepath = getDirectoryPath(context.getApplicationContext(), fileType) + File.separator + fileName;
+            File file = new File(filepath);
+            return file.exists();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 根据本地路径判断文件是否存在
+     *
+     * @param context
+     * @param path
+     * @return
+     */
+    public static boolean isExitFileByPath(Context context, String path) {
+        try {
+            if (null == context) {
+                return false;
+            }
+            if (isAndroidQ()) {
+                ContentResolver cr = context.getContentResolver();
+                AssetFileDescriptor afd = cr.openAssetFileDescriptor(Uri.parse(getFilePathQ(context, path)), "r");
+                if (null == afd) {
+                    return false;
+                } else {
+                    afd.close();
+                    return true;
+                }
+            } else {
+                File file = new File(path);
+                return file.exists();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 根据文件类型和路径 返回本地文件路径
+     *
+     * @param context
+     * @param fileType
+     * @param url
+     * @return
+     */
+    public static String getPathByUrl(Context context, String fileType, String url) {
+        String fileName = getFileName(context, url, fileType);
+        try {
+            return getDirectoryPath(context.getApplicationContext(), fileType) + File.separator + fileName;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fileName;
+    }
+
+    /**
+     * 根据文件类型和路径创建本地文件
+     *
+     * @param context
+     * @param fileType
+     * @param url
+     * @return
+     */
+    public static File getFileByUrl(Context context, String fileType, String url) {
+        String fileName = getFileName(context, url, fileType);
+        try {
+            String filepath = getDirectoryPath(context.getApplicationContext(), fileType) + File.separator + fileName;
+            File file = new File(filepath);
+            return file;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String getFileName(Context context, String filePath, String type) {
+        if (TextUtils.isEmpty(filePath)) {
+            return "";
+        }
+        try {
+            String filename = getFileName(context, filePath);
+            if (filePath.startsWith("http") || filePath.startsWith("https")) {
+                return filename;
+            }
+            if (type.equals(UdeskConst.FileAudio) && !filename.contains(UdeskConst.AUDIO_SUF_WAV)) {
+                filename = filename + UdeskConst.AUDIO_SUF_WAV;
+            } else if (type.equals(UdeskConst.FileImg) && !filename.contains(UdeskConst.IMG_SUF)) {
+                filename = filename + UdeskConst.IMG_SUF;
+            } else if (type.equals(UdeskConst.FileVideo) && !filename.contains(UdeskConst.VIDEO_SUF)) {
+                filename = filename + UdeskConst.VIDEO_SUF;
+            }
+            return filename;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static String getFileName(Context context, String filePath) {
+        if (TextUtils.isEmpty(filePath)) {
+            return "";
+        }
+        try {
+            if ((isAndroidQ() && filePath.startsWith("content"))) {
+                return getFileName(context, Uri.parse(filePath));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return getName(filePath);
+    }
+
+    public static String getFileName(@NonNull Context context, Uri uri) {
+        String mimeType = context.getContentResolver().getType(uri);
+        String filename = null;
+        if (mimeType == null) {
+            filename = getName(uri.toString());
+        } else {
+            Cursor returnCursor = context.getContentResolver().query(uri, null,
+                    null, null, null);
+            if (returnCursor != null) {
+                int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                returnCursor.moveToFirst();
+                filename = returnCursor.getString(nameIndex);
+                returnCursor.close();
+            }
+        }
+        return filename;
+    }
+
+    public static String getName(String filename) {
+        if (filename == null) {
+            return null;
+        }
+        int index = filename.lastIndexOf('/');
+        return filename.substring(index + 1);
+    }
+
+    public static String saveBitmap(Context context, String url, Bitmap b) {
+        String jpegName = getPathByUrl(context, UdeskConst.FileImg, url);
+        try {
+            FileOutputStream fout = new FileOutputStream(jpegName);
+            BufferedOutputStream bos = new BufferedOutputStream(fout);
+            b.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            bos.flush();
+            bos.close();
+            return jpegName;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public static String saveBitmap(Context context, Bitmap b) {
+        try {
+            String path = getDirectoryPath(context, UdeskConst.FileImg);
+            long dataTake = System.currentTimeMillis();
+            String jpegName = path + File.separator + "picture_" + dataTake + ".jpg";
+            FileOutputStream fout = new FileOutputStream(jpegName);
+            BufferedOutputStream bos = new BufferedOutputStream(fout);
+            b.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            bos.flush();
+            bos.close();
+            return jpegName;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public static String getFormUrlPara(Context context) {
@@ -220,7 +558,8 @@ public class UdeskUtil {
         }
         return builder.toString();
     }
-    public static HashMap<String,String> buildGetParams(String sdkToken, String mSecretKey, String appid){
+
+    public static HashMap<String, String> buildGetParams(String sdkToken, String mSecretKey, String appid) {
         HashMap<String, String> params = new HashMap<>();
         long timestamp = System.currentTimeMillis();
         long nonce = System.currentTimeMillis() * JsonObjectUtils.getRandom();
@@ -324,7 +663,6 @@ public class UdeskUtil {
     }
 
 
-
     public static String parseEventTime(String strTime) {
         if (strTime == null) {
             return "";
@@ -346,10 +684,12 @@ public class UdeskUtil {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         return sdf.format(new Date(time));
     }
-    public static String getCurrentDate(){
-        SimpleDateFormat simpleDateFormat =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    public static String getCurrentDate() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return simpleDateFormat.format(new Date());
     }
+
     public static long stringToLong(String strTime) {
         Date date = stringToDate(strTime); // String类型转成date类型
         if (date == null) {
@@ -387,327 +727,138 @@ public class UdeskUtil {
     }
 
     // 暂停图片请求
-    public static void imagePause() {
-        Fresco.getImagePipeline().pause();
+    public static void imagePause(Context context) {
+        Glide.with(context).pauseRequests();
     }
 
     // 恢复图片请求
-    public static void imageResume() {
-        Fresco.getImagePipeline().resume();
+    public static void imageResume(Context context) {
+        Glide.with(context).resumeRequests();
     }
 
     /**
      * 获取图像的宽高
      **/
 
-    public static int[] getImageWH(String path) {
+    public static int[] getImageWH(Context context, String path) {
         int[] wh = {-1, -1};
         if (path == null) {
             return wh;
         }
-        File file = new File(path);
-        if (file.exists() && !file.isDirectory()) {
-            try {
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            if (isAndroidQ()) {
+                AssetFileDescriptor parcelFileDescriptor = context.getContentResolver().openAssetFileDescriptor(Uri.parse(getFilePathQ(context, path)), "r");
+                if (parcelFileDescriptor != null) {
+                    BitmapFactory.decodeStream(parcelFileDescriptor.createInputStream(), null, options);
+                }
+            } else {
                 InputStream is = new FileInputStream(path);
                 BitmapFactory.decodeStream(is, null, options);
-                wh[0] = options.outWidth;
-                wh[1] = options.outHeight;
-            } catch (Exception e) {
-
             }
+            wh[0] = options.outWidth;
+            wh[1] = options.outHeight;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return wh;
     }
 
-    /**
-     * 图片是否已经存在了
-     */
-    public static boolean isCached(Context context, Uri uri) {
-        try {
-            ImagePipeline imagePipeline = Fresco.getImagePipeline();
-            DataSource<Boolean> dataSource = imagePipeline.isInDiskCache(uri);
-            if (dataSource == null) {
-                return false;
-            }
-            ImageRequest imageRequest = ImageRequest.fromUri(uri);
-            CacheKey cacheKey = DefaultCacheKeyFactory.getInstance()
-                    .getEncodedCacheKey(imageRequest, context);
-            BinaryResource resource = ImagePipelineFactory.getInstance()
-                    .getMainFileCache().getResource(cacheKey);
-            return resource != null && dataSource.getResult() != null && dataSource.getResult();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
         }
+        Bitmap bitmap;
+        try {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+        } catch (Exception e) {
+            bitmap = null;
+        }
+        return bitmap;
     }
 
     /**
      * 本地缓存文件
      */
-    public static File getFileFromDiskCache(Context context, Uri uri) {
+    public static void getFileFromDiskCache(Context context, String path, UdeskImageLoader.UdeskDownloadImageListener udeskDownloadImageListener) {
         try {
-            if (!isCached(context, uri)) {
-                return null;
-            }
-            ImageRequest imageRequest = ImageRequest.fromUri(uri);
-            CacheKey cacheKey = DefaultCacheKeyFactory.getInstance()
-                    .getEncodedCacheKey(imageRequest, context);
-            BinaryResource resource = ImagePipelineFactory.getInstance()
-                    .getMainFileCache().getResource(cacheKey);
-            return ((FileBinaryResource) resource).getFile();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static void loadImage(Context context, final PhotoDraweeView mPhotoDraweeView, Uri uri) {
-
-        try {
-            File file = getFileFromDiskCache(context, uri);
-            if (file != null) {
-                uri = Uri.fromFile(file);
-            }else {
-                if (!UdeskUtils.isNetworkConnected(context.getApplicationContext())){
-                    UdeskUtils.showToast(context.getApplicationContext(), context.getResources().getString(R.string.udesk_has_wrong_net));
-                    return;
-                }
-            }
-            PipelineDraweeControllerBuilder controller = Fresco.newDraweeControllerBuilder();
-            controller.setUri(uri);
-            controller.setAutoPlayAnimations(true);
-            controller.setOldController(mPhotoDraweeView.getController());
-            controller.setControllerListener(new BaseControllerListener<ImageInfo>() {
-                @Override
-                public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
-                    super.onFinalImageSet(id, imageInfo, animatable);
-                    if (imageInfo == null) {
-                        return;
-                    }
-                    mPhotoDraweeView.update(imageInfo.getWidth(), imageInfo.getHeight());
-                }
-            });
-            mPhotoDraweeView.setController(controller.build());
+            UdeskImage.loadImageFile(context, getUriFromPath(context, path), udeskDownloadImageListener);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void loadHeadView(Context context, SimpleDraweeView simpleDraweeView, Uri httpUri) {
-
+    public static void loadImage(Context context, final ImageView imageView, String path) {
         try {
-            File file = getFileFromDiskCache(context, httpUri);
-            if (file != null) {
-                httpUri = Uri.fromFile(file);
-            }else {
-                if (!UdeskUtils.isNetworkConnected(context.getApplicationContext())){
-                    UdeskUtils.showToast(context.getApplicationContext(), context.getResources().getString(R.string.udesk_has_wrong_net));
-                    return;
-                }
-            }
-            //初始化圆角圆形参数对象
-            RoundingParams rp = new RoundingParams();
-            //设置图像是否为圆形
-            rp.setRoundAsCircle(true);
-
-            final GenericDraweeHierarchy hierarchy = new GenericDraweeHierarchyBuilder(context.getResources())
-                    .setRoundingParams(rp)
-                    .build();
-
-            DraweeController controller = Fresco.newDraweeControllerBuilder()
-                    .setUri(httpUri)
-                    .setTapToRetryEnabled(true)
-                    .setOldController(simpleDraweeView.getController())
-                    .build();
-            simpleDraweeView.setHierarchy(hierarchy);
-            simpleDraweeView.setController(controller);
+            loadViewBySize(context, imageView, path, imageView.getWidth(), imageView.getHeight());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void loadFileFromSdcard(final Context context, final SimpleDraweeView draweeView, Uri loackUri, final int reqWidth, final int reqHeight,final boolean isfixScale) {
-
+    public static void loadViewBySize(Context context, ImageView imageView, String path, int width, int height) {
         try {
-            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(loackUri)
-                    .setRotationOptions(RotationOptions.autoRotate())
-                    .setLocalThumbnailPreviewsEnabled(true)
-                    .setResizeOptions(new ResizeOptions(dip2px(context, 140), dip2px(context, 220)))
-                    .build();
-            DraweeController controller = Fresco.newDraweeControllerBuilder()
-                    .setImageRequest(request)
-                    .setOldController(draweeView.getController())
-                    .setTapToRetryEnabled(true)
-                    .setControllerListener(new BaseControllerListener<ImageInfo>() {
-                        @Override
-                        public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable anim) {
-                            if (imageInfo == null) {
-                                return;
-                            }
-
-                            ViewGroup.LayoutParams layoutParams = draweeView.getLayoutParams();
-                            int imgWidth = dip2px(context, 140);
-                            if (isfixScale) {
-                                //固定宽度缩放
-                                double bitScalew = (double) reqWidth / imgWidth;
-                                layoutParams.height = (int) (reqHeight / bitScalew);
-                                layoutParams.width = (int) (reqWidth / bitScalew);
-                            } else {
-                                int imgHight = dip2px(context, 220);
-                                double bitScalew = getRatioSize(reqWidth, reqHeight, imgHight, imgWidth);
-                                if (bitScalew >= 1) {
-                                    layoutParams.height = (int) (reqHeight / bitScalew);
-                                    layoutParams.width = (int) (reqWidth / bitScalew);
-                                } else if (bitScalew >= 0.5) {
-                                    layoutParams.height = reqHeight;
-                                    layoutParams.width = reqWidth;
-                                } else {
-                                    layoutParams.height = imgWidth / 2;
-                                    layoutParams.width = imgWidth / 2;
-                                }
-                            }
-
-                            draweeView.requestLayout();
-                        }
-                    })
-                    .setAutoPlayAnimations(true)
-                    .build();
-            draweeView.setController(controller);
+            UdeskImage.loadImage(context, imageView, getUriFromPath(context, path), R.drawable.udesk_defalut_image_loading, R.drawable.udesk_defualt_failure, width, height, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void loadImageView(final Context context, final SimpleDraweeView simpleDraweeView, Uri httpUri, final boolean isfixScale) {
+    private static void scaleImageView(Context context, ImageView imageView, boolean isfixScale, int reqWidth, int reqHeight) {
+        ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
+        int imgWidth = dip2px(context, 140);
+        if (isfixScale) {
+            //固定宽度缩放
+            double bitScalew = (double) reqWidth / imgWidth;
+            layoutParams.height = (int) (reqHeight / bitScalew);
+            layoutParams.width = (int) (reqWidth / bitScalew);
+        } else {
+            int imgHight = dip2px(context, 220);
+            double bitScalew = getRatioSize(reqWidth, reqHeight, imgHight, imgWidth);
+            if (bitScalew >= 1) {
+                layoutParams.height = (int) (reqHeight / bitScalew);
+                layoutParams.width = (int) (reqWidth / bitScalew);
+            } else if (bitScalew >= 0.5) {
+                layoutParams.height = reqHeight;
+                layoutParams.width = reqWidth;
+            } else {
+                layoutParams.height = imgWidth / 2;
+                layoutParams.width = imgWidth / 2;
+            }
+        }
+        imageView.requestLayout();
+    }
+
+    public static void loadScaleImage(final Context context, final ImageView imageView, String path, final boolean isfixScale) {
 
         try {
-            File file = getFileFromDiskCache(context, httpUri);
-            if (file != null) {
-                httpUri = Uri.fromFile(file);
-            }else {
-                if (!UdeskUtils.isNetworkConnected(context.getApplicationContext())){
-                    UdeskUtils.showToast(context.getApplicationContext(), context.getResources().getString(R.string.udesk_has_wrong_net));
-                    return;
-                }
-            }
-            final ViewGroup.LayoutParams layoutParams = simpleDraweeView.getLayoutParams();
-            ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+            UdeskImageLoader.UdeskDisplayImageListener udeskDisplayImageListener = new UdeskImageLoader.UdeskDisplayImageListener() {
                 @Override
-                public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable anim) {
-                    if (imageInfo == null) {
-                        return;
-                    }
-                    int height = imageInfo.getHeight();
-                    int width = imageInfo.getWidth();
-                    int imgWidth = dip2px(context, 140);
-                    if (isfixScale) {
-                        //固定宽度缩放
-                        double bitScalew = (double) width / imgWidth;
-                        layoutParams.height = (int) (height / bitScalew);
-                        layoutParams.width = (int) (width / bitScalew);
-                    } else {
-                        int imgHight = dip2px(context, 220);
-                        double bitScalew = getRatioSize(width, height, imgHight, imgWidth);
-                        if (bitScalew >= 1) {
-                            layoutParams.height = (int) (height / bitScalew);
-                            layoutParams.width = (int) (width / bitScalew);
-                        } else if (bitScalew >= 0.5) {
-                            layoutParams.height = height;
-                            layoutParams.width = width;
-                        } else {
-                            layoutParams.height = imgWidth / 2;
-                            layoutParams.width = imgWidth / 2;
-                        }
-                    }
-
-                    simpleDraweeView.setLayoutParams(layoutParams);
-                    simpleDraweeView.invalidate();
-                }
-
-                @Override
-                public void onIntermediateImageSet(String id, ImageInfo imageInfo) {
-
-                }
-
-                @Override
-                public void onFailure(String id, Throwable throwable) {
-                    throwable.printStackTrace();
+                public void onSuccess(View view, Uri uri, int width, int height) {
+                    scaleImageView(context, imageView, isfixScale, width, height);
                 }
             };
-            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(httpUri).
-                    setProgressiveRenderingEnabled(true).
-                    setResizeOptions(new ResizeOptions(dip2px(context, 140), dip2px(context, 220))).
-                    setRotationOptions(RotationOptions.disableRotation()).build();
-            DraweeController controller = Fresco.newDraweeControllerBuilder()
-                    .setImageRequest(request)
-                    .setTapToRetryEnabled(true)
-                    .setOldController(simpleDraweeView.getController())
-                    .setAutoPlayAnimations(true)
-                    .setControllerListener(controllerListener)
-                    .build();
-            simpleDraweeView.setController(controller);
+            UdeskImage.loadImage(context, imageView, getUriFromPath(context, path), R.drawable.udesk_defalut_image_loading, R.drawable.udesk_defualt_failure, imageView.getWidth(), imageView.getHeight(), udeskDisplayImageListener);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void loadNoChangeView(Context context, SimpleDraweeView simpleDraweeView, Uri httpUri,boolean autoAnimals) {
+    public static void loadDontAnimateImage(Context context, ImageView imageView, String path) {
         try {
-            File file = getFileFromDiskCache(context, httpUri);
-            if (file != null) {
-                httpUri = Uri.fromFile(file);
-            }else {
-                if (!UdeskUtils.isNetworkConnected(context.getApplicationContext())){
-                    UdeskUtils.showToast(context.getApplicationContext(), context.getResources().getString(R.string.udesk_has_wrong_net));
-                    return;
-                }
-            }
-            DraweeController controller = Fresco.newDraweeControllerBuilder()
-                    .setUri(httpUri)
-                    .setTapToRetryEnabled(true)
-                    .setAutoPlayAnimations(autoAnimals)
-                    .setOldController(simpleDraweeView.getController())
-                    .build();
-            simpleDraweeView.setController(controller);
+            loadDontAnimateAndResizeImage(context, imageView, path, imageView.getWidth(), imageView.getHeight());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void loadNoChangeView(Context context, SimpleDraweeView simpleDraweeView, Uri httpUri) {
-        loadNoChangeView(context,simpleDraweeView,httpUri,true);
-    }
-
-    public static void loadViewBySize(Context context, SimpleDraweeView simpleDraweeView, Uri httpUri, int width, int height) {
-        loadViewBySize(context,simpleDraweeView,httpUri,width,height,true);
-    }
-
-    public static void loadViewBySize(Context context, SimpleDraweeView simpleDraweeView, Uri httpUri, int width, int height,boolean autoAnimation) {
+    public static void loadDontAnimateAndResizeImage(Context context, ImageView imageView, String path, int width, int height) {
         try {
-            File file = getFileFromDiskCache(context, httpUri);
-            if (file != null) {
-                httpUri = Uri.fromFile(file);
-            }else {
-                if (!UdeskUtils.isNetworkConnected(context.getApplicationContext())){
-                    UdeskUtils.showToast(context.getApplicationContext(), context.getResources().getString(R.string.udesk_has_wrong_net));
-                    return;
-                }
-            }
-            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(httpUri)
-                    //根据View的尺寸放缩图片
-                    .setResizeOptions(new ResizeOptions(width, height))
-                    .build();
-
-
-            DraweeController controller = Fresco.newDraweeControllerBuilder()
-                    .setOldController(simpleDraweeView.getController())
-                    .setImageRequest(request)
-                    .setAutoPlayAnimations(autoAnimation)
-                    .setTapToRetryEnabled(true)
-                    .build();
-            simpleDraweeView.setController(controller);
+            UdeskImage.loadDontAnimateAndResizeImage(context, imageView, getUriFromPath(context, path), R.drawable.udesk_defalut_image_loading, R.drawable.udesk_defualt_failure, width, height, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -743,7 +894,7 @@ public class UdeskUtil {
                 Cursor cursor = null;
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        path = getPath(context, uri);
+                        path = getPathQ(context, uri);
                     } else {
                         String[] projection = {MediaStore.Images.Media.DATA};
                         cursor = context.getContentResolver().query(uri, projection, null, null, null);
@@ -770,62 +921,88 @@ public class UdeskUtil {
         return path;
     }
 
-    public static String getPath(final Context context, final Uri uri) {
 
+    public static String getPathQ(final Context context, final Uri uri) {
         try {
-            final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-
-            // DocumentProvider
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
-                    // ExternalStorageProvider
-                    if (isExternalStorageDocument(uri)) {
-                        final String docId = DocumentsContract.getDocumentId(uri);
-                        final String[] split = docId.split(":");
-                        final String type = split[0];
-
-                        if ("primary".equalsIgnoreCase(type)) {
-                            return Environment.getExternalStorageDirectory() + "/" + split[1];
-                        }
-
-                    }
-                    // DownloadsProvider
-                    else if (isDownloadsDocument(uri)) {
-
-                        final String id = DocumentsContract.getDocumentId(uri);
-                        final Uri contentUri = ContentUris.withAppendedId(
-                                Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-
-                        return getDataColumn(context, contentUri, null, null);
-                    }
-                    // MediaProvider
-                    else if (isMediaDocument(uri)) {
-                        final String docId = DocumentsContract.getDocumentId(uri);
-                        final String[] split = docId.split(":");
-                        final String type = split[0];
-
-                        Uri contentUri = null;
+            if (isAndroid_19()) {
+                if (isMediaDocument(uri)) {
+                    final String docId = DocumentsContract.getDocumentId(uri);
+                    final String[] split = docId.split(":");
+                    final String type = split[0];
+                    if (isAndroidQ()) {
                         if ("image".equals(type)) {
-                            contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                            return ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, Long.valueOf(split[1])).toString();
                         } else if ("video".equals(type)) {
-                            contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                            return ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, Long.valueOf(split[1])).toString();
                         } else if ("audio".equals(type)) {
-                            contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                            return ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, Long.valueOf(split[1])).toString();
                         }
-
-                        final String selection = "_id=?";
-                        final String[] selectionArgs = new String[]{split[1]};
-
-                        return getDataColumn(context, contentUri, selection, selectionArgs);
                     }
-                }
-                // MediaStore (and general)
-                else if ("content".equalsIgnoreCase(uri.getScheme())) {
-                    return getDataColumn(context, uri, null, null);
-                }
-                // File
-                else if ("file".equalsIgnoreCase(uri.getScheme())) {
-                    return uri.getPath();
+                    Uri contentUri = null;
+                    if ("image".equals(type)) {
+                        contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                    } else if ("video".equals(type)) {
+                        contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                    } else if ("audio".equals(type)) {
+                        contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                    }
+                    final String selection = "_id=?";
+                    final String[] selectionArgs = new String[]{split[1]};
+
+                    return getDataColumn(context, contentUri, selection, selectionArgs);
+                } else {
+                    if (isAndroidQ()) {
+                        return uri.toString();
+                    } else {
+                        if (DocumentsContract.isDocumentUri(context, uri)) {
+                            // ExternalStorageProvider
+                            if (isExternalStorageDocument(uri)) {
+                                final String docId = DocumentsContract.getDocumentId(uri);
+                                final String[] split = docId.split(":");
+                                final String type = split[0];
+
+                                if ("primary".equalsIgnoreCase(type)) {
+                                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                                }
+
+                            }
+                            // DownloadsProvider
+                            else if (isDownloadsDocument(uri)) {
+                                final String id = DocumentsContract.getDocumentId(uri);
+
+                                if (id != null && id.startsWith("raw:")) {
+                                    return id.substring(4);
+                                }
+
+                                String[] contentUriPrefixesToTry = new String[]{
+                                        "content://downloads/public_downloads",
+                                        "content://downloads/my_downloads"
+                                };
+
+                                for (String contentUriPrefix : contentUriPrefixesToTry) {
+                                    Uri contentUri = ContentUris.withAppendedId(Uri.parse(contentUriPrefix), Long.valueOf(id));
+                                    try {
+                                        String path = getDataColumn(context, contentUri, null, null);
+                                        if (path != null && !path.equals("")) {
+                                            return path;
+                                        }
+                                    } catch (Exception e) {
+                                    }
+                                }
+                                return getCopyFilePath(context, uri);
+                            }
+                        } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+                            String path = getDataColumn(context, uri, null, null);
+                            if (path != null && !path.equals("")) {
+                                return path;
+                            }
+                            return getCopyFilePath(context, uri);
+                        }
+                        // File
+                        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+                            return uri.getPath();
+                        }
+                    }
                 }
             }
         } catch (NumberFormatException e) {
@@ -833,6 +1010,97 @@ public class UdeskUtil {
         }
 
         return null;
+    }
+
+    private static String getCopyFilePath(Context context, Uri uri) {
+        String fileName = getFileName(context, uri);
+        File cacheDir = getDocumentCacheDir(context);
+        File file = generateFileName(fileName, cacheDir);
+        String destinationPath = "";
+        if (file != null) {
+            destinationPath = file.getAbsolutePath();
+            saveFileFromUri(context, uri, destinationPath);
+        }
+
+        return destinationPath;
+    }
+
+
+    public static File getDocumentCacheDir(@NonNull Context context) {
+        File dir = (context.getExternalFilesDir(UdeskConst.EXTERNAL_FOLDER));
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        return dir;
+    }
+
+    @Nullable
+    public static File generateFileName(@Nullable String name, File directory) {
+        if (name == null) {
+            return null;
+        }
+
+        File file = new File(directory, name);
+
+        if (file.exists()) {
+            String fileName = name;
+            String extension = "";
+            int dotIndex = name.lastIndexOf('.');
+            if (dotIndex > 0) {
+                fileName = name.substring(0, dotIndex);
+                extension = name.substring(dotIndex);
+            }
+
+            int index = 0;
+
+            while (file.exists()) {
+                index++;
+                name = fileName + '(' + index + ')' + extension;
+                file = new File(directory, name);
+            }
+        }
+
+        try {
+            if (!file.createNewFile()) {
+                return null;
+            }
+        } catch (IOException e) {
+            return null;
+        }
+
+        return file;
+    }
+
+    private static void saveFileFromUri(Context context, Uri uri, String destinationPath) {
+        InputStream is = null;
+        BufferedOutputStream bos = null;
+        try {
+            is = context.getContentResolver().openInputStream(uri);
+            bos = new BufferedOutputStream(new FileOutputStream(destinationPath, false));
+            byte[] buf = new byte[1024];
+            is.read(buf);
+            do {
+                bos.write(buf);
+            } while (is.read(buf) != -1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (is != null) is.close();
+                if (bos != null) bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static boolean isAndroid_19() {
+        return Build.VERSION.SDK_INT >= 19;
+    }
+
+    public static boolean isAndroidQ() {
+        return Build.VERSION.SDK_INT >= 29;
     }
 
     /**
@@ -915,26 +1183,55 @@ public class UdeskUtil {
     }
 
     public static String getMIMEType(File file) {
-
         String type = "*/*";
-        String fName = file.getName();
-        //获取后缀名前的分隔符"."在fName中的位置。
-        int dotIndex = fName.lastIndexOf(".");
-        if (dotIndex < 0) {
-            return type;
-        }
-        /* 获取文件的后缀名*/
-        String end = fName.substring(dotIndex, fName.length()).toLowerCase();
-        if (end.equals("")) {
-            return type;
-        }
-        //在MIME和文件类型的匹配表中找到对应的MIME类型。
-        for (int i = 0; i < MIME_MapTable.length; i++) {
-            if (end.equals(MIME_MapTable[i][0])) {
-                type = MIME_MapTable[i][1];
+        try {
+            String fName = file.getName();
+            //获取后缀名前的分隔符"."在fName中的位置。
+            int dotIndex = fName.lastIndexOf(".");
+            if (dotIndex < 0) {
+                return type;
             }
+            /* 获取文件的后缀名*/
+            String end = fName.substring(dotIndex, fName.length()).toLowerCase();
+            if (end.equals("")) {
+                return type;
+            }
+            //在MIME和文件类型的匹配表中找到对应的MIME类型。
+            for (int i = 0; i < MIME_MapTable.length; i++) {
+                if (end.equals(MIME_MapTable[i][0])) {
+                    type = MIME_MapTable[i][1];
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return type;
+    }
+
+    public static String getPngName(String fileName) {
+        try {
+            int dotIndex = fileName.lastIndexOf(".");
+            if (dotIndex < 0) {
+                return fileName + ".png";
+            } else {
+                return fileName.substring(0, dotIndex) + ".png";
+            }
+        } catch (Exception e) {
+        }
+        return fileName;
+    }
+
+    public static String getMIMEType(Context context, Uri uri) {
+        String mimeType = "*/*";
+        try {
+            mimeType = context.getContentResolver().getType(uri);
+            if (mimeType != null) {
+                return mimeType;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return mimeType;
     }
 
 
@@ -1053,48 +1350,52 @@ public class UdeskUtil {
         return TYPE_IMAGE;
     }
 
-    public static void loadEmojiView(Context context, SimpleDraweeView simpleDraweeView, Uri uri, final int reqWidth, final int reqHeight) {
 
-
+    public static String getFileSizeByLoaclPath(Context context, String filePath) {
         try {
-            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                    .setResizeOptions(new ResizeOptions(reqWidth, dip2px(context, reqHeight)))
-                    .build();
-
-            DraweeController controller = Fresco.newDraweeControllerBuilder()
-                    .setImageRequest(request)
-                    .setTapToRetryEnabled(true)
-                    .setOldController(simpleDraweeView.getController())
-                    .build();
-
-            simpleDraweeView.setController(controller);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static String getFileName(String url) {
-        if (TextUtils.isEmpty(url)) {
-            return "";
-        }
-        return url.substring(url.lastIndexOf("/") + 1);
-    }
-
-    public static String getFileSizeByLoaclPath(String filePath) {
-        try {
-            File file = new File(filePath);
-            if (file != null && file.exists()) {
-                long blockSize = getFileSize(file);
-                return formetFileSize(blockSize);
+            long blockSize = 0L;
+            if (UdeskUtil.isAndroidQ()) {
+                AssetFileDescriptor assetFileDescriptor = context.getContentResolver().openAssetFileDescriptor(Uri.parse(getFilePathQ(context, filePath)), "r");
+                if (assetFileDescriptor != null) {
+                    blockSize = assetFileDescriptor.getLength();
+                }
+            } else {
+                File file = new File(filePath);
+                if (file.exists()) {
+                    blockSize = getFileSize(file);
+                }
             }
+            return formetFileSize(blockSize);
         } catch (Exception e) {
             return "0B";
         }
-        return "0B";
+    }
+
+    public static long getFileSizeQ(Context context, String filePath) {
+        long blockSize = 0L;
+        try {
+            if (UdeskUtil.isAndroidQ()) {
+                AssetFileDescriptor assetFileDescriptor = context.getContentResolver().openAssetFileDescriptor(Uri.parse(getFilePathQ(context, filePath)), "r");
+                if (assetFileDescriptor != null) {
+                    blockSize = assetFileDescriptor.getLength();
+                }
+            } else {
+                File file = new File(filePath);
+                if (file.exists()) {
+                    blockSize = getFileSize(file);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return blockSize;
     }
 
     public static long getFileSize(File file) {
         long size = 0;
+        if (file == null) {
+            return size;
+        }
         if (file.exists()) {
             FileInputStream fis = null;
             try {
@@ -1122,13 +1423,13 @@ public class UdeskUtil {
         if (fileS == 0) {
             return wrongSize;
         }
-        if (fileS < 1024) {
+        if (fileS < 1000) {
             DecimalFormat dfb = new DecimalFormat("#");
             fileSizeString = dfb.format((double) fileS) + "B";
-        } else if (fileS < 1048576) {
-            fileSizeString = df.format((double) fileS / 1024) + "KB";
+        } else if (fileS < 1000000) {
+            fileSizeString = df.format((double) fileS / 1000) + "KB";
         } else {
-            fileSizeString = df.format((double) fileS / 1048576) + "MB";
+            fileSizeString = df.format((double) fileS / 1000000) + "MB";
         }
 
         return fileSizeString;
@@ -1182,8 +1483,8 @@ public class UdeskUtil {
 
     public static Bitmap getVideoThumbnail(String url) {
         Bitmap bitmap = null;
-       // MediaMetadataRetriever 是android中定义好的一个类，提供了统一
-       // 的接口，用于从输入的媒体文件中取得帧和元数据；
+        // MediaMetadataRetriever 是android中定义好的一个类，提供了统一
+        // 的接口，用于从输入的媒体文件中取得帧和元数据；
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
             retriever.setDataSource(url, new HashMap());
@@ -1224,15 +1525,15 @@ public class UdeskUtil {
     }
 
 
-    public static void initCrashReport(Context context) {
-        try {
-            CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
-            strategy.setAppVersion(UdeskConst.sdkversion + UdeskUtil.getAppName(context));
-            CrashReport.initCrashReport(context, UdeskConst.buglyAppid, false, strategy);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void initCrashReport(Context context) {
+//        try {
+//            CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
+//            strategy.setAppVersion(UdeskConst.sdkversion + UdeskUtil.getAppName(context));
+//            CrashReport.initCrashReport(context, UdeskConst.buglyAppid, false, strategy);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
     public static void setOrientation(Activity context) {
@@ -1246,51 +1547,6 @@ public class UdeskUtil {
             context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
         } else {
             context.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-    }
-
-    public static void frescoInit(final Context context) {
-        try {
-            if (!Fresco.hasBeenInitialized()) {
-                final int MAX_HEAP_SIZE = (int) Runtime.getRuntime().maxMemory();
-                final int MAX_DISK_CACHE_SIZE = 400 * ByteConstants.MB;
-                final int MAX_MEMORY_CACHE_SIZE = MAX_HEAP_SIZE / 3;
-                final MemoryCacheParams bitmapCacheParams = new MemoryCacheParams(
-                        MAX_MEMORY_CACHE_SIZE,
-                        Integer.MAX_VALUE,
-                        MAX_MEMORY_CACHE_SIZE,
-                        Integer.MAX_VALUE,
-                        Integer.MAX_VALUE);
-
-                DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(context)
-                        .setMaxCacheSize(MAX_DISK_CACHE_SIZE)//最大缓存
-                        .setBaseDirectoryName("udesk_im_sdk")//子目录
-                        .setBaseDirectoryPathSupplier(new Supplier<File>() {
-                            @Override
-                            public File get() {
-                                return UdeskUtil.getExternalCacheDir(context);
-                            }
-                        })
-                        .build();
-                ImagePipelineConfig config = ImagePipelineConfig.newBuilder(context)
-                        .setBitmapMemoryCacheParamsSupplier(
-                                new Supplier<MemoryCacheParams>() {
-                                    @Override
-                                    public MemoryCacheParams get() {
-                                        return bitmapCacheParams;
-                                    }
-                                })
-                        .setMainDiskCacheConfig(diskCacheConfig)
-                        .setNetworkFetcher(new ElnImageDownloaderFetcher(UdeskConst.REFERER_VALUE))
-                        .setDownsampleEnabled(true)
-                        .setBitmapsConfig(Bitmap.Config.RGB_565)
-                        .build();
-
-                Fresco.initialize(context, config);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Fresco.initialize(context);
         }
     }
 
@@ -1337,7 +1593,7 @@ public class UdeskUtil {
     }
 
 
-    public static  MessageInfo  addLeavMsgWeclome(String content,String leavMsgId ) {
+    public static MessageInfo addLeavMsgWeclome(String content, String leavMsgId) {
         MessageInfo msg = new MessageInfo();
         try {
             msg.setMsgtype(UdeskConst.ChatMsgTypeString.TYPE_RICH);
@@ -1361,7 +1617,7 @@ public class UdeskUtil {
 
     //构建消息模型
     public static MessageInfo buildSendMessage(String msgType, long time, String text,
-                                        String location, String fileName, String fileSize) {
+                                               String location, String fileName, String fileSize) {
         MessageInfo msg = new MessageInfo();
         try {
             msg.setMsgtype(msgType);
@@ -1380,8 +1636,9 @@ public class UdeskUtil {
         }
         return msg;
     }
-    public static SurveyOptionsModel buildSurveyOptionsModel(Context context){
-        SurveyOptionsModel model=new SurveyOptionsModel();
+
+    public static SurveyOptionsModel buildSurveyOptionsModel(Context context) {
+        SurveyOptionsModel model = new SurveyOptionsModel();
         model.setEnabled(true);
         model.setName(context.getResources().getString(R.string.udesk_satisfy_evaluation));
         model.setTitle(context.getResources().getString(R.string.udesk_satisfy_evaluation_title));
@@ -1390,31 +1647,35 @@ public class UdeskUtil {
         model.setType("text");
         model.setDefault_option_id(0);
         model.setRobot(true);
-        List<OptionsModel> options=new ArrayList<>();
+        List<OptionsModel> options = new ArrayList<>();
         //评价选项ID (1：未评价 2：满意 3：一般 4：不满意)
-        int id=1;
-        options.add(new OptionsModel(++id,true,context.getResources().getString(R.string.udesk_statify),context.getResources().getString(R.string.udesk_statify),UdeskConst.REMARK_OPTION_OPTIONAL));
-        options.add(new OptionsModel(++id,true,context.getResources().getString(R.string.udesk_common),context.getResources().getString(R.string.udesk_common),UdeskConst.REMARK_OPTION_OPTIONAL));
-        options.add(new OptionsModel(++id,true,context.getResources().getString(R.string.udesk_unstatify),context.getResources().getString(R.string.udesk_unstatify),UdeskConst.REMARK_OPTION_OPTIONAL));
+        int id = 1;
+        options.add(new OptionsModel(++id, true, context.getResources().getString(R.string.udesk_statify), context.getResources().getString(R.string.udesk_statify), UdeskConst.REMARK_OPTION_OPTIONAL));
+        options.add(new OptionsModel(++id, true, context.getResources().getString(R.string.udesk_common), context.getResources().getString(R.string.udesk_common), UdeskConst.REMARK_OPTION_OPTIONAL));
+        options.add(new OptionsModel(++id, true, context.getResources().getString(R.string.udesk_unstatify), context.getResources().getString(R.string.udesk_unstatify), UdeskConst.REMARK_OPTION_OPTIONAL));
         model.setOptions(options);
         return model;
     }
-    public static MessageInfo buildSendChildMsg(String content){
-        return buildMsg("","",System.currentTimeMillis(),UdeskIdBuild.buildMsgId(),UdeskConst.ChatMsgTypeString.TYPE_TEXT,content,UdeskConst.ChatMsgReadFlag.read,
-                UdeskConst.SendFlag.RESULT_SUCCESS,UdeskConst.PlayFlag.NOPLAY,UdeskConst.ChatMsgDirection.Send,"",0,"","","",
-                0,"");
+
+    public static MessageInfo buildSendChildMsg(String content) {
+        return buildMsg("", "", System.currentTimeMillis(), UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_TEXT, content, UdeskConst.ChatMsgReadFlag.read,
+                UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Send, "", 0, "", "", "",
+                0, "");
     }
-    public static MessageInfo buildRobotTransferMsg(String content){
-        return buildMsg("","",System.currentTimeMillis(),UdeskIdBuild.buildMsgId(),UdeskConst.ChatMsgTypeString.TYPE_ROBOT_TRANSFER,content,UdeskConst.ChatMsgReadFlag.read,
-                UdeskConst.SendFlag.RESULT_SUCCESS,UdeskConst.PlayFlag.NOPLAY,UdeskConst.ChatMsgDirection.Recv,"",0,"","","",
-                0,"");
+
+    public static MessageInfo buildRobotTransferMsg(String content) {
+        return buildMsg("", "", System.currentTimeMillis(), UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_ROBOT_TRANSFER, content, UdeskConst.ChatMsgReadFlag.read,
+                UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv, "", 0, "", "", "",
+                0, "");
     }
-    public static MessageInfo buildReplyProductMsg(ProductListBean bean){
-        return buildMsg("","",System.currentTimeMillis(),UdeskIdBuild.buildMsgId(),UdeskConst.ChatMsgTypeString.TYPE_REPLY_PRODUCT,JsonUtils.getReplyProductJson(bean).toString().replace("\\",""),UdeskConst.ChatMsgReadFlag.read,
-                UdeskConst.SendFlag.RESULT_SUCCESS,UdeskConst.PlayFlag.NOPLAY,UdeskConst.ChatMsgDirection.Send,"",0,"","","",
-                0,"");
+
+    public static MessageInfo buildReplyProductMsg(ProductListBean bean) {
+        return buildMsg("", "", System.currentTimeMillis(), UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_REPLY_PRODUCT, JsonUtils.getReplyProductJson(bean).toString().replace("\\", ""), UdeskConst.ChatMsgReadFlag.read,
+                UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Send, "", 0, "", "", "",
+                0, "");
     }
-    public static MessageInfo buildRobotInitRelpy(RobotInit robotInit){
+
+    public static MessageInfo buildRobotInitRelpy(RobotInit robotInit) {
         MessageInfo messageInfo = buildMsg(robotInit.getWebConfig().getRobotName(), robotInit.getWebConfig().getLogoUrl(), System.currentTimeMillis(), UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_ROBOT_CLASSIFY,
                 "", UdeskConst.ChatMsgReadFlag.read, UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv, "",
                 0, "", "", "", UdeskUtils.objectToInt(robotInit.getSwitchStaffType()), UdeskUtils.objectToString(robotInit.getSwitchStaffTips()));
@@ -1424,7 +1685,8 @@ public class UdeskUtil {
         return messageInfo;
 
     }
-    public static MessageInfo buildWelcomeRelpy(RobotInit robotInit){
+
+    public static MessageInfo buildWelcomeRelpy(RobotInit robotInit) {
         MessageInfo messageInfo = buildMsg(robotInit.getWebConfig().getRobotName(), robotInit.getWebConfig().getLogoUrl(), System.currentTimeMillis(), UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_RICH,
                 robotInit.getWebConfig().getHelloWord(), UdeskConst.ChatMsgReadFlag.read, UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,
                 "", 0, "", "", "", UdeskUtils.objectToInt(robotInit.getSwitchStaffType()), UdeskUtils.objectToString(robotInit.getSwitchStaffTips()));
@@ -1433,16 +1695,16 @@ public class UdeskUtil {
 
     }
 
-    public static MessageInfo buildAllMessage(LogBean message){
-        if (message.getContent()!=null){
-            Content content=message.getContent();
-            if (content.getData()!=null){
-                MessageInfo info=buildMsg(message.getAgent_nick_name(),message.getAgent_avatar(),stringToLong(message.getCreated_at()),
-                        UdeskUtils.objectToString(message.getMessage_id()), message.getContent().getType(),content.getData().getContent(),
-                        UdeskConst.ChatMsgReadFlag.read,UdeskConst.SendFlag.RESULT_SUCCESS,UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,"",
-                        UdeskUtils.objectToLong(message.getContent().getData().getDuration()),message.getAgent_jid(),message.getContent().getFilename(),
-                        message.getContent().getFilesize(),content.getData().getSwitchStaffType(),content.getData().getSwitchStaffTips());
-                if (message.getInviterAgentInfo()!=null){
+    public static MessageInfo buildAllMessage(LogBean message) {
+        if (message.getContent() != null) {
+            Content content = message.getContent();
+            if (content.getData() != null) {
+                MessageInfo info = buildMsg(message.getAgent_nick_name(), message.getAgent_avatar(), stringToLong(message.getCreated_at()),
+                        UdeskUtils.objectToString(message.getMessage_id()), message.getContent().getType(), content.getData().getContent(),
+                        UdeskConst.ChatMsgReadFlag.read, UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv, "",
+                        UdeskUtils.objectToLong(message.getContent().getData().getDuration()), message.getAgent_jid(), message.getContent().getFilename(),
+                        message.getContent().getFilesize(), content.getData().getSwitchStaffType(), content.getData().getSwitchStaffTips());
+                if (message.getInviterAgentInfo() != null) {
                     info.setReplyUser(message.getInviterAgentInfo().getNick_name());
                     info.setUser_avatar(message.getInviterAgentInfo().getAvatar());
                     info.setmAgentJid(message.getInviterAgentInfo().getJid());
@@ -1455,7 +1717,7 @@ public class UdeskUtil {
                 info.setFlowId(content.getData().getFlowId());
                 info.setFlowTitle(content.getData().getFlowTitle());
                 info.setQuestion_id(UdeskUtils.objectToString(content.getData().getQuesition_id()));
-                if (message.getSender().equals(UdeskConst.Sender.customer)){
+                if (message.getSender().equals(UdeskConst.Sender.customer)) {
                     info.setDirection(UdeskConst.ChatMsgDirection.Send);
                 }
                 return info;
@@ -1464,9 +1726,9 @@ public class UdeskUtil {
         return null;
     }
 
-    public static MessageInfo buildMsg(String name,String logoUrl,long time, String msgId, String msgtype, String msgContent,
-                                            int readFlag, int sendFlag, int playflag, int direction,
-                                            String localPath, long duration, String agentJid,String fileName,String fileSize,int switchStaffType,String switchStaffTips  ){
+    public static MessageInfo buildMsg(String name, String logoUrl, long time, String msgId, String msgtype, String msgContent,
+                                       int readFlag, int sendFlag, int playflag, int direction,
+                                       String localPath, long duration, String agentJid, String fileName, String fileSize, int switchStaffType, String switchStaffTips) {
         MessageInfo msg = new MessageInfo();
         try {
             msg.setReplyUser(name);
@@ -1491,9 +1753,10 @@ public class UdeskUtil {
         }
         return msg;
     }
+
     public static MessageInfo buildVideoEventMsg(String id, Boolean isInvite, String text,
-                                          String customerId,String agentJid,String agentNickName,
-                                          String subSessionId) {
+                                                 String customerId, String agentJid, String agentNickName,
+                                                 String subSessionId) {
         MessageInfo msg = new MessageInfo();
         try {
             msg.setCustomerId(customerId);
@@ -1527,7 +1790,7 @@ public class UdeskUtil {
     }
 
 
-    public static void sendVideoMessage(ImSetting sdkimSetting,AgentInfo mAgentInfo, Context context ) {
+    public static void sendVideoMessage(ImSetting sdkimSetting, AgentInfo mAgentInfo, Context context) {
         try {
 
             if (sdkimSetting != null) {
@@ -1573,8 +1836,14 @@ public class UdeskUtil {
         }
     }
 
-
-    public  static  File getScaleFile(Bitmap bitmap, Context context){
+    /**
+     * 原图
+     *
+     * @param bitmap
+     * @param context
+     * @return
+     */
+    public static File getScaleFile(Bitmap bitmap, Context context) {
         try {
             int width = bitmap.getWidth();
             int height = bitmap.getHeight();
@@ -1587,7 +1856,7 @@ public class UdeskUtil {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             byte[] data = stream.toByteArray();
-            File scaleImageFile = new File(UdeskUtils.getDirectoryPath(context, UdeskConst.FileImg) + File.separator + UdeskConst.ORIGINAL_SUFFIX);
+            File scaleImageFile = new File(getDirectoryPath(context, UdeskConst.FileImg) + File.separator + UdeskConst.ORIGINAL_SUFFIX);
             if (scaleImageFile != null) {
                 if (max > UdeskSDKManager.getInstance().getUdeskConfig().ScaleMax) {
                     factoryOptions.inSampleSize = max / UdeskSDKManager.getInstance().getUdeskConfig().ScaleMax;
@@ -1606,7 +1875,6 @@ public class UdeskUtil {
                     return null;
                 }
                 bitmap.recycle();
-                bitmap = null;
                 if (TextUtils.isEmpty(scaleImageFile.getPath())) {
                     UdeskUtils.showToast(context, context.getString(R.string.udesk_upload_img_error));
                     return null;
@@ -1623,7 +1891,14 @@ public class UdeskUtil {
         return null;
     }
 
-    public static File getScaleFile(String path, final Context context){
+    /**
+     * 缩略图
+     *
+     * @param path
+     * @param context
+     * @return
+     */
+    public static File getScaleFile(final Context context, String path, int orientation) {
         try {
             Bitmap scaleImage = null;
             byte[] data;
@@ -1633,22 +1908,31 @@ public class UdeskUtil {
              * 在不分配空间状态下计算出图片的大小
              */
             options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(path, options);
+            decodeFileAndContent(context, path, options);
             int width = options.outWidth;
             int height = options.outHeight;
+            // 取得图片旋转角度
+            if (orientation == 90 || orientation == 270) {
+                options.outWidth = height;
+                options.outHeight = width;
+            }
             max = Math.max(width, height);
             options.inTempStorage = new byte[100 * 1024];
             options.inJustDecodeBounds = false;
             options.inPurgeable = true;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            InputStream inStream = new FileInputStream(path);
+            InputStream inStream;
+            if (UdeskUtil.isAndroidQ()) {
+                inStream = context.getContentResolver().openInputStream(Uri.parse(UdeskUtil.getFilePathQ(context, path)));
+            } else {
+                inStream = new FileInputStream(path);
+            }
             data = UdeskUtil.readStream(inStream);
             if (data == null || data.length <= 0) {
-//                sendFileMessage(path, UdeskConst.ChatMsgTypeString.TYPE_IMAGE);
                 return null;
             }
             String imageName = UdeskUtils.MD5(data);
-            File scaleImageFile = new File(UdeskUtils.getDirectoryPath(context, UdeskConst.FileImg) + File.separator + imageName + UdeskConst.ORIGINAL_SUFFIX);
+            File scaleImageFile = new File(getDirectoryPath(context, UdeskConst.FileImg) + File.separator + imageName + UdeskConst.ORIGINAL_SUFFIX);
             if (!scaleImageFile.exists()) {
                 // 缩略图不存在，生成上传图
                 if (max > UdeskSDKManager.getInstance().getUdeskConfig().ScaleMax) {
@@ -1659,6 +1943,10 @@ public class UdeskUtil {
                 FileOutputStream fos = new FileOutputStream(scaleImageFile);
                 scaleImage = BitmapFactory.decodeByteArray(data, 0,
                         data.length, options);
+                // 取得图片旋转角度
+                if (orientation != 0) {
+                    scaleImage = rotaingImageView(orientation, scaleImage);
+                }
                 scaleImage.compress(Bitmap.CompressFormat.JPEG, 80, fos);
                 fos.close();
             }
@@ -1667,10 +1955,8 @@ public class UdeskUtil {
                 scaleImage.recycle();
             }
             if (TextUtils.isEmpty(scaleImageFile.getPath())) {
-//                sendFileMessage(path, UdeskConst.ChatMsgTypeString.TYPE_IMAGE);
                 return null;
             } else {
-//                sendFileMessage(scaleImageFile.getPath(), UdeskConst.ChatMsgTypeString.TYPE_IMAGE);
                 return scaleImageFile;
             }
 
@@ -1679,7 +1965,53 @@ public class UdeskUtil {
         } catch (OutOfMemoryError error) {
             error.printStackTrace();
         }
-        return  null;
+        return null;
+    }
+
+    public static void decodeFileAndContent(Context context, String path, BitmapFactory.Options options) {
+        try {
+            if (isAndroidQ()) {
+                AssetFileDescriptor parcelFileDescriptor = context.getContentResolver().openAssetFileDescriptor(Uri.parse(getFilePathQ(context, path)), "r");
+                if (parcelFileDescriptor != null) {
+                    FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                    BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
+                    parcelFileDescriptor.close();
+                }
+            } else {
+                BitmapFactory.decodeFile(path, options);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /* 旋转图片
+     *
+     * @param angle  被旋转角度
+     * @param bitmap 图片对象
+     * @return 旋转后的图片
+     */
+    public static Bitmap rotaingImageView(int angle, Bitmap bitmap) {
+        Bitmap returnBm = null;
+        if (angle == 0) {
+            return bitmap;
+        }
+        // 根据旋转角度，生成旋转矩阵
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        try {
+            // 将原始图片按照旋转矩阵进行旋转，并得到新的图片
+            returnBm = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        } catch (OutOfMemoryError e) {
+        }
+        if (returnBm == null) {
+            returnBm = bitmap;
+        }
+        if (bitmap != returnBm) {
+            bitmap.recycle();
+        }
+        return returnBm;
     }
 
     //构建工单回复的消息转换消息模型
@@ -1730,7 +2062,8 @@ public class UdeskUtil {
         }
         return msgInfos;
     }
-    public static int[] getImageWidthHeight(int[] rect){
+
+    public static int[] getImageWidthHeight(int[] rect) {
         try {
             int sampleSize = 1;
             int originWidth = rect[0];
@@ -1743,17 +2076,17 @@ public class UdeskUtil {
                 sampleSize = (int) (rect[1] / defaultHeight);
             }
             if (sampleSize <= 0) {
-                rect[0]= (int) defaultWidth;
-                rect[1]= (int) defaultHeight;
-            }else if (sampleSize>1){
-                rect[0]= originWidth/sampleSize;
-                rect[1]=originHeight/sampleSize;
+                rect[0] = (int) defaultWidth;
+                rect[1] = (int) defaultHeight;
+            } else if (sampleSize > 1) {
+                rect[0] = originWidth / sampleSize;
+                rect[1] = originHeight / sampleSize;
             }
-            return new int[]{rect[0],rect[1]};
-        }catch (Exception e){
+            return new int[]{rect[0], rect[1]};
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return new int[]{0,0};
+        return new int[]{0, 0};
     }
 
     /**
@@ -1797,13 +2130,13 @@ public class UdeskUtil {
     /**
      * 按质量压缩，并将图像生成指定的路径
      */
-    public static  Bitmap compressImage(Context context,String url, Bitmap image) {
+    public static Bitmap compressImage(Context context, String url, Bitmap image) {
         if (image == null || TextUtils.isEmpty(url)) {
             return null;
         }
         FileOutputStream fos = null;
         try {
-            String outpath = UdeskUtils.getPathByUrl(context, UdeskConst.FileImg, url);
+            String outpath = UdeskUtil.getPathByUrl(context, UdeskConst.FileImg, url);
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             int options = 100;
             image.compress(Bitmap.CompressFormat.JPEG, options, os);
@@ -1832,6 +2165,7 @@ public class UdeskUtil {
         }
         return null;
     }
+
     public static int getBitmapSize(Bitmap bitmap) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {    //API 19
             return bitmap.getAllocationByteCount();
@@ -1841,23 +2175,24 @@ public class UdeskUtil {
         }
         return bitmap.getRowBytes() * bitmap.getHeight();                //earlier version
     }
-    public static List<Integer> getRandomNum(int count,int size){
-        Random random=new Random();
-        List<Integer> list=new ArrayList<>();
-        while (list.size()<count){
-            int num=random.nextInt(size);
-            if (!list.contains(num)){
+
+    public static List<Integer> getRandomNum(int count, int size) {
+        Random random = new Random();
+        List<Integer> list = new ArrayList<>();
+        while (list.size() < count) {
+            int num = random.nextInt(size);
+            if (!list.contains(num)) {
                 list.add(num);
             }
         }
         return list;
     }
 
-    public static SpannableString setSpan(String info, String color, int bold){
-        SpannableString spannableString=new SpannableString(info);
-        spannableString.setSpan(new ForegroundColorSpan(Color.parseColor(color)),0,info.length(),Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        if (bold==1){
-            spannableString.setSpan(new StyleSpan(Typeface.BOLD),0,info.length(),Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+    public static SpannableString setSpan(String info, String color, int bold) {
+        SpannableString spannableString = new SpannableString(info);
+        spannableString.setSpan(new ForegroundColorSpan(Color.parseColor(color)), 0, info.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        if (bold == 1) {
+            spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, info.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         }
         return spannableString;
     }

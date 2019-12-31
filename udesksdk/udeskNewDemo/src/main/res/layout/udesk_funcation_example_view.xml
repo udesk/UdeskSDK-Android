@@ -869,7 +869,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="@dimen/udesk_10"
             android:gravity="start|center"
-            android:text="https://qn-im.udesk.cn/QQ%E5%9B%BE%E7%89%8720180918095411_1539245227_643.jpg"
+            android:text="http://pro-cs.kefutoutiao.com/doc/im/tid3055/udChatBubbleSendingSolid01%20Copy%202_1574415737508_b6n0g.png"
             android:textColor="#333333"
             android:textSize="16sp" />
 

@@ -1,18 +1,14 @@
 package cn.udesk.emotion;
 
 import android.content.Context;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
-import com.facebook.drawee.view.SimpleDraweeView;
-
-import java.io.File;
 
 import cn.udesk.UdeskUtil;
 
@@ -72,7 +68,8 @@ public class StickerAdapter extends BaseAdapter {
             RelativeLayout rl = new RelativeLayout(mContext);
             rl.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, (int) mPerHeight));
 
-            SimpleDraweeView imageView = new SimpleDraweeView(mContext);
+//            SimpleDraweeView imageView = new SimpleDraweeView(mContext);
+            ImageView imageView = new ImageView(mContext);
 //            imageView.setImageResource(R.drawable.ic_tab_emoji);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             params.width = (int) mIvSize;
@@ -104,7 +101,7 @@ public class StickerAdapter extends BaseAdapter {
         String stickerBitmapUri = StickerManager.getInstance().getStickerBitmapUri(sticker.getCategory(), sticker.getName());
         Log.i("xxx", "stickerBitmapUri = " + stickerBitmapUri);
         if (!TextUtils.isEmpty(stickerBitmapUri)) {
-            UdeskUtil.loadEmojiView(mContext, viewHolder.mImageView, Uri.fromFile(new File(stickerBitmapUri)), (int) mIvSize, (int) mIvSize);
+            UdeskUtil.loadViewBySize(mContext, viewHolder.mImageView, stickerBitmapUri, (int) mIvSize, (int) mIvSize);
         }
 //        LQREmotionKit.getImageLoader().displayImage(mContext, stickerBitmapUri, viewHolder.mImageView);
 
@@ -112,6 +109,7 @@ public class StickerAdapter extends BaseAdapter {
     }
 
     class StickerViewHolder {
-        public SimpleDraweeView mImageView;
+        //        public SimpleDraweeView mImageView;
+        public ImageView mImageView;
     }
 }

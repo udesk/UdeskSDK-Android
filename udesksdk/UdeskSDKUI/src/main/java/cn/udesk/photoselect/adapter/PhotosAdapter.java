@@ -2,18 +2,15 @@ package cn.udesk.photoselect.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,10 +92,10 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 long duration = image.getDuration();
                 contentHolder.tv_duration.setText(UdeskUtil.timeParse(duration));
                 if (disPlayWidth > 0) {
-                    UdeskUtil.loadViewBySize(context, contentHolder.iv_picture, Uri.fromFile(new File(path)),
-                            disPlayWidth / 4, UdeskUtil.dip2px(context, 100),false);
+                    UdeskUtil.loadDontAnimateAndResizeImage(context, contentHolder.iv_picture, path,
+                            disPlayWidth / 4, UdeskUtil.dip2px(context, 100));
                 } else {
-                    UdeskUtil.loadNoChangeView(context, contentHolder.iv_picture, Uri.fromFile(new File(path)),false);
+                    UdeskUtil.loadDontAnimateImage(context, contentHolder.iv_picture, path);
                 }
                 contentHolder.iv_picture.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -137,7 +134,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        SimpleDraweeView iv_picture;
+        ImageView iv_picture;
         TextView check;
         TextView tv_duration;
         View contentView, ll_check, v_selector;
@@ -145,7 +142,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public ViewHolder(View itemView) {
             super(itemView);
             contentView = itemView;
-            iv_picture = (SimpleDraweeView) itemView.findViewById(R.id.udesk_iv_picture);
+            iv_picture = itemView.findViewById(R.id.udesk_iv_picture);
             tv_duration = (TextView) itemView.findViewById(R.id.udesk_duration);
             check = (TextView) itemView.findViewById(R.id.udesk_check);
             v_selector = itemView.findViewById(R.id.udesk_v_selector);
@@ -157,6 +154,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public interface OnPhotoSelectChangedListener {
 
         /**
+         *
          */
         void onSelectorChanged();
 

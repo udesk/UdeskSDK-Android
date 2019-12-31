@@ -10,9 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.facebook.drawee.backends.pipeline.Fresco;
-
 import cn.udesk.R;
 import cn.udesk.UdeskUtil;
 import cn.udesk.photoselect.adapter.PreviewPhotosFragmentAdapter;
@@ -34,9 +31,6 @@ public class PreviewFragment extends Fragment implements PreviewPhotosFragmentAd
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.udesk_fragment_preview, container, false);
         try {
-            if (!Fresco.hasBeenInitialized()) {
-                UdeskUtil.frescoInit(getContext().getApplicationContext());
-            }
             rvPhotos = (RecyclerView) rootView.findViewById(R.id.rv_preview_selected_photos);
             adapter = new PreviewPhotosFragmentAdapter(getActivity().getApplicationContext(), this);
             rvPhotos.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));

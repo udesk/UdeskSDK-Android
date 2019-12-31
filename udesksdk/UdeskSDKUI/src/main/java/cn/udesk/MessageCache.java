@@ -8,6 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import cn.udesk.db.UdeskDBManager;
+import cn.udesk.rich.LoaderTask;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
@@ -64,7 +65,7 @@ public class MessageCache {
     public void doSendMessage() {
 
         try {
-            new Thread(new Runnable() {
+            LoaderTask.getThreadPoolExecutor().execute(new Runnable() {
                 @Override
                 public void run() {
                     while (isRunning) {
@@ -87,7 +88,7 @@ public class MessageCache {
                         }
                     }
                 }
-            }).start();
+            });
 
         } catch (Exception e) {
             e.printStackTrace();

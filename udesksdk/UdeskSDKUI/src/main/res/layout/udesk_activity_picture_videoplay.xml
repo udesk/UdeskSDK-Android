@@ -12,9 +12,7 @@
         android:layout_centerInParent="true"
         android:background="#00000000"
         />
-
-
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/video_img"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
