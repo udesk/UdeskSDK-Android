@@ -2,6 +2,8 @@
 ### 公告
 
 SDK原生机器人功能在 5.x 分支下。
+
+android Q 适配在5.x_android_Q 分支下。
 ### SDK下载地址
 [Udesk-Android 源码下载地址](https://github.com/udesk/UdeskSDK-Android)
 
@@ -1021,6 +1023,13 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 <h1 id="8">八、更新记录</h1>
 
 ### 更新日志 ###
+
+### 5.1.4 版本更新（5.x_android_Q 分支）：
+
+1. 适配android Q
+2. 修改接收满意度问题
+3. 修改视频通话问题
+4. 修改底部显示问题
 
 ### 5.1.3 版本更新： ###
 
