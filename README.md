@@ -1257,7 +1257,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 ##### 纯文本 流程消息 #####
 ![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/18_1571031810_174.png?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ##### 商品选择 商品回复 #####
-![udesk](http://qn-im.udesk.cn/%E5%9B%BE%E7%89%87_1554875805_806.png?imageMogr2/auto-orient/)
+![udesk](http://dn-udeskim.qbox.me/%E5%9B%BE%E7%89%87_1554875805_806.png?imageMogr2/auto-orient/)
 ##### 问题带推荐 推荐带分类 #####
 ![udesk](http://pro-cs-freq.oss-cn-hangzhou.aliyuncs.com/doc/im/19_1571031855_373.png?x-oss-process=image/auto-orient,1/resize,h_300,w_300)
 ##### 图片 链接 语音消息 转人工提示 答案评价 #####
