@@ -1096,49 +1096,49 @@ RedirectViewHolder  显示转移提示语信息；
 
 ##### 机器人功能示意图
 
-<img src="http://qn-im.udesk.cn/%E6%9C%BA%E5%99%A8%E4%BA%BA_1540869480_806.png"/>
+<img src="http://dn-udeskim.qbox.me/%E6%9C%BA%E5%99%A8%E4%BA%BA_1540869480_806.png"/>
 
 ##### 导航配置示意图
 
-<img  src="http://qn-im.udesk.cn/%E5%AF%BC%E8%88%AA%E8%AE%BE%E7%BD%AE_1540870908_976.png"/>
+<img  src="http://dn-udeskim.qbox.me/%E5%AF%BC%E8%88%AA%E8%AE%BE%E7%BD%AE_1540870908_976.png"/>
 
 ##### 无消息对话过滤示意图
 
 
-<img src="http://qn-im.udesk.cn/%E6%97%A0%E6%B6%88%E6%81%AF%E5%AF%B9%E8%AF%9D%E8%BF%87%E6%BB%A4_1540881672_329.png"/>
+<img src="http://dn-udeskim.qbox.me/%E6%97%A0%E6%B6%88%E6%81%AF%E5%AF%B9%E8%AF%9D%E8%BF%87%E6%BB%A4_1540881672_329.png"/>
 
 
 ##### 消息对话示意图
 
-<img src="http://qn-im.udesk.cn/%E5%8A%9F%E8%83%BD%E5%9B%BE%E7%89%87_1540881751_124.png"/>
+<img src="http://dn-udeskim.qbox.me/%E5%8A%9F%E8%83%BD%E5%9B%BE%E7%89%87_1540881751_124.png"/>
 
 
-<img  src="http://qn-im.udesk.cn/%E5%8A%9F%E8%83%BD2_1540870974_781.png"/>
+<img  src="http://dn-udeskim.qbox.me/%E5%8A%9F%E8%83%BD2_1540870974_781.png"/>
 
 
-<img src="http://qn-im.udesk.cn/%E5%8A%9F%E8%83%BD3_1540870997_368.png"/>
+<img src="http://dn-udeskim.qbox.me/%E5%8A%9F%E8%83%BD3_1540870997_368.png"/>
 
 ##### 自定义表情
-<img src="http://qn-im.udesk.cn/%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A1%A8%E6%83%85_1540871031_250.png"/>
+<img src="http://dn-udeskim.qbox.me/%E8%87%AA%E5%AE%9A%E4%B9%89%E8%A1%A8%E6%83%85_1540871031_250.png"/>
 
 
 ##### 自定义按钮
 
-<img src="http://qn-im.udesk.cn/%E6%94%AF%E6%8C%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%89%E9%92%AE_1540881846_830.png"/>
+<img src="http://dn-udeskim.qbox.me/%E6%94%AF%E6%8C%81%E8%87%AA%E5%AE%9A%E4%B9%89%E6%8C%89%E9%92%AE_1540881846_830.png"/>
 
 
 
 ##### 满意度评价示意图
 
-<img  src="http://qn-im.udesk.cn/%E6%BB%A1%E6%84%8F%E5%BA%A6%E8%AF%84%E4%BB%B7_1540881195_147.png"/>
+<img  src="http://dn-udeskim.qbox.me/%E6%BB%A1%E6%84%8F%E5%BA%A6%E8%AF%84%E4%BB%B7_1540881195_147.png"/>
 
 
 
 ##### 留言示意图
 
-<img  src="http://qn-im.udesk.cn/%E8%A1%A8%E5%8D%95%E7%95%99%E8%A8%80_1540871121_461.png"/>
+<img  src="http://dn-udeskim.qbox.me/%E8%A1%A8%E5%8D%95%E7%95%99%E8%A8%80_1540871121_461.png"/>
 
-<img  src="http://qn-im.udesk.cn/%E7%9B%B4%E6%8E%A5%E7%95%99%E8%A8%80_1540871126_218.png"/>
+<img  src="http://dn-udeskim.qbox.me/%E7%9B%B4%E6%8E%A5%E7%95%99%E8%A8%80_1540871126_218.png"/>
 
 
 
