@@ -3,7 +3,15 @@
 
 SDK原生机器人功能在 5.x 分支下。
 
+[5.x 链接](https://github.com/udesk/UdeskSDK-Android/tree/5.x)
+
+androidX 在5.x_androidX 分支下
+
+[5.x_androidX 链接](https://github.com/udesk/UdeskSDK-Android/tree/5.x_androidX)
+
 android Q 适配在5.x_android_Q 分支下。
+
+[5.x_android_Q 链接](https://github.com/udesk/UdeskSDK-Android/tree/5.x_android_Q)
 ### SDK下载地址
 [Udesk-Android 源码下载地址](https://github.com/udesk/UdeskSDK-Android)
 
