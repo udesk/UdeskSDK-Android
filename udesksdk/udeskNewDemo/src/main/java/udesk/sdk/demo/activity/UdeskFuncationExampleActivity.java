@@ -84,7 +84,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
 
     private EditText nick_name, cellphone, email, description, customer_token, channel,
             textfiledkey, textfiledvalue,
-            firstMessage, customerUrl, robot_modelKey, robpt_customer_info,edit_language;
+            firstMessage, customerUrl, robot_modelKey, robpt_customer_info,edit_language,robotFirstMessage;
     private String sdkToken;
 
     @Override
@@ -154,8 +154,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         textfiledvalue = (EditText) findViewById(R.id.textfiledvalue);
         robpt_customer_info = (EditText) findViewById(R.id.robpt_customer_info);
         edit_language = (EditText) findViewById(R.id.edit_language);
-
-
+        robotFirstMessage = (EditText) findViewById(R.id.robotFirstMessage);
 
     }
 
@@ -280,7 +279,8 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 })//设置结构化消息控件点击事件回调接口.
                 .setChannel(channel.getText().toString())
                 .isShowCustomerNickname(show_customer_nickname.isChecked())//设置是否显示昵称
-                .isShowCustomerHead(show_customer_head.isChecked()); //设置是否显示头像
+                .isShowCustomerHead(show_customer_head.isChecked()) //设置是否显示头像
+                .setPreSendRobotMessages(robotFirstMessage.getText().toString()); //设置带入一条消息  进入机器人界面自动发送
 
         return builder;
     }
