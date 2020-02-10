@@ -15,7 +15,7 @@ android Q 适配在5.x_android_Q 分支下。
 ### SDK下载地址
 [Udesk-Android 源码下载地址](https://github.com/udesk/UdeskSDK-Android)
 
-[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.1.3_androidX_1576657942203_pnpbg.apk)
+[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.1.5_androidX_1581321542263_33e8k.apk)
 
 ## 目录
 - [一、特别声明](#1)
@@ -203,6 +203,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 | udeskProductRightNameLinkColorResId    | setUdeskProductRightNameLinkColorResId                     | 商品消息的 带有链接时的  商品名字显示的颜色 右侧                |
 | udeskProductLeftNameLinkColorResId     | setUdeskProductLeftNameLinkColorResId                      | 商品消息的 带有链接时的  商品名字显示的颜色 左侧                 |
 | udeskProductMaxLines                   | setUdeskProductMaxLines                                    | 商品消息名称最大显示行数                                      |
+| preSendRobotMessages					 | setPreSendRobotMessages                                    | 设置带入一条消息  进入机器人界面自动发送						   |
 
 
 	    private UdeskConfig.Builder makeBuilder() {
@@ -325,7 +326,8 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
                 })//设置结构化消息控件点击事件回调接口.
                 .setChannel(channel.getText().toString())
                 .isShowCustomerNickname(show_customer_nickname.isChecked())//设置是否显示昵称
-                .isShowCustomerHead(show_customer_head.isChecked()); //设置是否显示头像
+                .isShowCustomerHead(show_customer_head.isChecked()) //设置是否显示头像
+                .setPreSendRobotMessages(robotFirstMessage.getText().toString()); //设置带入一条消息  进入机器人界面自动发送
 
         return builder;
     }
@@ -945,7 +947,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
                 UdeskConst.SharePreParams.Udesk_Push_RegisterId, registerId);
     }
 关闭和开启Udesk推送服务，Udesk推送给开发者服务端的消息数据格式中，会有 device_token 的字段。
-### 4	关闭开启Udek推送服务
+### 4	关闭开启Udesk推送服务
 	/**
      * @param domain    公司注册生成的域名
      * @param key        创建app时，生成的app key
@@ -962,7 +964,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
             e.printStackTrace();
         }
     }
-### 5 Udek推送给开发者服务端的接口说明	
+### 5 Udesk推送给开发者服务端的接口说明	
 **基本要求**
 
 - 请求已 POST 方法发送
@@ -1031,6 +1033,12 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 <h1 id="8">八、更新记录</h1>
 
 ### 更新日志 ###
+
+### 5.1.5，5.1.6（5.x_android_Q 分支）版本更新：
+
+1. 添加机器人自动消息
+2. 修改流程问题
+3. 修改webview市场发布问题
 
 ### 5.1.4 版本更新（5.x_android_Q 分支）：
 
