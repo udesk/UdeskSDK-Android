@@ -14,6 +14,7 @@ import android.view.View;
 import java.io.File;
 
 import cn.udesk.R;
+import cn.udesk.rich.LoaderTask;
 
 
 /**
@@ -106,8 +107,10 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
                     int focus = mAudioManager.requestAudioFocus(null,
                             AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
                     if (focus == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                        isReady = true;
-                        mAudioRecordManager.prepareAudio();
+                        if (mAudioRecordManager != null) {
+                            isReady = true;
+                            mAudioRecordManager.prepareAudio();
+                        }
                     } else if (focus == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
                         if (mRecordingListener != null) {
                             mRecordingListener.recordError("AUDIO_FOCUS_REQUEST_FAILED");
@@ -173,7 +176,7 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
                         isRecording = true;
                         mDialogManager.showDialogRecord();
                         // 启动线程，每隔0.1秒获取音量大小
-                        new Thread(mGetVoiceLevelRunnable).start();
+                        LoaderTask.getThreadPoolExecutor().execute(mGetVoiceLevelRunnable);
                         break;
                     case MSG_VOICE_CHANGE:
                         mDialogManager.updateVoiceLevel(mAudioRecordManager.getVoiceLevel(7));

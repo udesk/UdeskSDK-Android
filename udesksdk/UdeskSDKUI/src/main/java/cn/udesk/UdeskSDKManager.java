@@ -71,7 +71,6 @@ public class UdeskSDKManager {
     private IUdeskNewMessage newMessage;
 
     private ExecutorService singleExecutor;
-    private ExecutorService fixedThread;
 
     InitCustomerBean initCustomerBean;
 
@@ -81,7 +80,6 @@ public class UdeskSDKManager {
 
     private UdeskSDKManager() {
         singleExecutor = Executors.newSingleThreadExecutor();
-        fixedThread = Executors.newFixedThreadPool(3);
     }
 
     public static UdeskSDKManager getInstance() {
@@ -92,9 +90,6 @@ public class UdeskSDKManager {
         return singleExecutor;
     }
 
-    public ExecutorService getFixedThread() {
-        return fixedThread;
-    }
 
     /**
      * 创建应用生成的key值和appid

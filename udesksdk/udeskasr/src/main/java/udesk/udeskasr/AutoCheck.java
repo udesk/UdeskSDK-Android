@@ -29,6 +29,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeSet;
 
+import cn.udesk.rich.LoaderTask;
+
 public class AutoCheck {
     public static final boolean isOnlineLited = false; // 是否只需要是纯在线识别功能
     private LinkedHashMap<String, Check> checks;
@@ -52,7 +54,7 @@ public class AutoCheck {
     }
 
     public void checkAsr(final Map<String, Object> params) {
-        Thread t = new Thread(new Runnable() {
+        LoaderTask.getThreadPoolExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 AutoCheck obj = checkAsrInternal(params);
@@ -64,7 +66,6 @@ public class AutoCheck {
                 }
             }
         });
-        t.start();
     }
 
     public String obtainErrorMessage() {
