@@ -265,12 +265,16 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
             e.printStackTrace();
         }
     }
-    public void onQueClick(String msgId,Integer logId,String question,Integer questionId){
+    public void onQueClick(String msgId,Integer logId,String question,Integer questionId,Boolean isFromFlow){
         try {
             QuestionMergeMode mergeMode=new QuestionMergeMode(UdeskConst.LiveDataType.RobotChildHit,UUID.randomUUID().toString());
             mergeMode.setQuestion(question);
             mergeMode.setQuestionId(questionId);
-            mergeMode.setQueryType(6);
+            if (isFromFlow){
+                mergeMode.setQueryType(8);
+            }else {
+                mergeMode.setQueryType(6);
+            }
             mergeMode.setMsgId(msgId);
             mergeMode.setLogId(logId);
             MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
@@ -334,7 +338,6 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
         try {
             if (info!=null){
                 QuestionMergeMode mergeMode=new QuestionMergeMode(UdeskConst.LiveDataType.ROBOT_FLOW_HIT,info,UUID.randomUUID().toString());
-                mergeMode.setQueryType(8);
                 mergeMode.setQuestionId(dataId);
                 mergeMode.setQuestion(content);
                 MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);

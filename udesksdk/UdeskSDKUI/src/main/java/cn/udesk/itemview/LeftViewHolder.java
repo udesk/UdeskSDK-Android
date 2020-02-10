@@ -724,7 +724,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                                     UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                                     return;
                                 }
-                                InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(), optionsListBean.getQuestion(), optionsListBean.getQuestionId());
+                                InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(), optionsListBean.getQuestion(), optionsListBean.getQuestionId(),false);
                             }
                         });
                     }
@@ -760,7 +760,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                                             UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                                             return;
                                         }
-                                        InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(), optionsListBean.getQuestion(), optionsListBean.getQuestionId());
+                                        InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(), optionsListBean.getQuestion(), optionsListBean.getQuestionId(),false);
                                     }
                                 });
                             }
@@ -1769,7 +1769,12 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
     public void onStepClick(SpanModel model) {
         try {
             if (TextUtils.equals(UdeskConst.ChatMsgTypeString.TYPE_FLOW,message.getMsgtype())&&model!=null&&UdeskUtils.objectToInt(model.getDataId())!=0){
-                InvokeEventContainer.getInstance().event_OnFlowClick.invoke(message,UdeskUtils.objectToInt(model.getDataId()),model.getContent());
+                if (TextUtils.equals("1",model.getType())){
+                    InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(), model.getContent(), UdeskUtils.objectToInt(model.getDataId()),true);
+                }else if (TextUtils.equals("2",model.getType())){
+                    InvokeEventContainer.getInstance().event_OnFlowClick.invoke(message,UdeskUtils.objectToInt(model.getDataId()),model.getContent());
+                }
+
             }
         }catch (Exception e){
             e.printStackTrace();

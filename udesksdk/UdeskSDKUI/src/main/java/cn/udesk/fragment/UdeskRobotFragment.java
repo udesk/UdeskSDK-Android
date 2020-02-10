@@ -452,6 +452,8 @@ public class UdeskRobotFragment extends UdeskbaseFragment implements View.OnClic
         try {
             if (mEmotionlayout.isShown() || mMoreLayout.isShown()) {
                 mEmotionKeyboard.interceptBackPress();
+                hideEmotionLayout();
+                hideMoreLayout();
             } else {
                 udeskChatActivity.finishAcitivty();
             }

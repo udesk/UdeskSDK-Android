@@ -27,6 +27,7 @@ import cn.udesk.aac.livedata.ReceiveLivaData;
 import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.model.UdeskCommodityItem;
+import cn.udesk.rich.LoaderTask;
 import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
 import udesk.core.model.AgentInfo;
@@ -378,15 +379,14 @@ public class UdeskViewMode extends ViewModel {
                     if (isRetry) {
                         startRetryMsg(messageInfo);
                     } else {
-                        new Thread(new Runnable() {
+                        LoaderTask.getThreadPoolExecutor().execute(new Runnable() {
                             @Override
                             public void run() {
                                 UdeskDBManager.getInstance().updateMsgSendFlagDB(messageInfo.getMsgId(), UdeskConst.SendFlag.RESULT_FAIL);
                                 MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.Send_Message_Failure, messageInfo.getMsgId(),UUID.randomUUID().toString());
                                 MergeModeManager.getmInstance().putMergeMode(mergeMode,mutableLiveData);
                             }
-                        }).start();
-
+                        });
                     }
                 }
                 cachePreMsg.clear();

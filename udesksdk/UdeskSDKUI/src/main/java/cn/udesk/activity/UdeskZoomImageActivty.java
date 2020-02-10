@@ -17,6 +17,7 @@ import java.io.InputStream;
 
 import cn.udesk.R;
 import cn.udesk.UdeskUtil;
+import cn.udesk.rich.LoaderTask;
 import cn.udesk.xphotoview.IXphotoView;
 import cn.udesk.xphotoview.XPhotoView;
 import me.relex.photodraweeview.OnPhotoTapListener;
@@ -75,20 +76,17 @@ public class UdeskZoomImageActivty extends UdeskBaseActivity implements
 
     }
 
-    private static class MySaveImageThread extends Thread {
-
-    }
 
     @Override
     public void onClick(View v) {
         try {
             if (v.getId() == R.id.udesk_zoom_save) {
-                new MySaveImageThread() {
+                LoaderTask.getThreadPoolExecutor().execute(new Runnable() {
+                    @Override
                     public void run() {
                         saveImage();
                     }
-
-                }.start();
+                });
             } else if (v.getId() == R.id.udesk_original_photos) {
                 File file = UdeskUtil.getFileFromDiskCache(UdeskZoomImageActivty.this.getApplicationContext(), uri);
                 if (file == null) {

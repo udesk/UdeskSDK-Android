@@ -30,6 +30,7 @@ import cn.udesk.camera.callback.FocusCallback;
 import cn.udesk.camera.callback.TypeListener;
 import cn.udesk.camera.callback.UdeskCameraListener;
 import cn.udesk.camera.state.CameraMachine;
+import cn.udesk.rich.LoaderTask;
 import udesk.core.utils.UdeskUtils;
 
 
@@ -268,8 +269,7 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
     //SurfaceView生命周期
     @Override
     public void surfaceCreated(final SurfaceHolder holder) {
-
-        new Thread() {
+        LoaderTask.getThreadPoolExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -282,7 +282,7 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
                     e.printStackTrace();
                 }
             }
-        }.start();
+        });
     }
 
     @Override
@@ -508,8 +508,7 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
     public void playVideo(Bitmap firstFrame, final String url) {
         videoUrl = url;
         UdeskCameraView.this.firstFrame = firstFrame;
-        new Thread(new Runnable() {
-
+        LoaderTask.getThreadPoolExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -543,7 +542,7 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
     }
 
     @Override

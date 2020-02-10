@@ -25,6 +25,7 @@ import cn.udesk.aac.MergeMode;
 import cn.udesk.aac.MergeModeManager;
 import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.db.UdeskDBManager;
+import cn.udesk.rich.LoaderTask;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -476,8 +477,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
     }
 
     public void getBitmap(final Context context, final MessageInfo info) {
-
-        new Thread(new Runnable() {
+        LoaderTask.getThreadPoolExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -492,7 +492,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        });
     }
 
     private void addMessage(MessageInfo msg) {

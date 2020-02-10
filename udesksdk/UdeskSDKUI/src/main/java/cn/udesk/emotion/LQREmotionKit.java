@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.udesk.UdeskUtil;
+import cn.udesk.rich.LoaderTask;
 import udesk.core.UdeskConst;
 import udesk.core.utils.UdeskUtils;
 
@@ -47,12 +48,12 @@ public class LQREmotionKit {
 
     public static void init(final Context context) {
         try {
-            new Thread(new Runnable() {
+            LoaderTask.getThreadPoolExecutor().execute(new Runnable() {
                 @Override
                 public void run() {
                     init(context, UdeskUtils.getDirectoryPath(context,UdeskConst.FileEmotion));
                 }
-            }).start();
+            });
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,7 +79,7 @@ public class LQREmotionKit {
     }
 
     private static void copyToStickerPath(final String assetsFolderPath, final List<String> srcFile) {
-        new Thread(new Runnable() {
+        LoaderTask.getThreadPoolExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 AssetManager assetManager = mContext.getResources().getAssets();
@@ -134,7 +135,7 @@ public class LQREmotionKit {
                     }
                 }
             }
-        }).start();
+        });
     }
 
     public static Context getContext() {

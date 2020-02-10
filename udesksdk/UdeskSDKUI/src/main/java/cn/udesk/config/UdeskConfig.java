@@ -158,7 +158,8 @@ public class UdeskConfig {
     public boolean isShowCustomerNickname;
     //是否显示客户头像
     public boolean isShowCustomerHead = true;
-
+    //设置带入一条消息  进入机器人界面自动发送
+    public String preSendRobotMessages;
     UdeskConfig(Builder builder) {
 
         this.udeskTitlebarBgResId = builder.udeskTitlebarBgResId;
@@ -227,6 +228,7 @@ public class UdeskConfig {
         this.channel = builder.channel;
         this.isShowCustomerNickname = builder.isShowCustomerNickname;
         this.isShowCustomerHead = builder.isShowCustomerHead;
+        this.preSendRobotMessages= builder.preSendRobotMessages;
     }
 
     public static UdeskConfig createDefualt() {
@@ -366,7 +368,8 @@ public class UdeskConfig {
         public boolean isShowCustomerNickname=false;
         //是否显示客户头像
         public boolean isShowCustomerHead = true;
-
+        //设置带入一条消息  进入机器人界面自动发送
+        public String preSendRobotMessages ="";
         public Builder() {
 
         }
@@ -888,6 +891,15 @@ public class UdeskConfig {
             return this;
         }
 
+        /**
+         * 设置带入一条消息  进入机器人界面自动发送
+         * @param preSendRobotMessages
+         * @return
+         */
+        public Builder setPreSendRobotMessages(String preSendRobotMessages){
+            this.preSendRobotMessages = preSendRobotMessages;
+            return this;
+        }
         public UdeskConfig build() {
             return new UdeskConfig(this);
         }

@@ -9,6 +9,7 @@ import java.io.RandomAccessFile;
 import java.util.Date;
 import java.util.UUID;
 
+import cn.udesk.rich.LoaderTask;
 import udesk.core.UdeskConst;
 
 
@@ -95,8 +96,7 @@ public class AudioRecordManager {
     }
 
     public void prepareAudio() {
-
-        new Thread(new Runnable() {
+        LoaderTask.getThreadPoolExecutor().execute(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -214,9 +214,8 @@ public class AudioRecordManager {
                     releaseAudio();
                     e.printStackTrace();
                 }
-
             }
-        }).start();
+        });
 
     }
 
@@ -267,7 +266,7 @@ public class AudioRecordManager {
     public void cancelAudio() {
         try {
             releaseAudio();
-            new Thread(new Runnable() {
+            LoaderTask.getThreadPoolExecutor().execute(new Runnable() {
                 @Override
                 public void run() {
                     if (mCurrentFilePath != null) {
@@ -275,7 +274,7 @@ public class AudioRecordManager {
                         file.delete();
                     }
                 }
-            }).start();
+            });
         } catch (Exception e) {
             e.printStackTrace();
             if (mStateListener != null) {
