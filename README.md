@@ -2,6 +2,7 @@
 # UdeskSDK Android 4.x 开发者文档
 
 [androidX 版本地址](https://github.com/udesk/UdeskSDK-Android/tree/master_androidX)
+[下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_4.3.3_1581657958498_0spvo.apk)
 
 ## 目录 ##
 - [一、特别提醒](#1)
@@ -62,7 +63,7 @@
 	不可以用NotificationUtils  处理方式
 
 
-[下载地址](https://github.com/udesk/UdeskSDK-Android/tree/master)
+
 
 <h1 id="2">二、快速接入</h1>
  
