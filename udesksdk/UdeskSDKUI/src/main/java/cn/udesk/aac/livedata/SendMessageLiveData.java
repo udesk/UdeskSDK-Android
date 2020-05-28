@@ -115,7 +115,7 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                     msg.getMsgtype(), msg.getMsgContent(), msg.getMsgId(),
                     msg.getDuration(), msg.getSeqNum(), msg.getFilename(), msg.getFilesize(),
                     UdeskUtils.getSecondTimestamp(new Date()) - UdeskConst.active_time,
-                    UdeskConst.sdk_page_status + UdeskConst.sdk_xmpp_statea, new UdeskCallBack() {
+                    UdeskConst.sdk_page_status + UdeskConst.sdk_xmpp_statea,msg.getLocalPath(), new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
                             try {
@@ -187,7 +187,7 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                     UdeskConst.UdeskSendStatus.sending, msg.getMsgtype(), msg.getMsgContent(), msg.getMsgId(),
                     msg.getDuration(), msg.getSeqNum(), msg.getFilename(), msg.getFilesize(),
                     UdeskUtils.getSecondTimestamp(new Date()) - UdeskConst.active_time,
-                    UdeskConst.sdk_page_status + UdeskConst.sdk_xmpp_statea, new UdeskCallBack() {
+                    UdeskConst.sdk_page_status + UdeskConst.sdk_xmpp_statea, msg.getLocalPath(), new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
                             try {

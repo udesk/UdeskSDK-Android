@@ -726,7 +726,13 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                                     UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                                     return;
                                 }
-                                InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(), optionsListBean.getQuestion(), optionsListBean.getQuestionId(),false);
+                                if (message.isFAQ()){
+                                    InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(),
+                                            optionsListBean.getQuestion(), optionsListBean.getQuestionId(),false,true);
+                                }else {
+                                    InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(),
+                                            optionsListBean.getQuestion(), optionsListBean.getQuestionId(),false,false);
+                                }
                             }
                         });
                     }
@@ -762,7 +768,13 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                                             UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                                             return;
                                         }
-                                        InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(), optionsListBean.getQuestion(), optionsListBean.getQuestionId(),false);
+                                        if (message.isFAQ()){
+                                            InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(),
+                                                    optionsListBean.getQuestion(), optionsListBean.getQuestionId(),false,true);
+                                        }else {
+                                            InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(),
+                                                    optionsListBean.getQuestion(), optionsListBean.getQuestionId(),false,false);
+                                        }
                                     }
                                 });
                             }
@@ -1796,7 +1808,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
         try {
             if (TextUtils.equals(UdeskConst.ChatMsgTypeString.TYPE_FLOW,message.getMsgtype())&&model!=null&&UdeskUtils.objectToInt(model.getDataId())!=0){
                 if (TextUtils.equals("1",model.getType())){
-                    InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(), model.getContent(), UdeskUtils.objectToInt(model.getDataId()),true);
+                    InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(), model.getContent(), UdeskUtils.objectToInt(model.getDataId()),true,false);
                 }else if (TextUtils.equals("2",model.getType())){
                     InvokeEventContainer.getInstance().event_OnFlowClick.invoke(message,UdeskUtils.objectToInt(model.getDataId()),model.getContent());
                 }

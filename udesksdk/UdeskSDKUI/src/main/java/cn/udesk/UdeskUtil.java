@@ -52,6 +52,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -96,6 +98,8 @@ import udesk.core.model.ProductListBean;
 import udesk.core.model.RobotInit;
 import udesk.core.utils.UdeskIdBuild;
 import udesk.core.utils.UdeskUtils;
+
+import static cn.udesk.emotion.LQREmotionKit.getContext;
 
 
 public class UdeskUtil {
@@ -1127,7 +1131,10 @@ public class UdeskUtil {
                 final int column_index = cursor.getColumnIndexOrThrow(column);
                 return cursor.getString(column_index);
             }
-        } finally {
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }finally {
             if (cursor != null) {
                 cursor.close();
             }
@@ -1682,6 +1689,7 @@ public class UdeskUtil {
         messageInfo.setWebConfig(robotInit.getWebConfig());
         messageInfo.setTopAsk(robotInit.getTopAsk());
         messageInfo.setLogId(robotInit.getLogId());
+        messageInfo.setFAQ(true);
         return messageInfo;
 
     }
@@ -1701,9 +1709,10 @@ public class UdeskUtil {
             if (content.getData() != null) {
                 MessageInfo info = buildMsg(message.getAgent_nick_name(), message.getAgent_avatar(), stringToLong(message.getCreated_at()),
                         UdeskUtils.objectToString(message.getMessage_id()), message.getContent().getType(), content.getData().getContent(),
-                        UdeskConst.ChatMsgReadFlag.read, UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv, "",
-                        UdeskUtils.objectToLong(message.getContent().getData().getDuration()), message.getAgent_jid(), message.getContent().getFilename(),
-                        message.getContent().getFilesize(), content.getData().getSwitchStaffType(), content.getData().getSwitchStaffTips());
+                        UdeskConst.ChatMsgReadFlag.read, UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,
+                        message.getContent().getLocalPath(), UdeskUtils.objectToLong(message.getContent().getData().getDuration()),
+                        message.getAgent_jid(), message.getContent().getFilename(), message.getContent().getFilesize(),
+                        content.getData().getSwitchStaffType(), content.getData().getSwitchStaffTips());
                 if (message.getInviterAgentInfo() != null) {
                     info.setReplyUser(message.getInviterAgentInfo().getNick_name());
                     info.setUser_avatar(message.getInviterAgentInfo().getAvatar());
@@ -1829,13 +1838,30 @@ public class UdeskUtil {
                     UdeskConst.Subdomain = domain;
                 }
 
-                InvokeEventContainer.getInstance().event_OnConnectWebsocket.invoke(context);
+//                InvokeEventContainer.getInstance().event_OnConnectWebsocket.invoke(context);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public static Object connectVideoWebSocket(Context context) {
+        try {
+            if (isClassExists("udesk.udeskvideo.UdeskVideoActivity")){
+                Class c = Class.forName("udesk.udeskvideo.ReflectManager");
+                Constructor declaredConstructor = c.getDeclaredConstructor();
+                declaredConstructor.setAccessible(true);
+                Object o = declaredConstructor.newInstance();
+                Method declaredMethod = c.getDeclaredMethod("OnConnectWebsocket",Context.class);
+                declaredMethod.setAccessible(true);
+                declaredMethod.invoke(o,context);
+                return o;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
     /**
      * 原图
      *
@@ -2063,30 +2089,34 @@ public class UdeskUtil {
         return msgInfos;
     }
 
-    public static int[] getImageWidthHeight(int[] rect) {
+    public static int[] getImageWidthHeight(int[] rect,int width){
         try {
             int sampleSize = 1;
             int originWidth = rect[0];
             int originHeight = rect[1];
             float defaultHeight = 240f;
             float defaultWidth = 160f;
-            if (originWidth > originHeight && originWidth > defaultWidth) {
-                sampleSize = (int) (rect[0] / defaultWidth);
-            } else if (originWidth < originHeight && originHeight > defaultHeight) {
-                sampleSize = (int) (rect[1] / defaultHeight);
+            if (width > 0 && originWidth > width) {
+                sampleSize = (int) (rect[0] / width);
+            } else {
+                if (originWidth > originHeight && originWidth > defaultWidth) {
+                    sampleSize = (int) (rect[0] / defaultWidth);
+                } else if (originWidth < originHeight && originHeight > defaultHeight) {
+                    sampleSize = (int) (rect[1] / defaultHeight);
+                }
             }
             if (sampleSize <= 0) {
                 rect[0] = (int) defaultWidth;
                 rect[1] = (int) defaultHeight;
             } else if (sampleSize > 1) {
-                rect[0] = originWidth / sampleSize;
-                rect[1] = originHeight / sampleSize;
+                rect[0] = originWidth /sampleSize;
+                rect[1]=originHeight/sampleSize;
             }
-            return new int[]{rect[0], rect[1]};
-        } catch (Exception e) {
+            return new int[]{rect[0],rect[1]};
+        }catch (Exception e){
             e.printStackTrace();
         }
-        return new int[]{0, 0};
+        return new int[]{0,0};
     }
 
     /**
@@ -2125,6 +2155,40 @@ public class UdeskUtil {
         byteArrayInputStream = new ByteArrayInputStream(baos.toByteArray());
         bitmap = BitmapFactory.decodeStream(byteArrayInputStream, null, options);
         return bitmap;
+    }
+    public static Bitmap compressRatio(String url, int width) {
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(UdeskUtil.getPathByUrl(getContext(), UdeskConst.FileImg,
+                    url), options);
+            options.inJustDecodeBounds = false;
+            int originWidth = options.outWidth;
+            int originHeight = options.outHeight;
+            float defaultHeight = 240f;
+            float defaultWidth = 160f;
+            int sampleSize = 1;
+            if (width > 0 && originWidth > width) {
+                sampleSize = (int) (originWidth / width);
+            }else {
+                if (originWidth > originHeight && originWidth > defaultWidth) {
+                    sampleSize = (int) (originWidth / defaultWidth);
+                } else if (originWidth < originHeight && originHeight > defaultHeight) {
+                    sampleSize = (int) (originHeight / defaultHeight);
+                }
+            }
+            if (sampleSize <= 0) {
+                sampleSize = 1;
+            }
+            options.inSampleSize = sampleSize;
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
+            Bitmap bitmap = BitmapFactory.decodeFile(UdeskUtil.getPathByUrl(getContext(), UdeskConst.FileImg,
+                    url), options);
+            return bitmap;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

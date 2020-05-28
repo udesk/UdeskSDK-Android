@@ -561,6 +561,7 @@ public class JsonUtils {
                             contentBean.setIm_sub_session_id(content.opt("im_sub_session_id"));
                             contentBean.setFilename(content.opt("filename"));
                             contentBean.setFilesize(content.opt("filesize"));
+                            contentBean.setLocalPath(content.opt("localPath"));
                             contentBean.setFile_policy(content.opt("file_policy"));
                             if (content.has("data")) {
                                 DataBean dataBean = new DataBean();
@@ -712,6 +713,7 @@ public class JsonUtils {
                     contentBean.setIm_sub_session_id(content.opt("im_sub_session_id"));
                     contentBean.setFilename(content.opt("filename"));
                     contentBean.setFilesize(content.opt("filesize"));
+                    contentBean.setLocalPath(content.opt("localPath"));
                     contentBean.setFile_policy(content.opt("file_policy"));
                     if (content.has("data")) {
                         DataBean dataBean = new DataBean();

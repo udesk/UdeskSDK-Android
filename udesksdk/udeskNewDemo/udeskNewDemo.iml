@@ -19,7 +19,7 @@
         <option name="ALLOW_USER_CONFIGURATION" value="false" />
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
         <option name="RES_FOLDER_RELATIVE_PATH" value="/src/main/res" />
-        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res;file://$MODULE_DIR$/build/generated/res/resValues/debug" />
+        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res;file://$MODULE_DIR$/build/generated/res/rs/debug;file://$MODULE_DIR$/build/generated/res/resValues/debug" />
         <option name="TEST_RES_FOLDERS_RELATIVE_PATH" value="" />
         <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/src/main/assets" />
       </configuration>
@@ -90,14 +90,14 @@
     <orderEntry type="jdk" jdkName="Android API 29 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="Gradle: androidx.multidex:multidex-instrumentation:2.0.0@aar" level="project" />
-    <orderEntry type="library" name="Gradle: __local_aars__:D.\copy\udesk\UdeskSDK-Android\udesksdk\udeskNewDemo\libs\AMap2DMap_6.0.0_AMapSearch_7.1.0_AMapLocation_4.7.2_20191106.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" name="Gradle: __local_aars__:D.\copy\udesk\UdeskSDK-Android\udesksdk\udeskvideo\libs\agora-rtc-sdk.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" name="Gradle: __local_aars__:D.\copy\udesk\UdeskSDK-Android\udesksdk\udeskasr\libs\bdasr_V3_20180801_d6f298a.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: __local_aars__:D./copy/udesk/UdeskSDK-Android/udesksdk/udeskNewDemo/libs/AMap2DMap_6.0.0_AMapSearch_7.1.0_AMapLocation_4.7.2_20191106.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: __local_aars__:D./copy/udesk/UdeskSDK-Android/udesksdk/udeskvideo/libs/agora-rtc-sdk.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: __local_aars__:D./copy/udesk/UdeskSDK-Android/udesksdk/udeskasr/libs/bdasr_V3_20180801_d6f298a.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.collection:collection:1.1.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-common:2.1.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.arch.core:core-common:2.1.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.annotation:annotation:1.1.0@jar" level="project" />
-    <orderEntry type="library" name="Gradle: __local_aars__:D.\copy\udesk\UdeskSDK-Android\udesksdk\UdeskSDKUI\libs\udesk_sdk_5.1.6.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: __local_aars__:D./copy/udesk/UdeskSDK-Android/udesksdk/UdeskSDKUI/libs/udesk_sdk_5.1.8.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.multidex:multidex:2.0.1@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.appcompat:appcompat:1.1.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.fragment:fragment:1.1.0@aar" level="project" />
@@ -122,7 +122,7 @@
     <orderEntry type="library" name="Gradle: cn.jiguang.sdk:jpush:3.5.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: cn.jiguang.sdk:jcore:2.2.4@aar" level="project" />
     <orderEntry type="module" module-name="udeskvideo" />
-    <orderEntry type="module" module-name="udeskasr" />
+    <orderEntry type="module" module-name="udesksdk-udeskasr" />
     <orderEntry type="module" module-name="UdeskSDKUI" />
   </component>
 </module>

@@ -7,9 +7,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.Closeable;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyManagementException;
@@ -25,6 +28,10 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import cn.udesk.UdeskUtil;
+import udesk.core.UdeskConst;
+import udesk.core.utils.UdeskUtils;
+
+import static cn.udesk.emotion.LQREmotionKit.getContext;
 
 
 public class BaseImageLoader implements ImageLoader {
@@ -48,43 +55,41 @@ public class BaseImageLoader implements ImageLoader {
     }
 
     @Override
-    public Bitmap getBitmap(final String url) throws IOException {
-
-//        if (UdeskUtil.fileIsExitByUrl(context, UdeskConst.FileImg, url)) {
-//
-//            Bitmap localBitMap = UdeskUtil.compressRatio(BitmapFactory.decodeFile(UdeskUtil.getPathByUrl(context, UdeskConst.FileImg, url)));
-//            int bitmapSize = UdeskUtil.getBitmapSize(localBitMap);
-//            Log.i("xxxx", "bitmapsize = " + bitmapSize);
-//            if (localBitMap != null && bitmapSize > 0) {
-//                return localBitMap;
-//            }
-//        }
+    public Bitmap getBitmap(final String url,int width) throws IOException {
 
         HttpURLConnection conn = createConnection(url);
         conn.connect();
-        InputStream imageStream;
+        InputStream imageStream = null;
+        OutputStream fileOutputStream = null;
         try {
             imageStream = conn.getInputStream();
+            imageStream = new BufferedInputStream(imageStream, DEFAULT_BUFFER_SIZE);
+            fileOutputStream=new FileOutputStream(UdeskUtil.getPathByUrl(getContext(), UdeskConst.FileImg, url));
+            fileOutputStream = new BufferedOutputStream(fileOutputStream,DEFAULT_BUFFER_SIZE);
+            byte[] data = new byte[DEFAULT_BUFFER_SIZE];
+            int len = 0;
+            while ((len = imageStream.read(data))!= -1 ){
+                fileOutputStream.write(data,0,len);
+            }
+            fileOutputStream.flush();
         } catch (IOException e) {
             readAndCloseStream(conn.getErrorStream());
             throw e;
-        }
-        if (!shouldBeProcessed(conn)) {
+        }finally {
+            closeSilently(fileOutputStream);
             closeSilently(imageStream);
-            throw new IOException("Image request failed with response code " + conn.getResponseCode());
+            if (!shouldBeProcessed(conn)) {
+                throw new IOException("Image request failed with response code " + conn.getResponseCode());
+            }
         }
-        imageStream = new BufferedInputStream(imageStream, DEFAULT_BUFFER_SIZE);
         if (imageStream != null) {
-            final Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
-            Bitmap comPressBitmap = UdeskUtil.compressRatio(UdeskUtil.compressImage(context.getApplicationContext(), url, bitmap));
+            Bitmap comPressBitmap = UdeskUtil.compressRatio(url,width);
             if (comPressBitmap != null) {
                 return comPressBitmap;
             }
-            return bitmap;
         }
         return null;
     }
-
 
     protected HttpURLConnection createConnection(String url) throws IOException {
         String encodedUrl = Uri.encode(url, ALLOWED_URI_CHARS);

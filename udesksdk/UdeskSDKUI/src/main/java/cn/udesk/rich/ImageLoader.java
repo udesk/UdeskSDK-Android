@@ -6,5 +6,5 @@ import java.io.IOException;
 
 
 public interface ImageLoader {
-    Bitmap getBitmap(String url) throws IOException;
+    Bitmap getBitmap(String url,int width) throws IOException;
 }
