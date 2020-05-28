@@ -1197,6 +1197,10 @@ class HtmlToSpannedConverter implements ContentHandler {
                 return i;
             }
         }
+        if (color.contains(";")){
+            String[] split = color.split(";");
+            color = split[0];
+        }
         if (color.toLowerCase().contains("rgba")||color.toLowerCase().contains("rgb")){
             if (color.contains(")")){
                 color=color.substring(0,color.indexOf(")"));

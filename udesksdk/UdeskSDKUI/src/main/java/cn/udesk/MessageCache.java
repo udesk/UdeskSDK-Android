@@ -108,7 +108,7 @@ public class MessageCache {
                     UdeskConst.UdeskSendStatus.sending,
                     msg.getMsgtype(), msg.getMsgContent(), msg.getMsgId(),
                     msg.getDuration(), msg.getSeqNum(), msg.getFilename(),
-                    msg.getFilesize(), 0, UdeskConst.GLOBAL_CACHE + UdeskConst.CONNECTION_FAILED, new UdeskCallBack() {
+                    msg.getFilesize(), 0, UdeskConst.GLOBAL_CACHE + UdeskConst.CONNECTION_FAILED, msg.getLocalPath(),new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
                             try {

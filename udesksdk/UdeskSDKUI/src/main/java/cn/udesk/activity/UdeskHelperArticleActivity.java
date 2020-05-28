@@ -102,6 +102,11 @@ public class UdeskHelperArticleActivity extends UdeskBaseActivity {
 								webSettings.setJavaScriptEnabled(true);
 								webSettings.setBlockNetworkImage(false);
 								webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+								webSettings.setUseWideViewPort(true);
+								webSettings.setLoadWithOverviewMode(true);
+								webSettings.setSupportZoom(true);
+								webSettings.setBuiltInZoomControls(true);
+								webSettings.setDisplayZoomControls(false);
 								udeskWebView.loadDataWithBaseURL(null, htmlData, "text/html", "utf-8", null);
 							}
                         }catch (Exception e){

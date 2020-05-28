@@ -73,7 +73,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
     public void robotMessage(final MessageInfo info) {
         try {
             UdeskHttpFacade.getInstance().robotMessage(domain, secretKey, sdktoken, appid, robotUrl,customerId, sessionId,info.getMsgtype(),
-                    info.getMsgContent(), info.getMsgId(), info.getDuration(), info.getSeqNum(), info.getFilename(), info.getFilename(), new UdeskCallBack() {
+                    info.getMsgContent(), info.getMsgId(), info.getDuration(), info.getSeqNum(), info.getFilename(), info.getFilename(), info.getLocalPath(),new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
                             MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotMessageSuccess, message,UUID.randomUUID().toString(),info.getMsgId());
@@ -265,7 +265,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
             e.printStackTrace();
         }
     }
-    public void onQueClick(String msgId,Integer logId,String question,Integer questionId,Boolean isFromFlow){
+    public void onQueClick(String msgId,Integer logId,String question,Integer questionId,Boolean isFromFlow,Boolean isFAQ){
         try {
             QuestionMergeMode mergeMode=new QuestionMergeMode(UdeskConst.LiveDataType.RobotChildHit,UUID.randomUUID().toString());
             mergeMode.setQuestion(question);
@@ -273,7 +273,11 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
             if (isFromFlow){
                 mergeMode.setQueryType(8);
             }else {
-                mergeMode.setQueryType(6);
+                if (isFAQ){
+                    mergeMode.setQueryType(6);
+                }else {
+                    mergeMode.setQueryType(7);
+                }
             }
             mergeMode.setMsgId(msgId);
             mergeMode.setLogId(logId);

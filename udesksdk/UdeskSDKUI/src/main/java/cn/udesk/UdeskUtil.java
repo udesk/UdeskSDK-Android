@@ -23,12 +23,15 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
+import android.provider.OpenableColumns;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -60,18 +63,19 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.tencent.bugly.crashreport.CrashReport;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -89,24 +93,26 @@ import java.util.regex.Pattern;
 import cn.udesk.activity.UdeskZoomImageActivty;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.db.UdeskDBManager;
-import cn.udesk.model.TicketReplieMode;
 import cn.udesk.model.ImSetting;
 import cn.udesk.model.OptionsModel;
 import cn.udesk.model.SurveyOptionsModel;
-import udesk.core.JsonObjectUtils;
-import udesk.core.LocalManageUtil;
-import udesk.core.model.Content;
+import cn.udesk.model.TicketReplieMode;
 import cn.udesk.provider.UdeskFileProvider;
 import me.relex.photodraweeview.PhotoDraweeView;
+import udesk.core.JsonObjectUtils;
+import udesk.core.LocalManageUtil;
 import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.model.AgentInfo;
+import udesk.core.model.Content;
 import udesk.core.model.LogBean;
 import udesk.core.model.MessageInfo;
 import udesk.core.model.ProductListBean;
 import udesk.core.model.RobotInit;
 import udesk.core.utils.UdeskIdBuild;
 import udesk.core.utils.UdeskUtils;
+
+import static cn.udesk.emotion.LQREmotionKit.getContext;
 
 public class UdeskUtil {
 
@@ -798,8 +804,14 @@ public class UdeskUtil {
                         final String id = DocumentsContract.getDocumentId(uri);
                         final Uri contentUri = ContentUris.withAppendedId(
                                 Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-
-                        return getDataColumn(context, contentUri, null, null);
+                        try {
+                            String path = getDataColumn(context, contentUri, null, null);
+                            if (path != null && !path.equals("")) {
+                                return path;
+                            }
+                        } catch (Exception e) {
+                        }
+                        return getCopyFilePath(context, uri);
                     }
                     // MediaProvider
                     else if (isMediaDocument(uri)) {
@@ -819,12 +831,20 @@ public class UdeskUtil {
                         final String selection = "_id=?";
                         final String[] selectionArgs = new String[]{split[1]};
 
-                        return getDataColumn(context, contentUri, selection, selectionArgs);
+                        String path = getDataColumn(context, uri, null, null);
+                        if (path != null && !path.equals("")) {
+                            return path;
+                        }
+                        return getCopyFilePath(context, uri);
                     }
                 }
                 // MediaStore (and general)
                 else if ("content".equalsIgnoreCase(uri.getScheme())) {
-                    return getDataColumn(context, uri, null, null);
+                    String path = getDataColumn(context, uri, null, null);
+                    if (path != null && !path.equals("")) {
+                        return path;
+                    }
+                    return getCopyFilePath(context, uri);
                 }
                 // File
                 else if ("file".equalsIgnoreCase(uri.getScheme())) {
@@ -836,6 +856,111 @@ public class UdeskUtil {
         }
 
         return null;
+    }
+    private static String getCopyFilePath(Context context, Uri uri) {
+        String fileName = getFileName(context, uri);
+        File cacheDir = getDocumentCacheDir(context);
+        File file = generateFileName(fileName, cacheDir);
+        String destinationPath = "";
+        if (file != null) {
+            destinationPath = file.getAbsolutePath();
+            saveFileFromUri(context, uri, destinationPath);
+        }
+
+        return destinationPath;
+    }
+    public static String getFileName(@NonNull Context context, Uri uri) {
+        String mimeType = context.getContentResolver().getType(uri);
+        String filename = null;
+        if (mimeType == null) {
+            filename = getName(uri.toString());
+        } else {
+            Cursor returnCursor = context.getContentResolver().query(uri, null,
+                    null, null, null);
+            if (returnCursor != null) {
+                int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                returnCursor.moveToFirst();
+                filename = returnCursor.getString(nameIndex);
+                returnCursor.close();
+            }
+        }
+        return filename;
+    }
+    public static String getName(String filename) {
+        if (filename == null) {
+            return null;
+        }
+        int index = filename.lastIndexOf('/');
+        return filename.substring(index + 1);
+    }
+
+
+    public static File getDocumentCacheDir(@NonNull Context context) {
+        File dir = (context.getExternalFilesDir(UdeskConst.EXTERNAL_FOLDER));
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        return dir;
+    }
+    @Nullable
+    public static File generateFileName(@Nullable String name, File directory) {
+        if (name == null) {
+            return null;
+        }
+
+        File file = new File(directory, name);
+
+        if (file.exists()) {
+            String fileName = name;
+            String extension = "";
+            int dotIndex = name.lastIndexOf('.');
+            if (dotIndex > 0) {
+                fileName = name.substring(0, dotIndex);
+                extension = name.substring(dotIndex);
+            }
+
+            int index = 0;
+
+            while (file.exists()) {
+                index++;
+                name = fileName + '(' + index + ')' + extension;
+                file = new File(directory, name);
+            }
+        }
+
+        try {
+            if (!file.createNewFile()) {
+                return null;
+            }
+        } catch (IOException e) {
+            return null;
+        }
+
+        return file;
+    }
+
+    private static void saveFileFromUri(Context context, Uri uri, String destinationPath) {
+        InputStream is = null;
+        BufferedOutputStream bos = null;
+        try {
+            is = context.getContentResolver().openInputStream(uri);
+            bos = new BufferedOutputStream(new FileOutputStream(destinationPath, false));
+            byte[] buf = new byte[1024];
+            is.read(buf);
+            do {
+                bos.write(buf);
+            } while (is.read(buf) != -1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (is != null) is.close();
+                if (bos != null) bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -862,7 +987,10 @@ public class UdeskUtil {
                 final int column_index = cursor.getColumnIndexOrThrow(column);
                 return cursor.getString(column_index);
             }
-        } finally {
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }finally {
             if (cursor != null) {
                 cursor.close();
             }
@@ -1424,6 +1552,7 @@ public class UdeskUtil {
         messageInfo.setWebConfig(robotInit.getWebConfig());
         messageInfo.setTopAsk(robotInit.getTopAsk());
         messageInfo.setLogId(robotInit.getLogId());
+        messageInfo.setFAQ(true);
         return messageInfo;
 
     }
@@ -1442,9 +1571,10 @@ public class UdeskUtil {
             if (content.getData()!=null){
                 MessageInfo info=buildMsg(message.getAgent_nick_name(),message.getAgent_avatar(),stringToLong(message.getCreated_at()),
                         UdeskUtils.objectToString(message.getMessage_id()), message.getContent().getType(),content.getData().getContent(),
-                        UdeskConst.ChatMsgReadFlag.read,UdeskConst.SendFlag.RESULT_SUCCESS,UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,"",
-                        UdeskUtils.objectToLong(message.getContent().getData().getDuration()),message.getAgent_jid(),message.getContent().getFilename(),
-                        message.getContent().getFilesize(),content.getData().getSwitchStaffType(),content.getData().getSwitchStaffTips());
+                        UdeskConst.ChatMsgReadFlag.read,UdeskConst.SendFlag.RESULT_SUCCESS,UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,
+                        message.getContent().getLocalPath(), UdeskUtils.objectToLong(message.getContent().getData().getDuration()),
+                        message.getAgent_jid(), message.getContent().getFilename(), message.getContent().getFilesize(),
+                        content.getData().getSwitchStaffType(), content.getData().getSwitchStaffTips());
                 if (message.getInviterAgentInfo()!=null){
                     info.setReplyUser(message.getInviterAgentInfo().getNick_name());
                     info.setUser_avatar(message.getInviterAgentInfo().getAvatar());
@@ -1568,12 +1698,30 @@ public class UdeskUtil {
                 if (!TextUtils.isEmpty(domain)) {
                     UdeskConst.Subdomain = domain;
                 }
-
-                InvokeEventContainer.getInstance().event_OnConnectWebsocket.invoke(context);
+//                connectVideoWebSocket(context);
+//                InvokeEventContainer.getInstance().event_OnConnectWebsocket.invoke(context);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static Object connectVideoWebSocket(Context context) {
+        try {
+            if (isClassExists("udesk.udeskvideo.UdeskVideoActivity")){
+                Class c = Class.forName("udesk.udeskvideo.ReflectManager");
+                Constructor declaredConstructor = c.getDeclaredConstructor();
+                declaredConstructor.setAccessible(true);
+                Object o = declaredConstructor.newInstance();
+                Method declaredMethod = c.getDeclaredMethod("OnConnectWebsocket",Context.class);
+                declaredMethod.setAccessible(true);
+                declaredMethod.invoke(o,context);
+                return o;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
@@ -1733,23 +1881,27 @@ public class UdeskUtil {
         }
         return msgInfos;
     }
-    public static int[] getImageWidthHeight(int[] rect){
+    public static int[] getImageWidthHeight(int[] rect,int width){
         try {
             int sampleSize = 1;
             int originWidth = rect[0];
             int originHeight = rect[1];
             float defaultHeight = 240f;
             float defaultWidth = 160f;
-            if (originWidth > originHeight && originWidth > defaultWidth) {
-                sampleSize = (int) (rect[0] / defaultWidth);
-            } else if (originWidth < originHeight && originHeight > defaultHeight) {
-                sampleSize = (int) (rect[1] / defaultHeight);
+            if (width > 0 && originWidth > width) {
+                sampleSize = (int) (rect[0] / width);
+            } else {
+                if (originWidth > originHeight && originWidth > defaultWidth) {
+                    sampleSize = (int) (rect[0] / defaultWidth);
+                } else if (originWidth < originHeight && originHeight > defaultHeight) {
+                    sampleSize = (int) (rect[1] / defaultHeight);
+                }
             }
             if (sampleSize <= 0) {
-                rect[0]= (int) defaultWidth;
-                rect[1]= (int) defaultHeight;
-            }else if (sampleSize>1){
-                rect[0]= originWidth/sampleSize;
+                rect[0] = (int) defaultWidth;
+                rect[1] = (int) defaultHeight;
+            } else if (sampleSize > 1) {
+                rect[0] = originWidth /sampleSize;
                 rect[1]=originHeight/sampleSize;
             }
             return new int[]{rect[0],rect[1]};
@@ -1765,7 +1917,7 @@ public class UdeskUtil {
      * @param image
      * @return
      */
-    public static Bitmap compressRatio(Bitmap image) {
+    public static Bitmap compressRatio(Bitmap image,int width) {
 
         if (image == null) {
             return null;
@@ -1795,6 +1947,41 @@ public class UdeskUtil {
         byteArrayInputStream = new ByteArrayInputStream(baos.toByteArray());
         bitmap = BitmapFactory.decodeStream(byteArrayInputStream, null, options);
         return bitmap;
+    }
+
+    public static Bitmap compressRatio(String url, int width) {
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(UdeskUtils.getPathByUrl(getContext(), UdeskConst.FileImg,
+                    url), options);
+            options.inJustDecodeBounds = false;
+            int originWidth = options.outWidth;
+            int originHeight = options.outHeight;
+            float defaultHeight = 240f;
+            float defaultWidth = 160f;
+            int sampleSize = 1;
+            if (width > 0 && originWidth > width) {
+                sampleSize = (int) (originWidth / width);
+            }else {
+                if (originWidth > originHeight && originWidth > defaultWidth) {
+                    sampleSize = (int) (originWidth / defaultWidth);
+                } else if (originWidth < originHeight && originHeight > defaultHeight) {
+                    sampleSize = (int) (originHeight / defaultHeight);
+                }
+            }
+            if (sampleSize <= 0) {
+                sampleSize = 1;
+            }
+            options.inSampleSize = sampleSize;
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
+            Bitmap bitmap = BitmapFactory.decodeFile(UdeskUtils.getPathByUrl(getContext(), UdeskConst.FileImg,
+                    url), options);
+            return bitmap;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

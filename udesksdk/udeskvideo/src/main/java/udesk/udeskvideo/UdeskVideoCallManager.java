@@ -47,6 +47,7 @@ public class UdeskVideoCallManager {
 
     private UdeskVideoCallManager() {
         InvokeEventContainer.getInstance().event_OnConnectWebsocket.bind(this, "OnConnectWebsocket");
+        InvokeEventContainer.getInstance().event_OnDisConnectWebsocket.bind(this, "OnDisConnectWebsocket");
     }
 
     private SurfaceView remoteVideoView;
@@ -54,6 +55,9 @@ public class UdeskVideoCallManager {
     public  void  OnConnectWebsocket(Context context){
         setReconenctCount(1);
         connectWebsocket(context);
+    }
+    public  void  OnDisConnectWebsocket(Context context){
+        UdeskWebsocket.getUdeskWebSocket().close();
     }
 
 
