@@ -5,17 +5,13 @@ SDK原生机器人功能在 5.x 分支下。
 
 [5.x 链接](https://github.com/udesk/UdeskSDK-Android/tree/5.x)
 
-androidX 在5.x_androidX 分支下
-
-[5.x_androidX 链接](https://github.com/udesk/UdeskSDK-Android/tree/5.x_androidX)
-
-android Q 适配在5.x_android_Q 分支下。
+androidQ，androidX 适配在5.x_android_Q 分支下。
 
 [5.x_android_Q 链接](https://github.com/udesk/UdeskSDK-Android/tree/5.x_android_Q)
 ### SDK下载地址
 [Udesk-Android 源码下载地址](https://github.com/udesk/UdeskSDK-Android)
 
-[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.1.6_androidQ_1581320488661_9cvmk.apk)
+[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.1.8_androidQ_1590648596212_0hov8.apk)
 
 ## 目录
 - [一、特别声明](#1)
@@ -1026,7 +1022,18 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 
 ### 更新日志 ###
 
-### 5.1.5，5.1.6（5.x_android_Q 分支）版本更新：
+### 5.1.7（5.x），5.1.8（5.x_android_Q 分支）版本更新：
+
+1. 修改图片oom问题
+2. 修改视频通话问题
+3. 修改文件读取问题
+4. 修改黑名单失效问题
+5. 修改机器人推荐问题
+6. 修改webview显示问题
+7. 修改排队输入框问题
+8. 修改html解析问题
+
+### 5.1.5（5.x,5.x_androidX），5.1.6（5.x_android_Q 分支）版本更新：
 
 1. 添加机器人自动消息
 2. 修改流程问题
