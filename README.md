@@ -11,7 +11,7 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 ### SDK下载地址
 [Udesk-Android 源码下载地址](https://github.com/udesk/UdeskSDK-Android)
 
-[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.1.7_1590647862772_ku7eg.apk)
+[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.2.0_1592906171826_jn9gs.apk)
 
 ## 目录
 - [一、特别声明](#1)
@@ -1029,6 +1029,14 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 <h1 id="8">八、更新记录</h1>
 
 ### 更新日志 ###
+
+### 5.2.0（5.x），5.2.1（5.x_android_Q 分支）版本更新：
+
+1. 修复无消息对话到排队输入框问题
+2. 修复新建会话未经过机器人和无消息对话过滤问题
+3. 修复富文本字体颜色显示问题
+4. 修复对话留言状态切换问题
+5. 修复富文本图片压缩问题
 
 ### 5.1.7（5.x），5.1.8（5.x_android_Q 分支）版本更新：
 
