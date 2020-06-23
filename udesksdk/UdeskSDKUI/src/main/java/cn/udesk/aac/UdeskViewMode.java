@@ -166,6 +166,13 @@ public class UdeskViewMode extends ViewModel {
             e.printStackTrace();
         }
     }
+    public void sendImLeaveMessage(MessageInfo msg) {
+        try {
+            postMessage(msg, UdeskConst.LiveDataType.AddMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     //发送商品消息
     public void sendProductMessage(Product mProduct) {

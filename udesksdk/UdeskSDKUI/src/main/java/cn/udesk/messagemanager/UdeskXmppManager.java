@@ -778,6 +778,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
                     cancel();
                 }
             });
+            handler.removeCallbacksAndMessages(runnable);
         } catch (Exception e) {
             e.printStackTrace();
         }

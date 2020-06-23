@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/UdeskSDKUI/UdeskSDKUI.iml" filepath="$PROJECT_DIR$/UdeskSDKUI/UdeskSDKUI.iml" group="udesksdk/UdeskSDKUI" />
       <module fileurl="file://$PROJECT_DIR$/udeskNewDemo/udeskNewDemo.iml" filepath="$PROJECT_DIR$/udeskNewDemo/udeskNewDemo.iml" group="udesksdk/udeskNewDemo" />
-      <module fileurl="file://$PROJECT_DIR$/udeskasr/udeskasr.iml" filepath="$PROJECT_DIR$/udeskasr/udeskasr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/udeskasr/udeskasr.iml" filepath="$PROJECT_DIR$/udeskasr/udeskasr.iml" group="udesksdk/udeskasr" />
       <module fileurl="file://$PROJECT_DIR$/udesksdk.iml" filepath="$PROJECT_DIR$/udesksdk.iml" group="udesksdk" />
       <module fileurl="file://$PROJECT_DIR$/udeskasr/udesksdk-udeskasr.iml" filepath="$PROJECT_DIR$/udeskasr/udesksdk-udeskasr.iml" group="udesksdk/udeskasr" />
       <module fileurl="file://$PROJECT_DIR$/udeskvideo/udeskvideo.iml" filepath="$PROJECT_DIR$/udeskvideo/udeskvideo.iml" group="udesksdk/udeskvideo" />
