@@ -30,6 +30,7 @@ import android.text.style.SuperscriptSpan;
 import android.text.style.TypefaceSpan;
 import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 
 import org.ccil.cowan.tagsoup.HTMLSchema;
 import org.ccil.cowan.tagsoup.Parser;
@@ -701,7 +702,7 @@ class HtmlToSpannedConverter implements ContentHandler {
     private static Pattern getForegroundColorPattern() {
         if (sForegroundColorPattern == null) {
             sForegroundColorPattern = Pattern.compile(
-                    "(?:\\s+|\\A)color\\s*:\\s*(\\S*)\\b");
+                    "(?:\\s*|\\A)color\\s*:\\s*(\\S*)\\b");
         }
         return sForegroundColorPattern;
     }
@@ -709,7 +710,7 @@ class HtmlToSpannedConverter implements ContentHandler {
     private static Pattern getBackgroundColorPattern() {
         if (sBackgroundColorPattern == null) {
             sBackgroundColorPattern = Pattern.compile(
-                    "(?:\\s+|\\A)background(?:-color)?\\s*:\\s*(\\S*)\\b");
+                    "(?:\\s*|\\A)background(?:-color)?\\s*:\\s*(\\S*)\\b");
         }
         return sBackgroundColorPattern;
     }
@@ -717,7 +718,7 @@ class HtmlToSpannedConverter implements ContentHandler {
     private static Pattern getTextDecorationPattern() {
         if (sTextDecorationPattern == null) {
             sTextDecorationPattern = Pattern.compile(
-                    "(?:\\s+|\\A)text-decoration\\s*:\\s*(\\S*)\\b");
+                    "(?:\\s*|\\A)text-decoration\\s*:\\s*(\\S*)\\b");
         }
         return sTextDecorationPattern;
     }
@@ -776,7 +777,7 @@ class HtmlToSpannedConverter implements ContentHandler {
             // so we can safely emit the linebreaks when we handle the close tag.
         } else if (tag.equalsIgnoreCase("p")) {
             startBlockElement(mSpannableStringBuilder, attributes, getMarginParagraph());
-            startCssStyle(mSpannableStringBuilder, attributes);
+//            startCssStyle(mSpannableStringBuilder, attributes);
         } else if (tag.equalsIgnoreCase("ul")) {
             startBlockElement(mSpannableStringBuilder, attributes, getMarginList());
         } else if (tag.equalsIgnoreCase("ol")) {
@@ -846,7 +847,7 @@ class HtmlToSpannedConverter implements ContentHandler {
         if (tag.equalsIgnoreCase("br")) {
             handleBr(mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("p")) {
-            endCssStyle(mSpannableStringBuilder);
+//            endCssStyle(mSpannableStringBuilder);
             endBlockElement(mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("ul")) {
             endBlockElement(mSpannableStringBuilder);
@@ -1087,13 +1088,13 @@ class HtmlToSpannedConverter implements ContentHandler {
                 }
             }
 
-            m = getBackgroundColorPattern().matcher(style.replaceAll(" ",""));
-            if (m.find()) {
-                int c = getHtmlColor(m.group(1));
-                if (c != -1) {
-                    start(text, new Background(c | 0xFF000000));
-                }
-            }
+//            m = getBackgroundColorPattern().matcher(style.replaceAll(" ",""));
+//            if (m.find()) {
+//                int c = getHtmlColor(m.group(1));
+//                if (c != -1) {
+//                    start(text, new Background(c | 0xFF000000));
+//                }
+//            }
 
             m = getTextDecorationPattern().matcher(style);
             if (m.find()) {
@@ -1112,10 +1113,10 @@ class HtmlToSpannedConverter implements ContentHandler {
             setSpanFromMark(text, s, new StrikethroughSpan());
         }
 
-        Background b = getLast(text, Background.class);
-        if (b != null) {
-            setSpanFromMark(text, b, new BackgroundColorSpan(b.mBackgroundColor));
-        }
+//        Background b = getLast(text, Background.class);
+//        if (b != null) {
+//            setSpanFromMark(text, b, new BackgroundColorSpan(b.mBackgroundColor));
+//        }
 
         Foreground f = getLast(text, Foreground.class);
         if (f != null) {
@@ -1218,17 +1219,21 @@ class HtmlToSpannedConverter implements ContentHandler {
                 if (alpha>1){
                     builder.append("FF");
                 }else {
+                    if ((int)(alpha*255) <= 16){
+                        builder.append("0");
+                    }
                     builder.append(Integer.toHexString((int)(alpha*255)));
                 }
+                Log.d("huhu",builder.toString());
             }
             for (int i=0;i<split.length;i++){
                 if (i==3){
                     break;
                 }
-                if (Integer.valueOf(split[i])<16){
+                if (Integer.parseInt(split[i])<=16){
                     builder.append("0");
                 }
-                builder.append(Integer.toHexString(Integer.valueOf(split[i])));
+                builder.append(Integer.toHexString(Integer.parseInt(split[i])));
 
             }
             color=builder.toString();

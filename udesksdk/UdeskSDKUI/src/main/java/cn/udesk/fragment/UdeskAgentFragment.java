@@ -764,9 +764,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                 }
                 if (TextUtils.equals(udeskChatActivity.curentStatus, UdeskConst.Status.chatting) || udeskChatActivity.getPressionStatus() || udeskChatActivity.isNeedQueueMessageSave()) {
                     udeskViewMode.sendTxtMessage(getInputContent().toString());
-                    if (!udeskChatActivity.getPressionStatus()) {
-                        clearInputContent();
-                    }
+                    clearInputContent();
 
                 } else if (udeskChatActivity.imSetting != null && udeskChatActivity.imSetting.getEnable_web_im_feedback()) {
                     if (udeskChatActivity.isleaveMessageTypeMsg()) {

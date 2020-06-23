@@ -97,7 +97,7 @@
     <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-common:2.1.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.arch.core:core-common:2.1.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.annotation:annotation:1.1.0@jar" level="project" />
-    <orderEntry type="library" name="Gradle: __local_aars__:D./copy/udesk/UdeskSDK-Android/udesksdk/UdeskSDKUI/libs/udesk_sdk_5.1.8.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="Gradle: __local_aars__:D./copy/udesk/UdeskSDK-Android/udesksdk/UdeskSDKUI/libs/udesk_sdk_5.2.1.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.multidex:multidex:2.0.1@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.appcompat:appcompat:1.1.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.fragment:fragment:1.1.0@aar" level="project" />
@@ -122,7 +122,7 @@
     <orderEntry type="library" name="Gradle: cn.jiguang.sdk:jpush:3.5.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: cn.jiguang.sdk:jcore:2.2.4@aar" level="project" />
     <orderEntry type="module" module-name="udeskvideo" />
-    <orderEntry type="module" module-name="udesksdk-udeskasr" />
+    <orderEntry type="module" module-name="udeskasr" />
     <orderEntry type="module" module-name="UdeskSDKUI" />
   </component>
 </module>

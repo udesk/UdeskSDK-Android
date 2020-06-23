@@ -103,7 +103,7 @@ public class UdeskInitKeyActivity extends Activity {
     String domain = "";
     String appkey = "";
     String appid = "";
-    String sdkToken = "";
+    String sdkToken = "robotTest1";
     private CheckBox use_http;
 
     @Override
@@ -119,7 +119,7 @@ public class UdeskInitKeyActivity extends Activity {
         customerToken = (EditText) findViewById(R.id.customer_token);
         use_http = findViewById(R.id.use_http);
         startBtn = (Button) findViewById(R.id.udesk_start);
-        sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
+//        sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
         if (TextUtils.isEmpty(sdkToken)) {
             sdkToken = UUID.randomUUID().toString();
         }

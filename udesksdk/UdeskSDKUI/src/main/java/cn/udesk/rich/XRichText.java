@@ -62,7 +62,7 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
     private UrlDrawable urlDrawable;
     //图片的最大宽度
     private int imageMaxWidth=310;
-
+    private Context mContext;
     public XRichText(Context context) {
         super(context);
     }
@@ -125,6 +125,7 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
         this.imageMaxWidth=width;
     }
     public void text(Context context, String text) {
+        mContext = context;
         richWidth=UdeskUtil.dip2px(context,imageMaxWidth)-getPaddingLeft()-getPaddingRight();
         urlDrawable = new UrlDrawable();
         queryImgs(text);
@@ -261,7 +262,7 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
      */
     public boolean setWidthHeight(UrlDrawable drawable, ImageHolder holder) {
         if (holder.getWidth()>0&&holder.getHeight()>0){
-            int[] imageWidthHeight = UdeskUtil.getImageWidthHeight(new int[]{holder.getWidth(),holder.getHeight()},richWidth);
+            int[] imageWidthHeight = UdeskUtil.getImageWidthHeight(mContext,new int[]{holder.getWidth(),holder.getHeight()},richWidth);
             Bitmap rawBmp=Bitmap.createBitmap(imageWidthHeight[0],imageWidthHeight[1],Bitmap.Config.RGB_565);
             rawBmp.eraseColor(getResources().getColor(R.color.transparent));
             return fillBmp(drawable,holder,rawBmp);
@@ -271,7 +272,7 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
             BitmapFactory.decodeFile(UdeskUtil.getPathByUrl(getContext(), UdeskConst.FileImg,
                     holder.getSrc()),options);
             if (options.outWidth>0&&options.outHeight>0){
-                int[] imageWidthHeight = UdeskUtil.getImageWidthHeight(new int[]{options.outWidth,options.outHeight},richWidth);
+                int[] imageWidthHeight = UdeskUtil.getImageWidthHeight(mContext,new int[]{options.outWidth,options.outHeight},richWidth);
                 Bitmap rawBmp=Bitmap.createBitmap(imageWidthHeight[0],imageWidthHeight[1],Bitmap.Config.RGB_565);
                 rawBmp.eraseColor(getResources().getColor(R.color.transparent));
                 return fillBmp(drawable,holder,rawBmp);
@@ -427,14 +428,19 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
                             }
                         }
                         Log.i("xxxx", "richWidth = " + richWidth);
+                        if (richWidth <= 0 ){
+                            richWidth=UdeskUtil.dip2px(mContext,imageMaxWidth)-getPaddingLeft()-getPaddingRight();
+                        }
                         if (richWidth > 0 && UdeskUtil.fileIsExitByUrl(getContext(), UdeskConst.FileImg, holder.getSrc())) {
 
-                            Bitmap localBitMap = UdeskUtil.compressRatio(UdeskUtil.getPathByUrl(getContext(), UdeskConst.FileImg,
+                            Bitmap localBitMap = UdeskUtil.compressRatio(mContext,UdeskUtil.getPathByUrl(getContext(), UdeskConst.FileImg,
                                     holder.getSrc()),richWidth);
-                            int bitmapSize = UdeskUtil.getBitmapSize(localBitMap);
-                            Log.i("xxxx", "bitmapsize = " + bitmapSize);
-                            if (localBitMap != null && bitmapSize > 0) {
-                                rawBmp = localBitMap;
+                            if (localBitMap != null ) {
+                                int bitmapSize = UdeskUtil.getBitmapSize(localBitMap);
+                                Log.i("xxxx", "bitmapsize = " + bitmapSize);
+                                if (bitmapSize > 0){
+                                    rawBmp = localBitMap;
+                                }
                             }
                         }
                         if (rawBmp == null) {

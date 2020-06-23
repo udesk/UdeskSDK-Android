@@ -366,6 +366,10 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                         @Override
                         public void onFail(String msg) {
                             try {
+                                if (TextUtils.equals("6000", msg)) {
+                                    postMessage(msgId, UdeskConst.LiveDataType.GetAgentInfo);
+                                    return;
+                                }
                                 UdeskDBManager.getInstance().updateMsgSendFlagDB(msgId, UdeskConst.SendFlag.RESULT_FAIL);
                                 postMessage(msgId, UdeskConst.LiveDataType.Send_Message_Failure);
                             } catch (Exception e) {

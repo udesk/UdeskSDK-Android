@@ -2089,31 +2089,26 @@ public class UdeskUtil {
         return msgInfos;
     }
 
-    public static int[] getImageWidthHeight(int[] rect,int width){
+    public static int[] getImageWidthHeight(Context context,int[] rect,int width){
         try {
             int sampleSize = 1;
             int originWidth = rect[0];
             int originHeight = rect[1];
-            float defaultHeight = 240f;
-            float defaultWidth = 160f;
-            if (width > 0 && originWidth > width) {
-                sampleSize = (int) (rect[0] / width);
-            } else {
-                if (originWidth > originHeight && originWidth > defaultWidth) {
-                    sampleSize = (int) (rect[0] / defaultWidth);
-                } else if (originWidth < originHeight && originHeight > defaultHeight) {
-                    sampleSize = (int) (rect[1] / defaultHeight);
+            int maxHeight = UdeskUtils.getScreenHeight(context)/2;
+            if (width> 0){
+                if (originWidth > width) {
+                    sampleSize = (int) (rect[0] / width);
+                }
+                if (maxHeight > 0 && originHeight > maxHeight) {
+                    sampleSize = Math.max(sampleSize, (int) (rect[1] / maxHeight));
                 }
             }
-            if (sampleSize <= 0) {
-                rect[0] = (int) defaultWidth;
-                rect[1] = (int) defaultHeight;
-            } else if (sampleSize > 1) {
-                rect[0] = originWidth /sampleSize;
-                rect[1]=originHeight/sampleSize;
+            if (sampleSize > 1) {
+                rect[0] = originWidth / sampleSize;
+                rect[1] = originHeight / sampleSize;
             }
-            return new int[]{rect[0],rect[1]};
-        }catch (Exception e){
+            return new int[]{rect[0], rect[1]};
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new int[]{0,0};
@@ -2156,7 +2151,7 @@ public class UdeskUtil {
         bitmap = BitmapFactory.decodeStream(byteArrayInputStream, null, options);
         return bitmap;
     }
-    public static Bitmap compressRatio(String url, int width) {
+    public static Bitmap compressRatio(Context context,String url, int width) {
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
@@ -2165,18 +2160,19 @@ public class UdeskUtil {
             options.inJustDecodeBounds = false;
             int originWidth = options.outWidth;
             int originHeight = options.outHeight;
-            float defaultHeight = 240f;
-            float defaultWidth = 160f;
             int sampleSize = 1;
-            if (width > 0 && originWidth > width) {
-                sampleSize = (int) (originWidth / width);
-            }else {
-                if (originWidth > originHeight && originWidth > defaultWidth) {
-                    sampleSize = (int) (originWidth / defaultWidth);
-                } else if (originWidth < originHeight && originHeight > defaultHeight) {
-                    sampleSize = (int) (originHeight / defaultHeight);
+
+
+            int maxHeight = UdeskUtils.getScreenHeight(context)/2;
+            if (width> 0){
+                if (originWidth > width) {
+                    sampleSize = (int) (originWidth / width);
+                }
+                if (maxHeight > 0 && originHeight > maxHeight) {
+                    sampleSize = Math.max(sampleSize, (int) (originHeight / maxHeight));
                 }
             }
+
             if (sampleSize <= 0) {
                 sampleSize = 1;
             }

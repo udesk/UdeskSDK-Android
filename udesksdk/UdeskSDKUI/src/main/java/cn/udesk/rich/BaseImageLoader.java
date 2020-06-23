@@ -83,7 +83,7 @@ public class BaseImageLoader implements ImageLoader {
             }
         }
         if (imageStream != null) {
-            Bitmap comPressBitmap = UdeskUtil.compressRatio(url,width);
+            Bitmap comPressBitmap = UdeskUtil.compressRatio(context,url,width);
             if (comPressBitmap != null) {
                 return comPressBitmap;
             }
