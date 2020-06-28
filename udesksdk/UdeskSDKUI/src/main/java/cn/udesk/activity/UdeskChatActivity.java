@@ -2559,7 +2559,6 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                     // 有客服titlebar上显示
                     UdeskDBManager.getInstance().addAgentInfoDB(agentInfo);
                     udeskViewMode.setAgentInfo(mAgentInfo);
-                    fragment.clearInputContent();
                     if (!isRedirect) {
                         dismissFromWindow();
                         setUdeskImContainerVis(View.VISIBLE);

@@ -103,7 +103,7 @@ public class UdeskInitKeyActivity extends Activity {
     String domain = "";
     String appkey = "";
     String appid = "";
-    String sdkToken = "robotTest1";
+    String sdkToken = "";
     private CheckBox use_http;
 
     @Override
