@@ -11,7 +11,7 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 ### SDK下载地址
 [Udesk-Android 源码下载地址](https://github.com/udesk/UdeskSDK-Android)
 
-[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.2.1_androidQ_1592906184384_ujrvg.apk)
+[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.2.3_androidQ_1593326691499_r7j28.apk)
 
 ## 目录
 - [一、特别声明](#1)
@@ -1021,6 +1021,10 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 <h1 id="8">八、更新记录</h1>
 
 ### 更新日志 ###
+
+### 5.2.2（5.x），5.2.3（5.x_android_Q 分支）版本更新：
+
+1. 修复输入框问题
 
 ### 5.2.0（5.x），5.2.1（5.x_android_Q 分支）版本更新：
 
