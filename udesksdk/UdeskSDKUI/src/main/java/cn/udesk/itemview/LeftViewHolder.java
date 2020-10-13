@@ -55,6 +55,7 @@ import cn.udesk.adapter.BrandDivider;
 import cn.udesk.adapter.StrucTableAdapter;
 import cn.udesk.config.UdeskConfigUtil;
 import cn.udesk.emotion.MoonUtils;
+import cn.udesk.model.RobotJumpMessageModel;
 import cn.udesk.model.SpanModel;
 import cn.udesk.model.StructModel;
 import cn.udesk.model.UdeskQueueItem;
@@ -433,6 +434,8 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 case UdeskConst.ChatMsgTypeInt.TYPE_STRUCT:
                     dealStruct();
                     break;
+                case UdeskConst.ChatMsgTypeInt.TYPE_SURVEY:
+                    message.setMsgContent(mContext.getResources().getString(R.string.udesk_survey_done));
                 case UdeskConst.ChatMsgTypeInt.TYPE_EVENT:
                 case UdeskConst.ChatMsgTypeInt.TYPE_ROBOT_TRANSFER:
                     dealEvent();
@@ -1820,6 +1823,16 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
 
     }
 
+    @Override
+    public void onRobotJumpMessage(RobotJumpMessageModel model) {
+        try {
+            if (TextUtils.equals(model.getMessageType(),"1")){
+                InvokeEventContainer.getInstance().event_OnRobotJumpMessageClick.invoke(model.getContent());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 结构化消息按钮点击事件处理

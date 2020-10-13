@@ -148,6 +148,7 @@
     <string name="audio_denied">语音权限被拒绝</string>
     <string name="udesk_asr_fail">语音识别失败</string>
     <string name="udesk_file_not_exist">文件不存在</string>
+    <string name="udesk_survey_done">满意度已评价</string>
 
 
 </resources>

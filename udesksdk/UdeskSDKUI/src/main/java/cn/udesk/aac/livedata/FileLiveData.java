@@ -221,7 +221,7 @@ public class FileLiveData<M> extends MutableLiveData<MergeMode> {
             }
             final String alikey = dir + fileName;
             MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-            builder.addFormDataPart("key", dir + URLEncoder.encode(fileName, "UTF-8"));
+            builder.addFormDataPart("key", alikey);
             builder.addFormDataPart("OSSAccessKeyId", accessid);
             builder.addFormDataPart("bucket", bucket);
             builder.addFormDataPart("policy", policy);

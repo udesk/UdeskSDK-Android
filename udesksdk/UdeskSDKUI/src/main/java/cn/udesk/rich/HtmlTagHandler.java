@@ -71,6 +71,11 @@ public class HtmlTagHandler implements UdeskHtml.TagHandler {
         xRichText.onSpanClick(start,length,output);
     }
 
+    @Override
+    public void handleRobotJumpMessageClick(int start, int length, Editable output) {
+        xRichText.onRobotJumpMessage(start,length,output);
+    }
+
     @SuppressWarnings("unused")
     private void startTag(String tag, Editable out, XMLReader reader) {
         switch (tag.toLowerCase()) {

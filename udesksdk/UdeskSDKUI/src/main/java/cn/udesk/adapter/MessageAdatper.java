@@ -73,6 +73,9 @@ public class MessageAdatper extends BaseAdapter {
             if (message instanceof UdeskQueueItem) {
                 return LEFT;
             }
+            if (UdeskConst.parseTypeForMessage(message.getMsgtype()) == UdeskConst.ChatMsgTypeInt.TYPE_SURVEY){
+                return LEFT;
+            }
             if (message.getDirection() == UdeskConst.ChatMsgDirection.Recv) {
                 return LEFT;
             } else {
