@@ -67,8 +67,12 @@ public class HtmlTagHandler implements UdeskHtml.TagHandler {
 
     @Override
     public void handleClick(int start, int length, Editable output) {
-//        InvokeEventContainer.getInstance().event_OnSpanClick.invoke(start,length,output);
         xRichText.onSpanClick(start,length,output);
+    }
+
+    @Override
+    public void handleRobotJumpMessageClick(int start, int length, Editable output) {
+        xRichText.onRobotJumpMessage(start,length,output);
     }
 
     @SuppressWarnings("unused")

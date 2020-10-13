@@ -84,6 +84,7 @@ public class UdeskHtml {
                               Editable output, XMLReader xmlReader);
         public void handleAttributes(String tag,Attributes attributes);
         public void handleClick(int start, int length,Editable output);
+        public void handleRobotJumpMessageClick(int start, int length,Editable output);
     }
 
     /**
@@ -693,6 +694,7 @@ class HtmlToSpannedConverter implements ContentHandler {
     }
 
     private boolean isNeedClick;
+    private boolean isRobotJumpMessageClick;
 
     private static Pattern getTextAlignPattern() {
         if (sTextAlignPattern == null) {
@@ -794,6 +796,9 @@ class HtmlToSpannedConverter implements ContentHandler {
                 if (attributes.getLocalName(i).contains("data-type")){
                     isNeedClick =true;
                 }
+                if (attributes.getLocalName(i).contains("data-message-type")){
+                    isRobotJumpMessageClick =true;
+                }
             }
             if (mTagHandler!=null){
                 mTagHandler.handleAttributes(tag,attributes);
@@ -861,6 +866,7 @@ class HtmlToSpannedConverter implements ContentHandler {
             endBlockElement(mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("span")) {
             isNeedClick=false;
+            isRobotJumpMessageClick = false;
             endCssStyle(mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("strong")) {
             end(mSpannableStringBuilder, Bold.class, new StyleSpan(Typeface.BOLD));
@@ -1082,21 +1088,21 @@ class HtmlToSpannedConverter implements ContentHandler {
     private void startCssStyle(Editable text, Attributes attributes) {
         String style = attributes.getValue("", "style");
         if (style != null) {
-            Matcher m = getForegroundColorPattern().matcher(style.replaceAll(" ",""));
+            Matcher m = getForegroundColorPattern().matcher(style.replaceAll("-color","").replaceAll(" ",""));
             if (m.find()) {
                 int c = getHtmlColor(m.group(1));
-                if (c != -1) {
-                    start(text, new Foreground(c | 0xFF000000));
-                }
+//                if (c != -1) {
+                    start(text, new Foreground(c));
+//                }
             }
 
-//            m = getBackgroundColorPattern().matcher(style.replaceAll(" ",""));
-//            if (m.find()) {
-//                int c = getHtmlColor(m.group(1));
+            m = getBackgroundColorPattern().matcher(style.replaceAll(" ",""));
+            if (m.find()) {
+                int c = getHtmlColor(m.group(1));
 //                if (c != -1) {
-//                    start(text, new Background(c | 0xFF000000));
+                    start(text, new Background(c));
 //                }
-//            }
+            }
 
             m = getTextDecorationPattern().matcher(style);
             if (m.find()) {
@@ -1115,10 +1121,10 @@ class HtmlToSpannedConverter implements ContentHandler {
             setSpanFromMark(text, s, new StrikethroughSpan());
         }
 
-//        Background b = getLast(text, Background.class);
-//        if (b != null) {
-//            setSpanFromMark(text, b, new BackgroundColorSpan(b.mBackgroundColor));
-//        }
+        Background b = getLast(text, Background.class);
+        if (b != null) {
+            setSpanFromMark(text, b, new BackgroundColorSpan(b.mBackgroundColor));
+        }
 
         Foreground f = getLast(text, Foreground.class);
         if (f != null) {
@@ -1313,6 +1319,9 @@ class HtmlToSpannedConverter implements ContentHandler {
         int end=mSpannableStringBuilder.length();
         if (mTagHandler!=null&&isNeedClick){
             mTagHandler.handleClick(s,end,mSpannableStringBuilder);
+        }
+        if (mTagHandler!=null&&isRobotJumpMessageClick){
+            mTagHandler.handleRobotJumpMessageClick(s,end,mSpannableStringBuilder);
         }
 
     }

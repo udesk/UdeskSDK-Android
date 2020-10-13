@@ -37,9 +37,9 @@ import java.util.regex.Pattern;
 
 import cn.udesk.R;
 import cn.udesk.UdeskUtil;
+import cn.udesk.model.RobotJumpMessageModel;
 import cn.udesk.model.SpanModel;
 import udesk.core.UdeskConst;
-import udesk.core.event.InvokeEventContainer;
 import udesk.core.utils.UdeskUtils;
 
 
@@ -98,7 +98,7 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
             data = attributes.getValue("", "data-id");
             spanModel.setDataId(data);
             data = attributes.getValue("", "data-robotid");
-            spanModel.setRibotId(data);
+            spanModel.setRobotId(data);
         }
         out.setSpan(new ClickableSpan() {
             @Override
@@ -107,6 +107,31 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
                 if (((XRichText)widget).callback != null && spanModel != null) {
                     callback(((XRichText)widget).callback);
                     callback.onStepClick(spanModel);
+                }
+            }
+        }, start, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+    public void onRobotJumpMessage(Integer start, Integer length, Editable out) {
+        attributes=getAttributes();
+        final RobotJumpMessageModel robotJumpMessageModel= new RobotJumpMessageModel();
+        robotJumpMessageModel.setContent(out.toString().substring(start,length));
+        if (attributes != null) {
+            String data = attributes.getValue("", "data-message-type");
+            robotJumpMessageModel.setMessageType(data);
+            data = attributes.getValue("", "data-content");
+            robotJumpMessageModel.setContent(data);
+            data = attributes.getValue("", "data-robotid");
+            robotJumpMessageModel.setRobotId(data);
+            data = attributes.getValue("", "data-replace-type");
+            robotJumpMessageModel.setReplaceType(data);
+        }
+        out.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+
+                if (((XRichText)widget).callback != null && robotJumpMessageModel != null) {
+                    callback(((XRichText)widget).callback);
+                    callback.onRobotJumpMessage(robotJumpMessageModel);
                 }
             }
         }, start, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -637,6 +662,7 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
         void onFix(ImageHolder holder);
 
         void onStepClick(SpanModel model);
+        void onRobotJumpMessage(RobotJumpMessageModel model);
     }
 
 }

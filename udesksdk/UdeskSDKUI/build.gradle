@@ -11,6 +11,7 @@ android {
 
     defaultConfig {
         minSdkVersion 14
+        
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -39,5 +40,5 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
     implementation 'com.squareup.okhttp3:okhttp:3.12.1'
     implementation group: 'org.ccil.cowan.tagsoup', name: 'tagsoup', version: '1.2.1'
-    api files('libs/udesk_sdk_5.2.2.jar')
+    api files('libs/udesk_sdk_5.2.4.jar')
 }

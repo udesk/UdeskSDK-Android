@@ -1540,6 +1540,12 @@ public class UdeskUtil {
                 UdeskConst.SendFlag.RESULT_SUCCESS,UdeskConst.PlayFlag.NOPLAY,UdeskConst.ChatMsgDirection.Recv,"",0,"","","",
                 0,"");
     }
+    public static MessageInfo buildSurveyMsg(String content) {
+        return buildMsg("", "", System.currentTimeMillis(), UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_SURVEY, content, UdeskConst.ChatMsgReadFlag.read,
+                UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv, "", 0, "", "", "",
+                0, "");
+    }
+
     public static MessageInfo buildReplyProductMsg(ProductListBean bean){
         return buildMsg("","",System.currentTimeMillis(),UdeskIdBuild.buildMsgId(),UdeskConst.ChatMsgTypeString.TYPE_REPLY_PRODUCT,JsonUtils.getReplyProductJson(bean).toString().replace("\\",""),UdeskConst.ChatMsgReadFlag.read,
                 UdeskConst.SendFlag.RESULT_SUCCESS,UdeskConst.PlayFlag.NOPLAY,UdeskConst.ChatMsgDirection.Send,"",0,"","","",

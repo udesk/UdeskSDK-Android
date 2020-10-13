@@ -4,7 +4,7 @@ public class SpanModel {
     private String type;
     private String className;
     private String dataId;
-    private String ribotId;
+    private String robotId;
     private String content;
 
     public String getType() {
@@ -31,12 +31,12 @@ public class SpanModel {
         this.dataId = dataId;
     }
 
-    public String getRibotId() {
-        return ribotId;
+    public String getRobotId() {
+        return robotId;
     }
 
-    public void setRibotId(String ribotId) {
-        this.ribotId = ribotId;
+    public void setRobotId(String robotId) {
+        this.robotId = robotId;
     }
 
     public String getContent() {

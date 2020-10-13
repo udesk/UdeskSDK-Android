@@ -2,12 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/UdeskSDKUI/UdeskSDKUI.iml" filepath="$PROJECT_DIR$/UdeskSDKUI/UdeskSDKUI.iml" group="udesksdk/UdeskSDKUI" />
-      <module fileurl="file://$PROJECT_DIR$/udeskNewDemo/udeskNewDemo.iml" filepath="$PROJECT_DIR$/udeskNewDemo/udeskNewDemo.iml" group="udesksdk/udeskNewDemo" />
-      <module fileurl="file://$PROJECT_DIR$/udeskasr/udeskasr.iml" filepath="$PROJECT_DIR$/udeskasr/udeskasr.iml" group="udesksdk/udeskasr" />
-      <module fileurl="file://$PROJECT_DIR$/udesksdk.iml" filepath="$PROJECT_DIR$/udesksdk.iml" group="udesksdk" />
-      <module fileurl="file://$PROJECT_DIR$/udeskasr/udesksdk-udeskasr.iml" filepath="$PROJECT_DIR$/udeskasr/udesksdk-udeskasr.iml" group="udesksdk/udeskasr" />
-      <module fileurl="file://$PROJECT_DIR$/udeskvideo/udeskvideo.iml" filepath="$PROJECT_DIR$/udeskvideo/udeskvideo.iml" group="udesksdk/udeskvideo" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/udesksdk.iml" filepath="$PROJECT_DIR$/.idea/modules/udesksdk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/UdeskSDKUI/udesksdk.UdeskSDKUI.iml" filepath="$PROJECT_DIR$/.idea/modules/UdeskSDKUI/udesksdk.UdeskSDKUI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/udeskNewDemo/udesksdk.udeskNewDemo.iml" filepath="$PROJECT_DIR$/.idea/modules/udeskNewDemo/udesksdk.udeskNewDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/udeskasr/udesksdk.udeskasr.iml" filepath="$PROJECT_DIR$/.idea/modules/udeskasr/udesksdk.udeskasr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/udeskvideo/udesksdk.udeskvideo.iml" filepath="$PROJECT_DIR$/.idea/modules/udeskvideo/udesksdk.udeskvideo.iml" />
     </modules>
   </component>
 </project>

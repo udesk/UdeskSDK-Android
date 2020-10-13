@@ -309,7 +309,7 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
                                         if (TextUtils.equals(result.getString("has_survey"), "false")) {
                                             //未评价，可以发起评价
                                             if (hasSurvyCallBack != null) {
-                                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.finsh_Survey, true, UUID.randomUUID().toString());
+                                                MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.FINSH_SURVEY, true, UUID.randomUUID().toString());
                                                 MergeModeManager.getmInstance().putMergeMode(mergeMode,APILiveData.this);
 
                                             } else {
