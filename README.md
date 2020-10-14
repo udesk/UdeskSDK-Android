@@ -11,7 +11,7 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 ### SDK下载地址
 [Udesk-Android 源码下载地址](https://github.com/udesk/UdeskSDK-Android)
 
-[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.2.2_1593326245776_ik5op.apk)
+[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.2.4_1602662732082_jar3s.apk)
 
 ## 目录
 - [一、特别声明](#1)
@@ -1029,6 +1029,12 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 <h1 id="8">八、更新记录</h1>
 
 ### 更新日志 ###
+
+### 5.2.4（5.x），5.2.5（5.x_android_Q 分支）版本更新：
+
+1. 支持答案链接FAQ
+2. 历史聊天记录支持评价
+3. 文件上传问题优化
 
 ### 5.2.2（5.x），5.2.3（5.x_android_Q 分支）版本更新：
 
