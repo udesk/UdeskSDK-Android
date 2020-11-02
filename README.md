@@ -42,12 +42,35 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 ### customer_token， sdk_token 仅支持字母、数字及下划线,禁用特殊字符
 
 <h1 id="2">二、集成SDK</h1>
+## 1 远程依赖集成
+ 1.Add it in your root build.gradle at the end of repositories:
 
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+ 2.Add the dependency
+
+全功能
+
+	dependencies {
+	        implementation 'com.github.udesk:UdeskSDK-Android:版本号'
+	}
+
+部分功能
+	
+	dependencies {
+	        implementation 'com.github.udesk.UdeskSDK-Android:模块名(UdeskSDKUI|udeskvideo|udeskasr):版本号'
+	}
+
+## 2 本地集成
 | Demo中的文件| 说明                            |
 | ---------  | -----------------------         |
 | UdeskSDKUI | Udesk在线咨询SDK                 |
-| Udeskvideo | Udesk视频会话SDK（依赖在线咨询SDK）|
-| Udeskasr	 | Udesk原生机器人语音识别功能（依赖在线咨询SDK）       |
+| udeskvideo | Udesk视频会话SDK（依赖在线咨询SDK）|
+| udeskasr	 | Udesk原生机器人语音识别功能（依赖在线咨询SDK）       |
 
 ### **注意：UdeskSDKUI并不依赖Udeskvideo和 udeskasr,如果不需要则不要导入该sdk。**
 
