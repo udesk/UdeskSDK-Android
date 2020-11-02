@@ -110,6 +110,32 @@
 
 **导入集成**
 
+**1 远程依赖集成**
+
+ 1.Add it in your root build.gradle at the end of repositories:
+
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+ 2.Add the dependency
+
+全功能
+
+	dependencies {
+	        implementation 'com.github.udesk:UdeskSDK-Android:版本号'
+	}
+
+部分功能
+	
+	dependencies {
+	        implementation 'com.github.udesk.UdeskSDK-Android:模块名(UdeskSDKUI|udeskvideo):版本号'
+	}
+
+**2 本地集成**
+
 你所要做的是把UdeskSDKUI做为独立的module import, 并在你APP build.gradle文件中加入：
 
 	dependencies {
