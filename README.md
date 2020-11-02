@@ -133,7 +133,7 @@
 部分功能
 	
 	dependencies {
-	        implementation 'com.github.udesk.UdeskSDK-Android:模块名(UdeskSDKUI|udeskvideo|udeskasr):版本号'
+	        implementation 'com.github.udesk.UdeskSDK-Android:模块名(UdeskSDKUI|udeskvideo):版本号'
 	}
 
 **2 本地集成**
