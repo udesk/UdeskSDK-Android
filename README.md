@@ -68,7 +68,7 @@
 
 <h1 id="2">二、快速接入</h1>
  
-## 1.初始管理员后台创建应用是生成的对应app key 和 app id
+### 1.初始管理员后台创建应用是生成的对应app key 和 app id
    
    ``` java
       UdeskSDKManager.getInstance().initApiKey(context, "you domain","App Key","App Id");
@@ -76,7 +76,7 @@
       注意：域名不要带有http://部分，加入注册生成的域名是"http://udesksdk.udesk.cn/" ,只要传入"udesksdk.udesk.cn"
    ```
       
-## 2.设置UdeskConfig配置信息。
+### 2.设置UdeskConfig配置信息。
    
    **说明：配置的功能根据你们实际的需要进行选择，都有默认行为。 最基本设置用户的基本信息 setDefualtUserInfo**
   ``` java 
@@ -110,9 +110,9 @@
   
   
 
-## 3.导入集成
+**导入集成**
 
-### 1 远程依赖集成
+**1 远程依赖集成**
 
  1.Add it in your root build.gradle at the end of repositories:
 
@@ -133,10 +133,11 @@
 部分功能
 	
 	dependencies {
-	        implementation 'com.github.udesk.UdeskSDK-Android:模块名(UdeskSDKUI|udeskvideo):版本号'
+	        implementation 'com.github.udesk.UdeskSDK-Android:模块名(UdeskSDKUI|udeskvideo|udeskasr):版本号'
 	}
 
-### 2 本地集成
+**2 本地集成**
+
 你所要做的是把UdeskSDKUI做为独立的module import, 并在你APP build.gradle文件中加入：
 
 	dependencies {
@@ -144,7 +145,7 @@
 	}
 
 
-##初始化客户逻辑
+**初始化客户逻辑**
 
 	1使用主键 sdk_token customer_token email cellphone 依次查找用户,找到转1.1
 	     1.1 设找到的用户为customer
@@ -347,98 +348,102 @@
 
   ```    
      
-## 4. 进入页面分配会话
+### 3. 进入页面分配会话
 
-	  UdeskSDKManager.getInstance().entryChat(getApplicationContext(), makeBuilder().build(), sdkToken);
-	  注意：只有通过这个方法进入会话,管理员在后台配置的选项才会生效, 其它方式进入会话,配置不会生效。 
+``` java
+    
+  UdeskSDKManager.getInstance().entryChat(getApplicationContext(), makeBuilder().build(), sdkToken);
+  注意：只有通过这个方法进入会话,管理员在后台配置的选项才会生效, 其它方式进入会话,配置不会生效。 
+      
+``` 
+
+### 4. Proguard
+  
+``` java
+//udesk
+-keep class udesk.** {*;} 
+-keep class cn.udesk.**{*; } 
+//JSONobject
+-keep class org.json.** {*; }
+//okhttp
+-keep class okhttp3.** {*;} 
+-keep class okio.** {*;} 
+//okgo
+-keep class com.lzy.okgo.** {*;} 
+-ignorewarnings
+//smack
+-keep class org.jxmpp.** {*;} 
+-keep class de.measite.** {*;} 
+-keep class org.jivesoftware.** {*;} 
+-keep class org.xmlpull.** {*;} 
+-dontwarn org.xbill.**
+-keep class org.xbill.** {*;} 
+
+//eventbus
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+ 
+# Only required if you use AsyncExecutor
+-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+    <init>(java.lang.Throwable);
+}
+
+//freso
+-keep class com.facebook.** {*; }  
+-keep class com.facebook.imagepipeline.** {*; } 
+-keep class com.facebook.animated.gif.** {*; }  
+-keep class com.facebook.drawee.** {*; }  
+-keep class com.facebook.drawee.backends.pipeline.** {*; }  
+-keep class com.facebook.imagepipeline.** {*; }  
+-keep class bolts.** {*; }  
+-keep class me.relex.photodraweeview.** {*; }  
+
+-keep,allowobfuscation @interface com.facebook.common.internal.DoNotStrip
+-keep @com.facebook.common.internal.DoNotStrip class *
+-keepclassmembers class * {
+    @com.facebook.common.internal.DoNotStrip *;
+}
+# Keep native methods
+-keepclassmembers class * {
+    native <methods>;
+}
+
+-dontwarn okio.**
+-dontwarn com.squareup.okhttp.**
+-dontwarn okhttp3.**
+-dontwarn javax.annotation.**
+-dontwarn com.android.volley.toolbox.**
+-dontwarn com.facebook.infer.**
+-dontwarn com.lzy.okgo.**
 
 
-## 5. Proguard
+ //bugly
+-keep class com.tencent.bugly.** {*; } 
 
-	//udesk
-	-keep class udesk.** {*;} 
-	-keep class cn.udesk.**{*; } 
-	//JSONobject
-	-keep class org.json.** {*; }
-	//okhttp
-	-keep class okhttp3.** {*;} 
-	-keep class okio.** {*;} 
-	//okgo
-	-keep class com.lzy.okgo.** {*;} 
-	-ignorewarnings
-	//smack
-	-keep class org.jxmpp.** {*;} 
-	-keep class de.measite.** {*;} 
-	-keep class org.jivesoftware.** {*;} 
-	-keep class org.xmlpull.** {*;} 
-	-dontwarn org.xbill.**
-	-keep class org.xbill.** {*;} 
-	
-	//eventbus
-	-keepattributes *Annotation*
-	-keepclassmembers class ** {
-	    @org.greenrobot.eventbus.Subscribe <methods>;
-	}
-	-keep enum org.greenrobot.eventbus.ThreadMode { *; }
-	 
-	# Only required if you use AsyncExecutor
-	-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
-	    <init>(java.lang.Throwable);
-	}
-	
-	//freso
-	-keep class com.facebook.** {*; }  
-	-keep class com.facebook.imagepipeline.** {*; } 
-	-keep class com.facebook.animated.gif.** {*; }  
-	-keep class com.facebook.drawee.** {*; }  
-	-keep class com.facebook.drawee.backends.pipeline.** {*; }  
-	-keep class com.facebook.imagepipeline.** {*; }  
-	-keep class bolts.** {*; }  
-	-keep class me.relex.photodraweeview.** {*; }  
-	
-	-keep,allowobfuscation @interface com.facebook.common.internal.DoNotStrip
-	-keep @com.facebook.common.internal.DoNotStrip class *
-	-keepclassmembers class * {
-	    @com.facebook.common.internal.DoNotStrip *;
-	}
-	# Keep native methods
-	-keepclassmembers class * {
-	    native <methods>;
-	}
-	
-	-dontwarn okio.**
-	-dontwarn com.squareup.okhttp.**
-	-dontwarn okhttp3.**
-	-dontwarn javax.annotation.**
-	-dontwarn com.android.volley.toolbox.**
-	-dontwarn com.facebook.infer.**
-	-dontwarn com.lzy.okgo.**
-	
-	
-	 //bugly
-	-keep class com.tencent.bugly.** {*; } 
-	
-	 //agora
-	-keep class io.agora.**{*;}
+ //agora
+-keep class io.agora.**{*;}
 
 ```
-## 6. 如果需要设置咨询对象，参照如下设置
-  
-      	UdeskCommodityItem item = new UdeskCommodityItem();
+### 5. 如果需要设置咨询对象，参照如下设置
+  ``` java
+      UdeskCommodityItem item = new UdeskCommodityItem();
         item.setTitle("木林森男鞋新款2016夏季透气网鞋男士休闲鞋网面韩版懒人蹬潮鞋子");// 商品主标题
         item.setSubTitle("¥ 99.00");//商品副标题
         item.setThumbHttpUrl("https://img.alicdn.com/imgextra/i1/1728293990/TB2ngm0qFXXXXcOXXXXXXXXXXXX_!!1728293990.jpg_430x430q90.jpg");// 左侧图片
         item.setCommodityUrl("https://detail.tmall.com/item.htm?spm=a1z10.3746-b.w4946-14396547293.1.4PUcgZ&id=529634221064&sku_properties=-1:-1");// 商品网络链接
         UdeskSDKManager.getInstance().setCommodity(item);
-        在进入会话界面前调用 。
-
+       在进入会话界面前调用 。
+  ```
   
-## 7. 多语言设置
+### 6. 多语言设置
   
-
- 	 LocalManageUtil.saveSelectLanguage
+  ``` java
+  LocalManageUtil.saveSelectLanguage
   
-
+  ```
   
   **更多功参考demo。**
   
