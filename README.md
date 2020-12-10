@@ -136,6 +136,17 @@
 	        implementation 'com.github.udesk.UdeskSDK-Android:模块名(UdeskSDKUI|udeskvideo):版本号'
 	}
 
+
+ 3.添加其他依赖库
+
+	implementation 'com.android.support:recyclerview-v7:28.0.0'
+	implementation 'com.facebook.fresco:fresco:1.3.0'
+	implementation 'com.facebook.fresco:animated-gif:1.3.0'
+	implementation 'me.relex:photodraweeview:1.1.3'
+	implementation 'com.lzy.net:okgo:3.0.4'
+	implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+	implementation 'org.greenrobot:eventbus:3.0.0'
+	
 **2 本地集成**
 
 你所要做的是把UdeskSDKUI做为独立的module import, 并在你APP build.gradle文件中加入：
