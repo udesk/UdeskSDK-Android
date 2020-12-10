@@ -57,6 +57,16 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 	        implementation 'com.github.udesk.UdeskSDK-Android:模块名(UdeskSDKUI|udeskvideo|udeskasr):版本号'
 	}
 
+ 3.添加其他依赖库
+
+	implementation 'com.github.bumptech.glide:glide:4.10.0'
+	implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+	implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+	implementation 'com.squareup.okhttp3:okhttp:4.9.0' 或 3.x 版本
+	implementation group: 'org.ccil.cowan.tagsoup', name: 'tagsoup', version: '1.2.1'
+	implementation 'androidx.recyclerview:recyclerview:1.1.0'
+	implementation 'org.greenrobot:eventbus:3.0.0'
+
 ## 2 本地集成
 | Demo中的文件| 说明                            |
 | ---------  | -----------------------         |
