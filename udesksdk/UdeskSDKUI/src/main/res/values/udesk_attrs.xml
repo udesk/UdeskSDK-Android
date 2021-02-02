@@ -38,4 +38,9 @@
         <attr name="udesk_iv_borderWidth" format="reference|dimension" />
         <attr name="udesk_iv_borderColor" format="reference|color" />
     </declare-styleable>
+
+    <declare-styleable name="UdeskMaxHeightView">
+        <attr name="udesk_HeightRatio" format="reference|float" />
+        <attr name="udesk_HeightDimen" format="reference|dimension" />
+    </declare-styleable>
 </resources>

@@ -6,10 +6,15 @@ import java.util.Map;
 
 import cn.udesk.R;
 import cn.udesk.callback.IFunctionItemClickCallBack;
+import cn.udesk.callback.IImgTxtMessageWebonClick;
+import cn.udesk.callback.ILinkMessageWebonClick;
 import cn.udesk.callback.ILocationMessageClickCallBack;
 import cn.udesk.callback.INavigationItemClickCallBack;
-import cn.udesk.callback.IProductMessageWebonCliclk;
-import cn.udesk.callback.ITxtMessageWebonCliclk;
+import cn.udesk.callback.IProductMessageWebonClick;
+import cn.udesk.callback.IReplyProductMessageWebonClick;
+import cn.udesk.callback.IRichMessageWebonClick;
+import cn.udesk.callback.IStructMessageWebonClick;
+import cn.udesk.callback.ITxtMessageWebonClick;
 import cn.udesk.callback.IUdeskFormCallBack;
 import cn.udesk.callback.IUdeskStructMessageCallBack;
 import cn.udesk.model.FunctionMode;
@@ -117,9 +122,19 @@ public class UdeskConfig {
     // //配置发送商品链接的mode
     public UdeskCommodityItem commodity;
     //文本消息中的链接消息的点击事件的拦截回调。 包含表情的不会拦截回调。
-    public ITxtMessageWebonCliclk txtMessageClick;
+    public ITxtMessageWebonClick txtMessageClick;
     //商品消息中的链接点击回调
-    public IProductMessageWebonCliclk productMessageClick;
+    public IProductMessageWebonClick productMessageClick;
+    //链接消息点击回调
+    public ILinkMessageWebonClick linkMessageWebonClick;
+    //商品回复消息点击回调
+    public IReplyProductMessageWebonClick replyProductMessageWebonClick;
+    //富文本链接消息点击回调
+    public IRichMessageWebonClick richMessageWebonClick;
+    //图文消息点击回调
+    public IImgTxtMessageWebonClick imgTxtMessageWebonClick;
+    //结构化消息按钮链接回调
+    public IStructMessageWebonClick structMessageWebonClick;
     //离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
     public IUdeskFormCallBack formCallBack;
     //设置结构化消息的回调接口
@@ -160,6 +175,11 @@ public class UdeskConfig {
     public boolean isShowCustomerHead = true;
     //设置带入一条消息  进入机器人界面自动发送
     public String preSendRobotMessages;
+    //设置智能提示的最大高度按比例
+    public float maxHeightViewRatio =0.0f;
+    //设置智能提示的最大高度
+    public float maxHeightViewDimen =0.0f;
+
     UdeskConfig(Builder builder) {
 
         this.udeskTitlebarBgResId = builder.udeskTitlebarBgResId;
@@ -209,6 +229,11 @@ public class UdeskConfig {
         this.commodity = builder.commodity;
         this.txtMessageClick = builder.txtMessageClick;
         this.productMessageClick = builder.productMessageClick;
+        this.linkMessageWebonClick = builder.linkMessageWebonClick;
+        this.replyProductMessageWebonClick = builder.replyProductMessageWebonClick;
+        this.richMessageWebonClick = builder.richMessageWebonClick;
+        this.imgTxtMessageWebonClick = builder.imgTxtMessageWebonClick;
+        this.structMessageWebonClick = builder.structMessageWebonClick;
         this.formCallBack = builder.formCallBack;
         this.structMessageCallBack = builder.structMessageCallBack;
         this.functionItemClickCallBack = builder.functionItemClickCallBack;
@@ -229,6 +254,8 @@ public class UdeskConfig {
         this.isShowCustomerNickname = builder.isShowCustomerNickname;
         this.isShowCustomerHead = builder.isShowCustomerHead;
         this.preSendRobotMessages= builder.preSendRobotMessages;
+        this.maxHeightViewRatio = builder.maxHeightViewRatio;
+        this.maxHeightViewDimen = builder.maxHeightViewDimen;
     }
 
     public static UdeskConfig createDefualt() {
@@ -327,9 +354,19 @@ public class UdeskConfig {
         //配置发送商品链接的mode
         private UdeskCommodityItem commodity;
         //文本消息中的链接消息的点击事件的拦截回调。 包含表情的不会拦截回调。
-        public ITxtMessageWebonCliclk txtMessageClick;
+        public ITxtMessageWebonClick txtMessageClick;
         //商品消息中的链接点击回调
-        public IProductMessageWebonCliclk productMessageClick;
+        public IProductMessageWebonClick productMessageClick;
+        //链接消息点击回调
+        public ILinkMessageWebonClick linkMessageWebonClick;
+        //商品回复消息点击回调
+        public IReplyProductMessageWebonClick replyProductMessageWebonClick;
+        //富文本链接消息点击回调
+        public IRichMessageWebonClick richMessageWebonClick;
+        //图文消息点击回调
+        public IImgTxtMessageWebonClick imgTxtMessageWebonClick;
+        //结构化消息点击回调
+        public IStructMessageWebonClick structMessageWebonClick;
         //离线留言表单的回调接口：  如果不用udesk系统提供的留言功能，可以设置该接口  回调使用自己的处理流程
         private IUdeskFormCallBack formCallBack;
         //设置结构化消息的回调接口
@@ -370,6 +407,10 @@ public class UdeskConfig {
         public boolean isShowCustomerHead = true;
         //设置带入一条消息  进入机器人界面自动发送
         public String preSendRobotMessages ="";
+        //设置智能提示的最大高度按比例
+        public float maxHeightViewRatio =0.0f;
+        //设置智能提示的最大高度
+        public float maxHeightViewDimen =0.0f;
         public Builder() {
 
         }
@@ -750,13 +791,68 @@ public class UdeskConfig {
         /**
          * @param txtMessageClick 文本消息中的链接消息的点击事件的拦截回调。 包含表情的不会拦截回调。
          */
-        public Builder setTxtMessageClick(ITxtMessageWebonCliclk txtMessageClick) {
+        public Builder setTxtMessageClick(ITxtMessageWebonClick txtMessageClick) {
             this.txtMessageClick = txtMessageClick;
             return this;
         }
 
-        public Builder setProductMessageClick(IProductMessageWebonCliclk productMessageClick) {
+        /**
+         * 商品消息点击回调
+         * @param productMessageClick
+         * @return
+         */
+        public Builder setProductMessageClick(IProductMessageWebonClick productMessageClick) {
             this.productMessageClick = productMessageClick;
+            return this;
+        }
+
+        /**
+         * 链接消息点击回调
+         * @param linkMessageWebonClick
+         * @return
+         */
+        public Builder setLinkMessageWebonClick(ILinkMessageWebonClick linkMessageWebonClick) {
+            this.linkMessageWebonClick = linkMessageWebonClick;
+            return this;
+        }
+
+        /**
+         * 商品回复消息点击回调
+         * @param replyProductMessageWebonClick
+         * @return
+         */
+        public Builder setReplyProductMessageWebonClick(IReplyProductMessageWebonClick replyProductMessageWebonClick) {
+            this.replyProductMessageWebonClick = replyProductMessageWebonClick;
+            return this;
+        }
+
+        /**
+         * 富文本链接消息点击回调
+         * @param richMessageWebonClick
+         * @return
+         */
+        public Builder setRichMessageWebonClick(IRichMessageWebonClick richMessageWebonClick) {
+            this.richMessageWebonClick = richMessageWebonClick;
+            return this;
+        }
+
+        /**
+         * 图文消息点击回调
+         * @param imgTxtMessageWebonClick
+         * @return
+         */
+        public Builder setImgTxtMessageWebonClick(IImgTxtMessageWebonClick imgTxtMessageWebonClick) {
+            this.imgTxtMessageWebonClick = imgTxtMessageWebonClick;
+            return this;
+        }
+
+        /**
+         * 结构化消息按钮链接回调
+         * @param structMessageWebonClick
+         * @return
+         */
+        public Builder setStructMessageWebonClick(IStructMessageWebonClick structMessageWebonClick) {
+            this.structMessageWebonClick = structMessageWebonClick;
             return this;
         }
 
@@ -876,16 +972,31 @@ public class UdeskConfig {
             return this;
         }
 
+        /**
+         * 设置SDK自定义渠道
+         * @param channel
+         * @return
+         */
         public Builder setChannel(String channel) {
             this.channel = channel;
             return this;
         }
 
+        /**
+         * 是否显示客户昵称
+         * @param isShowCustomerNickname
+         * @return
+         */
         public Builder isShowCustomerNickname(boolean isShowCustomerNickname) {
             this.isShowCustomerNickname = isShowCustomerNickname;
             return this;
         }
 
+        /**
+         * 是否显示客户头像
+         * @param isShowCustomerHead
+         * @return
+         */
         public Builder isShowCustomerHead(boolean isShowCustomerHead) {
             this.isShowCustomerHead = isShowCustomerHead;
             return this;
@@ -900,6 +1011,27 @@ public class UdeskConfig {
             this.preSendRobotMessages = preSendRobotMessages;
             return this;
         }
+
+        /**
+         * 设置智能提示的高度按比例
+         * @param maxHeightViewRatio
+         * @return
+         */
+        public Builder setMaxHeightViewRatio(float maxHeightViewRatio) {
+            this.maxHeightViewRatio = maxHeightViewRatio;
+            return this;
+        }
+
+        /**
+         * 设置智能提示的高度
+         * @param maxHeightViewDimen
+         * @return
+         */
+        public Builder setMaxHeightViewDimen(float maxHeightViewDimen) {
+            this.maxHeightViewDimen = maxHeightViewDimen;
+            return this;
+        }
+
         public UdeskConfig build() {
             return new UdeskConfig(this);
         }

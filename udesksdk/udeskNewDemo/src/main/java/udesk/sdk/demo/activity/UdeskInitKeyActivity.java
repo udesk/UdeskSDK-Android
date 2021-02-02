@@ -78,7 +78,7 @@ public class UdeskInitKeyActivity extends Activity {
 //    private String UDESK_SECRETKEY = "bfdf5d8b5d1000ff3114068743e1b5bb";
 
 //    替换成你们注册生成的域名
-//    private String UDESK_DOMAIN = "reocar.udeskb1.com";
+//    private String UDESK_DOMAIN = "reocar.b1.tryudesk.com";
 //    //替换成你们生成应用产生的appid
 //    private String AppId = "e53830a1359ad788";
 //    // 替换成你们在后台生成的密钥

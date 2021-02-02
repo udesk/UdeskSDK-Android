@@ -32,8 +32,8 @@
             android:layout_height="wrap_content" />
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_height="match_parent"
+            >
             <cn.udesk.widget.UDPullGetMoreListView
                 android:id="@+id/udesk_conversation"
                 android:layout_width="match_parent"
@@ -42,34 +42,30 @@
                 android:cacheColorHint="@android:color/transparent"
                 android:divider="@android:color/transparent"
                 android:listSelector="@android:color/transparent" />
-            <LinearLayout
+            <cn.udesk.widget.UdeskMaxHeightView
                 android:id="@+id/udesk_robot_ll_associate"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:layout_alignParentBottom="true"
                 android:background="@color/udesk_color_f0f2f2"
                 android:visibility="gone"
                 >
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/udesk_5"
+                    android:layout_margin="@dimen/udesk_10"
                     android:textColor="@color/udesk_color_242E33"
-                    android:textSize="@dimen/udesk_sp16"
-                    android:text="输入问题推荐"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    />
+                    android:textSize="@dimen/udesk_sp18"
+                    android:text="@string/udesk_input_recommendation"/>
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/udesk_robot_rv_associate"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/udesk_16"
                     />
 
-            </LinearLayout>
+            </cn.udesk.widget.UdeskMaxHeightView>
         </RelativeLayout>
     </LinearLayout>
 

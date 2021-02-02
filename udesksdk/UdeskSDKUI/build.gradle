@@ -38,5 +38,5 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
     implementation 'com.squareup.okhttp3:okhttp:3.14.4'
     implementation group: 'org.ccil.cowan.tagsoup', name: 'tagsoup', version: '1.2.1'
-    api files('libs/udesk_sdk_5.2.5.jar')
+    api files('libs/udesk_sdk_5.2.7.jar')
 }
