@@ -198,6 +198,13 @@ public class MessageAdatper extends BaseAdapter {
                         if (TextUtils.equals(info.getMsgId(),newInfo.getMsgId())){
                             newMessages.add(info);
                         }
+                        if (info.getSwitchStaffType() > 0
+                                && info.getSwitchStaffType() == newInfo.getSwitchStaffType()
+                                && info.getLogId() == newInfo.getLogId()
+                                && TextUtils.equals(info.getMsgContent(), newInfo.getMsgContent())
+                                && info.getDirection() == UdeskConst.ChatMsgDirection.Recv) {
+                            newMessages.add(info);
+                        }
                     }
                 }
                 list.removeAll(newMessages);
@@ -220,6 +227,7 @@ public class MessageAdatper extends BaseAdapter {
             e.printStackTrace();
         }
     }
+
 
 
     @Override

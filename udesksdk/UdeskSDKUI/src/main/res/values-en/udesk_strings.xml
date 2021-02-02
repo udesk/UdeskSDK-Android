@@ -148,7 +148,9 @@
     <string name="udesk_asr_fail">Voice recognition failed</string>
     <string name="udesk_file_not_exist">File does not exist</string>
     <string name="udesk_survey_done">Survey done</string>
+    <string name="udesk_transfer_out_of_data">transfer button is out of date</string>
 
+    <string name="udesk_input_recommendation">Input question recommendation</string>
 
 
 </resources>

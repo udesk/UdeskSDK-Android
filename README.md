@@ -1067,6 +1067,14 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 
 ### 更新日志 ###
 
+### 5.2.6（5.x），5.2.7（5.x_android_Q 分支）版本更新：
+
+1. 添加推荐引导语
+2. 支持转人工失效
+3. 智能提示高度优化
+4. 添加消息点击回调
+
+
 ### 5.2.4（5.x），5.2.5（5.x_android_Q 分支）版本更新：
 
 1. 支持答案链接FAQ

@@ -264,9 +264,13 @@ public class RightViewHolder extends BaseViewHolder {
                             UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                             return;
                         }
-                        Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
-                        intent.putExtra(UdeskConst.WELCOME_URL,productListBean.getUrl());
-                        mContext.startActivity(intent);
+                        if (UdeskSDKManager.getInstance().getUdeskConfig().replyProductMessageWebonClick != null) {
+                            UdeskSDKManager.getInstance().getUdeskConfig().replyProductMessageWebonClick.replyProductMsgOnclick(productListBean.getUrl());
+                        } else {
+                            Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
+                            intent.putExtra(UdeskConst.WELCOME_URL, productListBean.getUrl());
+                            mContext.startActivity(intent);
+                        }
                     }
                 });
             }

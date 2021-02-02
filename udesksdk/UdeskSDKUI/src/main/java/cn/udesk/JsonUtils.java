@@ -432,6 +432,7 @@ public class JsonUtils {
                 robotInit.setLogId(sessionInfo.opt("logId"));
                 robotInit.setSwitchStaffTips(sessionInfo.opt("switchStaffTips"));
                 robotInit.setSwitchStaffType(sessionInfo.opt("switchStaffType"));
+                robotInit.setSwitchStaffAnswer(sessionInfo.opt("switchStaffAnswer"));
                 if (sessionInfo.has("webConfig")) {
                     WebConfigBean webConfigBean = new WebConfigBean();
                     JSONObject webConfig = sessionInfo.getJSONObject("webConfig");
@@ -569,6 +570,7 @@ public class JsonUtils {
                                 dataBean.setContent(data.opt("content"));
                                 dataBean.setSwitchStaffType(data.opt("switchStaffType"));
                                 dataBean.setSwitchStaffTips(data.opt("switchStaffTips"));
+                                dataBean.setSwitchStaffAnswer(data.opt("switchStaffAnswer"));
                                 dataBean.setQuesition_id(data.opt("question_id"));
                                 dataBean.setTimeout_freq(data.opt("timeout_freq"));
                                 dataBean.setDuration(data.opt("duration"));
@@ -576,6 +578,7 @@ public class JsonUtils {
                                 dataBean.setFlowId(data.opt("flowId"));
                                 dataBean.setFlowTitle(data.opt("flowTitle"));
                                 dataBean.setFlowContent(data.opt("flowContent"));
+                                dataBean.setRecommendationGuidance(data.opt("recommendationGuidance"));
                                 if (data.has("topAsk")) {
                                     if (!TextUtils.isEmpty(data.optString("topAsk"))) {
                                         List<TopAskBean> topAskList = parseTopAsk(data);
@@ -721,12 +724,14 @@ public class JsonUtils {
                         dataBean.setContent(data.opt("content"));
                         dataBean.setSwitchStaffType(data.opt("switchStaffType"));
                         dataBean.setSwitchStaffTips(data.opt("switchStaffTips"));
+                        dataBean.setSwitchStaffAnswer(data.opt("switchStaffAnswer"));
                         dataBean.setQuesition_id(data.opt("question_id"));
                         dataBean.setTimeout_freq(data.opt("timeout_freq"));
                         dataBean.setDuration(data.opt("duration"));
                         dataBean.setFlowId(data.opt("flowId"));
                         dataBean.setFlowTitle(data.opt("flowTitle"));
                         dataBean.setFlowContent(data.opt("flowContent"));
+                        dataBean.setRecommendationGuidance(data.opt("recommendationGuidance"));
                         if (data.has("topAsk")) {
                             if (!TextUtils.isEmpty(data.optString("topAsk"))) {
                                 List<TopAskBean> topAskList = parseTopAsk(data);

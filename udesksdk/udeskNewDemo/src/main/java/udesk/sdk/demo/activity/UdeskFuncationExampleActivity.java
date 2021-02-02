@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -31,13 +30,18 @@ import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.aac.UdeskViewMode;
 import cn.udesk.callback.IFunctionItemClickCallBack;
+import cn.udesk.callback.IImgTxtMessageWebonClick;
+import cn.udesk.callback.ILinkMessageWebonClick;
 import cn.udesk.callback.ILocationMessageClickCallBack;
 import cn.udesk.callback.INavigationItemClickCallBack;
-import cn.udesk.callback.ITxtMessageWebonCliclk;
+import cn.udesk.callback.IProductMessageWebonClick;
+import cn.udesk.callback.IReplyProductMessageWebonClick;
+import cn.udesk.callback.IRichMessageWebonClick;
+import cn.udesk.callback.IStructMessageWebonClick;
+import cn.udesk.callback.ITxtMessageWebonClick;
 import cn.udesk.callback.IUdeskFormCallBack;
 import cn.udesk.callback.IUdeskStructMessageCallBack;
 import cn.udesk.config.UdeskConfig;
-import cn.udesk.db.UdeskDBManager;
 import cn.udesk.model.FunctionMode;
 import cn.udesk.model.NavigationMode;
 import cn.udesk.model.UdeskCommodityItem;
@@ -49,7 +53,6 @@ import udesk.core.model.OrderBean;
 import udesk.core.model.Product;
 import udesk.core.model.ProductListBean;
 import udesk.core.model.TraceBean;
-import udesk.core.utils.UdeskUtils;
 import udesk.sdk.demo.R;
 import udesk.core.LocalManageUtil;
 import udesk.sdk.demo.maps.LocationActivity;
@@ -261,12 +264,50 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                     }
                 })//设置是否使用机器人导航UI true表示使用 false表示不使用
 
-                .setTxtMessageClick(new ITxtMessageWebonCliclk() {
+                .setTxtMessageClick(new ITxtMessageWebonClick() {
                     @Override
                     public void txtMsgOnclick(String url) {
                         Toast.makeText(getApplicationContext(), "对文本消息中的链接消息处理设置回调", Toast.LENGTH_SHORT).show();
                     }
                 })   //如果需要对文本消息中的链接消息处理可以设置该回调，点击事件的拦截回调。 包含表情的不会拦截回调。
+                .setProductMessageClick(new IProductMessageWebonClick() {
+                    @Override
+                    public void txtMsgOnclick(String url) {
+                        Toast.makeText(getApplicationContext(), "对商品消息点击回调", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setImgTxtMessageWebonClick(new IImgTxtMessageWebonClick() {
+                    @Override
+                    public void imgTxtMsgOnclick(String url) {
+                        Toast.makeText(getApplicationContext(), "对图文消息回调", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setLinkMessageWebonClick(new ILinkMessageWebonClick() {
+                    @Override
+                    public void linkMsgOnclick(String url) {
+                        Toast.makeText(getApplicationContext(), "对链接消息回调", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setReplyProductMessageWebonClick(new IReplyProductMessageWebonClick() {
+                    @Override
+                    public void replyProductMsgOnclick(String url) {
+                        Toast.makeText(getApplicationContext(), "对商品回复消息回调", Toast.LENGTH_SHORT).show();
+
+                    }
+                })
+                .setRichMessageWebonClick(new IRichMessageWebonClick() {
+                    @Override
+                    public void richMsgOnclick(String url) {
+                        Toast.makeText(getApplicationContext(), "对富文本消息链接回调", Toast.LENGTH_SHORT).show();
+
+                    }
+                })
+                .setStructMessageWebonClick(new IStructMessageWebonClick() {
+                    @Override
+                    public void structMsgOnclick(String url) {
+                        Toast.makeText(getApplicationContext(), "对结构化消息按钮链接回调", Toast.LENGTH_SHORT).show();
+                    }
+                })
                 .setFormCallBack(new IUdeskFormCallBack() {
                     @Override
                     public void toLuachForm(Context context) {
@@ -283,7 +324,8 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 .setChannel(channel.getText().toString())
                 .isShowCustomerNickname(show_customer_nickname.isChecked())//设置是否显示昵称
                 .isShowCustomerHead(show_customer_head.isChecked()) //设置是否显示头像
-                .setPreSendRobotMessages(robotFirstMessage.getText().toString()); //设置带入一条消息  进入机器人界面自动发送
+                .setPreSendRobotMessages(robotFirstMessage.getText().toString())//设置带入一条消息  进入机器人界面自动发送
+                .setMaxHeightViewRatio(0.4f); //设置智能提示显示最大高度比例
 
         return builder;
     }

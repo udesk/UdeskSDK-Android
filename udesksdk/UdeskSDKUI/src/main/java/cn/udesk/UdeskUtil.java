@@ -1551,7 +1551,7 @@ public class UdeskUtil {
                 UdeskConst.SendFlag.RESULT_SUCCESS,UdeskConst.PlayFlag.NOPLAY,UdeskConst.ChatMsgDirection.Send,"",0,"","","",
                 0,"");
     }
-    public static MessageInfo buildRobotInitRelpy(RobotInit robotInit){
+    public static MessageInfo buildRobotInitReply(RobotInit robotInit){
         MessageInfo messageInfo = buildMsg(robotInit.getWebConfig().getRobotName(), robotInit.getWebConfig().getLogoUrl(), System.currentTimeMillis(), UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_ROBOT_CLASSIFY,
                 "", UdeskConst.ChatMsgReadFlag.read, UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv, "",
                 0, "", "", "", UdeskUtils.objectToInt(robotInit.getSwitchStaffType()), UdeskUtils.objectToString(robotInit.getSwitchStaffTips()));
@@ -1562,30 +1562,40 @@ public class UdeskUtil {
         return messageInfo;
 
     }
-    public static MessageInfo buildWelcomeRelpy(RobotInit robotInit){
+    public static MessageInfo buildWelcomeReply(RobotInit robotInit){
         MessageInfo messageInfo = buildMsg(robotInit.getWebConfig().getRobotName(), robotInit.getWebConfig().getLogoUrl(), System.currentTimeMillis(), UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_RICH,
                 robotInit.getWebConfig().getHelloWord(), UdeskConst.ChatMsgReadFlag.read, UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,
-                "", 0, "", "", "", UdeskUtils.objectToInt(robotInit.getSwitchStaffType()), UdeskUtils.objectToString(robotInit.getSwitchStaffTips()));
+                "", 0, "", "", "", UdeskUtils.objectToInt(robotInit.getSwitchStaffType()), "");
         messageInfo.setLogId(robotInit.getLogId());
         return messageInfo;
 
     }
 
-    public static MessageInfo buildAllMessage(LogBean message){
-        if (message.getContent()!=null){
-            Content content=message.getContent();
-            if (content.getData()!=null){
-                MessageInfo info=buildMsg(message.getAgent_nick_name(),message.getAgent_avatar(),stringToLong(message.getCreated_at()),
-                        UdeskUtils.objectToString(message.getMessage_id()), message.getContent().getType(),content.getData().getContent(),
-                        UdeskConst.ChatMsgReadFlag.read,UdeskConst.SendFlag.RESULT_SUCCESS,UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,
+    public static MessageInfo buildSwitchStaffAnswerReply(RobotInit robotInit) {
+        MessageInfo messageInfo = buildMsg(robotInit.getWebConfig().getRobotName(), robotInit.getWebConfig().getLogoUrl(), System.currentTimeMillis(), UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_RICH,
+                robotInit.getSwitchStaffAnswer(), UdeskConst.ChatMsgReadFlag.read, UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,
+                "", 0, "", "", "", UdeskUtils.objectToInt(robotInit.getSwitchStaffType()), "");
+        messageInfo.setLogId(robotInit.getLogId());
+        return messageInfo;
+
+    }
+    public static ArrayList<MessageInfo> buildAllMessage(LogBean message) {
+        if (message.getContent() != null) {
+            Content content = message.getContent();
+            if (content.getData() != null) {
+                ArrayList<MessageInfo> messageInfos = new ArrayList<>();
+                MessageInfo info = buildMsg(message.getAgent_nick_name(), message.getAgent_avatar(), stringToLong(message.getCreated_at()),
+                        UdeskUtils.objectToString(message.getMessage_id()), message.getContent().getType(), content.getData().getContent(),
+                        UdeskConst.ChatMsgReadFlag.read, UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,
                         message.getContent().getLocalPath(), UdeskUtils.objectToLong(message.getContent().getData().getDuration()),
                         message.getAgent_jid(), message.getContent().getFilename(), message.getContent().getFilesize(),
                         content.getData().getSwitchStaffType(), content.getData().getSwitchStaffTips());
-                if (message.getInviterAgentInfo()!=null){
+                if (message.getInviterAgentInfo() != null) {
                     info.setReplyUser(message.getInviterAgentInfo().getNick_name());
                     info.setUser_avatar(message.getInviterAgentInfo().getAvatar());
                     info.setmAgentJid(message.getInviterAgentInfo().getJid());
                 }
+                info.setRecommendationGuidance(content.getData().getRecommendationGuidance());
                 info.setTopAsk(content.getData().getTopAsk());
                 info.setLogId(message.getLogId());
                 info.setSeqNum(message.getContent().getSeq_num());
@@ -1594,10 +1604,32 @@ public class UdeskUtil {
                 info.setFlowId(content.getData().getFlowId());
                 info.setFlowTitle(content.getData().getFlowTitle());
                 info.setQuestion_id(UdeskUtils.objectToString(content.getData().getQuesition_id()));
-                if (message.getSender().equals(UdeskConst.Sender.customer)){
+                if (message.getSender().equals(UdeskConst.Sender.customer)) {
                     info.setDirection(UdeskConst.ChatMsgDirection.Send);
                 }
-                return info;
+                messageInfos.add(info);
+                if (!TextUtils.isEmpty(content.getData().getSwitchStaffAnswer())) {
+                    MessageInfo info2 = buildMsg(message.getAgent_nick_name(), message.getAgent_avatar(), stringToLong(message.getCreated_at()),
+                            UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_RICH, content.getData().getSwitchStaffAnswer(),
+                            UdeskConst.ChatMsgReadFlag.read, UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,
+                            "", 0, "", "", "",
+                            content.getData().getSwitchStaffType(), "");
+                    info2.setLogId(message.getLogId());
+                    messageInfos.add(info2);
+                }
+
+                if (content.getData().getSwitchStaffType() == UdeskConst.SwitchStaffType.AUTO
+                        && !TextUtils.isEmpty(content.getData().getSwitchStaffTips())) {
+                    MessageInfo info3 = buildMsg(message.getAgent_nick_name(), message.getAgent_avatar(), stringToLong(message.getCreated_at()),
+                            UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_RICH, content.getData().getSwitchStaffTips(),
+                            UdeskConst.ChatMsgReadFlag.read, UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,
+                            "", 0, "", "", "",
+                            content.getData().getSwitchStaffType(), "");
+                    info3.setLogId(message.getLogId());
+                    messageInfos.add(info3);
+                }
+
+                return messageInfos;
             }
         }
         return null;

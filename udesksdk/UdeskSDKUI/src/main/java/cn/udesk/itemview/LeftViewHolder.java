@@ -572,30 +572,41 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
     private boolean dealTransfer(ViewGroup itemView) {
         try {
             Map<String, Boolean> transferMap = ((UdeskChatActivity) mContext).getTransferMap();
-            if (transferMap.containsKey(message.getMsgId())){
+            if (transferMap.containsKey(message.getMsgId())) {
+                Boolean isShow = transferMap.get(message.getMsgId());
                 dealUseful();
                 tvTransferAgent.setVisibility(View.VISIBLE);
                 tvTransferAgent.setText(message.getSwitchStaffTips());
-                tvTransferAgent.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
-                            UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
-                            return;
+                if (isShow) {
+                    tvTransferAgent.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())) {
+                                UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
+                                return;
+                            }
+                            InvokeEventContainer.getInstance().event_OnTransferClick.invoke(message);
                         }
-                        InvokeEventContainer.getInstance().event_OnTransferClick.invoke(message);
-                    }
-                });
-                if(itemView!=null){
-                    RelativeLayout.LayoutParams params=new RelativeLayout.LayoutParams(UdeskUtil.dip2px(mContext,310),RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    });
+                } else {
+                    tvTransferAgent.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_transfer_out_of_data));
+                        }
+                    });
+                }
+
+                if (itemView != null) {
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(UdeskUtil.dip2px(mContext, 310), RelativeLayout.LayoutParams.WRAP_CONTENT);
                     itemView.setLayoutParams(params);
                 }
                 return true;
-            }else {
+            } else {
                 tvTransferAgent.setVisibility(View.GONE);
                 return false;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -688,10 +699,14 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             showHead(true);
             robotItemQueClassify.setVisibility(View.VISIBLE);
             WebConfigBean webConfig = message.getWebConfig();
-            if (webConfig!=null&&!TextUtils.isEmpty(webConfig.getLeadingWord())){
-                robotTxtQueTitle.callback(this).text(mContext,webConfig.getLeadingWord());
+            if (webConfig != null && !TextUtils.isEmpty(webConfig.getLeadingWord())) {
+                robotTxtQueTitle.callback(this).text(mContext, webConfig.getLeadingWord());
             } else {
-                robotTxtQueTitle.callback(this).text(mContext,mContext.getResources().getString(R.string.udesk_robot_recommendation_question));
+                if (TextUtils.isEmpty(message.getRecommendationGuidance())){
+                    robotTxtQueTitle.callback(this).text(mContext, mContext.getResources().getString(R.string.udesk_robot_recommendation_question));
+                }else {
+                    robotTxtQueTitle.setVisibility(View.GONE);
+                }
             }
             dealTransfer(robotItemQueClassify);
             showRecommended(containerClassify);
@@ -712,6 +727,13 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     viewParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
                 }
                 container.setLayoutParams(viewParams);
+                if (!TextUtils.isEmpty(message.getRecommendationGuidance())){
+                    View childView = LayoutInflater.from(mContext).inflate(R.layout.udesk_view_que_classify_recommend, container, false);
+                    XRichText recommend = childView.findViewById(R.id.udesk_robot_tv_recommend);
+                    recommend.callback(this).text(mContext, message.getRecommendationGuidance());
+                    container.addView(childView);
+                }
+
                 if (topAsk.size()==1&&topAsk.get(0).getOptionsList()!=null&&topAsk.get(0).getOptionsList().size()>0){
                     List<OptionsListBean> optionsList = topAsk.get(0).getOptionsList();
                     for (int j=0;j<optionsList.size();j++){
@@ -860,9 +882,13 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                             UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                             return;
                         }
-                        Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
-                        intent.putExtra(UdeskConst.WELCOME_URL, linkBean.getAnswerUrl());
-                        mContext.startActivity(intent);
+                        if (UdeskSDKManager.getInstance().getUdeskConfig().linkMessageWebonClick != null) {
+                            UdeskSDKManager.getInstance().getUdeskConfig().linkMessageWebonClick.linkMsgOnclick(linkBean.getAnswerUrl());
+                        }else {
+                            Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
+                            intent.putExtra(UdeskConst.WELCOME_URL, linkBean.getAnswerUrl());
+                            mContext.startActivity(intent);
+                        }
                     }
                 });
             }
@@ -909,9 +935,13 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                         UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                         return;
                     }
-                    Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
-                    intent.putExtra(UdeskConst.WELCOME_URL, url);
-                    mContext.startActivity(intent);
+                    if (UdeskSDKManager.getInstance().getUdeskConfig().imgTxtMessageWebonClick != null) {
+                        UdeskSDKManager.getInstance().getUdeskConfig().imgTxtMessageWebonClick.imgTxtMsgOnclick(url);
+                    } else {
+                        Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
+                        intent.putExtra(UdeskConst.WELCOME_URL, url);
+                        mContext.startActivity(intent);
+                    }
                 }
             });
         }catch (Exception e){
@@ -1664,9 +1694,13 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                             UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                             return;
                         }
-                        Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
-                        intent.putExtra(UdeskConst.WELCOME_URL,productListBean.getUrl());
-                        mContext.startActivity(intent);
+                        if (UdeskSDKManager.getInstance().getUdeskConfig().replyProductMessageWebonClick != null) {
+                            UdeskSDKManager.getInstance().getUdeskConfig().replyProductMessageWebonClick.replyProductMsgOnclick(productListBean.getUrl());
+                        } else {
+                            Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
+                            intent.putExtra(UdeskConst.WELCOME_URL, productListBean.getUrl());
+                            mContext.startActivity(intent);
+                        }
                     }
                 });
             }
@@ -1755,14 +1789,18 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
     @Override
     public boolean onLinkClick(String url) {
         try {
-            if (url.contains("tel:")) {
-                Uri uri = Uri.parse(url);
-                Intent intent = new Intent(Intent.ACTION_DIAL, uri);
-                mContext.startActivity(intent);
-            }else {
-                Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
-                intent.putExtra(UdeskConst.WELCOME_URL, url);
-                mContext.startActivity(intent);
+            if (UdeskSDKManager.getInstance().getUdeskConfig().richMessageWebonClick != null) {
+                UdeskSDKManager.getInstance().getUdeskConfig().richMessageWebonClick.richMsgOnclick(url);
+            } else {
+                if (url.contains("tel:")) {
+                    Uri uri = Uri.parse(url);
+                    Intent intent = new Intent(Intent.ACTION_DIAL, uri);
+                    mContext.startActivity(intent);
+                } else {
+                    Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
+                    intent.putExtra(UdeskConst.WELCOME_URL, url);
+                    mContext.startActivity(intent);
+                }
             }
             return true;
         }catch (Exception e){
@@ -1829,9 +1867,13 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                             UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
                             return;
                         }
-                        Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
-                        intent.putExtra(UdeskConst.WELCOME_URL, mStructBtn.getValue());
-                        mContext.startActivity(intent);
+                        if (UdeskSDKManager.getInstance().getUdeskConfig().structMessageWebonClick != null) {
+                            UdeskSDKManager.getInstance().getUdeskConfig().structMessageWebonClick.structMsgOnclick(mStructBtn.getValue());
+                        } else {
+                            Intent intent = new Intent(mContext, UdeskWebViewUrlAcivity.class);
+                            intent.putExtra(UdeskConst.WELCOME_URL, mStructBtn.getValue());
+                            mContext.startActivity(intent);
+                        }
                         break;
                     case UdeskConst.StructBtnTypeString.phone:
                         Intent dialIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mStructBtn.getValue()));
@@ -1841,6 +1883,8 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                         if (UdeskSDKManager.getInstance().getUdeskConfig().structMessageCallBack != null) {
                             UdeskSDKManager.getInstance().getUdeskConfig().structMessageCallBack.structMsgCallBack(mContext, mStructBtn.getValue());
                         }
+                        break;
+                    default:
                         break;
                 }
             } catch (Exception e) {

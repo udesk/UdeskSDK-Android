@@ -147,8 +147,8 @@ public class UdeskDBManager {
                     + "Direction,LocalPath,Duration,Receive_AgentJid,created_at,"
                     + "updated_at,reply_user,reply_userurl,subsessionid,seqNum,fileName,fileSize,"
                     + "switchStaffType,switchStaffTips,topAsk,logId,webConfig,sender,flowId,"
-                    + "flowTitle,flowContent,question_id)"
-                    + " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                    + "flowTitle,flowContent,question_id,recommendationGuidance)"
+                    + " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
             getSQLiteDatabase().execSQL(
                     sql,
@@ -163,7 +163,7 @@ public class UdeskDBManager {
                             msg.getSeqNum(), msg.getFilename(), msg.getFilesize(),
                             msg.getSwitchStaffType(),msg.getSwitchStaffTips(), JsonUtils.parseTopAskToJson(msg.getTopAsk()),
                             msg.getLogId(),JsonUtils.parseWebConfigBeanToJson(msg.getWebConfig()),msg.getSender(),
-                            msg.getFlowId(),msg.getFlowTitle(),msg.getFlowContent(),msg.getQuestion_id()
+                            msg.getFlowId(),msg.getFlowTitle(),msg.getFlowContent(),msg.getQuestion_id(),msg.getRecommendationGuidance()
                     });
             return true;
         } catch (SQLException e) {
@@ -396,6 +396,7 @@ public class UdeskDBManager {
                 String flowTitle = UdeskUtils.objectToString(cursor.getString(26));
                 String flowContent = UdeskUtils.objectToString(cursor.getString(27));
                 String question_id = UdeskUtils.objectToString(cursor.getString(28));
+                String recommendationGuidance = UdeskUtils.objectToString(cursor.getString(29));
 
                 msg = new MessageInfo(time, msgId, msgtype, msgContent,
                         readFlag, sendFlag, playFlag, direction, localPath,
@@ -420,6 +421,7 @@ public class UdeskDBManager {
                 msg.setFlowTitle(flowTitle);
                 msg.setFlowContent(flowContent);
                 msg.setQuestion_id(question_id);
+                msg.setRecommendationGuidance(recommendationGuidance);
                 if (!TextUtils.isEmpty(agentJid.trim())) {
                     String[] urlAndNick = getAgentUrlAndNick(agentJid);
                     if (urlAndNick != null) {
@@ -510,6 +512,8 @@ public class UdeskDBManager {
                 String flowTitle = UdeskUtils.objectToString(cursor.getString(26));
                 String flowContent = UdeskUtils.objectToString(cursor.getString(27));
                 String question_id = UdeskUtils.objectToString(cursor.getString(28));
+                String recommendationGuidance = UdeskUtils.objectToString(cursor.getString(29));
+
 
                 if (sendFlag == UdeskConst.SendFlag.RESULT_SEND && System.currentTimeMillis() - time > 30 * 1000) {
                     sendFlag = UdeskConst.SendFlag.RESULT_FAIL;
@@ -539,6 +543,7 @@ public class UdeskDBManager {
                 message.setFlowTitle(flowTitle);
                 message.setFlowContent(flowContent);
                 message.setQuestion_id(question_id);
+                message.setRecommendationGuidance(recommendationGuidance);
                 if (!TextUtils.isEmpty(agentJid.trim())) {
                     String[] urlAndNick = getAgentUrlAndNick(agentJid);
                     if (urlAndNick != null) {
@@ -622,6 +627,7 @@ public class UdeskDBManager {
                 String flowTitle = UdeskUtils.objectToString(cursor.getString(26));
                 String flowContent = UdeskUtils.objectToString(cursor.getString(27));
                 String question_id = UdeskUtils.objectToString(cursor.getString(28));
+                String recommendationGuidance = UdeskUtils.objectToString(cursor.getString(29));
                 msgInfo = new MessageInfo(time, msgId, msgtype,
                         msgContent, readFlag, sendFlag, playFlag, direction,
                         localPath, duration, agentJid);
@@ -645,6 +651,7 @@ public class UdeskDBManager {
                 msgInfo.setFlowTitle(flowTitle);
                 msgInfo.setFlowContent(flowContent);
                 msgInfo.setQuestion_id(question_id);
+                msgInfo.setRecommendationGuidance(recommendationGuidance);
                 if (!TextUtils.isEmpty(agentJid.trim())) {
                     String[] urlAndNick = getAgentUrlAndNick(agentJid);
                     if (urlAndNick != null) {
@@ -732,6 +739,7 @@ public class UdeskDBManager {
                 String flowTitle = UdeskUtils.objectToString(cursor.getString(26));
                 String flowContent = UdeskUtils.objectToString(cursor.getString(27));
                 String question_id = UdeskUtils.objectToString(cursor.getString(28));
+                String recommendationGuidance = UdeskUtils.objectToString(cursor.getString(29));
                 msgInfo = new MessageInfo(time, msgId, msgtype,
                         msgContent, readFlag, sendFlag, playFlag, direction,
                         localPath, duration, agentJid);
@@ -755,6 +763,7 @@ public class UdeskDBManager {
                 msgInfo.setFlowTitle(flowTitle);
                 msgInfo.setFlowContent(flowContent);
                 msgInfo.setQuestion_id(question_id);
+                msgInfo.setRecommendationGuidance(recommendationGuidance);
                 if (!TextUtils.isEmpty(agentJid.trim())) {
                     String[] urlAndNick = getAgentUrlAndNick(agentJid);
                     if (urlAndNick != null) {
