@@ -11,7 +11,7 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 ### SDK下载地址
 [Udesk-Android 源码下载地址](https://github.com/udesk/UdeskSDK-Android)
 
-[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.2.4_1602662732082_jar3s.apk)
+[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.2.6_1612316988396_rmsbo.apk)
 
 ## 目录
 - [一、特别声明](#1)
@@ -237,10 +237,17 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 | udeskProductLeftNameLinkColorResId     | setUdeskProductLeftNameLinkColorResId                      | 商品消息的 带有链接时的  商品名字显示的颜色 左侧                 |
 | udeskProductMaxLines                   | setUdeskProductMaxLines                                    | 商品消息名称最大显示行数                                      |
 | preSendRobotMessages					 | setPreSendRobotMessages                                    | 设置带入一条消息  进入机器人界面自动发送						   |
+| productMessageClick                    | setProductMessageClick                                     | 商品消息点击回调                                             |
+| linkMessageWebonClick                  | setLinkMessageWebonClick                                   | 链接消息点击回调                                             |
+| replyProductMessageWebonClick          | setReplyProductMessageWebonClick                           | 商品回复消息点击回调                                          |
+| richMessageWebonClick                  | setRichMessageWebonClick                                   | 富文本链接消息点击回调                                        |
+| imgTxtMessageWebonClick                | setImgTxtMessageWebonClick                                 | 图文消息点击回调                                             |
+| structMessageWebonClick                | setStructMessageWebonClick                                 | 结构化消息按钮链接回调                                        |
+| maxHeightViewRatio                     | setMaxHeightViewRatio                                      | 设置智能提示的最大高度按比例                                  |
+| maxHeightViewDimen                     | setMaxHeightViewDimen                                      | 设置智能提示的最大高度                                        |
+             
 
-
-
-	    private UdeskConfig.Builder makeBuilder() {
+	private UdeskConfig.Builder makeBuilder() {
         if (!TextUtils.isEmpty(edit_language.getText().toString())){
             LocalManageUtil.saveSelectLanguage(getApplicationContext(),new Locale(edit_language.getText().toString()));
         }
@@ -339,12 +346,50 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
                     }
                 })//设置是否使用机器人导航UI true表示使用 false表示不使用
 
-                .setTxtMessageClick(new ITxtMessageWebonCliclk() {
+                .setTxtMessageClick(new ITxtMessageWebonClick() {
                     @Override
                     public void txtMsgOnclick(String url) {
                         Toast.makeText(getApplicationContext(), "对文本消息中的链接消息处理设置回调", Toast.LENGTH_SHORT).show();
                     }
                 })   //如果需要对文本消息中的链接消息处理可以设置该回调，点击事件的拦截回调。 包含表情的不会拦截回调。
+                .setProductMessageClick(new IProductMessageWebonClick() {
+                    @Override
+                    public void txtMsgOnclick(String url) {
+                        Toast.makeText(getApplicationContext(), "对商品消息点击回调", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setImgTxtMessageWebonClick(new IImgTxtMessageWebonClick() {
+                    @Override
+                    public void imgTxtMsgOnclick(String url) {
+                        Toast.makeText(getApplicationContext(), "对图文消息回调", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setLinkMessageWebonClick(new ILinkMessageWebonClick() {
+                    @Override
+                    public void linkMsgOnclick(String url) {
+                        Toast.makeText(getApplicationContext(), "对链接消息回调", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setReplyProductMessageWebonClick(new IReplyProductMessageWebonClick() {
+                    @Override
+                    public void replyProductMsgOnclick(String url) {
+                        Toast.makeText(getApplicationContext(), "对商品回复消息回调", Toast.LENGTH_SHORT).show();
+
+                    }
+                })
+                .setRichMessageWebonClick(new IRichMessageWebonClick() {
+                    @Override
+                    public void richMsgOnclick(String url) {
+                        Toast.makeText(getApplicationContext(), "对富文本消息链接回调", Toast.LENGTH_SHORT).show();
+
+                    }
+                })
+                .setStructMessageWebonClick(new IStructMessageWebonClick() {
+                    @Override
+                    public void structMsgOnclick(String url) {
+                        Toast.makeText(getApplicationContext(), "对结构化消息按钮链接回调", Toast.LENGTH_SHORT).show();
+                    }
+                })
                 .setFormCallBack(new IUdeskFormCallBack() {
                     @Override
                     public void toLuachForm(Context context) {
@@ -361,10 +406,12 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
                 .setChannel(channel.getText().toString())
                 .isShowCustomerNickname(show_customer_nickname.isChecked())//设置是否显示昵称
                 .isShowCustomerHead(show_customer_head.isChecked()) //设置是否显示头像
-                .setPreSendRobotMessages(robotFirstMessage.getText().toString()); //设置带入一条消息  进入机器人界面自动发送
+                .setPreSendRobotMessages(robotFirstMessage.getText().toString())//设置带入一条消息  进入机器人界面自动发送
+                .setMaxHeightViewRatio(0.4f); //设置智能提示显示最大高度比例
 
         return builder;
     }
+
 
 
 
