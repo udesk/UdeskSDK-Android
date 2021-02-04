@@ -32,6 +32,7 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 ### customer_token， sdk_token 仅支持字母、数字及下划线,禁用特殊字符
 
 <h1 id="2">二、集成SDK</h1>
+
 ## 1 远程依赖集成
 
 
@@ -90,48 +91,55 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
     	}
 	}
 
-### 用户创建及更新逻辑:
+## 3 权限 
+ 
+  SDK 需要以下权限，如果已经有不必重复添加
 
-	1. 使用主键 [sdk_token customer_token email cellphone] (默认primary_key为sdk_token), 或 [customer_token sdk_token email cellphone] (primary_key 为 customer_taken时) 依次查找用户
-	
-		1. 设 primary_key默认, sdk_token 找到的用户为 customerA
-			1.1 在不冲突情况下,更新用户主键 customer_token email cellphone,转1.4
-			1.2 当存在冲突, 冲突的主键 customer_token email cellphone会被忽略
-		2. 设 primary_key == 'customer_token' , customer_token 找到的用户为 customerA
-			2.1 不存在另外客户 customerB.sdk_token 等于 sdk_token,更新sdk_token
-			2.2 存在另外的客户 customerB.sdk_token 等于 sdk_token, customerB sdk_token 被更新为 原sdk_token + '_' + customerA.id + '_' + 时间戳, 昵称改为 新传入的 nick_name + ' ' + 'sdk',至此,用户 customerB将被视为更改主键
-		3. email cellphone 主键处理
-			3.1 不冲突时更新 email cellphone
-			3.2 冲突时忽略 email cellphone
-		4. 更新客户其它非主键信息 customer_field nick_name qq description lang
-	
-		5. 更新 device
-	
-		6. 更新用户 ip 及 省份信息
-	
-	2. 创建用户 device
+	//网络状态权限	
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	//手机状态权限
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	//拨打电话权限
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    //读写外部文件权限
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FLAG_GRANT_READ_URI_PERMISSION" />
+	//录音权限
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+	//相机相册权限
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+	//地理位置
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
-**注意** 
+
+## 4 Proguard
+
+SDK使用了smack，glide，eventbus，okhttp，bugly，agora等第三方库，具体混淆参照他们的官方文档， 如果重复不必再添加
 	
-	现在根据primary_key的值来作为客户的唯一标识，用来识别身份。
-	
-	如果customer_token的值不为空， primary_key 的值为customer_token 以customer_token的值作为客户的唯一标识，用来识别身份。
-	
-	如果customer_token的值为空， primary_key 的值为sdk_token 以sdk_token的值作为客户的唯一标识，用来识别身份。
-	
-	customer_token sdk_token: 传入的字符请使用 字母 / 数字 字符集**  。就如同身份证一样，不允许出现一个身份证号对应多个人，或者一个人有多个身份证号;
-	
-	其次,如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客。  
+	#udesk
+	-keep class udesk.** {*;} 
+	-keep class cn.udesk.**{*; } 
+	#百度语音(如果使用百度语音识别添加 不使用不用添加)
+	-keep class com.baidu.speech.**{*;}
+	#smack
+	-keep class org.jxmpp.** {*;} 
+	-keep class de.measite.** {*;} 
+	-keep class org.jivesoftware.** {*;} 
+	-keep class org.xmlpull.** {*;} 
+	-dontwarn org.xbill.**
+	-keep class org.xbill.** {*;} 
+	 #agora
+	-keep class io.agora.**{*;}
 
 **完成了以上操作，接下来就可以使用UdeskSDK的其它功能了，祝你好运！**
 
-### 启动帮助中心界面
-
-Udek系统帮助中心后台可以创建帮助文档，客户通过帮助中心可查看相关文档。调用以下接口启动帮助中心界面
-
-```java
-UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
-```
 
 
 <h1 id="3">三、快速使用SDK</h1>
@@ -164,6 +172,39 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
       UdeskConfig.Builder builder = new UdeskConfig.Builder();
 	  builder.setDefualtUserInfo(info)
 	  UdeskSDKManager.getInstance().entryChat(getApplicationContext(), builder.build(), sdkToken);
+
+### 用户创建及更新逻辑说明:
+
+	1. 使用主键 [sdk_token customer_token email cellphone] (默认primary_key为sdk_token), 或 [customer_token sdk_token email cellphone] (primary_key 为 customer_taken时) 依次查找用户
+	
+		1. 设 primary_key默认, sdk_token 找到的用户为 customerA
+			1.1 在不冲突情况下,更新用户主键 customer_token email cellphone,转1.4
+			1.2 当存在冲突, 冲突的主键 customer_token email cellphone会被忽略
+		2. 设 primary_key == 'customer_token' , customer_token 找到的用户为 customerA
+			2.1 不存在另外客户 customerB.sdk_token 等于 sdk_token,更新sdk_token
+			2.2 存在另外的客户 customerB.sdk_token 等于 sdk_token, customerB sdk_token 被更新为 原sdk_token + '_' + customerA.id + '_' + 时间戳, 昵称改为 新传入的 nick_name + ' ' + 'sdk',至此,用户 customerB将被视为更改主键
+		3. email cellphone 主键处理
+			3.1 不冲突时更新 email cellphone
+			3.2 冲突时忽略 email cellphone
+		4. 更新客户其它非主键信息 customer_field nick_name qq description lang
+	
+		5. 更新 device
+	
+		6. 更新用户 ip 及 省份信息
+	
+	2. 创建用户 device
+
+**注意** 
+	
+	现在根据primary_key的值来作为客户的唯一标识，用来识别身份。
+	
+	如果customer_token的值不为空， primary_key 的值为customer_token 以customer_token的值作为客户的唯一标识，用来识别身份。
+	
+	如果customer_token的值为空， primary_key 的值为sdk_token 以sdk_token的值作为客户的唯一标识，用来识别身份。
+	
+	customer_token sdk_token: 传入的字符请使用 字母 / 数字 字符集**  。就如同身份证一样，不允许出现一个身份证号对应多个人，或者一个人有多个身份证号;
+	
+	其次,如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客。  
 
 ### **2.2 UdeskConfig内部类Builder的说明**
 | 属性           | 设置方法   | 功能说明         |
@@ -412,62 +453,6 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 ### 3 进入页面分配会话
 	UdeskSDKManager.getInstance().entryChat(getApplicationContext(), makeBuilder().build(), sdkToken);
   注意：只有通过这个方法进入会话,管理员在后台配置的选项才会生效, 其它方式进入会话,配置不会生效。 
-      
-### 4 Proguard
-	
-	//udesk
-	-keep class udesk.** {*;} 
-	-keep class cn.udesk.**{*; } 
-	//百度语音(如果使用百度语音识别添加 不使用不用添加)
-	-keep class com.baidu.speech.**{*;}
-	//smack
-	-keep class org.jxmpp.** {*;} 
-	-keep class de.measite.** {*;} 
-	-keep class org.jivesoftware.** {*;} 
-	-keep class org.xmlpull.** {*;} 
-	-dontwarn org.xbill.**
-	-keep class org.xbill.** {*;} 
-	//JSONobject
-	-keep class org.json.** {*; }
-	//okhttp
-	-keep class okhttp3.** {*;} 
-	-keep class okio.** {*;} 
-	//eventbus
-	-keepattributes *Annotation*
-	-keepclassmembers class ** {
-	    @org.greenrobot.eventbus.Subscribe <methods>;
-	}
-	-keep enum org.greenrobot.eventbus.ThreadMode { *; }
-	 
-	# Only required if you use AsyncExecutor
-	-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
-	    <init>(java.lang.Throwable);
-	}
-	//glide
-	-keep class com.bumptech.glide.Glide { *; }
-	-keep public class * implements com.bumptech.glide.module.GlideModule
-	-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
-  	**[] $VALUES;
- 	 public *;
-	}
-
-	# for DexGuard only
-	-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
-	//agora
-	-keep class io.agora.**{*;}
-
-	# Keep native methods
-	-keepclassmembers class * {
-	    native <methods>;
-	}
-	
-	-dontwarn okio.**
-	-dontwarn com.squareup.okhttp.**
-	-dontwarn okhttp3.**
-	-dontwarn javax.annotation.**
-	-dontwarn com.android.volley.toolbox.**
-	-dontwarn com.bumptech.glide.**
-
 
 <h1 id="4">四、Udesk SDK 自定义配置</h1>
 
@@ -994,6 +979,13 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 ### 11 清除缓存的menuId
 	
 	UdeskSDKManager.getInstance().cleanCacheMenuId(getApplicationContext());
+### 12 启动帮助中心界面
+
+Udek系统帮助中心后台可以创建帮助文档，客户通过帮助中心可查看相关文档。调用以下接口启动帮助中心界面
+
+	UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
+
+
 
 <h1 id="6">六、消息推送</h1>
 
