@@ -125,7 +125,7 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 
 ## 4 Proguard
 
-SDK使用了smack，fresco，eventbus，okhttp，bugly，agora等第三方库，具体混淆参照他们的官方文档， 如果重复不必再添加
+SDK使用了smack，fresco，eventbus，okhttp，agora等第三方库，具体混淆参照他们的官方文档， 如果重复不必再添加
 	
 	//udesk
 	-keep class udesk.** {*;} 

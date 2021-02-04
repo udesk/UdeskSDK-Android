@@ -61,7 +61,6 @@ import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.tencent.bugly.crashreport.CrashReport;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -1352,17 +1351,6 @@ public class UdeskUtil {
             e.printStackTrace();
         }
         return false;
-    }
-
-
-    public static void initCrashReport(Context context) {
-        try {
-            CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
-            strategy.setAppVersion(UdeskConst.sdkversion + UdeskUtil.getAppName(context));
-            CrashReport.initCrashReport(context, UdeskConst.buglyAppid, false, strategy);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 
