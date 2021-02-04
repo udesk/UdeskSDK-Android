@@ -42,6 +42,7 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 ### customer_token， sdk_token 仅支持字母、数字及下划线,禁用特殊字符
 
 <h1 id="2">二、集成SDK</h1>
+
 ## 1 远程依赖集成
 
  1.Add it in your root build.gradle at the end of repositories:
