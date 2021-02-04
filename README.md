@@ -98,18 +98,29 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
  
   SDK 需要以下权限，如果已经有不必重复添加
 
+	//网络状态权限	
+	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	//手机状态权限
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	//拨打电话权限
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    //读写外部文件权限
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FLAG_GRANT_READ_URI_PERMISSION" />
+	//录音权限
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+	//相机相册权限
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+	//地理位置
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
 
 ## 4 Proguard
 
@@ -127,50 +138,6 @@ SDK使用了smack，fresco，eventbus，okhttp，bugly，agora等第三方库，
 	-keep class org.xmlpull.** {*;} 
 	-dontwarn org.xbill.**
 	-keep class org.xbill.** {*;} 
-	
-	//eventbus
-	-keepattributes *Annotation*
-	-keepclassmembers class ** {
-	    @org.greenrobot.eventbus.Subscribe <methods>;
-	}
-	-keep enum org.greenrobot.eventbus.ThreadMode { *; }
-	 
-	# Only required if you use AsyncExecutor
-	-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
-	    <init>(java.lang.Throwable);
-	}
-	
-	//freso
-	-keep class com.facebook.** {*; }  
-	-keep class com.facebook.imagepipeline.** {*; } 
-	-keep class com.facebook.animated.gif.** {*; }  
-	-keep class com.facebook.drawee.** {*; }  
-	-keep class com.facebook.drawee.backends.pipeline.** {*; }  
-	-keep class com.facebook.imagepipeline.** {*; }  
-	-keep class bolts.** {*; }  
-	-keep class me.relex.photodraweeview.** {*; }  
-	
-	-keep,allowobfuscation @interface com.facebook.common.internal.DoNotStrip
-	-keep @com.facebook.common.internal.DoNotStrip class *
-	-keepclassmembers class * {
-	    @com.facebook.common.internal.DoNotStrip *;
-	}
-	# Keep native methods
-	-keepclassmembers class * {
-	    native <methods>;
-	}
-	
-	-dontwarn okio.**
-	-dontwarn com.squareup.okhttp.**
-	-dontwarn okhttp3.**
-	-dontwarn javax.annotation.**
-	-dontwarn com.android.volley.toolbox.**
-	-dontwarn com.facebook.infer.**
-	
-	
-	 //bugly
-	-keep class com.tencent.bugly.** {*; } 
-	
 	 //agora
 	-keep class io.agora.**{*;}
 
