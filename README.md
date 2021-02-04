@@ -86,13 +86,128 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 | udeskvideo | Udesk视频会话SDK（依赖在线咨询SDK）|
 | udeskasr	 | Udesk原生机器人语音识别功能（依赖在线咨询SDK）       |
 
-### **注意：UdeskSDKUI并不依赖Udeskvideo和 udeskasr,如果不需要则不要导入该sdk。**
+**注意：UdeskSDKUI并不依赖Udeskvideo和 udeskasr,如果不需要则不要导入该sdk。**
 
 你所要做的是把UdeskSDKUI做为独立的module import, 并在你APP build.gradle文件中加入：
 
 	dependencies {
 	    api project(':UdeskSDKUI')
 	}
+
+## 3 权限 
+ 
+  SDK 需要以下权限，如果已经有不必重复添加
+
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FLAG_GRANT_READ_URI_PERMISSION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+## 4 Proguard
+
+SDK使用了smack，fresco，eventbus，okhttp，bugly，agora等第三方库，具体混淆参照他们的官方文档， 如果重复不必再添加
+	
+	//udesk
+	-keep class udesk.** {*;} 
+	-keep class cn.udesk.**{*; } 
+	//百度语音(如果使用百度语音识别添加 不使用不用添加)
+	-keep class com.baidu.speech.**{*;}
+	//smack
+	-keep class org.jxmpp.** {*;} 
+	-keep class de.measite.** {*;} 
+	-keep class org.jivesoftware.** {*;} 
+	-keep class org.xmlpull.** {*;} 
+	-dontwarn org.xbill.**
+	-keep class org.xbill.** {*;} 
+	
+	//eventbus
+	-keepattributes *Annotation*
+	-keepclassmembers class ** {
+	    @org.greenrobot.eventbus.Subscribe <methods>;
+	}
+	-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+	 
+	# Only required if you use AsyncExecutor
+	-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+	    <init>(java.lang.Throwable);
+	}
+	
+	//freso
+	-keep class com.facebook.** {*; }  
+	-keep class com.facebook.imagepipeline.** {*; } 
+	-keep class com.facebook.animated.gif.** {*; }  
+	-keep class com.facebook.drawee.** {*; }  
+	-keep class com.facebook.drawee.backends.pipeline.** {*; }  
+	-keep class com.facebook.imagepipeline.** {*; }  
+	-keep class bolts.** {*; }  
+	-keep class me.relex.photodraweeview.** {*; }  
+	
+	-keep,allowobfuscation @interface com.facebook.common.internal.DoNotStrip
+	-keep @com.facebook.common.internal.DoNotStrip class *
+	-keepclassmembers class * {
+	    @com.facebook.common.internal.DoNotStrip *;
+	}
+	# Keep native methods
+	-keepclassmembers class * {
+	    native <methods>;
+	}
+	
+	-dontwarn okio.**
+	-dontwarn com.squareup.okhttp.**
+	-dontwarn okhttp3.**
+	-dontwarn javax.annotation.**
+	-dontwarn com.android.volley.toolbox.**
+	-dontwarn com.facebook.infer.**
+	
+	
+	 //bugly
+	-keep class com.tencent.bugly.** {*; } 
+	
+	 //agora
+	-keep class io.agora.**{*;}
+
+**完成了以上操作，接下来就可以使用UdeskSDK的其它功能了，祝你好运！**
+
+
+<h1 id="3">三、快速使用SDK</h1>
+
+### 1.初始管理员后台创建应用是生成的对应app key 和 app id
+
+      UdeskSDKManager.getInstance().initApiKey(context, "you domain","App Key","App Id");
+      
+      注意：域名不要带有http://部分，假如注册生成的域名是"http://udesksdk.udesk.cn/" ,只要传入"udesksdk.udesk.cn"
+
+### 2.设置UdeskConfig配置信息。
+
+**说明：配置的功能根据你们实际的需要进行选择，都有默认行为。**
+
+### **2.1 设置用户的基本信息**
+### **注意sdktoken必填**
+	 
+	  默认系统字段是Udesk已定义好的字段，开发者可以直接传入这些用户信息，供客服查看。
+      String sdktoken = “用户唯一的标识”; 
+      Map<String, String> info = new HashMap<String, String>();
+      **//sdktoken 必填**
+      info.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdktoken);
+      //以下信息是可选
+      info.put(UdeskConst.UdeskUserInfo.NICK_NAME,"昵称");
+      info.put(UdeskConst.UdeskUserInfo.EMAIL,"0631@163.com");
+      info.put(UdeskConst.UdeskUserInfo.CELLPHONE,"15651818750");
+      info.put(UdeskConst.UdeskUserInfo.DESCRIPTION,"描述信息");
+	  info.put(UdeskConst.UdeskUserInfo.CUSTOMER_TOKEN,custom_token);
+      只设置用户基本信息的配置
+      UdeskConfig.Builder builder = new UdeskConfig.Builder();
+	  builder.setDefualtUserInfo(info)
+	  UdeskSDKManager.getInstance().entryChat(getApplicationContext(), builder.build(), sdkToken);
+
 
 ### 用户创建及更新逻辑:
 
@@ -126,48 +241,6 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 	customer_token sdk_token: 传入的字符请使用 字母 / 数字 字符集**  。就如同身份证一样，不允许出现一个身份证号对应多个人，或者一个人有多个身份证号;
 	
 	其次,如果给顾客设置了邮箱和手机号码，也要保证不同顾客对应的手机号和邮箱不一样，如出现相同的，则不会创建新顾客。  
-
-**完成了以上操作，接下来就可以使用UdeskSDK的其它功能了，祝你好运！**
-
-### 启动帮助中心界面
-
-Udek系统帮助中心后台可以创建帮助文档，客户通过帮助中心可查看相关文档。调用以下接口启动帮助中心界面
-
-```java
-UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
-```
-
-
-<h1 id="3">三、快速使用SDK</h1>
-
-### 1.初始管理员后台创建应用是生成的对应app key 和 app id
-
-      UdeskSDKManager.getInstance().initApiKey(context, "you domain","App Key","App Id");
-      
-      注意：域名不要带有http://部分，假如注册生成的域名是"http://udesksdk.udesk.cn/" ,只要传入"udesksdk.udesk.cn"
-
-### 2.设置UdeskConfig配置信息。
-
-**说明：配置的功能根据你们实际的需要进行选择，都有默认行为。**
-
-### **2.1 设置用户的基本信息**
-### **注意sdktoken必填**
-	 
-	  默认系统字段是Udesk已定义好的字段，开发者可以直接传入这些用户信息，供客服查看。
-      String sdktoken = “用户唯一的标识”; 
-      Map<String, String> info = new HashMap<String, String>();
-      **//sdktoken 必填**
-      info.put(UdeskConst.UdeskUserInfo.USER_SDK_TOKEN, sdktoken);
-      //以下信息是可选
-      info.put(UdeskConst.UdeskUserInfo.NICK_NAME,"昵称");
-      info.put(UdeskConst.UdeskUserInfo.EMAIL,"0631@163.com");
-      info.put(UdeskConst.UdeskUserInfo.CELLPHONE,"15651818750");
-      info.put(UdeskConst.UdeskUserInfo.DESCRIPTION,"描述信息");
-	  info.put(UdeskConst.UdeskUserInfo.CUSTOMER_TOKEN,custom_token);
-      只设置用户基本信息的配置
-      UdeskConfig.Builder builder = new UdeskConfig.Builder();
-	  builder.setDefualtUserInfo(info)
-	  UdeskSDKManager.getInstance().entryChat(getApplicationContext(), builder.build(), sdkToken);
 
 ### **2.2 UdeskConfig内部类Builder的说明**
 | 属性           | 设置方法   | 功能说明         |
@@ -419,66 +492,7 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 	UdeskSDKManager.getInstance().entryChat(getApplicationContext(), makeBuilder().build(), sdkToken);
   注意：只有通过这个方法进入会话,管理员在后台配置的选项才会生效, 其它方式进入会话,配置不会生效。 
       
-### 4 Proguard
-	
-	//udesk
-	-keep class udesk.** {*;} 
-	-keep class cn.udesk.**{*; } 
-	//百度语音(如果使用百度语音识别添加 不使用不用添加)
-	-keep class com.baidu.speech.**{*;}
-	//smack
-	-keep class org.jxmpp.** {*;} 
-	-keep class de.measite.** {*;} 
-	-keep class org.jivesoftware.** {*;} 
-	-keep class org.xmlpull.** {*;} 
-	-dontwarn org.xbill.**
-	-keep class org.xbill.** {*;} 
-	
-	//eventbus
-	-keepattributes *Annotation*
-	-keepclassmembers class ** {
-	    @org.greenrobot.eventbus.Subscribe <methods>;
-	}
-	-keep enum org.greenrobot.eventbus.ThreadMode { *; }
-	 
-	# Only required if you use AsyncExecutor
-	-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
-	    <init>(java.lang.Throwable);
-	}
-	
-	//freso
-	-keep class com.facebook.** {*; }  
-	-keep class com.facebook.imagepipeline.** {*; } 
-	-keep class com.facebook.animated.gif.** {*; }  
-	-keep class com.facebook.drawee.** {*; }  
-	-keep class com.facebook.drawee.backends.pipeline.** {*; }  
-	-keep class com.facebook.imagepipeline.** {*; }  
-	-keep class bolts.** {*; }  
-	-keep class me.relex.photodraweeview.** {*; }  
-	
-	-keep,allowobfuscation @interface com.facebook.common.internal.DoNotStrip
-	-keep @com.facebook.common.internal.DoNotStrip class *
-	-keepclassmembers class * {
-	    @com.facebook.common.internal.DoNotStrip *;
-	}
-	# Keep native methods
-	-keepclassmembers class * {
-	    native <methods>;
-	}
-	
-	-dontwarn okio.**
-	-dontwarn com.squareup.okhttp.**
-	-dontwarn okhttp3.**
-	-dontwarn javax.annotation.**
-	-dontwarn com.android.volley.toolbox.**
-	-dontwarn com.facebook.infer.**
-	
-	
-	 //bugly
-	-keep class com.tencent.bugly.** {*; } 
-	
-	 //agora
-	-keep class io.agora.**{*;}
+
 
 <h1 id="4">四、Udesk SDK 自定义配置</h1>
 
@@ -1004,6 +1018,16 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 ### 11 清除缓存的menuId
 	
 	UdeskSDKManager.getInstance().cleanCacheMenuId(getApplicationContext());
+
+
+### 12 启动帮助中心界面
+
+Udek系统帮助中心后台可以创建帮助文档，客户通过帮助中心可查看相关文档。调用以下接口启动帮助中心界面
+
+```java
+UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), UdeskSDKManager.getInstance().getUdeskConfig());
+```
+
 
 <h1 id="6">六、消息推送</h1>
 
