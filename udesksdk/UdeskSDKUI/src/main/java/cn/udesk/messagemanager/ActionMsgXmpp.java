@@ -1,8 +1,9 @@
 package cn.udesk.messagemanager;
 
-import udesk.org.jivesoftware.smack.packet.PacketExtension;
 
-public class ActionMsgXmpp implements PacketExtension {
+import org.jivesoftware.smack.packet.ExtensionElement;
+
+public class ActionMsgXmpp implements ExtensionElement {
 
 	String type = "";
 

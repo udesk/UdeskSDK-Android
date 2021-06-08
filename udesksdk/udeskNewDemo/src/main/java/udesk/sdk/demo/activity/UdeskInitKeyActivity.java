@@ -35,11 +35,11 @@ public class UdeskInitKeyActivity extends Activity {
 //    private String UDESK_SECRETKEY = "8c63951173fbd6ac81a6c6146f940e7b";
 
     //替换成你们注册生成的域名
-//    private String UDESK_DOMAIN = "udesk-rd-bj-10.udesk.cn";
-//    //替换成你们生成应用产生的appid
-//    private String AppId = "cdc6da4fa97efc2c";
-//    // 替换成你们在后台生成的密钥
-//    private String UDESK_SECRETKEY = "6c37f775019907785d85c027e29dae4e";
+    private String UDESK_DOMAIN = "udesk-rd-bj-10.udesk.cn";
+    //替换成你们生成应用产生的appid
+    private String AppId = "cc57963d6284bfe7";
+    // 替换成你们在后台生成的密钥
+    private String UDESK_SECRETKEY = "8bcc3f04490559068bd4a894272dc588";
 
 //    //替换成你们注册生成的域名
 //    private String UDESK_DOMAIN = "reocar.udeskmonkey.com";
@@ -64,11 +64,11 @@ public class UdeskInitKeyActivity extends Activity {
 //    private String UDESK_SECRETKEY = "d6be1a0be4913724d6c514277139c7ee";
 
 //    替换成你们注册生成的域名
-    private String UDESK_DOMAIN = "reocar.b2.tryudesk.com";
-    //替换成你们生成应用产生的appid
-    private String AppId = "e53830a1359ad788";
-    // 替换成你们在后台生成的密钥
-    private String UDESK_SECRETKEY = "ef63d5d0bef9f7d3edbb22c8e358bf7f";
+//    private String UDESK_DOMAIN = "reocar.b2.tryudesk.com";
+//    //替换成你们生成应用产生的appid
+//    private String AppId = "e53830a1359ad788";
+//    // 替换成你们在后台生成的密钥
+//    private String UDESK_SECRETKEY = "ef63d5d0bef9f7d3edbb22c8e358bf7f";
 
 //    替换成你们注册生成的域名
 //    private String UDESK_DOMAIN = "xianghuanji.s2.udesk.cn";
@@ -84,11 +84,11 @@ public class UdeskInitKeyActivity extends Activity {
 //    // 替换成你们在后台生成的密钥
 //    private String UDESK_SECRETKEY = "ef63d5d0bef9f7d3edbb22c8e358bf7f";
 
-//    private String UDESK_DOMAIN = "linapp.udeskt2.com";
+//    private String UDESK_DOMAIN = "demo.t2.tryudesk.com";
 //    //替换成你们生成应用产生的appid
-//    private String AppId = "58bf39a766187b03";
+//    private String AppId = "d2f7a9f13ced36db";
 //    // 替换成你们在后台生成的密钥
-//    private String UDESK_SECRETKEY = "41824663ec849ec266f9a41844180777";
+//    private String UDESK_SECRETKEY = "5855ec4357df9f58bef15b3742118c92";
 
     private EditText mDomainEdit;
 
@@ -153,7 +153,7 @@ public class UdeskInitKeyActivity extends Activity {
                     startActivity(intent);
                     finish();
                 } else {
-                    Toast.makeText(UdeskInitKeyActivity.this, "Please enter domian and key values", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please enter domian and key values", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -162,9 +162,9 @@ public class UdeskInitKeyActivity extends Activity {
 
 
     private void readDoaminAndKey() {
-        domain = PreferenceHelper.readString(this, "init_base_name", "domain");
-        appkey = PreferenceHelper.readString(this, "init_base_name", "appkey");
-        appid = PreferenceHelper.readString(this, "init_base_name", "appid");
+        domain = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "domain");
+        appkey = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "appkey");
+        appid = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "appid");
     }
 
 }

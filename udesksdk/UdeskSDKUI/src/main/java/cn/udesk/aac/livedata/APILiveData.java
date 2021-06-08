@@ -1,9 +1,10 @@
 package cn.udesk.aac.livedata;
 
-import androidx.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.lifecycle.MutableLiveData;
 
 import org.json.JSONObject;
 
@@ -15,13 +16,13 @@ import cn.udesk.aac.MergeMode;
 import cn.udesk.aac.MergeModeManager;
 import cn.udesk.callback.IUdeskHasSurvyCallBack;
 import cn.udesk.messagemanager.UdeskXmppManager;
-import udesk.core.model.AllMessageMode;
 import cn.udesk.model.InitCustomerBean;
 import cn.udesk.model.SurveyOptionsModel;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
 import udesk.core.model.AgentInfo;
+import udesk.core.model.AllMessageMode;
 
 public class APILiveData<M> extends MutableLiveData<MergeMode> {
 
@@ -95,9 +96,9 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
 
     }
 
-    public void messages(String more_marking, final String from){
+    public void messages(String moreMarking, String robotSessionAssociatedId, final String from){
         try{
-            UdeskHttpFacade.getInstance().v4Messages(domain, secretKey, sdktoken,appid,more_marking,new UdeskCallBack(){
+            UdeskHttpFacade.getInstance().v4Messages(domain, secretKey, sdktoken,appid,moreMarking,robotSessionAssociatedId,new UdeskCallBack(){
                 @Override
                 public void onSuccess(String message) {
                     MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.V4PullMessagesSuccess, message,UUID.randomUUID().toString(),from);

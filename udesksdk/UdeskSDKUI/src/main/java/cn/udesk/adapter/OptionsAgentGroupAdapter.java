@@ -20,7 +20,7 @@ public class OptionsAgentGroupAdapter extends BaseAdapter {
     private List<AgentGroupNode> list = new ArrayList<AgentGroupNode>();
 
     public OptionsAgentGroupAdapter(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
     }
 
     @Override
@@ -60,7 +60,7 @@ public class OptionsAgentGroupAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         try {
             if(convertView == null) {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_layout_optionagentgroup_item, null);
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_layout_optionagentgroup_item, parent,false);
             }
             ((TextView)convertView).setText(list.get(position).getItem_name());
         } catch (Exception e) {

@@ -35,7 +35,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
     }
 
     public NavigationAdapter(Context context,String currentView) {
-        this.mContext = context;
+        this.mContext = context.getApplicationContext();
         if (TextUtils.equals(currentView,UdeskConst.CurrentFragment.agent)){
             if (UdeskSDKManager.getInstance().getUdeskConfig().navigationModes != null){
                 navigationModes = UdeskSDKManager.getInstance().getUdeskConfig().navigationModes;

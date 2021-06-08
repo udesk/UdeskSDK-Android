@@ -27,7 +27,7 @@ public class UdeskFunctionAdapter extends BaseAdapter {
 
     public UdeskFunctionAdapter(Context content) {
 
-        this.context = content;
+        this.context = content.getApplicationContext();
 
     }
 
@@ -61,7 +61,7 @@ public class UdeskFunctionAdapter extends BaseAdapter {
             if (convertView == null) {
 
                 viewHolder = new ViewHolder();
-                convertView = LayoutInflater.from(this.context).inflate(R.layout.udesk_picture_item, null);
+                convertView = LayoutInflater.from(context).inflate(R.layout.udesk_picture_item, null);
                 viewHolder.image = (ImageView) convertView.findViewById(R.id.udesk_image);
                 viewHolder.title = (TextView) convertView.findViewById(R.id.udesk_title);
                 convertView.setTag(viewHolder);
@@ -79,7 +79,7 @@ public class UdeskFunctionAdapter extends BaseAdapter {
         return convertView;
     }
 
-    class ViewHolder {
+    public static class ViewHolder {
 
         public ImageView image;
         public TextView title;

@@ -20,7 +20,7 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
     private final Context mContext;
     private List<MessageInfo> list = new ArrayList<>();
     public BrandAdapter(Context context, List<MessageInfo> list) {
-        mContext=context;
+        mContext=context.getApplicationContext();
         this.list=list;
     }
 
@@ -37,7 +37,7 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
     @NonNull
     @Override
     public BrandViewHold onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return  new BrandViewHold(LayoutInflater.from(mContext).inflate(R.layout.udesk_robot_view_struc_brand,null));
+        return  new BrandViewHold(LayoutInflater.from(mContext).inflate(R.layout.udesk_robot_view_struc_brand,viewGroup, false));
     }
 
     @Override
@@ -51,7 +51,7 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.BrandViewHol
         return super.getItemViewType(position);
     }
 
-    public class BrandViewHold extends RecyclerView.ViewHolder {
+    public static class BrandViewHold extends RecyclerView.ViewHolder {
         private LinearLayout viewBrand;
         private LinearLayout llBrand;
         private LinearLayout llBrandImg;

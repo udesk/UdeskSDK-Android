@@ -44,7 +44,7 @@ public class SurvyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public SurvyAdapter(Context context, List<OptionsModel> datas, int type, int defualtId) {
         try {
-            this.mContext = context;
+            this.mContext = context.getApplicationContext();
             this.viewType = type;
             if (viewType == UdeskConst.UdeskSurvyShowType.STAR) {
                 width = UdeskUtils.getScreenWidth(context) - UdeskUtil.dip2px(mContext, 155);

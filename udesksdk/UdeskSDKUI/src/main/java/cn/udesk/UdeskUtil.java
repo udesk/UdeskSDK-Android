@@ -1939,7 +1939,7 @@ public class UdeskUtil {
                 }
                 bitmap.recycle();
                 if (TextUtils.isEmpty(scaleImageFile.getPath())) {
-                    UdeskUtils.showToast(context, context.getString(R.string.udesk_upload_img_error));
+                    UdeskUtils.showToast(context.getApplicationContext(), context.getString(R.string.udesk_upload_img_error));
                     return null;
                 }
                 return scaleImageFile;

@@ -32,7 +32,7 @@ public class StrucTableAdapter<T> extends UdeskRecycleView.Adapter {
     private int type;
 
     public StrucTableAdapter(Context mContext, List<T> list, int type) {
-        this.mContext = mContext;
+        this.mContext = mContext.getApplicationContext();
         this.list = list;
         this.type = type;
     }
@@ -40,7 +40,7 @@ public class StrucTableAdapter<T> extends UdeskRecycleView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         if (type == UdeskConst.ChatMsgTypeInt.TYPE_SELECTIVE_TABLE) {
-            return new TableViewHolder(LayoutInflater.from(mContext).inflate(R.layout.udesk_view_struc_table, null));
+            return new TableViewHolder(LayoutInflater.from(mContext).inflate(R.layout.udesk_view_struc_table, viewGroup,false));
         }
         if (type == UdeskConst.ChatMsgTypeInt.TYPE_SELECTIVE_LIST) {
             return new ListViewHolder(LayoutInflater.from(mContext).inflate(R.layout.udesk_view_struc_list, viewGroup, false));
@@ -120,7 +120,7 @@ public class StrucTableAdapter<T> extends UdeskRecycleView.Adapter {
         return list.size();
     }
 
-    class TableViewHolder extends RecyclerView.ViewHolder {
+    public static class TableViewHolder extends RecyclerView.ViewHolder {
         public final TextView brand;
 
         public TableViewHolder(@NonNull View itemView) {
@@ -129,7 +129,7 @@ public class StrucTableAdapter<T> extends UdeskRecycleView.Adapter {
         }
     }
 
-    class ListViewHolder extends RecyclerView.ViewHolder {
+    public static class ListViewHolder extends RecyclerView.ViewHolder {
         public final TextView brand;
 
         public ListViewHolder(@NonNull View itemView) {
@@ -138,7 +138,7 @@ public class StrucTableAdapter<T> extends UdeskRecycleView.Adapter {
         }
     }
 
-    class ShowProductViewHolder extends RecyclerView.ViewHolder {
+    public static class ShowProductViewHolder extends RecyclerView.ViewHolder {
         private final ImageView image;
         private final TextView title;
         private final RelativeLayout mid;

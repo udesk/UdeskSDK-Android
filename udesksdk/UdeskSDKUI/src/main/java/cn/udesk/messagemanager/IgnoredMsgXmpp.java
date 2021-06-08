@@ -1,8 +1,8 @@
 package cn.udesk.messagemanager;
 
-import udesk.org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
-public class IgnoredMsgXmpp implements PacketExtension {
+public class IgnoredMsgXmpp implements ExtensionElement {
 
 	String sdkversion = "";
 

@@ -10,7 +10,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import androidx.appcompat.widget.AppCompatTextView;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -25,6 +24,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+
+import androidx.appcompat.widget.AppCompatTextView;
 
 import org.xml.sax.Attributes;
 
@@ -150,7 +151,7 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
         this.imageMaxWidth=width;
     }
     public void text(Context context, String text) {
-        mContext = context;
+        mContext = context.getApplicationContext();
         richWidth=UdeskUtil.dip2px(context,imageMaxWidth)-getPaddingLeft()-getPaddingRight();
         urlDrawable = new UrlDrawable();
         queryImgs(text);
@@ -635,19 +636,16 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
 
 
     private class MyURLSpan extends ClickableSpan {
-        private Callback callback;
         private String mUrl;
 
         MyURLSpan(String url, Callback callback) {
             mUrl = url;
-            this.callback = callback;
         }
 
         @Override
         public void onClick(View widget) {
             if (((XRichText)widget).callback != null) {
                 callback(((XRichText)widget).callback);
-                this.callback=((XRichText)widget).callback;
                 callback.onLinkClick(mUrl);
             }
         }

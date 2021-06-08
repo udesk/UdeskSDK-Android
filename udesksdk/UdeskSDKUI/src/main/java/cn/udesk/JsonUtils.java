@@ -521,6 +521,7 @@ public class JsonUtils {
             JSONObject root = new JSONObject(response);
             allMessageMode.setCode(root.opt("code"));
             allMessageMode.setMore_marking(root.opt("more_marking"));
+            allMessageMode.setRobot_session_associated_id(root.opt("robot_session_associated_id"));
             allMessageMode.setMessage(root.opt("message"));
             if (root.has("messages") && !TextUtils.isEmpty(root.optString("messages"))) {
                 List<LogBean> logMessages = new ArrayList<>();

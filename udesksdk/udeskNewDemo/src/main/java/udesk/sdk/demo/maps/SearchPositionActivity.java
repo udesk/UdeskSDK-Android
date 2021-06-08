@@ -89,7 +89,7 @@ public class SearchPositionActivity extends Activity implements AdapterView.OnIt
 
         // 列表初始化
         datas = new ArrayList();
-        locatorAdapter = new LocationAdapter(this, datas);
+        locatorAdapter = new LocationAdapter(getApplicationContext(), datas);
         lv_locator_search_position.setAdapter(locatorAdapter);
 
         // 注册监听
@@ -103,7 +103,7 @@ public class SearchPositionActivity extends Activity implements AdapterView.OnIt
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fl_search_back:
-                SearchPositionActivity.this.finish();
+                finish();
                 break;
             case R.id.tv_search_send:
                 if (!TextUtils.isEmpty(et_search.getText().toString())) {
@@ -114,7 +114,7 @@ public class SearchPositionActivity extends Activity implements AdapterView.OnIt
                     datas.clear();
                     doSearchQuery(mKeyWord);
                 } else {
-                    Toast.makeText(SearchPositionActivity.this, "请输入地点", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "请输入地点", Toast.LENGTH_LONG).show();
                 }
                 break;
         }
@@ -137,7 +137,7 @@ public class SearchPositionActivity extends Activity implements AdapterView.OnIt
         // 设置坐标
         intent.putExtra("PoiItem", datas.get(position));
         setResult(RESULT_OK, intent);
-        SearchPositionActivity.this.finish();
+        finish();
     }
 
     @Override
@@ -150,10 +150,10 @@ public class SearchPositionActivity extends Activity implements AdapterView.OnIt
                 datas.addAll(poiItems);
                 locatorAdapter.notifyDataSetChanged();
             } else {
-                Toast.makeText(this, "没有收到结果：" + rCode, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "没有收到结果：" + rCode, Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(this, "搜索失败：" + rCode, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "搜索失败：" + rCode, Toast.LENGTH_SHORT).show();
         }
 
 

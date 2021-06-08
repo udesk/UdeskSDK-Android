@@ -55,7 +55,7 @@ public class UdeskCameraActivity extends Activity {
                 @Override
                 public void AudioPermissionError() {
                     Log.i("udesksdk", "AudioPermissionError");
-                    Toast.makeText(UdeskCameraActivity.this.getApplicationContext(), getString(R.string.udesk_audio_permission_error), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.udesk_audio_permission_error), Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -64,7 +64,7 @@ public class UdeskCameraActivity extends Activity {
                 public void captureSuccess(Bitmap bitmap) {
 
                     if (bitmap != null) {
-                        String path = UdeskUtil.saveBitmap(UdeskCameraActivity.this.getApplicationContext(), bitmap);
+                        String path = UdeskUtil.saveBitmap(getApplicationContext(), bitmap);
                         finishActivity(null, path);
                     } else {
                         finish();

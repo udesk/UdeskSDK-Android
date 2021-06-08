@@ -3,14 +3,15 @@ package udesk.sdk.demo.jpush;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
-import androidx.multidex.MultiDex;
 import android.util.Log;
+
+import androidx.multidex.MultiDex;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.callback.IUdeskNewMessage;
-import udesk.core.LocalManageUtil;
 import cn.udesk.model.MsgNotice;
+import udesk.core.LocalManageUtil;
 import udesk.sdk.demo.activity.NotificationUtils;
 
 /**
@@ -26,12 +27,6 @@ public class ExampleApplication extends Application {
     public void onCreate() {
         Log.d(TAG, "[ExampleApplication] onCreate");
         super.onCreate();
-//        if (LeakCanary.isInAnalyzerProcess(this)) {
-//            // This process is dedicated to LeakCanary for heap analysis.
-//            // You should not init your app in this process.
-//            return;
-//        }
-//        LeakCanary.install(this);
         LocalManageUtil.setApplicationLanguage(this);
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);            // 初始化 JPush

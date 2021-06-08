@@ -51,7 +51,7 @@ public class UnRedMsgAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_unread_msg_item, null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_unread_msg_item, parent,false);
         }
         ((TextView)convertView).setText((position+1) + "、 "+ list.get(position).getMsgContent());
         return convertView;

@@ -49,11 +49,11 @@ public class UdeskDBManager {
                 return;
             }
             if (TextUtils.isEmpty(sdktoken)) {
-                sdktoken = UdeskSDKManager.getInstance().getSdkToken(context);
+                sdktoken = UdeskSDKManager.getInstance().getSdkToken(context.getApplicationContext());
             }
             mSdktoken = sdktoken;
             if (helper == null) {
-                helper = new UdeskDBHelper(context, mSdktoken);
+                helper = new UdeskDBHelper(context.getApplicationContext(), mSdktoken);
             }
             mDatabase = helper.getWritableDatabase();
         } catch (Exception e) {

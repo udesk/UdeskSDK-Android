@@ -72,7 +72,7 @@ public class ShowSelectLocationActivity extends Activity implements View.OnClick
         switch (v.getId()) {
 
             case R.id.fl_back:  //返回
-                ShowSelectLocationActivity.this.finish();
+                finish();
                 break;
 
         }

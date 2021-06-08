@@ -4,9 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -19,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -396,7 +396,7 @@ public class UdeskRobotFragment extends UdeskbaseFragment implements View.OnClic
             NavigationFragment navigationFragment=new NavigationFragment();
             navigationFragment.setCurrentView(UdeskConst.CurrentFragment.robot);
             transaction.replace(R.id.fragment_view, navigationFragment);
-            transaction.commit();
+            transaction.commitNowAllowingStateLoss();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -595,14 +595,14 @@ public class UdeskRobotFragment extends UdeskbaseFragment implements View.OnClic
 
                                     @Override
                                     public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
-                                        Toast.makeText(udeskChatActivity,
+                                        Toast.makeText(udeskChatActivity.getApplicationContext(),
                                                 getString(R.string.aduido_denied),
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                 });
                     }
                 }else {
-                    UdeskUtils.showToast(udeskChatActivity,getString(R.string.udesk_asr_close));
+                    UdeskUtils.showToast(udeskChatActivity.getApplicationContext(),getString(R.string.udesk_asr_close));
                 }
 
             } else if (R.id.udesk_bottom_send == v.getId()) {

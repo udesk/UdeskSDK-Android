@@ -68,7 +68,7 @@
         <!-- 高德地图设置key -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="197c9c05195c74bdb9d0a51fd47c6dc1" />
+            android:value="81505e15fd3d2bc26daf80144bc86f05" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

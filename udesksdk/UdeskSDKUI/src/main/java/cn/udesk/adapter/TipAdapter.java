@@ -25,7 +25,7 @@ public class TipAdapter extends RecyclerView.Adapter<TipAdapter.ViewHolder> {
     private Context context;
 
     public TipAdapter(Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
     }
 
     public void setList(List<RobotTipBean.ListBean> list) {
@@ -83,7 +83,7 @@ public class TipAdapter extends RecyclerView.Adapter<TipAdapter.ViewHolder> {
         return list.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder{
 
         private final TextView tvTip;
 

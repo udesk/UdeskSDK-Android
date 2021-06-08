@@ -123,7 +123,7 @@ public class LocationActivity extends Activity implements View.OnClickListener, 
         tv_send = (TextView) findViewById(R.id.tv_send);
         // 列表初始化
         datas = new ArrayList();
-        locatorAdapter = new LocationAdapter(this, datas);
+        locatorAdapter = new LocationAdapter(getApplicationContext(), datas);
         lv_location_position.setAdapter(locatorAdapter);
         // 注册监听
         lv_location_position.setOnItemClickListener(this);
@@ -164,7 +164,7 @@ public class LocationActivity extends Activity implements View.OnClickListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fl_back:  //返回
-                LocationActivity.this.finish();
+                finish();
                 break;
             case R.id.fl_search:  //查找
                 Intent search_intent = new Intent(LocationActivity.this, SearchPositionActivity.class);
@@ -172,7 +172,7 @@ public class LocationActivity extends Activity implements View.OnClickListener, 
                 break;
             case R.id.tv_send:  //发送
                 if (mPoiItem == null) {
-                    Toast.makeText(this, "请选择详细地址", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "请选择详细地址", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -186,7 +186,7 @@ public class LocationActivity extends Activity implements View.OnClickListener, 
                         intent.putExtra(UdeskConfig.UdeskMapIntentName.Longitude, mPoiItem.getLatLonPoint().getLongitude());
                         intent.putExtra(UdeskConfig.UdeskMapIntentName.BitmapDIR, bitmapdir);
                         setResult(RESULT_OK, intent);
-                        LocationActivity.this.finish();
+                        finish();
                     }
                 });
 
@@ -272,7 +272,7 @@ public class LocationActivity extends Activity implements View.OnClickListener, 
                 //查询周边
                 searchPoi();
             } else {
-                Toast.makeText(LocationActivity.this, "定位失败，请打开位置权限", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "定位失败，请打开位置权限", Toast.LENGTH_SHORT).show();
             }
         }
     };

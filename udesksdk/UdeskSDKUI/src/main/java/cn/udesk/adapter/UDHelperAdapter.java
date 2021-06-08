@@ -20,7 +20,7 @@ public class UDHelperAdapter extends BaseAdapter {
     private List<UDHelperItem> list = new ArrayList<UDHelperItem>();
 
     public UDHelperAdapter(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
     }
 
     @Override
@@ -60,7 +60,7 @@ public class UDHelperAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         try {
             if(convertView == null) {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_layout_helper_item, null);
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.udesk_layout_helper_item, parent,false);
             }
             ((TextView)convertView).setText(list.get(position).subject);
         } catch (Exception e) {
