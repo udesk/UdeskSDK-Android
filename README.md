@@ -11,7 +11,7 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 ### SDK下载地址
 [Udesk-Android 源码下载地址](https://github.com/udesk/UdeskSDK-Android)
 
-[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.2.6_1612316988396_rmsbo.apk)
+[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.3.0_1623152406308_relqo.apk)
 
 ## 目录
 - [一、特别声明](#1)
@@ -24,6 +24,8 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 - [八、更新记录](#8)
 - [九、功能截图](#9)
 <h1 id="1">一、特别声明</h1>
+
+### 5.3.0 smack库由本地依赖改成远程依赖，需要添加smack远程依赖库 ###
 
 ### 5.1.0 设置商品消息背景、字体api发生调整 请注意更改 ###
 
@@ -58,7 +60,7 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 全功能
 
 	dependencies {
-	        implementation 'com.github.udesk:UdeskSDK-Android:版本号'
+	        implementation 'com.github.udesk:UdeskSDK-Android:版本号（比如5.2.6）'
 	}
 
 部分功能
@@ -78,6 +80,8 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 	implementation 'com.squareup.okhttp3:okhttp:3.12.1'
 	implementation group: 'org.ccil.cowan.tagsoup', name: 'tagsoup', version: '1.2.1'
 	implementation 'org.greenrobot:eventbus:3.0.0'
+    implementation 'org.igniterealtime.smack:smack-android-extensions:4.2.0'
+    implementation 'org.igniterealtime.smack:smack-tcp:4.2.0'
 
 
 ## 2 本地集成
@@ -482,9 +486,43 @@ SDK使用了smack，fresco，eventbus，okhttp，agora等第三方库，具体�
 
 ### 2 多语言设置
 
-  	LocalManageUtil.saveSelectLanguage
+application 中加入 
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        UdeskMultimerchantLocalManageUtil.setApplicationLanguage(this);
+    }
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        UdeskMultimerchantLocalManageUtil.saveSystemCurrentLanguage(base);
+    }
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        //保存系统选择语言
+        UdeskMultimerchantLocalManageUtil.onConfigurationChanged(getApplicationContext());
+    }
 
+在初始化的时候设置
+
+	LocalManageUtil.saveSelectLanguage(getApplicationContext(),new Locale("en-us");
+
+传入语言对应的编码，比如
+  	
+    "ar" => "阿拉伯语",
+    "en" => "英语",
+    "es" => "西班牙语",
+    "fr" => "法语",
+    "ja" => "日语",
+    "ko" => "朝鲜语/韩语",
+    "th" => "泰语",
+    "id" => "印度尼西亚语",
+    "zh-TW" => "繁体中文",
+    "pt" => "葡萄牙语",
+    "ru" => "俄语"
+		
  ### 3 设置自定义表情的说明
      
 	1，自定义表情必须在assets下建立udeskemotion目录，当程序启动时，会自动将assets的udeskemotion目录下所有的贴图复制到贴图的存放位置；
@@ -1105,6 +1143,14 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 <h1 id="8">八、更新记录</h1>
 
 ### 更新日志 ###
+
+### 5.3.0（5.x_mix），5.3.1（5.x_androidx_mix 分支）版本更新：
+
+1. smack 依赖库调整
+2. 满意度调查显示优化
+3. 语音时长优化
+4. glide 适配
+5. 机器人历史消息优化
 
 ### 5.2.6（5.x），5.2.7（5.x_android_Q 分支）版本更新：
 
