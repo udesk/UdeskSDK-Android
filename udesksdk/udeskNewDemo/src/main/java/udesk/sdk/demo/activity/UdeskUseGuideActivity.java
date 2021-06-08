@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.UUID;
 
@@ -33,7 +32,7 @@ public class UdeskUseGuideActivity extends Activity {
 
 
         String rid = JPushInterface.getRegistrationID(getApplicationContext());
-        UdeskSDKManager.getInstance().setRegisterId(UdeskUseGuideActivity.this, rid);
+        UdeskSDKManager.getInstance().setRegisterId(getApplicationContext(), rid);
 
         if (v.getId() == R.id.udesk_group_help) {
             //帮助中心
@@ -52,21 +51,21 @@ public class UdeskUseGuideActivity extends Activity {
         } else if (v.getId() == R.id.udesk_group_utils) {
             //开发者功能
             Intent funtionIntent = new Intent();
-            funtionIntent.setClass(UdeskUseGuideActivity.this, UdeskFuncationExampleActivity.class);
+            funtionIntent.setClass(getApplicationContext(), UdeskFuncationExampleActivity.class);
             startActivity(funtionIntent);
         } else if (v.getId() == R.id.udesk_group_reset) {
             //重置域名和App Key
             UdeskSDKManager.getInstance().logoutUdesk();
-            PreferenceHelper.write(UdeskUseGuideActivity.this, "init_base_name",
+            PreferenceHelper.write(getApplicationContext(), "init_base_name",
                     "sdktoken", "");
-            PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+            PreferenceHelper.write(getApplicationContext(), UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                     UdeskConst.SharePreParams.Udesk_Menu_Id,"");
-            PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+            PreferenceHelper.write(getApplicationContext(), UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                     UdeskConst.SharePreParams.Udesk_Group_Id,"");
-            PreferenceHelper.write(this, UdeskConst.SharePreParams.Udesk_Sharepre_Name,
+            PreferenceHelper.write(getApplicationContext(), UdeskConst.SharePreParams.Udesk_Sharepre_Name,
                     UdeskConst.SharePreParams.Udesk_Agent_Id,"");
             Intent initIntent = new Intent();
-            initIntent.setClass(UdeskUseGuideActivity.this, UdeskInitKeyActivity.class);
+            initIntent.setClass(getApplicationContext(), UdeskInitKeyActivity.class);
             startActivity(initIntent);
             finish();
         }

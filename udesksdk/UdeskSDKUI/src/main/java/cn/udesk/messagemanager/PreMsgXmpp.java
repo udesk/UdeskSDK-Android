@@ -1,8 +1,8 @@
 package cn.udesk.messagemanager;
 
-import udesk.org.jivesoftware.smack.packet.PacketExtension;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
-public class PreMsgXmpp implements PacketExtension {
+public class PreMsgXmpp implements ExtensionElement {
 
 
 	String premsg = "true";
@@ -37,6 +37,6 @@ public class PreMsgXmpp implements PacketExtension {
 		return builder.toString();
 	}
 
-	
+
 
 }

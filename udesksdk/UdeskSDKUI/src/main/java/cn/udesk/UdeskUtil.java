@@ -31,7 +31,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -101,7 +100,6 @@ import me.relex.photodraweeview.PhotoDraweeView;
 import udesk.core.JsonObjectUtils;
 import udesk.core.LocalManageUtil;
 import udesk.core.UdeskConst;
-import udesk.core.event.InvokeEventContainer;
 import udesk.core.model.AgentInfo;
 import udesk.core.model.Content;
 import udesk.core.model.LogBean;
@@ -1353,7 +1351,6 @@ public class UdeskUtil {
         return false;
     }
 
-
     public static void setOrientation(Activity context) {
 
         String orientation = UdeskSDKManager.getInstance().getUdeskConfig().Orientation;
@@ -1785,7 +1782,7 @@ public class UdeskUtil {
                 bitmap.recycle();
                 bitmap = null;
                 if (TextUtils.isEmpty(scaleImageFile.getPath())) {
-                    UdeskUtils.showToast(context, context.getString(R.string.udesk_upload_img_error));
+                    UdeskUtils.showToast(context.getApplicationContext(), context.getString(R.string.udesk_upload_img_error));
                     return null;
                 }
                 return scaleImageFile;

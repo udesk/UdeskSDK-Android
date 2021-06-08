@@ -459,7 +459,7 @@ public class RightViewHolder extends BaseViewHolder {
             duration = duration == 0 ? 1 : duration;
             int min = UdeskUtils.getScreenWidth(mContext) / 6;
             int max = UdeskUtils.getScreenWidth(mContext) * 3 / 5;
-            int step = (int) ((duration < 10) ? duration : (duration / 10 + 9));
+            int step = (int) ((duration < 100) ? ((duration < 10)?duration : (duration / 10 + 9)) : 19);
             itemAudio.getLayoutParams().width = (step == 0) ? min
                     : (min + (max - min) / 17 * step);//计算17份  2份是给背景图尖角预留位置
         } catch (Exception e) {

@@ -74,7 +74,7 @@ public class UdeskASRActivity extends Activity implements EventListener, View.On
     }
 
     private void showToast(String s) {
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
     }
 
     private void initView() {
@@ -220,7 +220,7 @@ public class UdeskASRActivity extends Activity implements EventListener, View.On
 
                             @Override
                             public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
-                                Toast.makeText(UdeskASRActivity.this,
+                                Toast.makeText(getApplicationContext(),
                                         getResources().getString(R.string.audio_denied),
                                         Toast.LENGTH_SHORT).show();
                             }

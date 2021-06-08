@@ -117,7 +117,7 @@ public class UdeskHelperArticleActivity extends UdeskBaseActivity {
                     @Override
                     public void onFail(String message) {
                         udeskLoading.setVisibility(View.GONE);
-                        Toast.makeText(UdeskHelperArticleActivity.this, message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                     }
                 });
 			} catch (Exception e) {

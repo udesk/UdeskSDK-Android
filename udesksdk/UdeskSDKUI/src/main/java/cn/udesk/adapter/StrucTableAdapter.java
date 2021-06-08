@@ -1,18 +1,11 @@
 package cn.udesk.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +14,11 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.udesk.R;
 import cn.udesk.UdeskUtil;
-import cn.udesk.activity.UdeskWebViewUrlAcivity;
 import cn.udesk.widget.UdeskRecycleView;
 import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
@@ -42,7 +33,7 @@ public class StrucTableAdapter<T> extends UdeskRecycleView.Adapter {
     private int type;
 
     public StrucTableAdapter(Context mContext, List<T> list, int type) {
-        this.mContext = mContext;
+        this.mContext = mContext.getApplicationContext();
         this.list = list;
         this.type = type;
     }
@@ -50,7 +41,7 @@ public class StrucTableAdapter<T> extends UdeskRecycleView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder( ViewGroup viewGroup, int i) {
         if (type==UdeskConst.ChatMsgTypeInt.TYPE_SELECTIVE_TABLE){
-            return new TableViewHolder(LayoutInflater.from(mContext).inflate(R.layout.udesk_view_struc_table,null));
+            return new TableViewHolder(LayoutInflater.from(mContext).inflate(R.layout.udesk_view_struc_table,viewGroup,false));
         }
         if (type==UdeskConst.ChatMsgTypeInt.TYPE_SELECTIVE_LIST){
             return new ListViewHolder(LayoutInflater.from(mContext).inflate(R.layout.udesk_view_struc_list,viewGroup,false));
@@ -129,14 +120,14 @@ public class StrucTableAdapter<T> extends UdeskRecycleView.Adapter {
         return list.size();
     }
 
-    class TableViewHolder extends RecyclerView.ViewHolder{
+    public static class TableViewHolder extends RecyclerView.ViewHolder{
         public final TextView brand;
         public TableViewHolder(@NonNull View itemView) {
             super(itemView);
             brand = itemView.findViewById(R.id.udesk_view_struc_table_brand);
         }
     }
-     class ListViewHolder extends RecyclerView.ViewHolder {
+     public static class ListViewHolder extends RecyclerView.ViewHolder {
          public final TextView brand;
 
          public ListViewHolder(@NonNull View itemView) {
@@ -144,7 +135,7 @@ public class StrucTableAdapter<T> extends UdeskRecycleView.Adapter {
              brand = itemView.findViewById(R.id.udesk_view_struc_list_brand);
          }
      }
-     class ShowProductViewHolder extends RecyclerView.ViewHolder {
+     public static class ShowProductViewHolder extends RecyclerView.ViewHolder {
          private final SimpleDraweeView image;
          private final TextView title;
          private final RelativeLayout mid;

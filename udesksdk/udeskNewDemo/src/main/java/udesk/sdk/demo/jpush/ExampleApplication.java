@@ -9,8 +9,8 @@ import android.util.Log;
 import cn.jpush.android.api.JPushInterface;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.callback.IUdeskNewMessage;
-import udesk.core.LocalManageUtil;
 import cn.udesk.model.MsgNotice;
+import udesk.core.LocalManageUtil;
 import udesk.sdk.demo.activity.NotificationUtils;
 
 /**

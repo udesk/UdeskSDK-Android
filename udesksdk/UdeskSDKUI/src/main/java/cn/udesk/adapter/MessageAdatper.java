@@ -38,9 +38,6 @@ public class MessageAdatper extends BaseAdapter {
      */
     public static final int ILLEGAL = -1;
 
-    //2条消息之间 时间间隔超过SPACE_TIME， 会话界面会显示出消息的收发时间
-    public static final long SPACE_TIME = 3 * 60 * 1000;
-
     private final Activity mContext;
     private List<MessageInfo> list = new ArrayList<>();
     private BaseViewHolder holder;
@@ -253,11 +250,11 @@ public class MessageAdatper extends BaseAdapter {
                 if (convertView == null) {
                     if (itemType == LEFT) {
                         convertView = LayoutInflater.from(mContext).inflate(
-                                R.layout.udesk_item_left, null);
+                                R.layout.udesk_item_left, parent,false);
                         holder = new LeftViewHolder();
                     } else if (itemType == RIGHT) {
                         convertView = LayoutInflater.from(mContext).inflate(
-                                R.layout.udesk_item_right, null);
+                                R.layout.udesk_item_right, parent,false);
                         holder = new RightViewHolder();
                     }
                     holder.initView(mContext,convertView);

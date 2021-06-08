@@ -1,8 +1,9 @@
 package cn.udesk.messagemanager;
 
-import udesk.org.jivesoftware.smack.packet.PacketExtension;
 
-public class ProductXmpp implements PacketExtension {
+import org.jivesoftware.smack.packet.ExtensionElement;
+
+public class ProductXmpp implements ExtensionElement {
 
 
 	private String body = "";
@@ -34,6 +35,6 @@ public class ProductXmpp implements PacketExtension {
 		return sb.toString();
 	}
 
-	
+
 
 }

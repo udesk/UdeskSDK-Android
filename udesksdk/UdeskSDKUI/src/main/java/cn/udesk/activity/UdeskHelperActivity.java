@@ -236,7 +236,7 @@ public class UdeskHelperActivity extends UdeskBaseActivity implements OnClickLis
                         @Override
                         public void onFail(String message) {
                             hideLoading();
-                            Toast.makeText(UdeskHelperActivity.this,
+                            Toast.makeText(getApplicationContext(),
                                     message, Toast.LENGTH_LONG).show();
                         }
                     });

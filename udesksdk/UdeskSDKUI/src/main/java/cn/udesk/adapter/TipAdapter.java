@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 import cn.udesk.R;
 import udesk.core.event.InvokeEventContainer;
@@ -27,7 +25,7 @@ public class TipAdapter extends RecyclerView.Adapter<TipAdapter.ViewHolder> {
     private Context context;
 
     public TipAdapter(Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
     }
 
     public void setList(List<RobotTipBean.ListBean> list) {
@@ -85,7 +83,7 @@ public class TipAdapter extends RecyclerView.Adapter<TipAdapter.ViewHolder> {
         return list.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder{
 
         private final TextView tvTip;
 

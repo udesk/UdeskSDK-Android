@@ -426,7 +426,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
             NavigationFragment navigationFragment=new NavigationFragment();
             navigationFragment.setCurrentView(UdeskConst.CurrentFragment.agent);
             transaction.replace(R.id.fragment_view, navigationFragment);
-            transaction.commit();
+            transaction.commitNowAllowingStateLoss();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -667,7 +667,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
 
                                             @Override
                                             public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
-                                                Toast.makeText(getActivity(),
+                                                Toast.makeText(getActivity().getApplicationContext(),
                                                         getResources().getString(R.string.location_denied),
                                                         Toast.LENGTH_SHORT).show();
                                             }
@@ -744,7 +744,7 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
 
                                     @Override
                                     public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
-                                        Toast.makeText(udeskChatActivity,
+                                        Toast.makeText(udeskChatActivity.getApplicationContext(),
                                                 getResources().getString(R.string.aduido_denied),
                                                 Toast.LENGTH_SHORT).show();
                                     }

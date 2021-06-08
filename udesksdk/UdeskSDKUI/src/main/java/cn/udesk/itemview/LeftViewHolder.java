@@ -22,7 +22,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -183,6 +182,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
     private TextView productMsg;
     private TextView productName;
     private SimpleDraweeView productIcon;
+    private MediaPlayer mediaPlayer;
 
 
     @Override
@@ -436,7 +436,6 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     dealStruct();
                     break;
                 case UdeskConst.ChatMsgTypeInt.TYPE_SURVEY:
-                    message.setMsgContent(mContext.getResources().getString(R.string.udesk_survey_done));
                 case UdeskConst.ChatMsgTypeInt.TYPE_EVENT:
                 case UdeskConst.ChatMsgTypeInt.TYPE_ROBOT_TRANSFER:
                     dealEvent();
@@ -638,7 +637,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     @Override
                     public void onClick(View v) {
                         if (message.isUsefulClicked()){
-                            UdeskUtils.showToast(mContext,mContext.getResources().getString(R.string.udesk_answer_has_survey));
+                            UdeskUtils.showToast(mContext.getApplicationContext(),mContext.getResources().getString(R.string.udesk_answer_has_survey));
                         }else {
                             if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
                                 UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
@@ -658,7 +657,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     @Override
                     public void onClick(View v) {
                         if (message.isUsefulClicked()){
-                            UdeskUtils.showToast(mContext,mContext.getResources().getString(R.string.udesk_answer_has_survey));
+                            UdeskUtils.showToast(mContext.getApplicationContext(),mContext.getResources().getString(R.string.udesk_answer_has_survey));
                         }else {
                             if (!UdeskUtils.isNetworkConnected(mContext.getApplicationContext())){
                                 UdeskUtils.showToast(mContext.getApplicationContext(), mContext.getResources().getString(R.string.udesk_has_wrong_net));
@@ -1209,19 +1208,56 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
         try {
             showHead(true);
             itemAudio.setVisibility(View.VISIBLE);
-            RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             itemAudio.setLayoutParams(layoutParams);
             checkPlayBgWhenBind();
+
             if (message.getDuration() > 0) {
-                char symbol = 34;
-                tvDuration.setText(String.format("%d%s", message.getDuration(), String.valueOf(symbol)));
-            }else {
-                long audioDuration = getAudioDuration();
-                if (audioDuration>0){
-                    char symbol = 34;
-                    tvDuration.setText(String.format("%d%s", audioDuration, String.valueOf(symbol)));
+                showAudioItemduration(message.getDuration());
+            } else {
+                if (!TextUtils.isEmpty(message.getMsgContent())) {
+                    mediaPlayer = new MediaPlayer();
+                    try {
+                        mediaPlayer.setDataSource(message.getMsgContent());
+                        mediaPlayer.prepareAsync();
+                        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            @Override
+                            public void onPrepared(MediaPlayer mp) {
+                                showAudioItemduration(mp.getDuration() / 1000);
+                                mediaPlayer.release();
+                            }
+                        });
+                        mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                            @Override
+                            public boolean onError(MediaPlayer mp, int what, int extra) {
+                                mediaPlayer.release();
+                                return true;
+                            }
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }else {
+                    showAudioItemduration(0);
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } catch (OutOfMemoryError error) {
+            error.printStackTrace();
+        }
+
+    }
+    /**
+     * 显示语音时长
+     * @param duration
+     */
+    private void showAudioItemduration(long duration) {
+        try {
+            char symbol = 34;
+            tvDuration.setText(String.format("%d%s", duration, String.valueOf(symbol)));
+
             dealTransfer(itemAudio);
             showRecommended(containerAudio);
             audioTop.setOnClickListener(new View.OnClickListener() {
@@ -1231,38 +1267,18 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     ((UdeskChatActivity) mContext).clickRecordFile(message);
                 }
             });
-            long duration = message.getDuration();
+
             duration = duration == 0 ? 1 : duration;
             int min = UdeskUtils.getScreenWidth(mContext) / 6;
             int max = UdeskUtils.getScreenWidth(mContext) * 3 / 5;
-            int step = (int) ((duration < 10) ? duration : (duration / 10 + 9));
+
+            int step = (int) ((duration < 100) ? ((duration < 10)?duration : (duration / 10 + 9)) : 19);
             audioTop.getLayoutParams().width = (step == 0) ? min
                     : (min + (max - min) / 17 * step);//计算17份  2份是给背景图尖角预留位置
-           dealSingleLine(itemAudio);
-        } catch (Exception e) {
+            dealSingleLine(itemAudio);
+        }catch (Exception e){
             e.printStackTrace();
-        } catch (OutOfMemoryError error) {
-            error.printStackTrace();
         }
-    }
-
-    /**
-     * 获取语音时长
-     * @return
-     */
-    private long  getAudioDuration() {
-        MediaPlayer mediaPlayer = new MediaPlayer();
-        long duration=0L;
-        try {
-            mediaPlayer.setDataSource(message.getMsgContent());
-            mediaPlayer.prepare();
-            return UdeskUtils.objectToLong(mediaPlayer.getDuration()/1000);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            mediaPlayer.release();
-        }
-        return duration;
     }
 
     /**

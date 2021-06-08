@@ -152,7 +152,7 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
         this.imageMaxWidth=width;
     }
     public void text(Context context, String text) {
-        mContext = context;
+        mContext = context.getApplicationContext();
         richWidth=UdeskUtil.dip2px(context,imageMaxWidth)-getPaddingLeft()-getPaddingRight();
         urlDrawable = new UrlDrawable();
         queryImgs(text);
@@ -636,19 +636,17 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
 
 
     private class MyURLSpan extends ClickableSpan {
-        private Callback callback;
         private String mUrl;
 
         MyURLSpan(String url, Callback callback) {
             mUrl = url;
-            this.callback = callback;
+            callback(callback);
         }
 
         @Override
         public void onClick(View widget) {
             if (((XRichText)widget).callback != null) {
                 callback(((XRichText)widget).callback);
-                this.callback=((XRichText)widget).callback;
                 callback.onLinkClick(mUrl);
             }
         }

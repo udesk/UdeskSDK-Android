@@ -508,11 +508,11 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         } else if (compoundButton.getId() == R.id.set_ch) {
             set_ch.setChecked(b);
             set_en.setChecked(false);
-            LocalManageUtil.saveSelectLanguage(this, Locale.CHINA);
+            LocalManageUtil.saveSelectLanguage(getApplicationContext(), Locale.CHINA);
         } else if (compoundButton.getId() == R.id.set_en) {
             set_ch.setChecked(false);
             set_en.setChecked(b);
-            LocalManageUtil.saveSelectLanguage(this, Locale.ENGLISH);
+            LocalManageUtil.saveSelectLanguage(getApplicationContext(), Locale.ENGLISH);
         }
     }
 
@@ -575,13 +575,13 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
             //获取未读消息
             List<MessageInfo> unReadMsgs = UdeskSDKManager.getInstance().getUnReadMessages(getApplicationContext(), PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken"));
             if (unReadMsgs == null || unReadMsgs.isEmpty()) {
-                Toast.makeText(UdeskFuncationExampleActivity.this, "没有未读消息", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "没有未读消息", Toast.LENGTH_SHORT).show();
                 return;
             }
             final UdeskCustomDialog dialog = new UdeskCustomDialog(UdeskFuncationExampleActivity.this);
             dialog.setDialogTitle("未读消息");
             ListView mListview = dialog.getListView();
-            UnRedMsgAdapter msgAdapter = new UnRedMsgAdapter(UdeskFuncationExampleActivity.this);
+            UnRedMsgAdapter msgAdapter = new UnRedMsgAdapter(getApplicationContext());
             mListview.setAdapter(msgAdapter);
             msgAdapter.setList(unReadMsgs);
             dialog.setOkTextViewOnclick(new View.OnClickListener() {

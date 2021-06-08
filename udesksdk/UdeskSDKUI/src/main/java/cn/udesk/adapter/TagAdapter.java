@@ -33,7 +33,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagViewHolder> i
     }
 
     public TagAdapter(Context context) {
-        this.mContext = context;
+        this.mContext = context.getApplicationContext();
     }
 
     public void setDatas(List<Tag> datas) {
