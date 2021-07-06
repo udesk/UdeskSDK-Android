@@ -38,5 +38,5 @@ dependencies {
     implementation 'com.facebook.fresco:animated-gif:1.3.0'
     implementation 'com.github.ongakuer:PhotoDraweeView:v1.1.3'
     implementation files('libs/udesk_sdk_4.3.3.jar')
-    api 'com.lzy.net:okgo:3.0.4'
+    implementation 'com.github.jeasonlzy.okhttp-OkGo:okgo:v3.0.4'
 }
