@@ -85,6 +85,8 @@ public class UdeskHtml {
         public void handleAttributes(String tag,Attributes attributes);
         public void handleClick(int start, int length,Editable output);
         public void handleRobotJumpMessageClick(int start, int length,Editable output);
+        public void handleTransferClick(int start, int length,Editable output);
+
     }
 
     /**
@@ -695,6 +697,7 @@ class HtmlToSpannedConverter implements ContentHandler {
 
     private boolean isNeedClick;
     private boolean isRobotJumpMessageClick;
+    private boolean isTransferClick;
 
     private static Pattern getTextAlignPattern() {
         if (sTextAlignPattern == null) {
@@ -799,6 +802,9 @@ class HtmlToSpannedConverter implements ContentHandler {
                 if (attributes.getLocalName(i).contains("data-message-type")){
                     isRobotJumpMessageClick =true;
                 }
+                if (attributes.getLocalName(i).contains("data-udesk-go-chat")){
+                    isTransferClick =true;
+                }
             }
             if (mTagHandler!=null){
                 mTagHandler.handleAttributes(tag,attributes);
@@ -867,6 +873,7 @@ class HtmlToSpannedConverter implements ContentHandler {
         } else if (tag.equalsIgnoreCase("span")) {
             isNeedClick=false;
             isRobotJumpMessageClick = false;
+            isTransferClick = false;
             endCssStyle(mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("strong")) {
             end(mSpannableStringBuilder, Bold.class, new StyleSpan(Typeface.BOLD));
@@ -1323,7 +1330,9 @@ class HtmlToSpannedConverter implements ContentHandler {
         if (mTagHandler!=null&&isRobotJumpMessageClick){
             mTagHandler.handleRobotJumpMessageClick(s,end,mSpannableStringBuilder);
         }
-
+        if (mTagHandler!=null&&isTransferClick){
+            mTagHandler.handleTransferClick(s,end,mSpannableStringBuilder);
+        }
     }
 
     @Override

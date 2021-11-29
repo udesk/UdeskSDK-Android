@@ -422,11 +422,17 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
     @Override
     public void addNavigationFragment() {
         try {
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            NavigationFragment navigationFragment=new NavigationFragment();
-            navigationFragment.setCurrentView(UdeskConst.CurrentFragment.agent);
-            transaction.replace(R.id.fragment_view, navigationFragment);
-            transaction.commitNowAllowingStateLoss();
+            udeskChatActivity.mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    FragmentTransaction transaction = udeskChatActivity.getSupportFragmentManager().beginTransaction();
+                    NavigationFragment navigationFragment=new NavigationFragment();
+                    navigationFragment.setCurrentView(UdeskConst.CurrentFragment.agent);
+                    transaction.replace(R.id.fragment_view, navigationFragment);
+                    transaction.commitNowAllowingStateLoss();
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -648,32 +654,8 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                             udeskChatActivity.clickSurvy();
                             break;
                         case UdeskConst.UdeskFunctionFlag.Udesk_Location:
-                            if (Build.VERSION.SDK_INT < 23) {
-                                udeskChatActivity.clickLocation();
-                                onHideBottomLayout(true);
-                            } else {
-                                XPermissionUtils.requestPermissions(getActivity(), RequestCode.LOCATION,
-                                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
-                                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                                                Manifest.permission.READ_PHONE_STATE},
-                                        new XPermissionUtils.OnPermissionListener() {
-                                            @Override
-                                            public void onPermissionGranted() {
-                                                udeskChatActivity.clickLocation();
-                                                onHideBottomLayout(true);
-                                            }
-
-                                            @Override
-                                            public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
-                                                Toast.makeText(getActivity().getApplicationContext(),
-                                                        getResources().getString(R.string.location_denied),
-                                                        Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                            }
-
+                            udeskChatActivity.clickLocation();
+                            onHideBottomLayout(true);
                             break;
                         case UdeskConst.UdeskFunctionFlag.Udesk_Video:
                             if (udeskChatActivity.getPressionStatus()) {

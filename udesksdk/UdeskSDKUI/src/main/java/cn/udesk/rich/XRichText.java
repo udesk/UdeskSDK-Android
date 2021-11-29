@@ -38,6 +38,7 @@ import java.util.regex.Pattern;
 import cn.udesk.R;
 import cn.udesk.UdeskUtil;
 import cn.udesk.model.RobotJumpMessageModel;
+import cn.udesk.model.RobotRichTextTransferModel;
 import cn.udesk.model.SpanModel;
 import udesk.core.UdeskConst;
 import udesk.core.utils.UdeskUtils;
@@ -60,7 +61,6 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
 
     private static Object lock = new Object();
     private Attributes attributes;
-    private UrlDrawable urlDrawable;
     //图片的最大宽度
     private int imageMaxWidth=310;
     private Context mContext;
@@ -137,6 +137,27 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
         }, start, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
+    public void onTransfer(Integer start, Integer length, Editable out) {
+        attributes=getAttributes();
+        final RobotRichTextTransferModel transferModel= new RobotRichTextTransferModel();
+        transferModel.setContent(out.toString().substring(start,length));
+        if (attributes != null) {
+            String data = attributes.getValue("", "data-udesk-go-chat");
+            transferModel.setTransfer(UdeskUtils.objectToBoolean(data));
+        }
+        out.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+
+                if (((XRichText)widget).callback != null && transferModel != null) {
+                    callback(((XRichText)widget).callback);
+                    callback.onRichTextTransfer(transferModel);
+                }
+            }
+        }, start, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+
     public void onDealSpan(Attributes attributes) {
         this.attributes=attributes;
     }
@@ -154,7 +175,6 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
     public void text(Context context, String text) {
         mContext = context.getApplicationContext();
         richWidth=UdeskUtil.dip2px(context,imageMaxWidth)-getPaddingLeft()-getPaddingRight();
-        urlDrawable = new UrlDrawable();
         queryImgs(text);
         if (imgGetter == null) {
             imgGetter = new LocalImageGetter(this);
@@ -250,7 +270,6 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
 
             imageHolderMap.put(holder.src, holder);
             position++;
-            setWidthHeight(urlDrawable,holder);
         }
     }
 
@@ -430,6 +449,8 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
         @Override
         public Drawable getDrawable(String source) {
             final ImageHolder holder = imageHolderMap.get(source);
+            final UrlDrawable urlDrawable = new UrlDrawable();
+            setWidthHeight(urlDrawable,holder);
             if (holder == null) {
                 return null;
             }
@@ -661,6 +682,8 @@ public class XRichText extends AppCompatTextView implements ViewTreeObserver.OnG
 
         void onStepClick(SpanModel model);
         void onRobotJumpMessage(RobotJumpMessageModel model);
+        void onRichTextTransfer(RobotRichTextTransferModel model);
+
     }
 
 }

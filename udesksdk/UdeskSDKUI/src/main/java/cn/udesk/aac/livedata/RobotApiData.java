@@ -300,6 +300,18 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
             e.printStackTrace();
         }
     }
+    public void onRichTextTransferClick(String content){
+        try {
+            if (!TextUtils.isEmpty(content)){
+                QuestionMergeMode mergeMode=new QuestionMergeMode(UdeskConst.LiveDataType.ROBOT_RICHTEXT_TRANSFER_CLICK,content,UUID.randomUUID().toString());
+                MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public void onTipClick(RobotTipBean.ListBean bean){
         try {
             if (bean!=null){
@@ -383,6 +395,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
         InvokeEventContainer.getInstance().event_OnAnswerClick.bind(this,"onAnswerClick");
         InvokeEventContainer.getInstance().event_OnFlowClick.bind(this,"onFlowClick");
         InvokeEventContainer.getInstance().event_OnRobotJumpMessageClick.bind(this,"onRobotJumpMessageClick");
+        InvokeEventContainer.getInstance().event_OnRichTextTransferClick.bind(this,"onRichTextTransferClick");
     }
 
     @Override
@@ -396,6 +409,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
         InvokeEventContainer.getInstance().event_OnAnswerClick.unBind(this);
         InvokeEventContainer.getInstance().event_OnFlowClick.unBind(this);
         InvokeEventContainer.getInstance().event_OnRobotJumpMessageClick.unBind(this);
+        InvokeEventContainer.getInstance().event_OnRichTextTransferClick.unBind(this);
     }
 
     public void setCustomerId(String customerId) {

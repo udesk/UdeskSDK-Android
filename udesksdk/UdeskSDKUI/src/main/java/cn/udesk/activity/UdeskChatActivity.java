@@ -10,7 +10,6 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
@@ -23,7 +22,6 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
@@ -171,7 +169,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     private final int CAPTURE_IMAGE_SMALLVIDEO_ACTIVITY_REQUEST_CODE = 107;
     private final int IM_GROUP_REQUEST_CODE = 108;
 
-    private MyHandler mHandler;
+    public MyHandler mHandler;
     private BroadcastReceiver mConnectivityChangedReceiver = null;
     private boolean isSurvyOperate = false;//如果是收到客服的满意度调查，则在onresume 处不在请求分配客服
 //    public boolean isInitComplete = false; //标识进入请求分配客服的流程是否结束
@@ -986,6 +984,11 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                         case UdeskConst.LiveDataType.ROBOT_TRANSFER_CLICK:
                             autoTransfer();
                             break;
+                        case UdeskConst.LiveDataType.ROBOT_RICHTEXT_TRANSFER_CLICK:
+                            if (TextUtils.equals(curentStatus, UdeskConst.Status.init) || TextUtils.equals(curentStatus,UdeskConst.Status.robot)){
+                                autoTransfer();
+                            }
+                            break;
                         case UdeskConst.LiveDataType.ROBOT_SHOW_PRODUCT_CLICK:
                             ProductListBean productListBean = (ProductListBean) mergeMode.getData();
                             MessageInfo replyProductMsg = UdeskUtil.buildReplyProductMsg(productListBean);
@@ -1517,8 +1520,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             } else {
                 XPermissionUtils.requestPermissions(UdeskChatActivity.this, RequestCode.CAMERA,
                         new String[]{Manifest.permission.CAMERA,
-                                Manifest.permission.RECORD_AUDIO,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                Manifest.permission.RECORD_AUDIO},
                         new XPermissionUtils.OnPermissionListener() {
                             @Override
                             public void onPermissionGranted() {
@@ -1650,38 +1652,8 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     //电话呼叫
     public void callphone(final String mobile) {
         try {
-            if (Build.VERSION.SDK_INT < 23) {
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(mobile));
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                UdeskChatActivity.this.startActivity(intent);
-            } else {
-                XPermissionUtils.requestPermissions(UdeskChatActivity.this, RequestCode.CallPhone,
-                        new String[]{Manifest.permission.CALL_PHONE},
-                        new XPermissionUtils.OnPermissionListener() {
-                            @Override
-                            public void onPermissionGranted() {
-                                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse(mobile));
-                                if (ActivityCompat.checkSelfPermission(UdeskChatActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                                    return;
-                                }
-                                UdeskChatActivity.this.startActivity(intent);
-                            }
-
-                            @Override
-                            public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
-                                UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.call_denied));
-                            }
-                        });
-            }
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(mobile));
+            startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
         }
