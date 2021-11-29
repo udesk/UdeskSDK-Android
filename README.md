@@ -11,7 +11,7 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 ### SDK下载地址
 [Udesk-Android 源码下载地址](https://github.com/udesk/UdeskSDK-Android)
 
-[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.3.0_1623152406308_relqo.apk)
+[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.3.21638168137287.apk)
 
 ## 目录
 - [一、特别声明](#1)
@@ -24,6 +24,8 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 - [八、更新记录](#8)
 - [九、功能截图](#9)
 <h1 id="1">一、特别声明</h1>
+
+### 5.3.2 敏感权限的声明已从sdk中移除，使用对应功能请在外部进行声明，详情请看文档权限部分 ###
 
 ### 5.3.0 smack库由本地依赖改成远程依赖，需要添加smack远程依赖库 ###
 
@@ -103,28 +105,30 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
  
   SDK 需要以下权限，如果已经有不必重复添加
 
-	//网络状态权限	
+  **敏感权限sdk内已经移除，需要使用对应的功能，请在外部声明**
+
+
+	//网络状态权限 sdk内部已经声明
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	//手机状态权限
+	
+	敏感权限如下：（需要在外部声明）
+
+	//手机状态权限（机器人语音模块）
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
-	//拨打电话权限
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-    //读写外部文件权限
+
+    //读写外部文件权限（相册，文件，语音，位置功能）
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FLAG_GRANT_READ_URI_PERMISSION" />
-	//录音权限
+
+	//录音权限（语音，拍摄功能）
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-	//相机相册权限
+
+	//相机相册权限（拍摄，视频会话功能）
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-	//地理位置
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-	<uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
 
 ## 4 Proguard
@@ -491,18 +495,17 @@ application 中加入
     @Override
     public void onCreate() {
         super.onCreate();
-        UdeskMultimerchantLocalManageUtil.setApplicationLanguage(this);
+        LocalManageUtil.setApplicationLanguage(this);
     }
     @Override
     protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        UdeskMultimerchantLocalManageUtil.saveSystemCurrentLanguage(base);
+        super.attachBaseContext(LocalManageUtil.setLocal(base));
+        LocalManageUtil.saveSystemCurrentLanguage(base);
     }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        //保存系统选择语言
-        UdeskMultimerchantLocalManageUtil.onConfigurationChanged(getApplicationContext());
+        LocalManageUtil.onConfigurationChanged(getApplicationContext());
     }
 
 在初始化的时候设置
@@ -532,7 +535,7 @@ application 中加入
 ### 4 IM中聊天功能 集成发送地理位置的信息说明
      
 	 android 接入的第三方选择性比较多等原因，没有直接在SDK中内嵌地图SDK，由客户根据实际需要选择是否集成发送地理位置信息。
-	 提供集成地图的demo例子有：百度地图（见baidumapdemo 这个module），高德地图（gaodemapdemo）腾讯地图（tenxunmapdemo）
+
 	 
 	 
 	 1.地图类型的说明
@@ -1144,7 +1147,15 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 
 ### 更新日志 ###
 
-### 5.3.0（5.x_mix），5.3.1（5.x_androidx_mix 分支）版本更新：
+### 5.3.2（5.x），5.3.3（5.x_android_Q 分支）版本更新：
+
+1. 支持富文本消息内转人工
+2. 敏感权限声明调整
+3. xmpp 重连机制调整
+4. 修复device 传参问题
+
+
+### 5.3.0（5.x），5.3.1（5.x_android_Q 分支）版本更新：
 
 1. smack 依赖库调整
 2. 满意度调查显示优化
