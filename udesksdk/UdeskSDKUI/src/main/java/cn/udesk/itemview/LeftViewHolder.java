@@ -55,6 +55,7 @@ import cn.udesk.adapter.StrucTableAdapter;
 import cn.udesk.config.UdeskConfigUtil;
 import cn.udesk.emotion.MoonUtils;
 import cn.udesk.model.RobotJumpMessageModel;
+import cn.udesk.model.RobotRichTextTransferModel;
 import cn.udesk.model.SpanModel;
 import cn.udesk.model.StructModel;
 import cn.udesk.model.UdeskQueueItem;
@@ -1881,6 +1882,17 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
         try {
             if (TextUtils.equals(model.getMessageType(),"1")){
                 InvokeEventContainer.getInstance().event_OnRobotJumpMessageClick.invoke(model.getContent());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRichTextTransfer(RobotRichTextTransferModel model) {
+        try {
+            if (model.isTransfer()){
+                InvokeEventContainer.getInstance().event_OnRichTextTransferClick.invoke(model.getContent());
             }
         }catch (Exception e){
             e.printStackTrace();

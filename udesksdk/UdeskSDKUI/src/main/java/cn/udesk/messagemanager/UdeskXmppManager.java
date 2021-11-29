@@ -1,6 +1,7 @@
 package cn.udesk.messagemanager;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -50,7 +51,7 @@ public class UdeskXmppManager implements ConnectionListener, StanzaListener {
     private StanzaFilter presenceFilter = new StanzaTypeFilter(Presence.class);
     private StanzaFilter iQFilter = new StanzaTypeFilter(IQ.class);
     XMPPTCPConnectionConfiguration.Builder mConfiguration;
-    private Handler handler = new Handler();
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     volatile boolean isConnecting = false;
     private static long heartSpaceTime = 0;
@@ -62,6 +63,7 @@ public class UdeskXmppManager implements ConnectionListener, StanzaListener {
      * 缓存30条了， 如果太大了几乎就是是xmpp服务出问题了，在缓存反而让费内存
      */
     private ArrayBlockingQueue<MessageInfo> queue = new ArrayBlockingQueue(30);
+    private boolean isCancel;
 
     private static class LazyHolder {
         private static final UdeskXmppManager INSTANCE = new UdeskXmppManager();
@@ -168,8 +170,10 @@ public class UdeskXmppManager implements ConnectionListener, StanzaListener {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            } catch (OutOfMemoryError error) {
-                error.printStackTrace();
+                if (handler != null){
+                    handler.removeCallbacks(reconnectRunnable);
+                    handler.postDelayed(reconnectRunnable,10000);
+                }
             } finally {
                 isConnecting = false;
             }
@@ -210,6 +214,10 @@ public class UdeskXmppManager implements ConnectionListener, StanzaListener {
             }
         } catch (Exception e) {
             UdeskConst.sdk_xmpp_statea = UdeskConst.CONNECTION_FAILED;
+            if (handler != null){
+                handler.removeCallbacks(reconnectRunnable);
+                handler.postDelayed(reconnectRunnable,10000);
+            }
             return false;
 
         }
@@ -224,6 +232,15 @@ public class UdeskXmppManager implements ConnectionListener, StanzaListener {
                 handler.postDelayed(this, 15000);
             }
 
+        }
+    };
+    Runnable reconnectRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!isConnection() && !isCancel){
+                Log.i("smack","xmpp reconnect");
+                connection();
+            }
         }
     };
 
@@ -680,10 +697,10 @@ public class UdeskXmppManager implements ConnectionListener, StanzaListener {
     public synchronized boolean cancel() {
         try {
             if (xmppConnection != null) {
+                xmppConnection.disconnect();
                 xmppConnection.removeAsyncStanzaListener(UdeskXmppManager.this);
                 xmppConnection.removeConnectionListener(UdeskXmppManager.this);
                 handler.removeCallbacks(runnable);
-                xmppConnection.disconnect();
                 xmppConnection = null;
             }
             if (mConfiguration != null) {
@@ -700,33 +717,45 @@ public class UdeskXmppManager implements ConnectionListener, StanzaListener {
 
     @Override
     public void connected(XMPPConnection arg0) {
+        Log.i("smack","connected");
 
 
     }
 
     @Override
     public void authenticated(XMPPConnection connection, boolean resumed) {
+        Log.i("smack","authenticated");
 
     }
 
     @Override
     public void connectionClosed() {
+        Log.i("smack","connectionClosed");
 
     }
 
     @Override
     public void connectionClosedOnError(Exception arg0) {
-
+        Log.i("smack","connectionClosedOnError");
+        if (handler != null){
+            handler.removeCallbacks(reconnectRunnable);
+            handler.postDelayed(reconnectRunnable,10000);
+        }
     }
 
     @Override
     public void reconnectingIn(int arg0) {
+        Log.i("smack","connectionClosed");
 
     }
 
     @Override
     public void reconnectionFailed(Exception arg0) {
-
+        Log.i("smack","reconnectionFailed");
+        if (handler != null){
+            handler.removeCallbacks(reconnectRunnable);
+            handler.postDelayed(reconnectRunnable,10000);
+        }
     }
 
     @Override
@@ -790,6 +819,7 @@ public class UdeskXmppManager implements ConnectionListener, StanzaListener {
             UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
                 @Override
                 public void run() {
+                    isCancel = false;
                     UdeskUtils.resetTime();
                     UdeskConst.sdk_xmpp_statea = UdeskConst.CONNECTING;
                     cancel();
@@ -804,6 +834,7 @@ public class UdeskXmppManager implements ConnectionListener, StanzaListener {
 
     public void cancleXmpp() {
         try {
+            isCancel = true;
             UdeskUtils.resetTime();
             UdeskConst.sdk_xmpp_statea = UdeskConst.CONNECTION_FAILED;
             UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
@@ -813,6 +844,7 @@ public class UdeskXmppManager implements ConnectionListener, StanzaListener {
                 }
             });
             handler.removeCallbacksAndMessages(runnable);
+            handler.removeCallbacksAndMessages(reconnectRunnable);
         } catch (Exception e) {
             e.printStackTrace();
         }

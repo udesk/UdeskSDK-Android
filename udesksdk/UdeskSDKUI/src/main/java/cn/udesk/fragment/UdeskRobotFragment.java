@@ -392,11 +392,16 @@ public class UdeskRobotFragment extends UdeskbaseFragment implements View.OnClic
     @Override
     public void addNavigationFragment() {
         try {
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            NavigationFragment navigationFragment=new NavigationFragment();
-            navigationFragment.setCurrentView(UdeskConst.CurrentFragment.robot);
-            transaction.replace(R.id.fragment_view, navigationFragment);
-            transaction.commitNowAllowingStateLoss();
+            udeskChatActivity.mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    FragmentTransaction transaction = udeskChatActivity.getSupportFragmentManager().beginTransaction();
+                    NavigationFragment navigationFragment=new NavigationFragment();
+                    navigationFragment.setCurrentView(UdeskConst.CurrentFragment.robot);
+                    transaction.replace(R.id.fragment_view, navigationFragment);
+                    transaction.commitNowAllowingStateLoss();
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }

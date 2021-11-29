@@ -2,21 +2,13 @@ package cn.udesk.rich;
 
 import android.graphics.Color;
 import android.text.Editable;
-import android.text.Html;
 import android.text.Spanned;
 import android.text.style.BulletSpan;
-import android.text.style.ClickableSpan;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 
-import java.lang.ref.SoftReference;
 import java.util.Stack;
-
-import udesk.core.event.InvokeEventContainer;
 
 /**
  * Created by zhou on 16-10-20.
@@ -74,6 +66,11 @@ public class HtmlTagHandler implements UdeskHtml.TagHandler {
     @Override
     public void handleRobotJumpMessageClick(int start, int length, Editable output) {
         xRichText.onRobotJumpMessage(start,length,output);
+    }
+
+    @Override
+    public void handleTransferClick(int start, int length, Editable output) {
+        xRichText.onTransfer(start,length,output);
     }
 
     @SuppressWarnings("unused")

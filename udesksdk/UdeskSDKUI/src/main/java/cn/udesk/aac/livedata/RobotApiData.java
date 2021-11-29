@@ -1,8 +1,9 @@
 package cn.udesk.aac.livedata;
 
-import androidx.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.text.TextUtils;
+
+import androidx.lifecycle.MutableLiveData;
 
 import org.json.JSONObject;
 
@@ -13,11 +14,11 @@ import cn.udesk.UdeskSDKManager;
 import cn.udesk.aac.MergeMode;
 import cn.udesk.aac.MergeModeManager;
 import cn.udesk.aac.QuestionMergeMode;
-import udesk.core.model.BaseMode;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
 import udesk.core.event.InvokeEventContainer;
+import udesk.core.model.BaseMode;
 import udesk.core.model.MessageInfo;
 import udesk.core.model.ProductListBean;
 import udesk.core.model.RobotTipBean;
@@ -300,6 +301,17 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
             e.printStackTrace();
         }
     }
+    public void onRichTextTransferClick(String content){
+        try {
+            if (!TextUtils.isEmpty(content)){
+                QuestionMergeMode mergeMode=new QuestionMergeMode(UdeskConst.LiveDataType.ROBOT_RICHTEXT_TRANSFER_CLICK,content,UUID.randomUUID().toString());
+                MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     public void onTipClick(RobotTipBean.ListBean bean){
         try {
@@ -384,6 +396,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
         InvokeEventContainer.getInstance().event_OnAnswerClick.bind(this,"onAnswerClick");
         InvokeEventContainer.getInstance().event_OnFlowClick.bind(this,"onFlowClick");
         InvokeEventContainer.getInstance().event_OnRobotJumpMessageClick.bind(this,"onRobotJumpMessageClick");
+        InvokeEventContainer.getInstance().event_OnRichTextTransferClick.bind(this,"onRichTextTransferClick");
     }
 
     @Override
@@ -397,6 +410,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
         InvokeEventContainer.getInstance().event_OnAnswerClick.unBind(this);
         InvokeEventContainer.getInstance().event_OnFlowClick.unBind(this);
         InvokeEventContainer.getInstance().event_OnRobotJumpMessageClick.unBind(this);
+        InvokeEventContainer.getInstance().event_OnRichTextTransferClick.unBind(this);
     }
 
     public void setCustomerId(String customerId) {
