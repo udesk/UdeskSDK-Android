@@ -38,7 +38,7 @@ public class UdeskHelperArticleActivity extends UdeskBaseActivity {
 				udeskSubject = (TextView) findViewById(R.id.udesk_subject);
 				udeskWebView = (WebView) findViewById(R.id.udesk_help_content_webview);
 				Intent intent = getIntent();
-				int id = intent.getIntExtra(UdeskConst.UDESKARTICLEID, -1);
+				long id = intent.getLongExtra(UdeskConst.UDESKARTICLEID, -1L);
 				if(id != -1){
                     getArticlesContentJsonApiById(id);
                 }
@@ -78,7 +78,7 @@ public class UdeskHelperArticleActivity extends UdeskBaseActivity {
 		
 
 	// 通过文章的ID，获取文章的具体内容
-		private void getArticlesContentJsonApiById(int id) {
+		private void getArticlesContentJsonApiById(long id) {
 			try {
 				udeskLoading.setVisibility(View.VISIBLE);
 				UdeskHttpFacade.getInstance().getArticlesContentJsonApiById(

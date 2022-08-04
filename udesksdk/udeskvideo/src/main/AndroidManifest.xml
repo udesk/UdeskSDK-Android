@@ -21,6 +21,7 @@
 
 
         <service android:name="udesk.udeskvideo.floatview.service.FloatMonkService"
+            android:exported="false"
             />
 
     </application>

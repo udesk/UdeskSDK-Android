@@ -142,6 +142,32 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
             mBtnAudio.init(UdeskUtil.getDirectoryPath(getActivity().getApplicationContext(), UdeskConst.FileAudio));
             mBtnAudio.setRecordingListener(new AudioRecordButton.OnRecordingListener() {
                 @Override
+                public boolean getPermission() {
+                    if (Build.VERSION.SDK_INT < 23) {
+                        return true;
+                    }else {
+                        final boolean[] onPermissionGranted = {false};
+                        XPermissionUtils.requestPermissions(udeskChatActivity, RequestCode.AUDIO,
+                                new String[]{Manifest.permission.RECORD_AUDIO},
+                                new XPermissionUtils.OnPermissionListener() {
+                                    @Override
+                                    public void onPermissionGranted() {
+                                        onPermissionGranted[0] = true;
+                                    }
+
+                                    @Override
+                                    public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
+                                        Toast.makeText(udeskChatActivity.getApplicationContext(),
+                                                getResources().getString(R.string.aduido_denied),
+                                                Toast.LENGTH_SHORT).show();
+                                        onPermissionGranted[0] = false;
+                                    }
+                                });
+                        return onPermissionGranted[0];
+                    }
+                }
+
+                @Override
                 public void recordStart() {
                     if (udeskChatActivity.mRecordFilePlay != null) {
                         udeskChatActivity.showStartOrStopAnimation(
@@ -711,31 +737,9 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                         mEmotionKeyboard.showSoftInput();
                     }
                 } else {
-                    if (Build.VERSION.SDK_INT < 23) {
-                        showAudioButton();
-                        hideEmotionLayout();
-                        hideMoreLayout();
-                    } else {
-                        XPermissionUtils.requestPermissions(udeskChatActivity, RequestCode.AUDIO,
-                                new String[]{Manifest.permission.RECORD_AUDIO,
-                                        Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                new XPermissionUtils.OnPermissionListener() {
-                                    @Override
-                                    public void onPermissionGranted() {
-                                        showAudioButton();
-                                        hideEmotionLayout();
-                                        hideMoreLayout();
-                                    }
-
-                                    @Override
-                                    public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
-                                        Toast.makeText(udeskChatActivity.getApplicationContext(),
-                                                getResources().getString(R.string.aduido_denied),
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                    }
-
+                    showAudioButton();
+                    hideEmotionLayout();
+                    hideMoreLayout();
                 }
             } else if (R.id.udesk_bottom_send == v.getId()) { //发送文本消息
                 if (TextUtils.isEmpty(mInputEditView.getText().toString())) {

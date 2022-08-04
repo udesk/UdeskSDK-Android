@@ -383,16 +383,16 @@ public class UdeskDBManager {
                 String replyUser = cursor.getString(13);
                 String reply_userurl = cursor.getString(14);
                 String subsessionid = cursor.getString(15);
-                int seqNum = cursor.getInt(16);
+                long seqNum = cursor.getLong(16);
                 String fileName = UdeskUtils.objectToString(cursor.getString(17));
                 String fileSize = UdeskUtils.objectToString(cursor.getString(18));
                 int switchStaffType = UdeskUtils.objectToInt(cursor.getInt(19));
                 String switchStaffTips = UdeskUtils.objectToString(cursor.getString(20));
                 String topAsk = UdeskUtils.objectToString(cursor.getString(21));
-                int logId = UdeskUtils.objectToInt(cursor.getInt(22));
+                String logId = UdeskUtils.objectToString(cursor.getString(22));
                 String webConfig = UdeskUtils.objectToString(cursor.getString(23));
                 String sender = UdeskUtils.objectToString(cursor.getString(24));
-                int flowId = UdeskUtils.objectToInt(cursor.getInt(25));
+                long flowId = UdeskUtils.objectToLong(cursor.getLong(25));
                 String flowTitle = UdeskUtils.objectToString(cursor.getString(26));
                 String flowContent = UdeskUtils.objectToString(cursor.getString(27));
                 String question_id = UdeskUtils.objectToString(cursor.getString(28));
@@ -499,16 +499,16 @@ public class UdeskDBManager {
                 String replyUser = UdeskUtils.objectToString(cursor.getString(13));
                 String reply_userurl = UdeskUtils.objectToString(cursor.getString(14));
                 String subSeessionId = UdeskUtils.objectToString(cursor.getString(15));
-                int seqNum = cursor.getInt(16);
+                long seqNum = cursor.getLong(16);
                 String fileName = UdeskUtils.objectToString(cursor.getString(17));
                 String fileSize = UdeskUtils.objectToString(cursor.getString(18));
                 int switchStaffType = UdeskUtils.objectToInt(cursor.getInt(19));
                 String switchStaffTips = UdeskUtils.objectToString(cursor.getString(20));
                 String topAsk = UdeskUtils.objectToString(cursor.getString(21));
-                int logId = UdeskUtils.objectToInt(cursor.getInt(22));
+                String logId = UdeskUtils.objectToString(cursor.getString(22));
                 String webConfig = UdeskUtils.objectToString(cursor.getString(23));
                 String sender = UdeskUtils.objectToString(cursor.getString(24));
-                int flowId = UdeskUtils.objectToInt(cursor.getInt(25));
+                long flowId = UdeskUtils.objectToLong(cursor.getLong(25));
                 String flowTitle = UdeskUtils.objectToString(cursor.getString(26));
                 String flowContent = UdeskUtils.objectToString(cursor.getString(27));
                 String question_id = UdeskUtils.objectToString(cursor.getString(28));
@@ -614,16 +614,16 @@ public class UdeskDBManager {
                 String replyUser = UdeskUtils.objectToString(cursor.getString(13));
                 String reply_userurl = UdeskUtils.objectToString(cursor.getString(14));
                 String subSeessionId = UdeskUtils.objectToString(cursor.getString(15));
-                int seqNum = cursor.getInt(16);
+                long seqNum = cursor.getLong(16);
                 String fileName = UdeskUtils.objectToString(cursor.getString(17));
                 String fileSize = UdeskUtils.objectToString(cursor.getString(18));
                 int switchStaffType = UdeskUtils.objectToInt(cursor.getInt(19));
                 String switchStaffTips = UdeskUtils.objectToString(cursor.getString(20));
                 String topAsk = UdeskUtils.objectToString(cursor.getString(21));
-                int logId = UdeskUtils.objectToInt(cursor.getInt(22));
+                String logId = UdeskUtils.objectToString(cursor.getString(22));
                 String webConfig = UdeskUtils.objectToString(cursor.getString(23));
                 String sender = UdeskUtils.objectToString(cursor.getString(24));
-                int flowId = UdeskUtils.objectToInt(cursor.getInt(25));
+                long flowId = UdeskUtils.objectToLong(cursor.getLong(25));
                 String flowTitle = UdeskUtils.objectToString(cursor.getString(26));
                 String flowContent = UdeskUtils.objectToString(cursor.getString(27));
                 String question_id = UdeskUtils.objectToString(cursor.getString(28));
@@ -726,16 +726,16 @@ public class UdeskDBManager {
                 String replyUser = UdeskUtils.objectToString(cursor.getString(13));
                 String reply_userurl = UdeskUtils.objectToString(cursor.getString(14));
                 String subSeessionId = UdeskUtils.objectToString(cursor.getString(15));
-                int seqNum = cursor.getInt(16);
+                long seqNum = cursor.getLong(16);
                 String fileName = UdeskUtils.objectToString(cursor.getString(17));
                 String fileSize = UdeskUtils.objectToString(cursor.getString(18));
                 int switchStaffType = UdeskUtils.objectToInt(cursor.getInt(19));
                 String switchStaffTips = UdeskUtils.objectToString(cursor.getString(20));
                 String topAsk = UdeskUtils.objectToString(cursor.getString(21));
-                int logId = UdeskUtils.objectToInt(cursor.getInt(22));
+                String logId = UdeskUtils.objectToString(cursor.getString(22));
                 String webConfig = UdeskUtils.objectToString(cursor.getString(23));
                 String sender = UdeskUtils.objectToString(cursor.getString(24));
-                int flowId = UdeskUtils.objectToInt(cursor.getInt(25));
+                long flowId = UdeskUtils.objectToLong(cursor.getLong(25));
                 String flowTitle = UdeskUtils.objectToString(cursor.getString(26));
                 String flowContent = UdeskUtils.objectToString(cursor.getString(27));
                 String question_id = UdeskUtils.objectToString(cursor.getString(28));
@@ -1199,7 +1199,7 @@ public class UdeskDBManager {
         }
     }
 
-    public void addSubSessionIdDB(final String im_sub_session_id, final int seqNum) {
+    public void addSubSessionIdDB(final String im_sub_session_id, final long seqNum) {
         try {
             UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
                 @Override
@@ -1217,7 +1217,7 @@ public class UdeskDBManager {
      * @param im_sub_session_id
      * @param seqNum
      */
-    public synchronized void addSubSessionId(String im_sub_session_id, int seqNum) {
+    public synchronized void addSubSessionId(String im_sub_session_id, long seqNum) {
 
         try {
             if (getSQLiteDatabase() == null) {
@@ -1230,11 +1230,11 @@ public class UdeskDBManager {
         }
     }
 
-    public Future<Integer>  getSubSessionIdDB(final String im_sub_session_id) {
+    public Future<Long>  getSubSessionIdDB(final String im_sub_session_id) {
         try {
-            Future<Integer> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Integer>() {
+            Future<Long> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Long>() {
                 @Override
-                public Integer call() throws Exception {
+                public Long call() throws Exception {
                     return getSubSessionId(im_sub_session_id);
                 }
             });
@@ -1245,12 +1245,12 @@ public class UdeskDBManager {
         }
     }
 
-    public synchronized int getSubSessionId(String im_sub_session_id) {
+    public synchronized long getSubSessionId(String im_sub_session_id) {
         try {
             String sql = "select SEQNUM from " + UdeskDBHelper.SubSessionId
                     + " where SUBID =?";
             Cursor cursor = null;
-            int count = 0;
+            long count = 0;
             try {
                 if (getSQLiteDatabase() == null) {
                     return 1;
@@ -1261,7 +1261,7 @@ public class UdeskDBManager {
                     return count + 1;
                 }
                 cursor.moveToFirst();
-                count = cursor.getInt(0);
+                count = cursor.getLong(0);
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {

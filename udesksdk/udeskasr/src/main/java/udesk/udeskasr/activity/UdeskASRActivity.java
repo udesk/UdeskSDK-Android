@@ -157,9 +157,10 @@ public class UdeskASRActivity extends Activity implements EventListener, View.On
                 startActivityForResult(intent, UdeskConstant.UDESK_REQUEST_CODE);
             } else if (i == R.id.udesk_clear) {
                 mASRText.setText("");
+                audioText.setLength(0);
                 changVis(true, true, false, false);
             } else if (i == R.id.udesk_send) {
-                if (audioText!=null&&audioText.length()>0){
+                if (mASRText!=null&&mASRText.length()>0){
                     InvokeEventContainer.getInstance().event_OnAudioResult.invoke(mASRText.getText().toString());
                 }
                 finish();
@@ -200,9 +201,10 @@ public class UdeskASRActivity extends Activity implements EventListener, View.On
      */
     @Override
     public void start() {
-        changVis(false, false, false, false);
         try {
+            final boolean[] onPermissionGranted = {false};
             if (Build.VERSION.SDK_INT < 23) {
+                changVis(false, false, false, false);
                 audioStart();
                 mic.start();
             } else {
@@ -214,17 +216,21 @@ public class UdeskASRActivity extends Activity implements EventListener, View.On
                         new XPermissionUtils.OnPermissionListener() {
                             @Override
                             public void onPermissionGranted() {
-                                audioStart();
-                                mic.start();
+                                onPermissionGranted[0] = true;
                             }
 
                             @Override
                             public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
-                                Toast.makeText(getApplicationContext(),
-                                        getResources().getString(R.string.audio_denied),
-                                        Toast.LENGTH_SHORT).show();
+                                showToast(getResources().getString(R.string.audio_denied));
+                                onPermissionGranted[0] = false;
                             }
                         });
+                if (onPermissionGranted[0]){
+                    changVis(false, false, false, false);
+                    audioStart();
+                    mic.start();
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -360,6 +366,16 @@ public class UdeskASRActivity extends Activity implements EventListener, View.On
             send.setVisibility(View.VISIBLE);
         } else {
             send.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,  String[] permissions,  int[] grantResults) {
+        try {
+            XPermissionUtils.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

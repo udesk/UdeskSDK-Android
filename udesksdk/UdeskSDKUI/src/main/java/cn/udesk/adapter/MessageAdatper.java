@@ -197,7 +197,7 @@ public class MessageAdatper extends BaseAdapter {
                         }
                         if (info.getSwitchStaffType() > 0
                                 && info.getSwitchStaffType() == newInfo.getSwitchStaffType()
-                                && info.getLogId() == newInfo.getLogId()
+                                && TextUtils.equals(info.getLogId(),newInfo.getLogId())
                                 && TextUtils.equals(info.getMsgContent(), newInfo.getMsgContent())
                                 && info.getDirection() == UdeskConst.ChatMsgDirection.Recv) {
                             newMessages.add(info);

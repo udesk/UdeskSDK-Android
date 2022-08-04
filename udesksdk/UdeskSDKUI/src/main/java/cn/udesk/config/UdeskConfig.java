@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import cn.udesk.R;
+import cn.udesk.callback.ICommodityLinkClickCallBack;
 import cn.udesk.callback.IFunctionItemClickCallBack;
 import cn.udesk.callback.IImgTxtMessageWebonClick;
+import cn.udesk.callback.ILeaveChatViewCallBack;
 import cn.udesk.callback.ILinkMessageWebonClick;
 import cn.udesk.callback.ILocationMessageClickCallBack;
 import cn.udesk.callback.INavigationItemClickCallBack;
@@ -119,8 +121,10 @@ public class UdeskConfig {
     public String concatRobotUrlWithCustomerInfo;
     //设置客户的头像地址
     public String customerUrl;
-    // //配置发送商品链接的mode
+    // 配置发送商品链接的mode
     public UdeskCommodityItem commodity;
+    //咨询对象发送链接的点击事件拦截回调
+    public ICommodityLinkClickCallBack commodityLinkClickCallBack;
     //文本消息中的链接消息的点击事件的拦截回调。 包含表情的不会拦截回调。
     public ITxtMessageWebonClick txtMessageClick;
     //商品消息中的链接点击回调
@@ -179,6 +183,8 @@ public class UdeskConfig {
     public float maxHeightViewRatio =0.0f;
     //设置智能提示的最大高度
     public float maxHeightViewDimen =0.0f;
+    //离开IM聊天界面的回调
+    public ILeaveChatViewCallBack leaveChatViewCallBack;
 
     UdeskConfig(Builder builder) {
 
@@ -227,6 +233,7 @@ public class UdeskConfig {
         this.concatRobotUrlWithCustomerInfo = builder.concatRobotUrlWithCustomerInfo;
         this.customerUrl = builder.customerUrl;
         this.commodity = builder.commodity;
+        this.commodityLinkClickCallBack = builder.commodityLinkClickCallBack;
         this.txtMessageClick = builder.txtMessageClick;
         this.productMessageClick = builder.productMessageClick;
         this.linkMessageWebonClick = builder.linkMessageWebonClick;
@@ -256,6 +263,7 @@ public class UdeskConfig {
         this.preSendRobotMessages= builder.preSendRobotMessages;
         this.maxHeightViewRatio = builder.maxHeightViewRatio;
         this.maxHeightViewDimen = builder.maxHeightViewDimen;
+        this.leaveChatViewCallBack = builder.leaveChatViewCallBack;
     }
 
     public static UdeskConfig createDefualt() {
@@ -353,6 +361,8 @@ public class UdeskConfig {
         private String customerUrl;
         //配置发送商品链接的mode
         private UdeskCommodityItem commodity;
+        //咨询对象发送链接的点击事件拦截回调
+        public ICommodityLinkClickCallBack commodityLinkClickCallBack;
         //文本消息中的链接消息的点击事件的拦截回调。 包含表情的不会拦截回调。
         public ITxtMessageWebonClick txtMessageClick;
         //商品消息中的链接点击回调
@@ -411,6 +421,8 @@ public class UdeskConfig {
         public float maxHeightViewRatio =0.0f;
         //设置智能提示的最大高度
         public float maxHeightViewDimen =0.0f;
+        //离开IM聊天界面的回调
+        public ILeaveChatViewCallBack leaveChatViewCallBack;
         public Builder() {
 
         }
@@ -1029,6 +1041,26 @@ public class UdeskConfig {
          */
         public Builder setMaxHeightViewDimen(float maxHeightViewDimen) {
             this.maxHeightViewDimen = maxHeightViewDimen;
+            return this;
+        }
+
+        /**
+         * 设置咨询对象发送链接的点击事件拦截回调
+         * @param commodityLinkClickCallBack
+         * @return
+         */
+        public Builder setCommodityLinkClickCallBack(ICommodityLinkClickCallBack commodityLinkClickCallBack) {
+            this.commodityLinkClickCallBack = commodityLinkClickCallBack;
+            return this;
+        }
+
+        /**
+         * 设置离开IM聊天界面的回调
+         * @param leaveChatViewCallBack
+         * @return
+         */
+        public Builder setLeaveChatViewCallBack(ILeaveChatViewCallBack leaveChatViewCallBack) {
+            this.leaveChatViewCallBack = leaveChatViewCallBack;
             return this;
         }
 

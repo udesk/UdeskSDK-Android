@@ -1626,6 +1626,12 @@ public class UdeskUtil {
 
     }
 
+    public static MessageInfo buildShowNewsMsg(String content) {
+        return buildMsg("", "", System.currentTimeMillis(), UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_SHOW_NEWS, content, UdeskConst.ChatMsgReadFlag.read,
+                UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv, "", 0, "", "", "",
+                0, "");
+    }
+
     public static MessageInfo buildWelcomeReply(RobotInit robotInit) {
         MessageInfo messageInfo = buildMsg(robotInit.getWebConfig().getRobotName(), robotInit.getWebConfig().getLogoUrl(), System.currentTimeMillis(), UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_RICH,
                 robotInit.getWebConfig().getHelloWord(), UdeskConst.ChatMsgReadFlag.read, UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,
@@ -2021,11 +2027,11 @@ public class UdeskUtil {
                 Collections.reverse(contents);
                 boolean isAddEvent = false;
                 for (TicketReplieMode.ContentsBean contentsBean : contents) {
-                    if (contentsBean != null && !UdeskDBManager.getInstance().hasReceviedMsg(String.valueOf(contentsBean.getReply_id()))) {
+                    if (contentsBean != null && !UdeskDBManager.getInstance().hasReceviedMsg(UdeskUtils.objectToString(contentsBean.getReply_id()))) {
                         MessageInfo msg = new MessageInfo();
                         msg.setMsgtype(UdeskConst.ChatMsgTypeString.TYPE_LEAVEMSG);
                         msg.setTime(System.currentTimeMillis());
-                        msg.setMsgId(String.valueOf(contentsBean.getReply_id()));
+                        msg.setMsgId(UdeskUtils.objectToString(contentsBean.getReply_id()));
                         msg.setDirection(UdeskConst.ChatMsgDirection.Recv);
                         msg.setSendFlag(UdeskConst.SendFlag.RESULT_SUCCESS);
                         msg.setReadFlag(UdeskConst.ChatMsgReadFlag.read);

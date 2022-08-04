@@ -50,7 +50,7 @@ public class ExampleApplication extends Application {
     protected void attachBaseContext(Context base) {
 
         LocalManageUtil.saveSystemCurrentLanguage(base);
-        super.attachBaseContext(base);
+        super.attachBaseContext(LocalManageUtil.setLocal(base));
         MultiDex.install(base);
     }
 

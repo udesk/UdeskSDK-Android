@@ -5,11 +5,12 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
-import androidx.appcompat.widget.AppCompatButton;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.appcompat.widget.AppCompatButton;
 
 import java.io.File;
 
@@ -99,21 +100,27 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
             setOnLongClickListener(new OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    isActionUp = false;
-                    if (mRecordingListener != null) {
-                        mRecordingListener.recordStart();
+                    boolean permission = false;
+                    if (mRecordingListener != null){
+                        permission = mRecordingListener.getPermission();
                     }
-                    // 获取焦点
-                    int focus = mAudioManager.requestAudioFocus(null,
-                            AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-                    if (focus == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                        if (mAudioRecordManager != null) {
-                            isReady = true;
-                            mAudioRecordManager.prepareAudio();
-                        }
-                    } else if (focus == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
+                    if (permission){
+                        isActionUp = false;
                         if (mRecordingListener != null) {
-                            mRecordingListener.recordError("AUDIO_FOCUS_REQUEST_FAILED");
+                            mRecordingListener.recordStart();
+                        }
+                        // 获取焦点
+                        int focus = mAudioManager.requestAudioFocus(null,
+                                AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+                        if (focus == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                            if (mAudioRecordManager != null) {
+                                isReady = true;
+                                mAudioRecordManager.prepareAudio();
+                            }
+                        } else if (focus == AudioManager.AUDIOFOCUS_REQUEST_FAILED) {
+                            if (mRecordingListener != null) {
+                                mRecordingListener.recordError("AUDIO_FOCUS_REQUEST_FAILED");
+                            }
                         }
                     }
                     return true;
@@ -391,6 +398,7 @@ public class AudioRecordButton extends AppCompatButton implements AudioRecordMan
 
 
     public interface OnRecordingListener {
+        boolean getPermission();
 
         void recordStart();
 

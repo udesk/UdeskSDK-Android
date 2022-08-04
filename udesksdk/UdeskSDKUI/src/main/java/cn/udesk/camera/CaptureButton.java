@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import cn.udesk.camera.callback.CaptureListener;
+import cn.udesk.camera.callback.PermissionListener;
 import cn.udesk.camera.util.CheckPermission;
 
 import static cn.udesk.camera.UdeskCameraView.BUTTON_STATE_BOTH;
@@ -63,6 +64,7 @@ public class CaptureButton extends View {
     private LongPressRunnable longPressRunnable;    //长按后处理的逻辑Runnable
     private CaptureListener captureLisenter;        //按钮回调接口
     private RecordCountDownTimer timer;             //计时器
+    private PermissionListener permissionListener;
 
     public CaptureButton(Context context) {
         super(context);
@@ -342,21 +344,29 @@ public class CaptureButton extends View {
         public void run() {
             try {
                 state = STATE_LONG_PRESS;   //如果按下后经过500毫秒则会修改当前状态为长按状态
-                //没有录制权限
-                if (CheckPermission.getRecordState() != CheckPermission.STATE_SUCCESS) {
-                    state = STATE_IDLE;
-                    if (captureLisenter != null) {
-                        captureLisenter.recordError();
-                        return;
-                    }
+                boolean permission = false;
+                if (permissionListener != null){
+                    permission = permissionListener.onCheckAudioPermission();
                 }
-                //启动按钮动画，外圆变大，内圆缩小
-                startRecordAnimation(
-                        button_outside_radius,
-                        button_outside_radius + outside_add_size,
-                        button_inside_radius,
-                        button_inside_radius - inside_reduce_size
-                );
+                if (permission){
+                    //没有录制权限
+                    if (CheckPermission.getRecordState() != CheckPermission.STATE_SUCCESS) {
+                        state = STATE_IDLE;
+                        if (captureLisenter != null) {
+                            captureLisenter.recordError();
+                            return;
+                        }
+                    }
+                    //启动按钮动画，外圆变大，内圆缩小
+                    startRecordAnimation(
+                            button_outside_radius,
+                            button_outside_radius + outside_add_size,
+                            button_inside_radius,
+                            button_inside_radius - inside_reduce_size
+                    );
+                }else {
+                    state = STATE_IDLE;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -383,6 +393,9 @@ public class CaptureButton extends View {
         this.captureLisenter = captureLisenter;
     }
 
+    public void setPermissionListener(PermissionListener permissionListener) {
+        this.permissionListener = permissionListener;
+    }
     //设置按钮功能（拍照和录像）
     public void setButtonFeatures(int state) {
         this.button_state = state;

@@ -93,6 +93,7 @@
             <include layout="@layout/udesk_item_link" />
             <include layout="@layout/udesk_item_template_message" />
             <include layout="@layout/udesk_item_product_left" />
+            <include layout="@layout/udesk_item_news" />
 
 
         </RelativeLayout>

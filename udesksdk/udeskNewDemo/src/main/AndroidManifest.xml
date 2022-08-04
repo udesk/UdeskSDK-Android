@@ -38,6 +38,7 @@
         <activity
             android:name="udesk.sdk.demo.activity.UdeskInitKeyActivity"
             android:configChanges="screenSize|orientation|uiMode|keyboardHidden"
+            android:exported="true"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -124,6 +125,7 @@
         <!-- Required SDK 核心功能-->
         <receiver
             android:name="cn.jpush.android.service.PushReceiver"
+            android:exported="false"
             android:enabled="true" >
             <intent-filter android:priority="1000">
                 <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
@@ -195,7 +197,10 @@
 
         <!-- User defined. 用户自定义 Receiver 接收被拉起回调-->
         <!-- 自定义 Receiver 组件，继承cn.jpush.android.service.WakedResultReceiver类,复写onWake(int wakeType)或 onWake(Context context, int wakeType)方法以监听被拉起 -->
-        <receiver android:name=".jpush.MyWakedResultReceiver">
+        <receiver
+            android:name=".jpush.MyWakedResultReceiver"
+            android:exported="false"
+            >
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.WakedReceiver" />
                 <category android:name="${applicationId}" />

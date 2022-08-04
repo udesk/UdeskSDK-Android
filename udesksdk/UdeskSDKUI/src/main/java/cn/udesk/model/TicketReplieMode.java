@@ -5,7 +5,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import cn.udesk.UdeskUtil;
 import udesk.core.utils.UdeskUtils;
 
 /**
@@ -102,8 +101,8 @@ public class TicketReplieMode {
         private Object reply_created_at;
         private Object reply_updated_at;
 
-        public int getReply_id() {
-            return UdeskUtils.objectToInt(reply_id);
+        public Object getReply_id() {
+            return reply_id;
         }
 
         public void setReply_id(Object reply_id) {

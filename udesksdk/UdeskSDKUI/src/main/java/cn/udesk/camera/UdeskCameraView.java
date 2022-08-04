@@ -19,14 +19,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.VideoView;
 
-import java.io.IOException;
-
 import cn.udesk.R;
 import cn.udesk.camera.callback.CameraOpenOverCallback;
 import cn.udesk.camera.callback.CameraView;
 import cn.udesk.camera.callback.CaptureListener;
 import cn.udesk.camera.callback.ErrorListener;
 import cn.udesk.camera.callback.FocusCallback;
+import cn.udesk.camera.callback.PermissionListener;
 import cn.udesk.camera.callback.TypeListener;
 import cn.udesk.camera.callback.UdeskCameraListener;
 import cn.udesk.camera.state.CameraMachine;
@@ -63,6 +62,7 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
     //回调监听
     private UdeskCameraListener cameraLisenter;
     private ErrorListener errorLisenter;
+    private PermissionListener permissionListener;
 
     private Context mContext;
     private VideoView mVideoView;
@@ -181,6 +181,15 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
                 @Override
                 public void recordTime(long time) {
 
+                }
+            });
+            mCaptureLayout.setPermissionListener(new PermissionListener() {
+                @Override
+                public boolean onCheckAudioPermission() {
+                    if (permissionListener != null){
+                        return permissionListener.onCheckAudioPermission();
+                    }
+                    return false;
                 }
             });
             //确认 取消
@@ -390,6 +399,9 @@ public class UdeskCameraView extends FrameLayout implements CameraOpenOverCallba
 
     public void setCameraLisenter(UdeskCameraListener cameraLisenter) {
         this.cameraLisenter = cameraLisenter;
+    }
+    public void setPermissionListener(PermissionListener permissionListener) {
+        this.permissionListener = permissionListener;
     }
 
 

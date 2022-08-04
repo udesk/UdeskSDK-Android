@@ -183,6 +183,8 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
     private TextView productName;
     private ImageView productIcon;
     private MediaPlayer mediaPlayer;
+    private LinearLayout itemNews;
+    private TextView news;
 
 
     @Override
@@ -342,6 +344,9 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             productMsg = (TextView) convertView.findViewById(R.id.udesk_product_msg);
             productName = (TextView) convertView.findViewById(R.id.product_name);
             productIcon = (ImageView) convertView.findViewById(R.id.udesk_product_icon);
+            //历史消息
+            itemNews = convertView.findViewById(R.id.udesk_item_news);
+            news = convertView.findViewById(R.id.udesk_news);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -377,6 +382,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             itemLink.setVisibility(View.GONE);
             itemTemplate.setVisibility(View.GONE);
             itemProduct.setVisibility(View.GONE);
+            itemNews.setVisibility(View.GONE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -467,6 +473,9 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                     break;
                 case UdeskConst.ChatMsgTypeInt.TYPE_PRODUCT:
                     dealProduct();
+                    break;
+                case UdeskConst.ChatMsgTypeInt.TYPE_SHOW_NEWS:
+                    dealNews();
                     break;
                 default:
                     dealRichText();
@@ -1867,7 +1876,7 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 if (TextUtils.equals("1",model.getType())){
                     InvokeEventContainer.getInstance().event_OnQueClick.invoke(message.getMsgId(),message.getLogId(), model.getContent(), UdeskUtils.objectToInt(model.getDataId()),true,false);
                 }else if (TextUtils.equals("2",model.getType())){
-                    InvokeEventContainer.getInstance().event_OnFlowClick.invoke(message,UdeskUtils.objectToInt(model.getDataId()),model.getContent());
+                    InvokeEventContainer.getInstance().event_OnFlowClick.invoke(message,model.getDataId(),model.getContent());
                 }
 
             }
@@ -2025,6 +2034,20 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             }
 
             events.setText(message.getMsgContent());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 显示以上为历史消息
+     */
+    private void dealNews() {
+        try {
+            showHead(false);
+            itemNews.setVisibility(View.VISIBLE);
+            news.setText(message.getMsgContent());
+            tvTime.setVisibility(View.GONE);
         } catch (Exception e) {
             e.printStackTrace();
         }

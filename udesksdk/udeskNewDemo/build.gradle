@@ -7,13 +7,13 @@ repositories {
 }
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.2'
+    compileSdkVersion 31
+    buildToolsVersion '30.0.3'
 
     defaultConfig {
         applicationId "udesk.sdk.demo"
         minSdkVersion 15
-        targetSdkVersion 29
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -44,17 +44,11 @@ android {
         }
     }
 
-    //指定jdk版本
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     api project(':udeskvideo')
     api project(':udeskasr')

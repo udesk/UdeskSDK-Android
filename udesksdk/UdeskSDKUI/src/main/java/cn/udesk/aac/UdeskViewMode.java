@@ -140,7 +140,7 @@ public class UdeskViewMode extends ViewModel {
         robotApiData.setCustomerId(customerId);
     }
 
-    public void setSessionId(int sessionId) {
+    public void setSessionId(long sessionId) {
         robotApiData.setSessionId(sessionId);
     }
 

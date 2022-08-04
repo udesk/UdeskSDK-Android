@@ -3,12 +3,11 @@ apply plugin: 'com.github.dcendents.android-maven'
 group='com.github.udesk'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.2'
+    compileSdkVersion 31
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 29
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
 
@@ -31,8 +30,8 @@ android {
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.14.4'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
     implementation 'org.greenrobot:eventbus:3.0.0'
     implementation files('libs/agora-rtc-sdk.jar')
     api project(':UdeskSDKUI')

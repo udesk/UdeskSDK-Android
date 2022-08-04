@@ -1,8 +1,9 @@
 package cn.udesk.aac.livedata;
 
-import androidx.lifecycle.MutableLiveData;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.lifecycle.MutableLiveData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,12 +20,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import cn.udesk.MessageCache;
 import cn.udesk.aac.MergeMode;
 import cn.udesk.aac.MergeModeManager;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.messagemanager.UdeskXmppManager;
 import cn.udesk.model.UdeskCommodityItem;
-import cn.udesk.MessageCache;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
@@ -133,7 +134,7 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                                 JSONObject jsonObject = new JSONObject(message);
                                 //返回客服消息序列  大于本地存储的, 有丢失消息, 需要拉取消息
                                 if (jsonObject.has("agent_seq_num")) {
-                                    int agent_seq_num = jsonObject.optInt("agent_seq_num");
+                                    Object agent_seq_num = jsonObject.opt("agent_seq_num");
                                     //检查是否跳序
                                     MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.Check_Agent_Seq_Num, agent_seq_num,UUID.randomUUID().toString());
                                     MergeModeManager.getmInstance().putMergeMode(mergeMode,SendMessageLiveData.this);
