@@ -1,13 +1,11 @@
 package cn.udesk.aac;
 
-import cn.udesk.aac.MergeMode;
-
 public class QuestionMergeMode extends MergeMode {
     String question;
-    int questionId;
+    long questionId;
     int queryType;
     String msgId;
-    int logId;
+    String logId;
 
     public QuestionMergeMode(int type, String id) {
         super(type, id);
@@ -25,11 +23,11 @@ public class QuestionMergeMode extends MergeMode {
         this.question = question;
     }
 
-    public int getQuestionId() {
+    public long getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(int questionId) {
+    public void setQuestionId(long questionId) {
         this.questionId = questionId;
     }
 
@@ -49,11 +47,11 @@ public class QuestionMergeMode extends MergeMode {
         this.msgId = msgId;
     }
 
-    public int getLogId() {
+    public String getLogId() {
         return logId;
     }
 
-    public void setLogId(int logId) {
+    public void setLogId(String logId) {
         this.logId = logId;
     }
 }

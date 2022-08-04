@@ -13,12 +13,15 @@ android {
 
     defaultConfig {
         applicationId "udesk.sdk.demo"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
 
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a','x86'
+        }
     }
 
     sourceSets {

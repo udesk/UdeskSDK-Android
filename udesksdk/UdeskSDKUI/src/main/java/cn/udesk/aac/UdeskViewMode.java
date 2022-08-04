@@ -137,7 +137,7 @@ public class UdeskViewMode extends ViewModel {
         sendMessageLiveData.setCustomerId(customerId);
         robotApiData.setCustomerId(customerId);
     }
-    public void setSessionId(int sessionId){
+    public void setSessionId(long sessionId) {
         robotApiData.setSessionId(sessionId);
     }
 

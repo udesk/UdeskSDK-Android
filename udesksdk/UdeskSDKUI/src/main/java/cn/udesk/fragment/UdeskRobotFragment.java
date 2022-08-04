@@ -1,8 +1,6 @@
 package cn.udesk.fragment;
 
-import android.Manifest;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -17,7 +15,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +30,6 @@ import cn.udesk.emotion.EmotionKeyboard;
 import cn.udesk.emotion.EmotionLayout;
 import cn.udesk.emotion.LQREmotionKit;
 import cn.udesk.model.FunctionMode;
-import cn.udesk.permission.RequestCode;
-import cn.udesk.permission.XPermissionUtils;
 import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.utils.UdeskUtils;
@@ -583,28 +578,7 @@ public class UdeskRobotFragment extends UdeskbaseFragment implements View.OnClic
             }
             if (v.getId() == R.id.udesk_img_audio) {
                 if (UdeskUtil.isClassExists("udesk.udeskasr.activity.UdeskASRActivity")){
-                    if (Build.VERSION.SDK_INT < 23) {
-                        goToASR();
-                    } else {
-                        XPermissionUtils.requestPermissions(udeskChatActivity, RequestCode.ASR,
-                                new String[]{Manifest.permission.RECORD_AUDIO,
-                                        Manifest.permission.INTERNET,
-                                        Manifest.permission.READ_PHONE_STATE,
-                                        Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                new XPermissionUtils.OnPermissionListener() {
-                                    @Override
-                                    public void onPermissionGranted() {
-                                        goToASR();
-                                    }
-
-                                    @Override
-                                    public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
-                                        Toast.makeText(udeskChatActivity.getApplicationContext(),
-                                                getString(R.string.aduido_denied),
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                    }
+                    goToASR();
                 }else {
                     UdeskUtils.showToast(udeskChatActivity,getString(R.string.udesk_asr_close));
                 }

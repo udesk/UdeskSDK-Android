@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import cn.udesk.R;
 import cn.udesk.camera.callback.CaptureListener;
+import cn.udesk.camera.callback.PermissionListener;
 import cn.udesk.camera.callback.TypeListener;
 
 
@@ -24,6 +25,7 @@ public class CaptureLayout extends FrameLayout {
 
     private CaptureListener captureLisenter;    //拍照按钮监听
     private TypeListener typeLisenter;          //拍照或录制后接结果按钮监听
+    private PermissionListener permissionListener;
 
 
     public void setTypeLisenter(TypeListener typeLisenter) {
@@ -32,6 +34,10 @@ public class CaptureLayout extends FrameLayout {
 
     public void setCaptureLisenter(CaptureListener captureLisenter) {
         this.captureLisenter = captureLisenter;
+    }
+
+    public void setPermissionListener(PermissionListener permissionListener) {
+        this.permissionListener = permissionListener;
     }
 
     private CaptureButton btn_capture;      //拍照按钮
@@ -182,7 +188,15 @@ public class CaptureLayout extends FrameLayout {
                     setTip(time/1000+"s / 15s");
                 }
             });
-
+            btn_capture.setPermissionListener(new PermissionListener() {
+                @Override
+                public boolean onCheckAudioPermission() {
+                    if (permissionListener != null){
+                        return permissionListener.onCheckAudioPermission();
+                    }
+                    return false;
+                }
+            });
             //取消按钮
             btn_cancel = new TypeButton(getContext(), TypeButton.TYPE_CANCEL, button_size);
             final LayoutParams btn_cancel_param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);

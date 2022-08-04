@@ -370,7 +370,7 @@ public class UdeskXmppManager implements ConnectionListener, StanzaListener {
             long duration = msg.getDuration();
             String im_sub_session_id = msg.getSubsessionid();
             boolean no_need_save = msg.isNoNeedSave();
-            int seqNum = msg.getSeqNum();
+            long seqNum = msg.getSeqNum();
             String fileName = msg.getFilename();
             String filesize = msg.getFilesize();
 

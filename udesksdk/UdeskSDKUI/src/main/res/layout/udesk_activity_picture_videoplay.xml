@@ -3,12 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layoutDirection="ltr"
-    android:background="@color/udesk_color_bg_white">
+    android:background="@color/udesk_black">
 
     <VideoView
         android:id="@+id/udesk_video_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:background="#00000000"
         />
@@ -17,7 +17,8 @@
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/video_img"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"
+        android:visibility="gone"/>
 
     <ProgressBar
         android:id="@+id/udesk_wait"

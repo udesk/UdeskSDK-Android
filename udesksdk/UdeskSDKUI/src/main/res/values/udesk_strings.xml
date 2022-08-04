@@ -152,5 +152,6 @@
     <string name="udesk_survey_done">满意度已评价</string>
     <string name="udesk_transfer_out_of_data">转人工按钮已失效</string>
     <string name="udesk_input_recommendation">输入问题推荐</string>
+    <string name="udesk_news">以下是新消息</string>
 
 </resources>

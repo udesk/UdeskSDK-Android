@@ -78,7 +78,7 @@
             android:name="cn.udesk.photoselect.PictureVideoPlayActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
+            android:screenOrientation="user"
             android:theme="@style/Udesk_Theme" />
 
         <activity

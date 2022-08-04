@@ -13,14 +13,15 @@ import cn.udesk.UdeskSDKManager;
 import cn.udesk.aac.MergeMode;
 import cn.udesk.aac.MergeModeManager;
 import cn.udesk.aac.QuestionMergeMode;
-import udesk.core.model.BaseMode;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
 import udesk.core.event.InvokeEventContainer;
+import udesk.core.model.BaseMode;
 import udesk.core.model.MessageInfo;
 import udesk.core.model.ProductListBean;
 import udesk.core.model.RobotTipBean;
+import udesk.core.utils.UdeskUtils;
 
 public class RobotApiData<M> extends MutableLiveData<MergeMode> {
 
@@ -29,7 +30,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
     private String sdktoken = "";
     private String appid = "";
     private String customerId = "";
-    private int sessionId = 0;
+    private String sessionId = "";
     private String robotUrl = "";
 
     public void setBaseValue(String domain, String secretKey, String sdktoken,
@@ -72,7 +73,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
     //机器人发送消息
     public void robotMessage(final MessageInfo info) {
         try {
-            UdeskHttpFacade.getInstance().robotMessage(domain, secretKey, sdktoken, appid, robotUrl,customerId, sessionId,info.getMsgtype(),
+            UdeskHttpFacade.getInstance().robotMessage(domain, secretKey, sdktoken, appid, robotUrl,customerId, UdeskUtils.objectToLong(sessionId),info.getMsgtype(),
                     info.getMsgContent(), info.getMsgId(), info.getDuration(), info.getSeqNum(), info.getFilename(), info.getFilename(), info.getLocalPath(),new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
@@ -96,7 +97,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
     //机器人智能提示 输入联想
     public void robotTips(final String content) {
         try {
-            UdeskHttpFacade.getInstance().robotTips(domain, secretKey, sdktoken, appid, robotUrl,customerId, sessionId,
+            UdeskHttpFacade.getInstance().robotTips(domain, secretKey, sdktoken, appid, robotUrl,customerId, UdeskUtils.objectToLong(sessionId),
                     content, new UdeskCallBack() {
                         @Override
                         public void onSuccess(String message) {
@@ -118,8 +119,11 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
 
     }
     //机器人问答评价
-    public void robotAnswerSurvey(int logId,String option_id) {
+    public void robotAnswerSurvey(String logId,String option_id) {
         try {
+            if (TextUtils.isEmpty(logId)){
+                logId = "0";
+            }
             UdeskHttpFacade.getInstance().robotAnswerSurvey(domain, secretKey, sdktoken, appid, robotUrl,sessionId,logId, option_id, new UdeskCallBack() {
                 @Override
                 public void onSuccess(String message) {
@@ -141,7 +145,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
 
     }
     //机器人会话评价
-    public void robotSessionSurvey(int option_id, String remark) {
+    public void robotSessionSurvey(String option_id, String remark) {
         try {
             UdeskHttpFacade.getInstance().robotSessionSurvey(domain, secretKey, sdktoken, appid,robotUrl,
                     sessionId, option_id, remark, new UdeskCallBack() {
@@ -208,42 +212,50 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
 
     }
     //机器人点击
-    public void robotHit(final String message_id, int logId,String question, int question_id, int query_type) {
+    public void robotHit(final String message_id, String logId,String question, Object question_id, int query_type) {
         try {
-            UdeskHttpFacade.getInstance().robotHit(domain, secretKey, sdktoken, appid,robotUrl,message_id, sessionId,logId, question, question_id, query_type, new UdeskCallBack() {
-                @Override
-                public void onSuccess(String message) {
-                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotHitSuccess, message,UUID.randomUUID().toString());
-                    MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
+            if (TextUtils.isEmpty(logId)){
+                logId = "0";
+            }
+            UdeskHttpFacade.getInstance().robotHit(domain, secretKey, sdktoken, appid,robotUrl,message_id, sessionId,
+                    logId, question, UdeskUtils.objectToString(question_id), UdeskUtils.objectToString(query_type), new UdeskCallBack() {
+                        @Override
+                        public void onSuccess(String message) {
+                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotHitSuccess, message,UUID.randomUUID().toString());
+                            MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
-                }
+                        }
 
-                @Override
-                public void onFail(String message) {
-                    requestFail(UdeskConst.LiveDataType.RobotHitFailure, message_id);
-                }
-            });
+                        @Override
+                        public void onFail(String message) {
+                            requestFail(UdeskConst.LiveDataType.RobotHitFailure, message_id);
+                        }
+                    });
         }catch (Exception e){
             e.printStackTrace();
         }
 
     }
     //机器人流程点击
-    public void robotFlow(final String message_id, int logId,int flowId, String flowContent){
+    public void robotFlow(final String message_id, String logId,long flowId, String flowContent){
         try {
-            UdeskHttpFacade.getInstance().robotFlow(domain, secretKey, sdktoken, appid, robotUrl, message_id,sessionId, logId, flowId, flowContent, new UdeskCallBack() {
-                @Override
-                public void onSuccess(String message) {
-                    MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotFlowSuccess, message,UUID.randomUUID().toString());
-                    MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
+            if (TextUtils.isEmpty(logId)){
+                logId = "0";
+            }
+            UdeskHttpFacade.getInstance().robotFlow(domain, secretKey, sdktoken, appid, robotUrl, message_id,sessionId,
+                    logId, UdeskUtils.objectToString(flowId), flowContent, new UdeskCallBack() {
+                        @Override
+                        public void onSuccess(String message) {
+                            MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.RobotFlowSuccess, message,UUID.randomUUID().toString());
+                            MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
 
-                }
+                        }
 
-                @Override
-                public void onFail(String message) {
-                    requestFail(UdeskConst.LiveDataType.RobotHitFailure, message_id);
-                }
-            });
+                        @Override
+                        public void onFail(String message) {
+                            requestFail(UdeskConst.LiveDataType.RobotHitFailure, message_id);
+                        }
+                    });
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -265,7 +277,7 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
             e.printStackTrace();
         }
     }
-    public void onQueClick(String msgId,Integer logId,String question,Integer questionId,Boolean isFromFlow,Boolean isFAQ){
+    public void onQueClick(String msgId,String logId,String question,Long questionId,Boolean isFromFlow,Boolean isFAQ){
         try {
             QuestionMergeMode mergeMode=new QuestionMergeMode(UdeskConst.LiveDataType.RobotChildHit,UUID.randomUUID().toString());
             mergeMode.setQuestion(question);
@@ -354,19 +366,19 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
             e.printStackTrace();
         }
     }
-    public void onAnswerClick(Integer logId,String uesful) {
+    public void onAnswerClick(String logId,String useful) {
         try {
-            robotAnswerSurvey(logId,uesful);
+            robotAnswerSurvey(logId,useful);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public void onFlowClick(MessageInfo info,Integer dataId,String content) {
+    public void onFlowClick(MessageInfo info,String dataId,String content) {
         try {
             if (info!=null){
                 QuestionMergeMode mergeMode=new QuestionMergeMode(UdeskConst.LiveDataType.ROBOT_FLOW_HIT,info,UUID.randomUUID().toString());
-                mergeMode.setQuestionId(dataId);
+                mergeMode.setQuestionId(UdeskUtils.objectToLong(dataId));
                 mergeMode.setQuestion(content);
                 MergeModeManager.getmInstance().putMergeMode(mergeMode,RobotApiData.this);
             }
@@ -416,8 +428,8 @@ public class RobotApiData<M> extends MutableLiveData<MergeMode> {
         this.customerId = customerId;
     }
 
-    public void setSessionId(int sessionId) {
-        this.sessionId = sessionId;
+    public void setSessionId(long sessionId) {
+        this.sessionId = UdeskUtils.objectToString(sessionId);
     }
     public void setRobotUrl(String robotUrl) {
         this.robotUrl = robotUrl;

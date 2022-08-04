@@ -68,7 +68,7 @@ public class JsonUtils {
                     for (int i = 0; i < kownlegeArray.length(); i++) {
                         JSONObject data = kownlegeArray.optJSONObject(i);
                         UDHelperItem helpItem = new UDHelperItem();
-                        helpItem.id = data.optInt("id");
+                        helpItem.id = data.optLong("id");
                         helpItem.subject = data.optString("subject");
                         mList.add(helpItem);
                     }

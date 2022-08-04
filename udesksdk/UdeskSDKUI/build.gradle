@@ -10,11 +10,8 @@ repositories {
 
 android {
     compileSdkVersion 28
-    buildToolsVersion '28.0.3'
-
     defaultConfig {
-        minSdkVersion 14
-        
+        minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -43,5 +40,5 @@ dependencies {
     implementation group: 'org.ccil.cowan.tagsoup', name: 'tagsoup', version: '1.2.1'
     implementation 'org.igniterealtime.smack:smack-android-extensions:4.2.0'
     implementation 'org.igniterealtime.smack:smack-tcp:4.2.0'
-    api files('libs/udesk_sdk_5.3.2.jar')
+    api files('libs/udesk_sdk_5.3.4.jar')
 }

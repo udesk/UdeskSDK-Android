@@ -29,8 +29,10 @@ import cn.udesk.PreferenceHelper;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.aac.UdeskViewMode;
+import cn.udesk.callback.ICommodityLinkClickCallBack;
 import cn.udesk.callback.IFunctionItemClickCallBack;
 import cn.udesk.callback.IImgTxtMessageWebonClick;
+import cn.udesk.callback.ILeaveChatViewCallBack;
 import cn.udesk.callback.ILinkMessageWebonClick;
 import cn.udesk.callback.ILocationMessageClickCallBack;
 import cn.udesk.callback.INavigationItemClickCallBack;
@@ -46,6 +48,7 @@ import cn.udesk.model.FunctionMode;
 import cn.udesk.model.NavigationMode;
 import cn.udesk.model.UdeskCommodityItem;
 import cn.udesk.widget.UdeskTitleBar;
+import udesk.core.LocalManageUtil;
 import udesk.core.UdeskConst;
 import udesk.core.model.InfoListBean;
 import udesk.core.model.MessageInfo;
@@ -54,7 +57,6 @@ import udesk.core.model.Product;
 import udesk.core.model.ProductListBean;
 import udesk.core.model.TraceBean;
 import udesk.sdk.demo.R;
-import udesk.core.LocalManageUtil;
 import udesk.sdk.demo.maps.LocationActivity;
 import udesk.sdk.demo.maps.ShowSelectLocationActivity;
 
@@ -321,6 +323,18 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                         Toast.makeText(getApplicationContext(), "结构化消息控件点击事件回调", Toast.LENGTH_SHORT).show();
                     }
                 })//设置结构化消息控件点击事件回调接口.
+                .setCommodityLinkClickCallBack(new ICommodityLinkClickCallBack() {
+                    @Override
+                    public void callBack(Context context, UdeskViewMode viewMode, UdeskCommodityItem item) {
+                        Toast.makeText(getApplicationContext(), "咨询对象发送链接的点击事件拦截回调", Toast.LENGTH_SHORT).show();
+                    }
+                }) // 设置咨询对象发送链接的点击事件拦截回调
+                .setLeaveChatViewCallBack(new ILeaveChatViewCallBack() {
+                    @Override
+                    public void callBack() {
+                        Toast.makeText(getApplicationContext(), "离开IM聊天界面的回调", Toast.LENGTH_SHORT).show();
+                    }
+                })//设置离开IM聊天界面的回调
                 .setChannel(channel.getText().toString())
                 .isShowCustomerNickname(show_customer_nickname.isChecked())//设置是否显示昵称
                 .isShowCustomerHead(show_customer_head.isChecked()) //设置是否显示头像

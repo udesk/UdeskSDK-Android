@@ -133,7 +133,7 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                                 JSONObject jsonObject = new JSONObject(message);
                                 //返回客服消息序列  大于本地存储的, 有丢失消息, 需要拉取消息
                                 if (jsonObject.has("agent_seq_num")) {
-                                    int agent_seq_num = jsonObject.optInt("agent_seq_num");
+                                    Object agent_seq_num = jsonObject.opt("agent_seq_num");
                                     //检查是否跳序
                                     MergeMode mergeMode = new MergeMode(UdeskConst.LiveDataType.Check_Agent_Seq_Num, agent_seq_num,UUID.randomUUID().toString());
                                     MergeModeManager.getmInstance().putMergeMode(mergeMode,SendMessageLiveData.this);

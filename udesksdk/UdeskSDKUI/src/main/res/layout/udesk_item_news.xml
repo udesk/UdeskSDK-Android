@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/udesk_item_news"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/udesk_5"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:visibility="gone"
+    >
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:background="#e4e4e4"/>
+    <TextView
+        android:id="@+id/udesk_news"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#999999"
+        android:textSize="@dimen/udesk_sp14"
+        android:layout_marginLeft="@dimen/udesk_16"
+        android:layout_marginRight="@dimen/udesk_16"
+        />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1"
+        android:background="#e4e4e4"/>
+</LinearLayout>

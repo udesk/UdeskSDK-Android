@@ -4,11 +4,12 @@ import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class UdeskDBHelper extends SQLiteOpenHelper {
 
     public static String DATABASE_NAME = "udesk_sdk";
-    public final static int DATABASE_VERSION = 8;
+    public final static int DATABASE_VERSION = 9;
 
 
     public static String UdeskMessage = "udeskMessageInfo";
@@ -31,11 +32,11 @@ public class UdeskDBHelper extends SQLiteOpenHelper {
                     + "(MsgID TEXT primary key,Time BIGINT,MsgContent TEXT,"
                     + "MsgType TEXT, ReadFlag INTEGER,SendFlag INTEGER,"
                     + "PlayedFlag INTEGER,Direction INTEGER,LocalPath Text,"
-                    + "Duration INTEGER,Receive_AgentJid TEXT,created_at TEXT,"
+                    + "Duration BIGINT,Receive_AgentJid TEXT,created_at TEXT,"
                     + "updated_at TEXT,reply_user TEXT,reply_userurl TEXT,"
-                    + "subsessionid TEXT,seqNum INTEGER,fileName TEXT,fileSize TEXT,"
+                    + "subsessionid TEXT,seqNum BIGINT,fileName TEXT,fileSize TEXT,"
                     + "switchStaffType INTEGER,switchStaffTips TEXT,topAsk TEXT,"
-                    + "logId INTEGER,webConfig TEXT,sender TEXT,flowId INTEGER,"
+                    + "logId TEXT,webConfig TEXT,sender TEXT,flowId BIGINT,"
                     + "flowTitle TEXT,flowContent TEXT,question_id TEXT,recommendationGuidance TEXT)");
 
 
@@ -48,7 +49,7 @@ public class UdeskDBHelper extends SQLiteOpenHelper {
                     + "( Receive_AgentJid TEXT, HeadUrl TEXT, AgentNick TEXT, primary key(Receive_AgentJid))");
 
             db.execSQL("CREATE TABLE IF NOT EXISTS " + SubSessionId
-                    + "( SUBID TEXT primary key, SEQNUM INTEGER)");
+                    + "( SUBID TEXT primary key, SEQNUM BIGINT)");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -143,6 +144,38 @@ public class UdeskDBHelper extends SQLiteOpenHelper {
                         break;
                     case 7:
                         db.execSQL("ALTER TABLE udeskMessageInfo ADD COLUMN  recommendationGuidance TEXT ");
+                        break;
+                    case 8:
+                        String tempMessageInfo = "TempMessageInfo";
+                        db.execSQL("CREATE TABLE IF NOT EXISTS "
+                                + tempMessageInfo
+                                + "(MsgID TEXT primary key,Time BIGINT,MsgContent TEXT,"
+                                + "MsgType TEXT, ReadFlag INTEGER,SendFlag INTEGER,"
+                                + "PlayedFlag INTEGER,Direction INTEGER,LocalPath Text,"
+                                + "Duration BIGINT,Receive_AgentJid TEXT,created_at TEXT,"
+                                + "updated_at TEXT,reply_user TEXT,reply_userurl TEXT,"
+                                + "subsessionid TEXT,seqNum BIGINT,fileName TEXT,fileSize TEXT,"
+                                + "switchStaffType INTEGER,switchStaffTips TEXT,topAsk TEXT,"
+                                + "logId TEXT,webConfig TEXT,sender TEXT,flowId BIGINT,"
+                                + "flowTitle TEXT,flowContent TEXT,question_id TEXT,recommendationGuidance TEXT)");
+                        db.execSQL(" INSERT INTO TempMessageInfo "
+                                + "(MsgID,Time,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,Direction,LocalPath,Duration,Receive_AgentJid,created_at,updated_at,reply_user,reply_userurl,subsessionid,seqNum,"
+                                + "fileName,fileSize,switchStaffType,switchStaffTips,topAsk,logId,webConfig,sender,flowId,flowTitle,flowContent,question_id,recommendationGuidance) "
+                                + "SELECT MsgID,Time,MsgContent,MsgType,ReadFlag,SendFlag,PlayedFlag,Direction,LocalPath,Duration,Receive_AgentJid,created_at,updated_at,reply_user,reply_userurl,subsessionid,seqNum,"
+                                + "fileName,fileSize,switchStaffType,switchStaffTips,topAsk,logId,webConfig,sender,flowId,flowTitle,flowContent,question_id,recommendationGuidance "
+                                + " FROM udeskMessageInfo ");
+                        db.execSQL("DROP TABLE udeskMessageInfo");
+                        db.execSQL("ALTER TABLE TempMessageInfo RENAME TO udeskMessageInfo");
+
+                        String tempSubSessionId = "tempSubSessionId";
+                        db.execSQL("CREATE TABLE IF NOT EXISTS " + tempSubSessionId
+                                + "( SUBID TEXT primary key, SEQNUM BIGINT)");
+                        db.execSQL(" INSERT INTO tempSubSessionId "
+                                +"(SUBID,SEQNUM)"
+                                + "SELECT SUBID,SEQNUM "
+                                + " FROM sub_sessionid ");
+                        db.execSQL("DROP TABLE sub_sessionid");
+                        db.execSQL("ALTER TABLE tempSubSessionId RENAME TO sub_sessionid");
                         break;
                     default:
                         break;
