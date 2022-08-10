@@ -11,7 +11,7 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 ### SDK下载地址
 [Udesk-Android 源码下载地址](https://github.com/udesk/UdeskSDK-Android)
 
-[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.3.31638164738234.apk)
+[demo 下载地址](https://www.pgyer.com/lYaA)
 
 ## 目录
 - [一、特别声明](#1)
@@ -68,12 +68,12 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 	implementation 'com.github.bumptech.glide:glide:4.10.0'
 	implementation 'com.github.chrisbanes:PhotoView:2.0.0'
 	implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-	implementation 'com.squareup.okhttp3:okhttp:4.9.0' 或 3.x 版本
+	implementation 'com.squareup.okhttp3:okhttp:4.9.0'
 	implementation group: 'org.ccil.cowan.tagsoup', name: 'tagsoup', version: '1.2.1'
 	implementation 'androidx.recyclerview:recyclerview:1.1.0'
 	implementation 'org.greenrobot:eventbus:3.0.0'
-    implementation 'org.igniterealtime.smack:smack-android-extensions:4.2.0'
-    implementation 'org.igniterealtime.smack:smack-tcp:4.2.0'
+    implementation 'org.igniterealtime.smack:smack-android-extensions:4.2.4'
+    implementation 'org.igniterealtime.smack:smack-tcp:4.2.4'
 
 ## 2 本地集成
 | Demo中的文件| 说明                            |
@@ -114,7 +114,7 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 	//手机状态权限（机器人语音模块）
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-    //读写外部文件权限（相册，文件，语音，位置功能）
+    //读写外部文件权限（相册，文件，位置功能）
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FLAG_GRANT_READ_URI_PERMISSION" />
 
@@ -290,7 +290,8 @@ SDK使用了smack，glide，eventbus，okhttp，agora等第三方库，具体混
 | structMessageWebonClick                | setStructMessageWebonClick                                 | 结构化消息按钮链接回调                                        |
 | maxHeightViewRatio                     | setMaxHeightViewRatio                                      | 设置智能提示的最大高度按比例                                  |
 | maxHeightViewDimen                     | setMaxHeightViewDimen                                      | 设置智能提示的最大高度                                        |
-             
+| commodityLinkClickCallBack             | setCommodityLinkClickCallBack                              | 设置咨询对象发送链接的点击事件拦截回调                          |
+| leaveChatViewCallBack                  | setLeaveChatViewCallBack                                   | 设置离开IM聊天界面的回调                                      |       
 
 	private UdeskConfig.Builder makeBuilder() {
         if (!TextUtils.isEmpty(edit_language.getText().toString())){
@@ -325,7 +326,7 @@ SDK使用了smack，glide，eventbus，okhttp，agora等第三方库，具体混
                 .setUseMap(set_usemap.isChecked()) //是否使用发送位置功能  true表示使用 false表示不使用
                 .setUseMapSetting(UdeskConfig.UdeskMapType.GaoDe, LocationActivity.class, new ILocationMessageClickCallBack() {
                     @Override
-                    public void luanchMap(Context context, double latitude, double longitude, String selctLoactionValue) {
+                    public void launchMap(Context context, double latitude, double longitude, String selctLoactionValue) {
                         Intent intent = new Intent();
                         intent.putExtra(UdeskConfig.UdeskMapIntentName.Position, selctLoactionValue);
                         intent.putExtra(UdeskConfig.UdeskMapIntentName.Latitude, latitude);
@@ -448,6 +449,18 @@ SDK使用了smack，glide，eventbus，okhttp，agora等第三方库，具体混
                         Toast.makeText(getApplicationContext(), "结构化消息控件点击事件回调", Toast.LENGTH_SHORT).show();
                     }
                 })//设置结构化消息控件点击事件回调接口.
+                .setCommodityLinkClickCallBack(new ICommodityLinkClickCallBack() {
+                    @Override
+                    public void callBack(Context context, UdeskViewMode viewMode, UdeskCommodityItem item) {
+                        Toast.makeText(getApplicationContext(), "咨询对象发送链接的点击事件拦截回调", Toast.LENGTH_SHORT).show();
+                    }
+                }) // 设置咨询对象发送链接的点击事件拦截回调
+                .setLeaveChatViewCallBack(new ILeaveChatViewCallBack() {
+                    @Override
+                    public void callBack() {
+                        Toast.makeText(getApplicationContext(), "离开IM聊天界面的回调", Toast.LENGTH_SHORT).show();
+                    }
+                })//设置离开IM聊天界面的回调
                 .setChannel(channel.getText().toString())
                 .isShowCustomerNickname(show_customer_nickname.isChecked())//设置是否显示昵称
                 .isShowCustomerHead(show_customer_head.isChecked()) //设置是否显示头像
@@ -456,6 +469,7 @@ SDK使用了smack，glide，eventbus，okhttp，agora等第三方库，具体混
 
         return builder;
     }
+
 
 
 ### 3 进入页面分配会话
@@ -1137,13 +1151,23 @@ Udek系统帮助中心后台可以创建帮助文档，客户通过帮助中心�
 
 ### 更新日志 ###
 
+### 5.3.4（5.x），5.3.5（5.x_android_Q 分支）版本更新：
+
+1. 消息字段类型优化
+2. 满意度评价弹出逻辑优化
+3. 适配安卓12（5.3.5）
+4. 语音、拍摄授权弹窗时机调整
+5. 视频播放优化
+6. 增加会话分割线
+7. 增加咨询对象发送链接回调和退出会话界面回调
+8. 修复无消息对话界面发送文件问题
+
 ### 5.3.2（5.x），5.3.3（5.x_android_Q 分支）版本更新：
 
 1. 支持富文本消息内转人工
 2. 敏感权限声明调整
 3. xmpp 重连机制调整
 4. 修复device 传参问题
-
 
 ### 5.3.0（5.x），5.3.1（5.x_android_Q 分支）版本更新：
 
