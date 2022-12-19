@@ -11,7 +11,7 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 ### SDK下载地址
 [Udesk-Android 源码下载地址](https://github.com/udesk/UdeskSDK-Android)
 
-[demo 下载地址](https://pro-cs-freq.kefutoutiao.com/doc/im/tid3055/udesksdk_5.3.41660098464258.apk)
+[demo 下载地址](https://pro-cs-freq.udeskcs.com/doc/im/tid3055/udesksdk_5.3.61671443970184.apk)
 
 ## 目录
 - [一、特别声明](#1)
@@ -295,7 +295,8 @@ SDK使用了smack，fresco，eventbus，okhttp，agora等第三方库，具体�
 | maxHeightViewRatio                     | setMaxHeightViewRatio                                      | 设置智能提示的最大高度按比例                                  |
 | maxHeightViewDimen                     | setMaxHeightViewDimen                                      | 设置智能提示的最大高度                                        |
 | commodityLinkClickCallBack             | setCommodityLinkClickCallBack                              | 设置咨询对象发送链接的点击事件拦截回调                          |
-| leaveChatViewCallBack                  | setLeaveChatViewCallBack                                   | 设置离开IM聊天界面的回调                                      |             
+| leaveChatViewCallBack                  | setLeaveChatViewCallBack                                   | 设置离开IM聊天界面的回调                                      |
+| unreadMessageCallBack                  | setUnreadMessageCallBack                                   | 设置未读消息回调                                             |          
 
     private UdeskConfig.Builder makeBuilder() {
         if (!TextUtils.isEmpty(edit_language.getText().toString())){
@@ -465,6 +466,17 @@ SDK使用了smack，fresco，eventbus，okhttp，agora等第三方库，具体�
                         Toast.makeText(getApplicationContext(), "离开IM聊天界面的回调", Toast.LENGTH_SHORT).show();
                     }
                 })//设置离开IM聊天界面的回调
+				.setUnreadMessageCallBack(new IUnreadMessageCallBack() {
+                    @Override
+                    public void onReceiveUnreadMessage(MessageInfo unreadMessage) {
+                        // 获取收到的未读消息，此处可以调用获取未读消息数和未读消息
+                    }
+
+                    @Override
+                    public void onUnreadMessagesStatusChange() {
+                        // 当未读消息状态发生改变时的回调，此处可以调用获取未读消息数和未读消息
+                    }
+                })//设置未读消息回调
                 .setChannel(channel.getText().toString())
                 .isShowCustomerNickname(show_customer_nickname.isChecked())//设置是否显示昵称
                 .isShowCustomerHead(show_customer_head.isChecked()) //设置是否显示头像
@@ -863,27 +875,8 @@ application 中加入
 
 ### 1.获取未读消息
 
-在退出对话界面后，没有断开与Udesk服务器的连接，注册获取未读消息事件方法，之后在该方法中可以收到未读消息。
+在退出对话界面后，没有断开与Udesk服务器的连接，该方法可以获取未读消息。
 
-		 /**
-         * 注册和处理接收未读消息提醒事件
-         */
-        UdeskSDKManager.getInstance().setNewMessage(new IUdeskNewMessage() {
-            @Override
-            public void onNewMessage(MsgNotice msgNotice) {
-                if (msgNotice != null) {
-                    Log.i("xxx","UdeskCaseActivity 中收到msgNotice");
-                    NotificationUtils.getInstance().notifyMsg(getApplicationContext(), msgNotice.getContent());
-                }
-            }
-        });
-
-接收未读消息
-
-	 if (UdeskBaseInfo.isNeedMsgNotice && UdeskSDKManager.getInstance().getNewMessage() != null) {
-	   MsgNotice msgNotice = new MsgNotice(msgId, type, content);
-	   UdeskSDKManager.getInstance().getNewMessage().onNewMessage(msgNotice);
-	   }
 获取未读消息
 
 	//获取未读消息
@@ -1159,6 +1152,16 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 <h1 id="8">八、更新记录</h1>
 
 ### 更新日志 ###
+
+### 5.3.6（5.x），5.3.7（5.x_android_Q 分支）版本更新：
+
+1. 支持机器人转人工触发器
+2. 适配安卓13（5.3.7）
+3. 未读消息方案优化
+4. 进线显示客服连接中问题优化
+5. 图片选择优化
+6. 无消息对话过滤机制优化
+7. 线程阻塞优化
 
 ### 5.3.4（5.x），5.3.5（5.x_android_Q 分支）版本更新：
 
