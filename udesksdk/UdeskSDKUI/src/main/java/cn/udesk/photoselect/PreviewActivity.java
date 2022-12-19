@@ -4,14 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.PagerSnapHelper;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -23,6 +15,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 import cn.udesk.R;
 import cn.udesk.UdeskUtil;
@@ -164,12 +164,12 @@ public class PreviewActivity extends AppCompatActivity implements PreviewPhotosA
                     super.onScrollStateChanged(recyclerView, newState);
                     int leftViewPosition = snapHelper.findTargetSnapPosition(linearLayoutManager, 1, rvPhotos.getHeight() / 2);
                     int rightViewPosition = snapHelper.findTargetSnapPosition(linearLayoutManager, rvPhotos.getWidth() - 1, rvPhotos.getHeight() / 2);
+                    setIndexNum(leftViewPosition+1);
                     if (leftViewPosition == rightViewPosition) {
-                        if (lastPosition == leftViewPosition - 1) {
+                        if (lastPosition == leftViewPosition) {
                             return;
                         }
-                        lastPosition = leftViewPosition - 1;
-                        setIndexNum(leftViewPosition);
+                        lastPosition = leftViewPosition;
                         previewFragment.setSelectedPosition(-1);
                         toggleSelector();
                     }

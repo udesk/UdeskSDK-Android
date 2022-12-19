@@ -1,9 +1,11 @@
 package cn.udesk.model;
 
+import udesk.core.model.MessageInfo;
+
 /**
  * Created by sks on 2016/6/8.
  */
-public class MsgNotice {
+public class MsgNotice extends MessageInfo {
     /**
      * 消息的ID
      */
@@ -30,10 +32,12 @@ public class MsgNotice {
         this.content = content;
     }
 
+    @Override
     public String getMsgId() {
         return msgId;
     }
 
+    @Override
     public void setMsgId(String msgId) {
         this.msgId = msgId;
     }

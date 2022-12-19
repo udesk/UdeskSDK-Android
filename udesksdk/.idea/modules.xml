@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/udesksdk.iml" filepath="$PROJECT_DIR$/udesksdk.iml" />
-      <module fileurl="file://$PROJECT_DIR$/udeskasr/udesksdk-udeskasr.iml" filepath="$PROJECT_DIR$/udeskasr/udesksdk-udeskasr.iml" group="udesksdk/udeskasr" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/UdeskSDKUI/udesksdk.UdeskSDKUI.iml" filepath="$PROJECT_DIR$/.idea/modules/UdeskSDKUI/udesksdk.UdeskSDKUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/udeskNewDemo/udesksdk.udeskNewDemo.iml" filepath="$PROJECT_DIR$/.idea/modules/udeskNewDemo/udesksdk.udeskNewDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/udeskasr/udesksdk.udeskasr.iml" filepath="$PROJECT_DIR$/.idea/modules/udeskasr/udesksdk.udeskasr.iml" />

@@ -470,7 +470,7 @@ public class UdeskXmppManager implements ConnectionListener, StanzaListener {
     public void messageReceived(final String msgId) {
 
         try {
-            UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
+            UdeskSDKManager.getInstance().getDbExecutor().submit(new Runnable() {
                 @Override
                 public void run() {
                     UdeskDBManager.getInstance().updateMsgSendFlagDB(msgId, UdeskConst.SendFlag.RESULT_SUCCESS);
@@ -584,64 +584,105 @@ public class UdeskXmppManager implements ConnectionListener, StanzaListener {
         }
     }
 
-    private void newMessage(final Message message, String agentJid, final String type, final String msgId, final String content,
-                            final Long duration, final String send_status, String imsessionId,Integer seqNum,
-                            String fileName, String fileSize, Long receiveMsgTime,InviterAgentInfo inviterAgentInfo,String new_agent_name) {
+    private void newMessage(final Message message, final String agentJid, final String type, final String msgId, final String content,
+                            final Long duration, final String send_status, final String imsessionId, final Integer seqNum,
+                            final String fileName, final String fileSize, final Long receiveMsgTime, final InviterAgentInfo inviterAgentInfo, final String new_agent_name) {
         try {
-            String inviterJid = inviterAgentInfo.getJid();
-            String jid[] = agentJid.split("/");
-            if (!TextUtils.isEmpty(inviterJid)){
-                UdeskDBManager.getInstance().addInviterAgentInfoDB(inviterAgentInfo);
-                jid  = inviterJid.split("/");
-            }
-            MessageInfo msginfo = null;
-            //判断是否是撤回消息
-            if (send_status.equals("rollback")) {
-                if (UdeskDBManager.getInstance().deleteMsgById(msgId)) {
-                    String[] urlAndNick = UdeskDBManager.getInstance().getAgentUrlAndNick(jid[0]);
-                    String agentName = "";
-                    if (urlAndNick != null) {
-                        agentName = urlAndNick[1];
+            UdeskSDKManager.getInstance().getDbExecutor().submit(new Runnable() {
+                @Override
+                public void run() {
+                    String inviterJid = inviterAgentInfo.getJid();
+                    String jid[] = agentJid.split("/");
+                    if (!TextUtils.isEmpty(inviterJid)) {
+                        UdeskDBManager.getInstance().addInviterAgentInfoDB(inviterAgentInfo);
+                        jid = inviterJid.split("/");
                     }
-                    String buildrollBackMsg = agentName;
-                    msginfo = buildReceiveMessage(jid[0], UdeskConst.ChatMsgTypeString.TYPE_EVENT, msgId, buildrollBackMsg,
-                            duration, send_status, imsessionId, seqNum, fileName, fileSize, receiveMsgTime,new_agent_name);
-                }
-            } else {
-                //消息在本地数据库存在，则结束后续流程
-                if (UdeskDBManager.getInstance().hasReceviedMsg(msgId)) {
-                    return;
-                }
-                msginfo = buildReceiveMessage(jid[0], type, msgId, content, duration, send_status,
-                        imsessionId, seqNum, fileName, fileSize, receiveMsgTime,new_agent_name);
-            }
-            if (!TextUtils.isEmpty(inviterJid)){
-                msginfo.setInviterAgentInfo(inviterAgentInfo);
-            }
+                    MessageInfo msginfo = null;
+                    //判断是否是撤回消息
+                    if (send_status.equals("rollback")) {
+                        if (UdeskDBManager.getInstance().deleteMsgById(msgId)) {
+                            String[] urlAndNick = UdeskDBManager.getInstance().getAgentUrlAndNick(jid[0]);
+                            String agentName = "";
+                            if (urlAndNick != null) {
+                                agentName = urlAndNick[1];
+                            }
+                            String buildrollBackMsg = agentName;
+                            msginfo = buildReceiveMessage(jid[0], UdeskConst.ChatMsgTypeString.TYPE_EVENT, msgId, buildrollBackMsg,
+                                    duration, send_status, imsessionId, seqNum, fileName, fileSize, receiveMsgTime, new_agent_name);
+                        }
+                    } else {
+                        //消息在本地数据库存在，则结束后续流程
+                        if (UdeskDBManager.getInstance().hasReceviedMsg(msgId)) {
+                            return;
+                        }
+                        msginfo = buildReceiveMessage(jid[0], type, msgId, content, duration, send_status,
+                                imsessionId, seqNum, fileName, fileSize, receiveMsgTime, new_agent_name);
+                    }
+                    if (!TextUtils.isEmpty(inviterJid)) {
+                        msginfo.setInviterAgentInfo(inviterAgentInfo);
+                    }
 
-            if (!type.equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT)) {
-                boolean isSaveSuccess = UdeskDBManager.getInstance().addMessageInfo(msginfo);
-                if (isSaveSuccess) {
-                    sendReceivedMsg(message);
+                    if (!type.equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT)) {
+                        boolean isSaveSuccess = UdeskDBManager.getInstance().addMessageInfo(msginfo);
+                        if (msginfo != null && (msginfo.getReadFlag() == UdeskConst.ChatMsgReadFlag.unread)) {
+                            if (UdeskSDKManager.getInstance().getUdeskConfig().unreadMessageCallBack != null) {
+                                UdeskSDKManager.getInstance().getUdeskConfig().unreadMessageCallBack.onReceiveUnreadMessage(msginfo);
+                            }
+                        }
+                        if (isSaveSuccess) {
+                            sendReceivedMsg(message);
+                        }
+                    } else {
+                        sendReceivedMsg(message);
+                    }
+                    if (UdeskConst.isDebug && msginfo != null) {
+                        Log.i("newMessage", msginfo.toString());
+                    }
+                    InvokeEventContainer.getInstance().eventui_OnNewMessage.invoke(msginfo);
+                    if (type.equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT)) {
+                        return;
+                    }
+                    if (UdeskBaseInfo.isNeedMsgNotice && UdeskSDKManager.getInstance().getNewMessage() != null) {
+                        MsgNotice msgNotice = buildNoticeMsg(msginfo);
+                        UdeskSDKManager.getInstance().getNewMessage().onNewMessage(msgNotice);
+                    }
                 }
-            } else {
-                sendReceivedMsg(message);
-            }
-            if (UdeskConst.isDebug && msginfo != null) {
-                Log.i("newMessage", msginfo.toString());
-            }
-            InvokeEventContainer.getInstance().eventui_OnNewMessage.invoke(msginfo);
-            if (type.equals(UdeskConst.ChatMsgTypeString.TYPE_REDIRECT)) {
-                return;
-            }
-            if (UdeskBaseInfo.isNeedMsgNotice && UdeskSDKManager.getInstance().getNewMessage() != null) {
-                MsgNotice msgNotice = new MsgNotice(msgId, type, content);
-                UdeskSDKManager.getInstance().getNewMessage().onNewMessage(msgNotice);
-            }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    private MsgNotice buildNoticeMsg(MessageInfo msginfo) {
+        MsgNotice msgNotice = new MsgNotice();
+        if (msginfo == null){
+            return msgNotice;
+        }
+        try {
+            msgNotice.setMsgtype(msginfo.getMsgtype());
+            msgNotice.setMsgType(msginfo.getMsgtype());
+            msgNotice.setTime(msginfo.getTime());
+            msgNotice.setMsgId(msginfo.getMsgId());
+            msgNotice.setDirection(msginfo.getDirection());
+            msgNotice.setSendFlag(msginfo.getSendFlag());
+            msgNotice.setReadFlag(msginfo.getReadFlag());
+            msgNotice.setContent(msginfo.getMsgContent());
+            msgNotice.setMsgContent(msginfo.getMsgContent());
+            msgNotice.setLocalPath(msginfo.getLocalPath());
+            msgNotice.setDuration(msginfo.getDuration());
+            msgNotice.setmAgentJid(msginfo.getmAgentJid());
+            msgNotice.setSend_status(msginfo.getSend_status());
+            msgNotice.setSubsessionid(msginfo.getSubsessionid());
+            msgNotice.setSeqNum(msginfo.getSeqNum());
+            msgNotice.setFilename(msginfo.getFilename());
+            msgNotice.setFilesize(msginfo.getFilesize());
+            msgNotice.setReplyUser(msginfo.getReplyUser());
+            msgNotice.setSender(msginfo.getSender());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return msgNotice;
     }
 
     private MessageInfo buildReceiveMessage(String agentJid, String msgType, String msgId,
@@ -654,7 +695,11 @@ public class UdeskXmppManager implements ConnectionListener, StanzaListener {
             msg.setMsgId(msgId);
             msg.setDirection(UdeskConst.ChatMsgDirection.Recv);
             msg.setSendFlag(UdeskConst.SendFlag.RESULT_SUCCESS);
-            msg.setReadFlag(UdeskConst.ChatMsgReadFlag.unread);
+            if (UdeskSDKManager.getInstance().isChatting()){
+                msg.setReadFlag(UdeskConst.ChatMsgReadFlag.read);
+            }else {
+                msg.setReadFlag(UdeskConst.ChatMsgReadFlag.unread);
+            }
             msg.setMsgContent(content);
             msg.setPlayflag(UdeskConst.PlayFlag.NOPLAY);
             msg.setLocalPath("");

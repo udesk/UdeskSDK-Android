@@ -160,10 +160,9 @@ public class APILiveData<M> extends MutableLiveData<MergeMode> {
                         public void onSuccess(String message) {
                             try {
                                 AgentInfo agentInfo = JsonUtils.parseAgentResult(message);
+                                dealAgentInfo(agentInfo);
                                 if (agentInfo.getAgentCode() == 2000) {
                                     getIMStatus(agentInfo);
-                                } else {
-                                    dealAgentInfo(agentInfo);
                                 }
                                 if (!UdeskXmppManager.getInstance().isConnection()) {
                                     UdeskXmppManager.getInstance().connection();

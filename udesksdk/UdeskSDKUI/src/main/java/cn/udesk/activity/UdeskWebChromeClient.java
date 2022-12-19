@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
-import android.webkit.WebStorage;
 import android.webkit.WebView;
 
 
@@ -84,12 +83,6 @@ public class UdeskWebChromeClient extends WebChromeClient {
         }
         super.onCloseWindow(window);
 
-    }
-
-    @Override
-    //扩容
-    public void onReachedMaxAppCacheSize(long requiredStorage, long quota, WebStorage.QuotaUpdater quotaUpdater) {
-        quotaUpdater.updateQuota(requiredStorage*2);
     }
 
     @Override

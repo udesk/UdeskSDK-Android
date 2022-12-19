@@ -1,9 +1,9 @@
 package cn.udesk.aac.livedata;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.util.Log;
+
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,7 +31,7 @@ public class DBLiveData<M> extends MutableLiveData<MergeMode> {
     //保存消息
     public void saveMessageDB(final MessageInfo msg) {
         try {
-            UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
+            UdeskSDKManager.getInstance().getDbExecutor().submit(new Runnable() {
                 @Override
                 public void run() {
                     UdeskDBManager.getInstance().addMessageInfo(msg);
@@ -44,7 +44,7 @@ public class DBLiveData<M> extends MutableLiveData<MergeMode> {
 
     public void getHistoryMessage(final int offset, final int pageNum){
         try {
-            UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
+            UdeskSDKManager.getInstance().getDbExecutor().submit(new Runnable() {
                 @Override
                 public void run() {
                     List<MessageInfo> list = UdeskDBManager.getInstance().getMessages(offset, pageNum);
@@ -60,12 +60,31 @@ public class DBLiveData<M> extends MutableLiveData<MergeMode> {
         }
     }
 
-    private void updateAllMsgRead(){
+    public void updateAllMsgRead(){
+        try {
+            UdeskSDKManager.getInstance().getDbExecutor().submit(new Runnable() {
+                @Override
+                public void run() {
+                    UdeskDBManager.getInstance().updateAllMsgRead();
+                    if (UdeskSDKManager.getInstance().getUdeskConfig().unreadMessageCallBack != null){
+                        UdeskSDKManager.getInstance().getUdeskConfig().unreadMessageCallBack.onUnreadMessagesStatusChange();
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void updateMsgHasRead(final String msgId){
         try {
             UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
                 @Override
                 public void run() {
-                    UdeskDBManager.getInstance().updateAllMsgRead();
+                    UdeskDBManager.getInstance().updateMsgHasRead(msgId);
+                    if (UdeskSDKManager.getInstance().getUdeskConfig().unreadMessageCallBack != null){
+                        UdeskSDKManager.getInstance().getUdeskConfig().unreadMessageCallBack.onUnreadMessagesStatusChange();
+                    }
                 }
             });
         }catch (Exception e){
@@ -75,7 +94,7 @@ public class DBLiveData<M> extends MutableLiveData<MergeMode> {
 
     private void updateMessageFail(){
         try {
-            UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
+            UdeskSDKManager.getInstance().getDbExecutor().submit(new Runnable() {
                 @Override
                 public void run() {
                     UdeskDBManager.getInstance().updateSendFlagToFail();
@@ -90,10 +109,13 @@ public class DBLiveData<M> extends MutableLiveData<MergeMode> {
 
     public void addAllMessageInfo(final List<MessageInfo> messages){
         try {
-            UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
+            UdeskSDKManager.getInstance().getDbExecutor().submit(new Runnable() {
                 @Override
                 public void run() {
                     UdeskDBManager.getInstance().addAllMessageInfo(messages);
+                    if (UdeskSDKManager.getInstance().getUdeskConfig().unreadMessageCallBack != null){
+                        UdeskSDKManager.getInstance().getUdeskConfig().unreadMessageCallBack.onUnreadMessagesStatusChange();
+                    }
                 }
             });
         }catch (Exception e){
@@ -102,7 +124,7 @@ public class DBLiveData<M> extends MutableLiveData<MergeMode> {
     }
     public void deleteAllMsg(){
         try {
-            UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
+            UdeskSDKManager.getInstance().getDbExecutor().submit(new Runnable() {
                 @Override
                 public void run() {
                     UdeskDBManager.getInstance().deleteAllMsg();

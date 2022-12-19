@@ -151,6 +151,9 @@
     <string name="udesk_transfer_out_of_data">transfer button is out of date</string>
     <string name="udesk_input_recommendation">Input question recommendation</string>
     <string name="udesk_news">Here\'s what\'s new</string>
+    <string name="udesk_recommend_transfer_default">It is recommended that you conduct a manual consultation~</string>
 
+    <string name="udesk_file_downloaded">The file has been downloaded</string>
+    <string name="udesk_file_downloading">The file is downloading</string>
 
 </resources>

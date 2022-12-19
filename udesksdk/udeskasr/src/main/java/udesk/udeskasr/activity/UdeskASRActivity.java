@@ -211,8 +211,7 @@ public class UdeskASRActivity extends Activity implements EventListener, View.On
                 XPermissionUtils.requestPermissions(UdeskASRActivity.this, RequestCode.ASR,
                         new String[]{Manifest.permission.RECORD_AUDIO,
                                 Manifest.permission.INTERNET,
-                                Manifest.permission.READ_PHONE_STATE,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                Manifest.permission.READ_PHONE_STATE},
                         new XPermissionUtils.OnPermissionListener() {
                             @Override
                             public void onPermissionGranted() {

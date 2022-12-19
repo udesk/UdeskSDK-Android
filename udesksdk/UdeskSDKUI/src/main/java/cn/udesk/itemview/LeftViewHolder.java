@@ -1440,7 +1440,13 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                 operater.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ((UdeskChatActivity) mContext).downLoadMsg(message);
+                        if (mProgress.getProgress() == 0){
+                            ((UdeskChatActivity) mContext).downLoadMsg(message);
+                        }else if (mProgress.getProgress() == 100){
+                            Toast.makeText(mContext.getApplicationContext(), mContext.getString(R.string.udesk_file_downloaded), Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(mContext.getApplicationContext(), mContext.getString(R.string.udesk_file_downloading), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
             }

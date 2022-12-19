@@ -10,12 +10,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SimpleItemAnimator;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -24,6 +18,14 @@ import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,8 +130,11 @@ public class PhotoSelectorActivity extends FragmentActivity implements View.OnCl
             if (Build.VERSION.SDK_INT < 23) {
                 readLocalMedia();
             } else {
-                XPermissionUtils.requestPermissions(PhotoSelectorActivity.this, RequestCode.EXTERNAL,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                if (Build.VERSION.SDK_INT >= 33) {
+                    permissions = new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO};
+                }
+                XPermissionUtils.requestPermissions(PhotoSelectorActivity.this, RequestCode.EXTERNAL, permissions,
                         new XPermissionUtils.OnPermissionListener() {
                             @Override
                             public void onPermissionGranted() {

@@ -111,8 +111,6 @@ import udesk.core.UdeskConst;
 import udesk.core.event.InvokeEventContainer;
 import udesk.core.model.AgentInfo;
 import udesk.core.model.AllMessageMode;
-import udesk.core.model.Content;
-import udesk.core.model.DataBean;
 import udesk.core.model.LogBean;
 import udesk.core.model.MessageInfo;
 import udesk.core.model.Product;
@@ -229,6 +227,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     private Object connectVideoWebSocket;
     private MessageInfo surveyMsg;
     private boolean isShowNews = true;
+    private int agentStatus ;
 
     public static class MyHandler extends Handler {
         WeakReference<UdeskChatActivity> mWeakActivity;
@@ -386,7 +385,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 UdeskConst.REFERER_VALUE = initCustomer.getUploadService().getReferer();
             }
             curentStatus = initCustomer.getStatus();
-            if (!TextUtils.equals(curentStatus, UdeskConst.Status.chatting)) {
+            if (!TextUtils.equals(initCustomer.getStatus(), UdeskConst.Status.chatting)) {
                 udeskViewMode.getApiLiveData().messages("", "",UdeskConst.PullMsgFrom.init);
             }
             customerId = customer != null ? customer.getId() : "";
@@ -395,7 +394,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             }
             UdeskXmppManager.getInstance().connection();
             imSetting = initCustomer.getImSetting();
-            if (curentStatus.equals(UdeskConst.Status.init)) {
+            if (initCustomer.getStatus().equals(UdeskConst.Status.init)) {
                 //机器人判断
                 robot = imSetting != null ? imSetting.getRobot() : null;
                 if (robot != null && robot.getEnable()) {
@@ -408,15 +407,30 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 }
             }
             initFragment(UdeskConst.CurrentFragment.agent);
-            if (curentStatus.equals(UdeskConst.Status.chatting)) {
+            if (initCustomer.getStatus().equals(UdeskConst.Status.init)
+                    || initCustomer.getStatus().equals(UdeskConst.Status.pre_session)
+                    || curentStatus.equals(UdeskConst.Status.robot)) {
+//                initAgentInfo();
+                if (initCustomer.getPre_session().getShow_pre_session() && initCustomer.getPre_session().getPre_session()) {
+                    pre_session_id = initCustomer.getPre_session().getPre_session_id();
+                    String preTitle = initCustomer.getPre_session().getPre_session_title();
+                    if (TextUtils.isEmpty(pre_session_id)) {
+                        udeskViewMode.getApiLiveData().getPressionInfo();
+                    }
+                    curentStatus = UdeskConst.Status.pre_session;
+                    mAgentInfo = null;
+                    setTitlebar(preTitle, off);
+                } else {
+                    udeskViewMode.getApiLiveData().getAgentInfo(pre_session_id, null);
+                }
+            } else if (initCustomer.getStatus().equals(UdeskConst.Status.chatting)) {
                 //会话中 直接请求分配客服
                 udeskViewMode.getApiLiveData().getAgentInfo(null, null);
-            } else if (curentStatus.equals(UdeskConst.Status.pre_session)) {
-                initAgentInfo();
             } else {
                 //如果客户被加入黑名单 则结束后续流程
                 if (!isBlocked(customer)) {
-                    initAgentInfo();
+//                    initAgentInfo();
+                    udeskViewMode.getApiLiveData().getAgentInfo(pre_session_id, null);
                 }
             }
         } catch (Exception e) {
@@ -425,10 +439,15 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
 
     }
 
+    /**
+     * 此方法 仅供机器人转人工 和 选择客服组的导航栏调用
+     * 这两处逻辑很确定
+     * 开启无效消息对话过滤，则进入无消息对话过滤状态， 否则直接请求分配客服
+     */
     private void initAgentInfo() {
         try {
             pre_session_id = initCustomer.getPre_session().getPre_session_id();
-            if (getPressionStatus()) {
+            if (initCustomer.getPre_session().getShow_pre_session() && initCustomer.getPre_session().getPre_session()){
                 String preTitle = initCustomer.getPre_session().getPre_session_title();
                 if (TextUtils.isEmpty(pre_session_id)) {
                     udeskViewMode.getApiLiveData().getPressionInfo();
@@ -518,6 +537,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                             }
                             break;
                         case UdeskConst.LiveDataType.GetAgentInfo:
+                            // 这块逻辑仅供 6000错误使用： 表示客户在客服会话中，直接请求分配客服
                             udeskViewMode.getApiLiveData().getAgentInfo(null, null);
                             break;
 
@@ -735,8 +755,16 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                                 List<MessageInfo> messageInfoList = new ArrayList<>();
                                 for (int i = 0; i < replieMode.getMessages().size(); i++) {
                                     LogBean allMessage = (LogBean) replieMode.getMessages().get(i);
-                                    ArrayList<MessageInfo> messageInfos = UdeskUtil.buildAllMessage(allMessage);
+                                    ArrayList<MessageInfo> messageInfos = UdeskUtil.buildAllMessage(getApplicationContext(),allMessage);
                                     if (messageInfos != null && messageInfos.size()>0) {
+                                        Iterator<MessageInfo> iterator = messageInfos.iterator();
+                                        while (iterator.hasNext()){
+                                            MessageInfo next = iterator.next();
+                                            if (next.getSwitchStaffType()== UdeskConst.SwitchStaffType.AUTO
+                                                    && TextUtils.isEmpty(next.getMsgContent())){
+                                                iterator.remove();
+                                            }
+                                        }
                                         for(MessageInfo info:messageInfos){
                                             if (info != null) {
 //                                                info.setSwitchStaffType(0);
@@ -865,35 +893,37 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                             String hitMessage = UdeskUtils.objectToString(mergeMode.getData());
                             LogBean logBean = JsonUtils.parseLogBean(hitMessage);
                             if (logBean != null) {
-                                if (logBean.getContent() != null) {
-                                    Content content = logBean.getContent();
-                                    if (content.getData() != null) {
-                                        DataBean data = content.getData();
-                                        if ((data.getSwitchStaffType() == UdeskConst.SwitchStaffType.RECOMMEND
-                                                || data.getSwitchStaffType() == UdeskConst.SwitchStaffType.RECOMMEND_SEND_MESSAGE)
-                                                && !TextUtils.isEmpty(data.getSwitchStaffTips())
-                                                && !UdeskSDKManager.getInstance().getUdeskConfig().isOnlyUseRobot) {
-                                            transferMap.put(UdeskUtils.objectToString(logBean.getMessage_id()), true);
-                                            usefulMap.put(UdeskUtils.objectToString(logBean.getMessage_id()), true);
-                                        }
-                                        if (data.getTopAsk() != null && data.getTopAsk().size() > 0 && !TextUtils.isEmpty(data.getContent())) {
-                                            usefulMap.put(UdeskUtils.objectToString(logBean.getMessage_id()), true);
-                                        }
-                                        if (content.getType().equals(UdeskConst.ChatMsgTypeString.TYPE_WECHAT_IMAGE)) {
-                                            usefulMap.put(UdeskUtils.objectToString(logBean.getMessage_id()), true);
-                                        }
-                                    }
-                                }
-                                ArrayList<MessageInfo> messageInfos = UdeskUtil.buildAllMessage(logBean);
+                                ArrayList<MessageInfo> messageInfos = UdeskUtil.buildAllMessage(getApplicationContext(),logBean);
                                 if (messageInfos != null && messageInfos.size()>0) {
                                     boolean isAutoTransfer = false ;
                                     for(MessageInfo info:messageInfos){
-                                        udeskViewMode.getDbLiveData().saveMessageDB(info);
-                                        mChatAdapter.addItem(info);
-                                        mListView.smoothScrollToPosition(mChatAdapter.getCount());
+                                        if ((info.getSwitchStaffType() == UdeskConst.SwitchStaffType.RECOMMEND
+                                                || info.getSwitchStaffType() == UdeskConst.SwitchStaffType.RECOMMEND_SEND_MESSAGE)
+                                                && !TextUtils.isEmpty(info.getSwitchStaffTips())
+                                                && !UdeskSDKManager.getInstance().getUdeskConfig().isOnlyUseRobot) {
+                                            transferMap.put(UdeskUtils.objectToString(info.getMsgId()), true);
+                                            usefulMap.put(UdeskUtils.objectToString(info.getMsgId()), true);
+                                        }
+
+                                        if (info.getTopAsk() != null && info.getTopAsk().size() > 0 && !TextUtils.isEmpty(info.getMsgContent())) {
+                                            usefulMap.put(UdeskUtils.objectToString(info.getMsgId()), true);
+                                        }
+                                        if (info.getMsgtype().equals(UdeskConst.ChatMsgTypeString.TYPE_WECHAT_IMAGE)) {
+                                            usefulMap.put(UdeskUtils.objectToString(info.getMsgId()), true);
+                                        }
                                         if (info.getSwitchStaffType() == UdeskConst.SwitchStaffType.AUTO){
                                             isAutoTransfer = true;
+                                            if (!TextUtils.isEmpty(info.getMsgContent())){
+                                                udeskViewMode.getDbLiveData().saveMessageDB(info);
+                                                mChatAdapter.addItem(info);
+                                                mListView.smoothScrollToPosition(mChatAdapter.getCount());
+                                            }
+                                        }else {
+                                            udeskViewMode.getDbLiveData().saveMessageDB(info);
+                                            mChatAdapter.addItem(info);
+                                            mListView.smoothScrollToPosition(mChatAdapter.getCount());
                                         }
+
                                     }
                                     if (isAutoTransfer) {
                                         autoTransfer();
@@ -1004,8 +1034,16 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                                 if (allMessageMode.getMessages() != null && allMessageMode.getMessages().size() > 0) {
                                     for (int i = 0; i < allMessageMode.getMessages().size(); i++) {
                                         LogBean allMessage = (LogBean) allMessageMode.getMessages().get(i);
-                                        ArrayList<MessageInfo> messageInfos = UdeskUtil.buildAllMessage(allMessage);
-                                        if (messageInfos != null && messageInfos.size()>0) {
+                                        ArrayList<MessageInfo> messageInfos = UdeskUtil.buildAllMessage(getApplicationContext(),allMessage);
+                                        if (messageInfos != null && messageInfos.size() > 0) {
+                                            Iterator<MessageInfo> iterator = messageInfos.iterator();
+                                            while (iterator.hasNext()){
+                                                MessageInfo next = iterator.next();
+                                                if (next.getSwitchStaffType()== UdeskConst.SwitchStaffType.AUTO
+                                                        && TextUtils.isEmpty(next.getMsgContent())){
+                                                    iterator.remove();
+                                                }
+                                            }
                                             for (MessageInfo info : messageInfos) {
                                                 if ((info.getSwitchStaffType() == UdeskConst.SwitchStaffType.RECOMMEND
                                                         || info.getSwitchStaffType() == UdeskConst.SwitchStaffType.RECOMMEND_SEND_MESSAGE)
@@ -1121,12 +1159,18 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             }
             if (mAgentInfo != null && !TextUtils.isEmpty(mAgentInfo.getAgentJid()) && jid.contains(mAgentInfo.getAgentJid())){
                 if (onlineflag == UdeskConst.ONLINEFLAG) {
-                    doAgentStatus(on,mAgentInfo);
+                    if (agentStatus != onlineflag){
+                        agentStatus = onlineflag;
+                        doAgentStatus(on,mAgentInfo);
+                    }
                     if (popWindow != null) {
                         popWindow.cancle();
                     }
                 } else if (onlineflag == UdeskConst.OFFLINEFLAG) {
-                    doAgentStatus(off,mAgentInfo);
+                    if (agentStatus != onlineflag){
+                        agentStatus = onlineflag;
+                        doAgentStatus(off,mAgentInfo);
+                    }
                 }
             }
         }
@@ -1166,7 +1210,8 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                     }
 
                     if (!mAgentInfo.getAgentJid().contains(receiveMsg.getmAgentJid())) {
-                        udeskViewMode.getApiLiveData().getAgentInfo(null, null);
+//                        udeskViewMode.getApiLiveData().getAgentInfo(null, null);
+                        getAgentInfo(null);
                         mAgentInfo.setAgentJid(receiveMsg.getmAgentJid());
                         String jid[] = receiveMsg.getmAgentJid().split("/");
                         String[] urlAndNick = UdeskDBManager.getInstance().getAgentUrlAndNick(jid[0]);
@@ -1197,7 +1242,8 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                     }
                 } else {
                     if (mAgentInfo != null && !TextUtils.isEmpty(receiveMsg.getmAgentJid())) {
-                        udeskViewMode.getApiLiveData().getAgentInfo(pre_session_id, null);
+                        getAgentInfo(pre_session_id);
+//                        udeskViewMode.getApiLiveData().getAgentInfo(pre_session_id, null);
                     }
                 }
             }
@@ -1491,6 +1537,8 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     protected void onResume() {
         super.onResume();
         try {
+            UdeskSDKManager.getInstance().setChatting(true);
+            udeskViewMode.getDbLiveData().updateAllMsgRead();
             UdeskConst.sdk_page_status = UdeskConst.SDK_PAGE_FOREGROUND;
             UdeskBaseInfo.isNeedMsgNotice = false;
             if (TextUtils.isEmpty(LQREmotionKit.getEmotionPath())) {
@@ -1547,8 +1595,11 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             if (Build.VERSION.SDK_INT < 23) {
                 selectPhoto();
             } else {
-                XPermissionUtils.requestPermissions(UdeskChatActivity.this, RequestCode.EXTERNAL,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                if (Build.VERSION.SDK_INT >= 33) {
+                    permissions = new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO};
+                }
+                XPermissionUtils.requestPermissions(UdeskChatActivity.this, RequestCode.EXTERNAL, permissions,
                         new XPermissionUtils.OnPermissionListener() {
                             @Override
                             public void onPermissionGranted() {
@@ -1572,8 +1623,11 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             if (Build.VERSION.SDK_INT < 23) {
                 selectFile();
             } else {
-                XPermissionUtils.requestPermissions(UdeskChatActivity.this, RequestCode.EXTERNAL,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                if (Build.VERSION.SDK_INT >= 33) {
+                    permissions = new String[]{Manifest.permission.READ_MEDIA_AUDIO, Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO};
+                }
+                XPermissionUtils.requestPermissions(UdeskChatActivity.this, RequestCode.EXTERNAL, permissions,
                         new XPermissionUtils.OnPermissionListener() {
                             @Override
                             public void onPermissionGranted() {
@@ -2232,7 +2286,8 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
         @Override
         public void run() {
             try {
-                udeskViewMode.getApiLiveData().getAgentInfo(pre_session_id, null);
+//                udeskViewMode.getApiLiveData().getAgentInfo(pre_session_id, null);
+                  getAgentInfo(pre_session_id);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -3180,6 +3235,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     @Override
     protected void onPause() {
         try {
+            UdeskSDKManager.getInstance().setChatting(false);
             UdeskBaseInfo.isNeedMsgNotice = true;
             if (isFinishing()) {
                 cleanSource();
@@ -3201,6 +3257,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     @Override
     protected void onDestroy() {
         cleanSource();
+        Log.i("aac","onDestroy");
         super.onDestroy();
 
     }
@@ -3304,6 +3361,7 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 return;
             }
             // 回收资源
+            udeskViewMode.getDbLiveData().updateAllMsgRead();
             UdeskConst.sdk_page_status = UdeskConst.SDK_PAGE_FINISH;
             MergeModeManager.getmInstance().clear();
             isDestroyed = true;
@@ -3562,5 +3620,26 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
         }
 
     }
+
+    /**
+     * 针对某些场景，导致本地状态缓存和后端状态不一致的情况下，造成开启无消息对话过滤的情况下，没有拦截到直接进入会话
+     *
+     * 开启了无消息对话过滤的情况下，请求客服需要做个状态检查
+     *
+     *
+     */
+    private void getAgentInfo(String preSessionId){
+
+        if (initCustomer != null){
+            if (!initCustomer.getPre_session().getShow_pre_session() || !initCustomer.getPre_session().getPre_session()){
+                // 没有开启无消息对话过滤，直接请求客服
+                udeskViewMode.getApiLiveData().getAgentInfo(preSessionId, null);
+                return;
+            }
+        }
+        //请求initCustomer 进行判断
+        udeskViewMode.getApiLiveData().initCustomer(getApplicationContext());
+    }
+
 
 }
