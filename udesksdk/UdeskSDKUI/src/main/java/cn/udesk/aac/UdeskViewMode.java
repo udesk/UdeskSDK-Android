@@ -38,22 +38,22 @@ import udesk.core.utils.UdeskUtils;
 public class UdeskViewMode extends ViewModel {
 
     //收到客服 通过xmpp发送的消息
-    private ReceiveLivaData<MergeMode> messageLivaData;
+    private ReceiveLivaData<MergeMode> messageLivaData = new ReceiveLivaData<>();
 
     //处理发送消息的逻辑
-    private SendMessageLiveData<MergeMode> sendMessageLiveData;
+    private SendMessageLiveData<MergeMode> sendMessageLiveData = new SendMessageLiveData<>();
 
-    private DBLiveData<MergeMode> dbLiveData;
+    private DBLiveData<MergeMode> dbLiveData = new DBLiveData<>();
 
     //集中消息外的api处理
-    private APILiveData<MergeMode> apiLiveData;
+    private APILiveData<MergeMode> apiLiveData = new APILiveData<>();
 
-    private RobotApiData<MergeMode> robotApiData;
+    private RobotApiData<MergeMode> robotApiData = new RobotApiData<>();
 
     //处理在UdeskViewMode中直接通知Activity和Fragment刷新的
-    private MutableLiveData<MergeMode> mutableLiveData;
+    private MutableLiveData<MergeMode> mutableLiveData = new MutableLiveData<>();
 
-    private FileLiveData<MergeMode> upLoadFileLiveData;
+    private FileLiveData<MergeMode> upLoadFileLiveData = new FileLiveData<>();
 
     //缓存pre_session时发送的消息
     private List<MessageInfo> cachePreMsg = new ArrayList<>();
@@ -65,91 +65,160 @@ public class UdeskViewMode extends ViewModel {
 
 
     public UdeskViewMode() {
-        merger();
+        try {
+            merger();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void merger() {
-        messageLivaData = new ReceiveLivaData<>();
-        sendMessageLiveData = new SendMessageLiveData<>();
-        apiLiveData = new APILiveData<>();
-        dbLiveData = new DBLiveData<>();
-        mutableLiveData = new MutableLiveData<>();
-        upLoadFileLiveData = new FileLiveData<>();
-        robotApiData = new RobotApiData<>();
-        liveDataMerger.addSource(messageLivaData, new Observer<MergeMode>() {
-            @Override
-            public void onChanged(@Nullable MergeMode mergeMode) {
-                liveDataMerger.postValue(mergeMode);
-            }
-        });
-        liveDataMerger.addSource(sendMessageLiveData, new Observer<MergeMode>() {
-            @Override
-            public void onChanged(@Nullable MergeMode mergeMode) {
-                liveDataMerger.postValue(mergeMode);
-            }
-        });
-        liveDataMerger.addSource(apiLiveData, new Observer<MergeMode>() {
-            @Override
-            public void onChanged(@Nullable MergeMode mergeMode) {
-                liveDataMerger.postValue(mergeMode);
-            }
-        });
-        liveDataMerger.addSource(dbLiveData, new Observer<MergeMode>() {
-            @Override
-            public void onChanged(@Nullable MergeMode mergeMode) {
-                liveDataMerger.postValue(mergeMode);
-            }
-        });
-        liveDataMerger.addSource(mutableLiveData, new Observer<MergeMode>() {
-            @Override
-            public void onChanged(@Nullable MergeMode mergeMode) {
-                liveDataMerger.postValue(mergeMode);
-            }
-        });
+        try {
+            initLiveData();
+            liveDataMerger.addSource(messageLivaData, new Observer<MergeMode>() {
+                @Override
+                public void onChanged(@Nullable MergeMode mergeMode) {
+                    liveDataMerger.postValue(mergeMode);
+                }
+            });
+            liveDataMerger.addSource(sendMessageLiveData, new Observer<MergeMode>() {
+                @Override
+                public void onChanged(@Nullable MergeMode mergeMode) {
+                    liveDataMerger.postValue(mergeMode);
+                }
+            });
+            liveDataMerger.addSource(apiLiveData, new Observer<MergeMode>() {
+                @Override
+                public void onChanged(@Nullable MergeMode mergeMode) {
+                    liveDataMerger.postValue(mergeMode);
+                }
+            });
+            liveDataMerger.addSource(dbLiveData, new Observer<MergeMode>() {
+                @Override
+                public void onChanged(@Nullable MergeMode mergeMode) {
+                    liveDataMerger.postValue(mergeMode);
+                }
+            });
+            liveDataMerger.addSource(mutableLiveData, new Observer<MergeMode>() {
+                @Override
+                public void onChanged(@Nullable MergeMode mergeMode) {
+                    liveDataMerger.postValue(mergeMode);
+                }
+            });
 
-        liveDataMerger.addSource(upLoadFileLiveData, new Observer<MergeMode>() {
-            @Override
-            public void onChanged(@Nullable MergeMode mergeMode) {
-                liveDataMerger.postValue(mergeMode);
-            }
-        });
+            liveDataMerger.addSource(upLoadFileLiveData, new Observer<MergeMode>() {
+                @Override
+                public void onChanged(@Nullable MergeMode mergeMode) {
+                    liveDataMerger.postValue(mergeMode);
+                }
+            });
 
-        liveDataMerger.addSource(robotApiData, new Observer<MergeMode>() {
-            @Override
-            public void onChanged(@Nullable MergeMode mergeMode) {
-                liveDataMerger.postValue(mergeMode);
+            liveDataMerger.addSource(robotApiData, new Observer<MergeMode>() {
+                @Override
+                public void onChanged(@Nullable MergeMode mergeMode) {
+                    liveDataMerger.postValue(mergeMode);
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    private void initLiveData() {
+        try {
+            if (messageLivaData == null){
+                messageLivaData = new ReceiveLivaData<>();
             }
-        });
+            if (sendMessageLiveData == null){
+                sendMessageLiveData = new SendMessageLiveData<>();
+            }
+            if (dbLiveData == null){
+                dbLiveData = new DBLiveData<>();
+            }
+            if (apiLiveData == null){
+                apiLiveData = new APILiveData<>();
+            }
+            if (robotApiData == null){
+                robotApiData = new RobotApiData<>();
+            }
+            if (mutableLiveData == null){
+                mutableLiveData = new MutableLiveData<>();
+            }
+            if (upLoadFileLiveData == null){
+                upLoadFileLiveData = new FileLiveData<>();
+            }
+            if (liveDataMerger == null){
+                liveDataMerger = new MediatorLiveData();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void setBaseValue(String domain, String secretKey, String sdktoken,
                              String appid) {
-        apiLiveData.setBaseValue(domain, secretKey, sdktoken, appid);
-        sendMessageLiveData.setBaseValue(domain, secretKey, sdktoken, appid);
-        upLoadFileLiveData.setBaseValue(domain, secretKey, sdktoken, appid);
-        robotApiData.setBaseValue(domain, secretKey, sdktoken, appid);
+        try {
+            initLiveData();
+            apiLiveData.setBaseValue(domain, secretKey, sdktoken, appid);
+            sendMessageLiveData.setBaseValue(domain, secretKey, sdktoken, appid);
+            upLoadFileLiveData.setBaseValue(domain, secretKey, sdktoken, appid);
+            robotApiData.setBaseValue(domain, secretKey, sdktoken, appid);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     public void setHandler(UdeskChatActivity.MyHandler handler){
-        upLoadFileLiveData.setHandler(handler);
+        try {
+            initLiveData();
+            upLoadFileLiveData.setHandler(handler);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     public void setCustomerId(String customerId) {
-        apiLiveData.setCustomerId(customerId);
-        sendMessageLiveData.setCustomerId(customerId);
-        robotApiData.setCustomerId(customerId);
+        try {
+            initLiveData();
+            apiLiveData.setCustomerId(customerId);
+            sendMessageLiveData.setCustomerId(customerId);
+            robotApiData.setCustomerId(customerId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     public void setSessionId(long sessionId) {
-        robotApiData.setSessionId(sessionId);
+        try {
+            initLiveData();
+            robotApiData.setSessionId(sessionId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void setRobotUrl(String robotUrl){
-        robotApiData.setRobotUrl(robotUrl);
+        try {
+            initLiveData();
+            robotApiData.setRobotUrl(robotUrl);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     public void setAgentInfo(AgentInfo agentInfo) {
-        apiLiveData.setAgentInfo(agentInfo);
-        sendMessageLiveData.setAgentInfo(agentInfo);
+        try {
+            initLiveData();
+            apiLiveData.setAgentInfo(agentInfo);
+            sendMessageLiveData.setAgentInfo(agentInfo);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public MediatorLiveData getLiveDataMerger() {
+        try {
+            initLiveData();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return liveDataMerger;
     }
 
@@ -313,6 +382,7 @@ public class UdeskViewMode extends ViewModel {
     //方式咨询对象
     public void sendCommodityMessage(UdeskCommodityItem commodity) {
         try {
+            initLiveData();
             sendMessageLiveData.sendCommodityMessage(commodity);
         }catch (Exception e){
             e.printStackTrace();
@@ -321,6 +391,7 @@ public class UdeskViewMode extends ViewModel {
 
     public void putLeavesMsg(MessageInfo info) {
         try {
+            initLiveData();
             sendMessageLiveData.putLeavesMsg(info.getMsgContent(), info.getMsgId());
         }catch (Exception e){
             e.printStackTrace();
@@ -328,6 +399,7 @@ public class UdeskViewMode extends ViewModel {
     }
     public void putIMLeavesMsg(MessageInfo info,String agentId,String groupId,String menuId) {
         try {
+            initLiveData();
             sendMessageLiveData.putIMLeavesMsg(info.getMsgContent(), info.getMsgId(),"",agentId,groupId,menuId);
         }catch (Exception e){
             e.printStackTrace();
@@ -359,22 +431,47 @@ public class UdeskViewMode extends ViewModel {
     }
 
     public SendMessageLiveData<MergeMode> getSendMessageLiveData() {
+        try {
+            initLiveData();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return sendMessageLiveData;
     }
 
     public DBLiveData<MergeMode> getDbLiveData() {
+        try {
+            initLiveData();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return dbLiveData;
     }
 
     public APILiveData getApiLiveData() {
+        try {
+            initLiveData();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return apiLiveData;
     }
 
     public FileLiveData getFileLiveData() {
+        try {
+            initLiveData();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return upLoadFileLiveData;
     }
 
     public RobotApiData<MergeMode> getRobotApiData() {
+        try {
+            initLiveData();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return robotApiData;
     }
 
@@ -432,28 +529,33 @@ public class UdeskViewMode extends ViewModel {
 
     @Override
     protected void onCleared() {
-        super.onCleared();
-        if (UdeskConst.isDebug) {
-            Log.i("aac", "UdeskViewMode onCleared");
+        try {
+            super.onCleared();
+            if (UdeskConst.isDebug) {
+                Log.i("aac", "UdeskViewMode onCleared");
+            }
+            initLiveData();
+            apiLiveData.quitQueue(UdeskSDKManager.getInstance().getUdeskConfig().UdeskQuenuMode);
+            UdeskHttpFacade.getInstance().cancel();
+            liveDataMerger.removeSource(messageLivaData);
+            liveDataMerger.removeSource(sendMessageLiveData);
+            liveDataMerger.removeSource(apiLiveData);
+            liveDataMerger.removeSource(dbLiveData);
+            liveDataMerger.removeSource(mutableLiveData);
+            liveDataMerger.removeSource(upLoadFileLiveData);
+            liveDataMerger.removeSource(robotApiData);
+            MergeModeManager.getmInstance().clear();
+            messageLivaData = null;
+            sendMessageLiveData = null;
+            apiLiveData = null;
+            dbLiveData = null;
+            mutableLiveData = null;
+            upLoadFileLiveData = null;
+            robotApiData = null;
+            liveDataMerger = null;
+            cachePreMsg.clear();
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        apiLiveData.quitQueue(UdeskSDKManager.getInstance().getUdeskConfig().UdeskQuenuMode);
-        UdeskHttpFacade.getInstance().cancel();
-        liveDataMerger.removeSource(messageLivaData);
-        liveDataMerger.removeSource(sendMessageLiveData);
-        liveDataMerger.removeSource(apiLiveData);
-        liveDataMerger.removeSource(dbLiveData);
-        liveDataMerger.removeSource(mutableLiveData);
-        liveDataMerger.removeSource(upLoadFileLiveData);
-        liveDataMerger.removeSource(robotApiData);
-
-        messageLivaData = null;
-        sendMessageLiveData = null;
-        apiLiveData = null;
-        dbLiveData = null;
-        mutableLiveData = null;
-        upLoadFileLiveData = null;
-        liveDataMerger = null;
-        robotApiData = null;
-        cachePreMsg.clear();
     }
 }

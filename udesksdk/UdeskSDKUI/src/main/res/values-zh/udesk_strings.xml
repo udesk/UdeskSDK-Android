@@ -152,6 +152,9 @@
     <string name="udesk_transfer_out_of_data">转人工按钮已失效</string>
     <string name="udesk_input_recommendation">输入问题推荐</string>
     <string name="udesk_news">以下是新消息</string>
+    <string name="udesk_file_downloaded">文件已下载</string>
+    <string name="udesk_file_downloading">文件正在下载中...</string>
+    <string name="udesk_recommend_transfer_default">推荐您进行转人工咨询~</string>
 
 
 </resources>

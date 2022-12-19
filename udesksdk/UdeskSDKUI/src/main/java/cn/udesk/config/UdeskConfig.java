@@ -19,6 +19,7 @@ import cn.udesk.callback.IStructMessageWebonClick;
 import cn.udesk.callback.ITxtMessageWebonClick;
 import cn.udesk.callback.IUdeskFormCallBack;
 import cn.udesk.callback.IUdeskStructMessageCallBack;
+import cn.udesk.callback.IUnreadMessageCallBack;
 import cn.udesk.model.FunctionMode;
 import cn.udesk.model.NavigationMode;
 import cn.udesk.model.UdeskCommodityItem;
@@ -185,6 +186,8 @@ public class UdeskConfig {
     public float maxHeightViewDimen =0.0f;
     //离开IM聊天界面的回调
     public ILeaveChatViewCallBack leaveChatViewCallBack;
+    //未读消息回调
+    public IUnreadMessageCallBack unreadMessageCallBack;
 
     UdeskConfig(Builder builder) {
 
@@ -264,6 +267,7 @@ public class UdeskConfig {
         this.maxHeightViewRatio = builder.maxHeightViewRatio;
         this.maxHeightViewDimen = builder.maxHeightViewDimen;
         this.leaveChatViewCallBack = builder.leaveChatViewCallBack;
+        this.unreadMessageCallBack = builder.unreadMessageCallBack;
     }
 
     public static UdeskConfig createDefualt() {
@@ -423,6 +427,8 @@ public class UdeskConfig {
         public float maxHeightViewDimen =0.0f;
         //离开IM聊天界面的回调
         public ILeaveChatViewCallBack leaveChatViewCallBack;
+        //未读消息回调
+        public IUnreadMessageCallBack unreadMessageCallBack;
         public Builder() {
 
         }
@@ -1058,6 +1064,16 @@ public class UdeskConfig {
          */
         public Builder setLeaveChatViewCallBack(ILeaveChatViewCallBack leaveChatViewCallBack) {
             this.leaveChatViewCallBack = leaveChatViewCallBack;
+            return this;
+        }
+
+        /**
+         * 设置未读消息回调
+         * @param unreadMessageCallBack
+         * @return
+         */
+        public Builder setUnreadMessageCallBack(IUnreadMessageCallBack unreadMessageCallBack) {
+            this.unreadMessageCallBack = unreadMessageCallBack;
             return this;
         }
 

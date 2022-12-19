@@ -19,12 +19,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import cn.udesk.MessageCache;
 import cn.udesk.aac.MergeMode;
 import cn.udesk.aac.MergeModeManager;
 import cn.udesk.db.UdeskDBManager;
 import cn.udesk.messagemanager.UdeskXmppManager;
 import cn.udesk.model.UdeskCommodityItem;
-import cn.udesk.MessageCache;
 import udesk.core.UdeskCallBack;
 import udesk.core.UdeskConst;
 import udesk.core.UdeskHttpFacade;
@@ -78,7 +78,9 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
             ScheduledFuture future = scheduler.scheduleWithFixedDelay(new Runnable() {
                 @Override
                 public void run() {
-                    secondSave(msg);
+                    if (!sendingMsgCache.isEmpty()){
+                        secondSave(msg);
+                    }
                 }
             }, 5, 5, TimeUnit.SECONDS);
             futureMap.put(msg.getMsgId(), future);
@@ -192,6 +194,9 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
                         public void onSuccess(String message) {
                             try {
                                 MessageInfo cacheMsg = sendingMsgCache.get(msg.getMsgId());
+                                if (cacheMsg == null){
+                                    removeSendMsgCace(msg.getMsgId());
+                                }
                                 // 发送2次也算成功，有服务端代发通知客服,等同于收到xmpp回执
                                 if (cacheMsg != null && (cacheMsg.getCount() + 1) >= 2) {
                                     postMessage(msg.getMsgId(),UdeskConst.LiveDataType.XmppReceiveLivaData_ReceiveXmppMessageReceived);
@@ -406,6 +411,7 @@ public class SendMessageLiveData<M> extends MutableLiveData<MergeMode> {
         if (UdeskConst.isDebug) {
             Log.i("aac", " SendMessageLiveData onInactive");
         }
+        scheduler.shutdownNow();
         InvokeEventContainer.getInstance().event_OnSendMessageFail.unBind(this);
         //失去焦点 就启动
         MessageCache.getInstance().setBaseValue(domain, secretKey, sdktoken, appid, customerId);

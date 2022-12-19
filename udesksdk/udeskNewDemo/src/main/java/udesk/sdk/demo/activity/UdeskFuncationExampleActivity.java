@@ -43,6 +43,7 @@ import cn.udesk.callback.IStructMessageWebonClick;
 import cn.udesk.callback.ITxtMessageWebonClick;
 import cn.udesk.callback.IUdeskFormCallBack;
 import cn.udesk.callback.IUdeskStructMessageCallBack;
+import cn.udesk.callback.IUnreadMessageCallBack;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.model.FunctionMode;
 import cn.udesk.model.NavigationMode;
@@ -94,6 +95,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
             textfiledkey, textfiledvalue,
             firstMessage, customerUrl, robot_modelKey, robpt_customer_info,edit_language,robotFirstMessage;
     private String sdkToken;
+    private TextView unread_number;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +165,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         robpt_customer_info = (EditText) findViewById(R.id.robpt_customer_info);
         edit_language = (EditText) findViewById(R.id.edit_language);
         robotFirstMessage = (EditText) findViewById(R.id.robotFirstMessage);
+        unread_number = (TextView) findViewById(R.id.unread_number);
 
     }
 
@@ -335,6 +338,17 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                         Toast.makeText(getApplicationContext(), "离开IM聊天界面的回调", Toast.LENGTH_SHORT).show();
                     }
                 })//设置离开IM聊天界面的回调
+                .setUnreadMessageCallBack(new IUnreadMessageCallBack() {
+                    @Override
+                    public void onReceiveUnreadMessage(MessageInfo unreadMessage) {
+                        getUnreadCount();
+                    }
+
+                    @Override
+                    public void onUnreadMessagesStatusChange() {
+                        getUnreadCount();
+                    }
+                })//设置未读消息回调
                 .setChannel(channel.getText().toString())
                 .isShowCustomerNickname(show_customer_nickname.isChecked())//设置是否显示昵称
                 .isShowCustomerHead(show_customer_head.isChecked()) //设置是否显示头像
@@ -342,6 +356,17 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 .setMaxHeightViewRatio(0.4f); //设置智能提示显示最大高度比例
 
         return builder;
+    }
+
+    private void getUnreadCount() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                String sdkToken = PreferenceHelper.readString(getApplicationContext(), "init_base_name", "sdktoken");
+                int unReadMessageCount = UdeskSDKManager.getInstance().getCurrentConnectUnReadMsgCount(getApplicationContext(),sdkToken);
+                unread_number.setText(unReadMessageCount + "");
+            }
+        });
     }
 
     private List<FunctionMode> getExtraFunctions() {
@@ -714,5 +739,11 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
             sdkToken=UdeskSDKManager.getInstance().getSdkToken(this);
         }
         return sdkToken;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getUnreadCount();
     }
 }

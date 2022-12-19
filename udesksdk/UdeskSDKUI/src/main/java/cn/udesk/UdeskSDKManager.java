@@ -71,15 +71,17 @@ public class UdeskSDKManager {
     private static IUdeskNewMessage newMessage;
 
     private ExecutorService singleExecutor;
+    private final ExecutorService dbExecutor;
 
     InitCustomerBean initCustomerBean;
 
     private Context appContext;
     //包含商品订单和轨迹是否开启
     private TraceInitBean traceInitBean;
-
+    private boolean isChatting;
     private UdeskSDKManager() {
         singleExecutor = Executors.newSingleThreadExecutor();
+        dbExecutor = Executors.newSingleThreadExecutor();
     }
 
     public static UdeskSDKManager getInstance() {
@@ -90,6 +92,9 @@ public class UdeskSDKManager {
         return singleExecutor;
     }
 
+    public ExecutorService getDbExecutor() {
+        return dbExecutor;
+    }
 
     /**
      * 创建应用生成的key值和appid
@@ -629,5 +634,11 @@ public class UdeskSDKManager {
         UdeskHttpFacade.getInstance().putBehaviorTraces(domain, app_Key, sdkToken, app_Id,content,null);
     }
 
+    public boolean isChatting() {
+        return isChatting;
+    }
 
+    public void setChatting(boolean chatting) {
+        isChatting = chatting;
+    }
 }

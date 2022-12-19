@@ -115,7 +115,7 @@ public class UdeskDBManager {
     //保存消息
     public Future<Boolean> addMessageDB(final MessageInfo msg) {
         try {
-            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     return addMessageInfo(msg);
@@ -175,7 +175,7 @@ public class UdeskDBManager {
 
     public Future<Boolean> updateMsgContentDB(final String msgId, final String text) {
         try {
-            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     return updateMsgContent(msgId,text);
@@ -207,7 +207,7 @@ public class UdeskDBManager {
 
     public Future<Boolean> updateMsgLoaclUrlDB(final String msgId, final String text) {
         try {
-            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     return updateMsgLoaclUrl(msgId,text);
@@ -239,7 +239,7 @@ public class UdeskDBManager {
 
     public Future<Boolean> updateMsgSendFlagDB(final String msgId, final int sendflag) {
         try {
-            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     return updateMsgSendFlag(msgId,sendflag);
@@ -271,7 +271,7 @@ public class UdeskDBManager {
 
     public Future<Boolean> updateSendFlagToFailDB() {
         try {
-            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     return updateSendFlagToFail();
@@ -303,7 +303,7 @@ public class UdeskDBManager {
 
     public Future<MessageInfo> isExitMessageDB(final String msgId) {
         try {
-            Future<MessageInfo> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<MessageInfo>() {
+            Future<MessageInfo> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<MessageInfo>() {
                 @Override
                 public MessageInfo call() throws Exception {
                     return isExitMessage(msgId);
@@ -344,7 +344,7 @@ public class UdeskDBManager {
 
     public Future<MessageInfo> getMessageDB(final String msgId) {
         try {
-            Future<MessageInfo> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<MessageInfo>() {
+            Future<MessageInfo> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<MessageInfo>() {
                 @Override
                 public MessageInfo call() throws Exception {
                     return getMessage(msgId);
@@ -446,7 +446,7 @@ public class UdeskDBManager {
 
     public Future<List<MessageInfo>> getMessagesDB(final int offset, final int pageNum) {
         try {
-            Future<List<MessageInfo>> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<List<MessageInfo>>() {
+            Future<List<MessageInfo>> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<List<MessageInfo>>() {
                 @Override
                 public List<MessageInfo> call() throws Exception {
                     return getMessages(offset,pageNum);
@@ -570,7 +570,7 @@ public class UdeskDBManager {
 
     public Future<MessageInfo> getLastMessageDB() {
         try {
-            Future<MessageInfo> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<MessageInfo>() {
+            Future<MessageInfo> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<MessageInfo>() {
                 @Override
                 public MessageInfo call() throws Exception {
                     return getLastMessage();
@@ -677,7 +677,7 @@ public class UdeskDBManager {
 
     public Future<MessageInfo> getAgentLastMessageDB() {
         try {
-            Future<MessageInfo> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<MessageInfo>() {
+            Future<MessageInfo> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<MessageInfo>() {
                 @Override
                 public MessageInfo call() throws Exception {
                     return getAgentLastMessage();
@@ -789,7 +789,7 @@ public class UdeskDBManager {
 
     public Future<Integer> getMessageCountDB() {
         try {
-            Future<Integer> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Integer>() {
+            Future<Integer> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<Integer>() {
                 @Override
                 public Integer call() throws Exception {
                     return getMessageCount();
@@ -833,7 +833,7 @@ public class UdeskDBManager {
 
     public Future<Boolean> hasReceviedMsgDB(final String msgId) {
         try {
-            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     return hasReceviedMsg(msgId);
@@ -875,7 +875,7 @@ public class UdeskDBManager {
 
     public Future<Boolean> deleteAllMsgDB() {
         try {
-            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     return deleteAllMsg();
@@ -908,7 +908,7 @@ public class UdeskDBManager {
 
     public Future<Boolean> deleteMsgByIdDB(final String msgId) {
         try {
-            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     return deleteMsgById(msgId);
@@ -936,7 +936,7 @@ public class UdeskDBManager {
 
     public void updateMsgHasReadDB(final String msgId) {
         try {
-            UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
+            UdeskSDKManager.getInstance().getDbExecutor().submit(new Runnable() {
                 @Override
                 public void run() {
                     updateMsgHasRead(msgId);
@@ -963,7 +963,7 @@ public class UdeskDBManager {
 
     public void updateAllMsgReadDB() {
         try {
-            UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
+            UdeskSDKManager.getInstance().getDbExecutor().submit(new Runnable() {
                 @Override
                 public void run() {
                     updateAllMsgRead();
@@ -992,7 +992,7 @@ public class UdeskDBManager {
 
     public Future<List<MessageInfo>>  getUnReadMessagesDB() {
         try {
-            Future<List<MessageInfo>> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<List<MessageInfo>>() {
+            Future<List<MessageInfo>> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<List<MessageInfo>>() {
                 @Override
                 public List<MessageInfo> call() throws Exception {
                     return getUnReadMessages();
@@ -1027,12 +1027,77 @@ public class UdeskDBManager {
             }
             while (cursor.moveToNext()) {
                 String msgId = cursor.getString(0);
+                long time = cursor.getLong(1);
                 String msgContent = cursor.getString(2);
                 String msgtype = cursor.getString(3);
-                MessageInfo message = new MessageInfo();
-                message.setMsgId(msgId);
-                message.setMsgContent(msgContent);
-                message.setMsgtype(msgtype);
+                int readFlag = cursor.getInt(4);
+                int sendFlag = cursor.getInt(5);
+                int playFlag = cursor.getInt(6);
+                int direction = cursor.getInt(7);
+                String localPath = cursor.getString(8);
+                long duration = cursor.getLong(9);
+                String agentJid = UdeskUtils.objectToString(cursor.getString(10));
+                String createdTime = UdeskUtils.objectToString(cursor.getString(11));
+                String updatedTime = UdeskUtils.objectToString(cursor.getString(12));
+                String replyUser = UdeskUtils.objectToString(cursor.getString(13));
+                String reply_userurl = UdeskUtils.objectToString(cursor.getString(14));
+                String subSeessionId = UdeskUtils.objectToString(cursor.getString(15));
+                long seqNum = cursor.getLong(16);
+                String fileName = UdeskUtils.objectToString(cursor.getString(17));
+                String fileSize = UdeskUtils.objectToString(cursor.getString(18));
+                int switchStaffType = UdeskUtils.objectToInt(cursor.getInt(19));
+                String switchStaffTips = UdeskUtils.objectToString(cursor.getString(20));
+                String topAsk = UdeskUtils.objectToString(cursor.getString(21));
+                String logId = UdeskUtils.objectToString(cursor.getString(22));
+                String webConfig = UdeskUtils.objectToString(cursor.getString(23));
+                String sender = UdeskUtils.objectToString(cursor.getString(24));
+                long flowId = UdeskUtils.objectToLong(cursor.getLong(25));
+                String flowTitle = UdeskUtils.objectToString(cursor.getString(26));
+                String flowContent = UdeskUtils.objectToString(cursor.getString(27));
+                String question_id = UdeskUtils.objectToString(cursor.getString(28));
+                String recommendationGuidance = UdeskUtils.objectToString(cursor.getString(29));
+
+
+                if (sendFlag == UdeskConst.SendFlag.RESULT_SEND && System.currentTimeMillis() - time > 30 * 1000) {
+                    sendFlag = UdeskConst.SendFlag.RESULT_FAIL;
+                }
+                MessageInfo message = new MessageInfo(time, msgId, msgtype,
+                        msgContent, readFlag, sendFlag, playFlag, direction,
+                        localPath, duration, agentJid);
+                message.setFilename(fileName);
+                message.setFilesize(fileSize);
+                message.setSeqNum(seqNum);
+                message.setSubsessionid(subSeessionId);
+                message.setCreatedTime(createdTime);
+                message.setUpdateTime(updatedTime);
+                message.setReplyUser(replyUser);
+                message.setUser_avatar(reply_userurl);
+                message.setSwitchStaffType(switchStaffType);
+                message.setSwitchStaffTips(switchStaffTips);
+                if (!TextUtils.isEmpty(topAsk)){
+                    message.setTopAsk(JsonUtils.parseTopAsk(new JSONObject(topAsk)));
+                }
+                message.setLogId(logId);
+                if (!TextUtils.isEmpty(webConfig)){
+                    message.setWebConfig(JsonUtils.parseWebConfigBean(webConfig));
+                }
+                message.setSender(sender);
+                message.setFlowId(flowId);
+                message.setFlowTitle(flowTitle);
+                message.setFlowContent(flowContent);
+                message.setQuestion_id(question_id);
+                message.setRecommendationGuidance(recommendationGuidance);
+                if (!TextUtils.isEmpty(agentJid.trim())) {
+                    String[] urlAndNick = getAgentUrlAndNick(agentJid);
+                    if (urlAndNick != null) {
+                        try {
+                            message.setUser_avatar(urlAndNick[0]);
+                            message.setReplyUser(urlAndNick[1]);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
                 list.add(message);
             }
         } catch (Exception e) {
@@ -1047,7 +1112,7 @@ public class UdeskDBManager {
 
     public Future<Integer>  getUnReadMessageCountDB() {
         try {
-            Future<Integer> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Integer>() {
+            Future<Integer> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<Integer>() {
                 @Override
                 public Integer call() throws Exception {
                     return getUnReadMessageCount();
@@ -1089,7 +1154,7 @@ public class UdeskDBManager {
 
     public Future<String[]>  getAgentUrlAndNickDB(final String agentJId) {
         try {
-            Future<String[]> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<String[]>() {
+            Future<String[]> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<String[]>() {
                 @Override
                 public String[] call() throws Exception {
                     return getAgentUrlAndNick(agentJId);
@@ -1128,7 +1193,7 @@ public class UdeskDBManager {
 
     public Future<Boolean> addAgentInfoDB(final AgentInfo agentInfo) {
         try {
-            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     return addAgentInfo(agentInfo);
@@ -1164,7 +1229,7 @@ public class UdeskDBManager {
 
     public Future<Boolean> addInviterAgentInfoDB(final InviterAgentInfo agentInfo) {
         try {
-            Future<Boolean> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Boolean>() {
+            Future<Boolean> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     return addInviterAgentInfo(agentInfo);
@@ -1201,7 +1266,7 @@ public class UdeskDBManager {
 
     public void addSubSessionIdDB(final String im_sub_session_id, final long seqNum) {
         try {
-            UdeskSDKManager.getInstance().getSingleExecutor().submit(new Runnable() {
+            UdeskSDKManager.getInstance().getDbExecutor().submit(new Runnable() {
                 @Override
                 public void run() {
                     addSubSessionId(im_sub_session_id,seqNum);
@@ -1232,7 +1297,7 @@ public class UdeskDBManager {
 
     public Future<Long>  getSubSessionIdDB(final String im_sub_session_id) {
         try {
-            Future<Long> future = UdeskSDKManager.getInstance().getSingleExecutor().submit(new Callable<Long>() {
+            Future<Long> future = UdeskSDKManager.getInstance().getDbExecutor().submit(new Callable<Long>() {
                 @Override
                 public Long call() throws Exception {
                     return getSubSessionId(im_sub_session_id);

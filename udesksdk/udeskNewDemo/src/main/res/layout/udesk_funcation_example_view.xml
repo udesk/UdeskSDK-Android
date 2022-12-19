@@ -1019,6 +1019,34 @@
                 android:textColor="#333333"
                 android:textColorHint="@color/udesk_color_999999"
                 android:textSize="16sp" />
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/udesk_10"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:gravity="start|center"
+                    android:text="未读消息数测试"
+                    android:textColor="#333333"
+                    android:textSize="16sp" />
+
+
+                <TextView
+                    android:id="@+id/unread_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:gravity="start|center"
+                    android:textColor="#333333"
+                    android:textColorHint="@color/udesk_color_999999"
+                    android:textSize="16sp" />
+            </LinearLayout>
 
         </LinearLayout>
 
