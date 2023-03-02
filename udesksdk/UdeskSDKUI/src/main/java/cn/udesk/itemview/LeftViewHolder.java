@@ -730,11 +730,8 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             List<TopAskBean> topAsk = message.getTopAsk();
             container.removeAllViews();
             if (topAsk != null && topAsk.size() > 0) {
-                if (dealUseful()){
-                    viewParams=new LinearLayout.LayoutParams(UdeskUtil.dip2px(mContext,310),ViewGroup.LayoutParams.WRAP_CONTENT);
-                }else {
-                    viewParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
-                }
+                dealUseful();
+                viewParams=new LinearLayout.LayoutParams(UdeskUtil.dip2px(mContext,310),ViewGroup.LayoutParams.WRAP_CONTENT);
                 container.setLayoutParams(viewParams);
                 if (!TextUtils.isEmpty(message.getRecommendationGuidance())){
                     View childView = LayoutInflater.from(mContext).inflate(R.layout.udesk_view_que_classify_recommend, container, false);
