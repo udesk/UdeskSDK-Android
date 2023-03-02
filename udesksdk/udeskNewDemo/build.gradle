@@ -8,7 +8,7 @@ repositories {
 
 android {
     compileSdkVersion 33
-    buildToolsVersion '33.0.0'
+    buildToolsVersion '29.0.0'
 
     defaultConfig {
         applicationId "udesk.sdk.demo"

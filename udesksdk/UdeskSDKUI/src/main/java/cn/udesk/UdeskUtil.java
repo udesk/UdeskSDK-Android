@@ -1625,7 +1625,8 @@ public class UdeskUtil {
             Content content = message.getContent();
             if (content.getData() != null) {
                 ArrayList<MessageInfo> messageInfos = new ArrayList<>();
-                if (!TextUtils.isEmpty(content.getData().getContent()) || content.getData().getTopAsk()!= null){
+                if (!TextUtils.isEmpty(content.getData().getContent()) || content.getData().getTopAsk()!= null
+                        || (!TextUtils.isEmpty(content.getData().getFlowContent()) && content.getData().getFlowId() > 0 ) ){
                     MessageInfo info = buildMsg(message.getAgent_nick_name(), message.getAgent_avatar(), stringToLong(message.getCreated_at()),
                             UdeskUtils.objectToString(message.getMessage_id()), message.getContent().getType(), content.getData().getContent(),
                             UdeskConst.ChatMsgReadFlag.read, UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,
