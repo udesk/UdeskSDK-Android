@@ -72,8 +72,7 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 	implementation group: 'org.ccil.cowan.tagsoup', name: 'tagsoup', version: '1.2.1'
 	implementation 'androidx.recyclerview:recyclerview:1.1.0'
 	implementation 'org.greenrobot:eventbus:3.0.0'
-    implementation 'org.igniterealtime.smack:smack-android-extensions:4.2.4'
-    implementation 'org.igniterealtime.smack:smack-tcp:4.2.4'
+
 
 ## 2 本地集成
 | Demo中的文件| 说明                            |
@@ -129,7 +128,7 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 
 ## 4 Proguard
 
-SDK使用了smack，glide，eventbus，okhttp，agora等第三方库，具体混淆参照他们的官方文档， 如果重复不必再添加
+SDK使用了glide，eventbus，okhttp，agora等第三方库，具体混淆参照他们的官方文档， 如果重复不必再添加
 	
 	#udesk
 	-keep class udesk.** {*;} 
@@ -1143,6 +1142,9 @@ Udek系统帮助中心后台可以创建帮助文档，客户通过帮助中心�
 <h1 id="8">八、更新记录</h1>
 
 ### 更新日志 ###
+
+### 5.4.1（5.x_android_Q 分支）版本更新：
+1. 远程依赖smack修改为本地依赖jar包
 
 ### 5.3.8（5.x），5.3.9（5.x_android_Q 分支）版本更新：
 

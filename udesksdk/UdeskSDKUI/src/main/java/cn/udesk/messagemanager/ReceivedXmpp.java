@@ -1,8 +1,8 @@
 package cn.udesk.messagemanager;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import udesk.org.jivesoftware.smack.packet.PacketExtension;
 
-public class ReceivedXmpp implements ExtensionElement {
+public class ReceivedXmpp implements PacketExtension{
 	private String msgId = "";
 
 	@Override
