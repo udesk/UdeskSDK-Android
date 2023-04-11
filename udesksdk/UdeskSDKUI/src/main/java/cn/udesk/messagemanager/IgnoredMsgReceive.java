@@ -1,17 +1,24 @@
 package cn.udesk.messagemanager;
 
 
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+
+import udesk.org.jivesoftware.smack.SmackException;
+import udesk.org.jivesoftware.smack.packet.PacketExtension;
+import udesk.org.jivesoftware.smack.provider.PacketExtensionProvider;
 
 
 /**
  * Created by sks on 2016/6/12.
  */
-public class IgnoredMsgReceive extends ExtensionElementProvider<IgnoredMsgXmpp> {
+public class IgnoredMsgReceive implements PacketExtensionProvider {
+
 
     @Override
-    public IgnoredMsgXmpp parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public PacketExtension parseExtension(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
         IgnoredMsgXmpp ignoredMsg = null;
         boolean stop = false;
         String xmlName;
@@ -38,4 +45,5 @@ public class IgnoredMsgReceive extends ExtensionElementProvider<IgnoredMsgXmpp> 
 
         return ignoredMsg;
     }
+
 }

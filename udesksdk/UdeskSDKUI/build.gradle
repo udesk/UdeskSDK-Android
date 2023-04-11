@@ -38,7 +38,6 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
     implementation 'com.squareup.okhttp3:okhttp:3.12.1'
     implementation group: 'org.ccil.cowan.tagsoup', name: 'tagsoup', version: '1.2.1'
-    implementation 'org.igniterealtime.smack:smack-android-extensions:4.2.0'
-    implementation 'org.igniterealtime.smack:smack-tcp:4.2.0'
-    api files('libs/udesk_sdk_5.3.8.jar')
+    api files('libs/udesk_sdk_5.4.0.jar')
+    api files('libs/udesk-asmack-8-4.0.6.jar')
 }

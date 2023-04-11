@@ -1,20 +1,24 @@
 package cn.udesk.messagemanager;
 
 
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
+
+import udesk.org.jivesoftware.smack.SmackException;
+import udesk.org.jivesoftware.smack.packet.PacketExtension;
+import udesk.org.jivesoftware.smack.provider.PacketExtensionProvider;
 
 
 /**
  * Created by sks on 2016/6/12.
  */
-public class ActionMsgReceive extends ExtensionElementProvider<ActionMsgXmpp> {
+public class ActionMsgReceive implements PacketExtensionProvider {
 
 
     @Override
-    public ActionMsgXmpp parse(XmlPullParser parser, int initialDepth) throws Exception {
+    public PacketExtension parseExtension(XmlPullParser parser) throws XmlPullParserException, IOException, SmackException {
         ActionMsgXmpp actionMsgXmpp = null;
         try {
             boolean stop = false;
@@ -49,4 +53,5 @@ public class ActionMsgReceive extends ExtensionElementProvider<ActionMsgXmpp> {
 
         return actionMsgXmpp;
     }
+
 }
