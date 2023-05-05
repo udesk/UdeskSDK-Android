@@ -40,5 +40,5 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
     implementation group: 'org.ccil.cowan.tagsoup', name: 'tagsoup', version: '1.2.1'
     implementation files('libs/udesk-asmack-8-4.0.6.jar')
-    api files('libs/udesk_sdk_5.4.1.jar')
+    api files('libs/udesk_sdk_5.4.3.jar')
 }

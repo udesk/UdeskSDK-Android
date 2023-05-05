@@ -811,8 +811,13 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
                             }
                             container.addView(childContainer);
                             if (i == 0) {
-                                childContainer.setVisibility(View.VISIBLE);
-                                arrow.setImageResource(R.drawable.udesk_fold);
+                                if (UdeskSDKManager.getInstance().getUdeskConfig().recommendedFirstExpand){
+                                    childContainer.setVisibility(View.VISIBLE);
+                                    arrow.setImageResource(R.drawable.udesk_fold);
+                                }else {
+                                    childContainer.setVisibility(View.GONE);
+                                    arrow.setImageResource(R.drawable.udesk_expand);
+                                }
                             } else {
                                 childContainer.setVisibility(View.GONE);
                                 arrow.setImageResource(R.drawable.udesk_expand);
@@ -1165,7 +1170,9 @@ public class LeftViewHolder extends BaseViewHolder implements XRichText.Callback
             itemRich.setLayoutParams(layoutParams);
             String msg = message.getMsgContent();
             richMsg.callback(this).text(mContext, msg);
-            dealTransfer(itemRich);
+            if(message.isDealTransfer()){
+                dealTransfer(itemRich);
+            }
             showRecommended(containerRich);
             dealSingleLine(itemRich);
 

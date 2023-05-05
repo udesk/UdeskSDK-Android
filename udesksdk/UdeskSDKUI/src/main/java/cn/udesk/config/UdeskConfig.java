@@ -188,6 +188,8 @@ public class UdeskConfig {
     public ILeaveChatViewCallBack leaveChatViewCallBack;
     //未读消息回调
     public IUnreadMessageCallBack unreadMessageCallBack;
+    //常见问题第一项默认展开 true 展开 false 收起
+    public boolean recommendedFirstExpand = true;
 
     UdeskConfig(Builder builder) {
 
@@ -268,6 +270,7 @@ public class UdeskConfig {
         this.maxHeightViewDimen = builder.maxHeightViewDimen;
         this.leaveChatViewCallBack = builder.leaveChatViewCallBack;
         this.unreadMessageCallBack = builder.unreadMessageCallBack;
+        this.recommendedFirstExpand = builder.recommendedFirstExpand;
     }
 
     public static UdeskConfig createDefualt() {
@@ -306,7 +309,7 @@ public class UdeskConfig {
         private int udeskCommityLinkColorResId = DEFAULT;
         // 商品消息背景左侧
         public int udeskProductLeftBgResId = DEFAULT;
-         // 商品消息背景右侧
+        // 商品消息背景右侧
         public int udeskProductRightBgResId = DEFAULT;
         // 商品消息的 带有链接时的  商品名字显示的颜色 右侧
         private int udeskProductRightNameLinkColorResId = R.color.color_1850cc;
@@ -429,6 +432,9 @@ public class UdeskConfig {
         public ILeaveChatViewCallBack leaveChatViewCallBack;
         //未读消息回调
         public IUnreadMessageCallBack unreadMessageCallBack;
+        //常见问题第一项默认展开 true 展开 false 收起
+        public boolean recommendedFirstExpand = true;
+
         public Builder() {
 
         }
@@ -486,7 +492,7 @@ public class UdeskConfig {
             this.udeskIMAgentNickNameColorResId = udeskIMAgentNickNameColorResId;
             return this;
         }
-       /**
+        /**
          * IM界面，右侧用户昵称文字的字体颜色
          *
          * @param udeskIMCustomerNickNameColorResId
@@ -570,7 +576,7 @@ public class UdeskConfig {
             this.udeskProductRightNameLinkColorResId = udeskProductRightNameLinkColorResId;
             return this;
         }
-         /**
+        /**
          * 设置商品信息 带链接时显示的颜色 左侧
          *
          * @param udeskProductLeftNameLinkColorResId
@@ -914,13 +920,13 @@ public class UdeskConfig {
             return this;
         }
 
- /**
+        /**
          * @param useRobotNavigationRootView       设置是否使用导航UI rue表示使用 false表示不使用
          * @param robotNavigationModes             约定传递的自定义按钮集合
          * @param navigationItemClickCallBack 支持客户在导航处添加自定义按钮的点击回调事件
          */
         public Builder setRobotNavigations(boolean useRobotNavigationRootView, List<NavigationMode> robotNavigationModes,
-                                      INavigationItemClickCallBack navigationItemClickCallBack) {
+                                           INavigationItemClickCallBack navigationItemClickCallBack) {
             this.isUseRobotNavigationRootView = useRobotNavigationRootView;
             this.robotnavigationModes = robotNavigationModes;
             this.robotNavigationItemClickCallBack = navigationItemClickCallBack;
@@ -1077,6 +1083,11 @@ public class UdeskConfig {
          */
         public Builder setUnreadMessageCallBack(IUnreadMessageCallBack unreadMessageCallBack) {
             this.unreadMessageCallBack = unreadMessageCallBack;
+            return this;
+        }
+
+        public Builder setRecommendedFirstExpand(boolean recommendedFirstExpand) {
+            this.recommendedFirstExpand = recommendedFirstExpand;
             return this;
         }
 

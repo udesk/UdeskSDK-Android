@@ -33,6 +33,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -55,6 +56,7 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -357,7 +359,17 @@ public class UdeskUtil {
             return "";
         }
         try {
-            String filename = getFileName(context, filePath);
+            String filename = "";
+            try {
+                if (type.equals(UdeskConst.FileImg) && (filePath.startsWith("http") || filePath.startsWith("https"))) {
+                    filename = urlMd5(filePath)+ UdeskConst.IMG_SUF;
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+            if (TextUtils.isEmpty(filename)){
+                filename = getFileName(context, filePath);
+            }
             if (filePath.startsWith("http") || filePath.startsWith("https")) {
                 return filename;
             }
@@ -1625,6 +1637,11 @@ public class UdeskUtil {
             Content content = message.getContent();
             if (content.getData() != null) {
                 ArrayList<MessageInfo> messageInfos = new ArrayList<>();
+
+                // FAQ触发的推荐转人工，只会有content，不会有switchStaffAnswer  FAQ推荐转人工, switchStaffType有值 1, 不构造自动转人工消息
+                // FAQ推荐转人工 关闭的时候，触发器转人工开启  switchStaffType有值
+                // 自动转人工  2 推荐转人工-带消息 4  推荐转人工-不带消息 1  发送消息 3
+
                 if (!TextUtils.isEmpty(content.getData().getContent()) || content.getData().getTopAsk()!= null
                         || (!TextUtils.isEmpty(content.getData().getFlowContent()) && content.getData().getFlowId() > 0 ) ){
                     MessageInfo info = buildMsg(message.getAgent_nick_name(), message.getAgent_avatar(), stringToLong(message.getCreated_at()),
@@ -1650,9 +1667,16 @@ public class UdeskUtil {
                     if (message.getSender().equals(UdeskConst.Sender.customer)) {
                         info.setDirection(UdeskConst.ChatMsgDirection.Send);
                     }
+                    if (content.getData().getSwitchStaffType() == 1){
+                        info.setDealTransfer(!TextUtils.isEmpty(content.getData().getContent()) && TextUtils.isEmpty(content.getData().getSwitchStaffAnswer()));
+                    }else if (content.getData().getSwitchStaffType() > 1){
+                        info.setDealTransfer(false);
+                    }
                     messageInfos.add(info);
                 }
 
+                // FAQ触发的推荐转人工，只会有content，不会有switchStaffAnswer
+                // 1FAQ推荐转人工, 不构造自动转人工消息
                 if (content.getData().getSwitchStaffType() == UdeskConst.SwitchStaffType.AUTO) {
                     MessageInfo info = buildMsg(message.getAgent_nick_name(), message.getAgent_avatar(), stringToLong(message.getCreated_at()),
                             UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_RICH, content.getData().getSwitchStaffTips(),
@@ -1670,13 +1694,20 @@ public class UdeskUtil {
                     info.setLogId(message.getLogId());
                     messageInfos.add(info);
                 }else if (content.getData().getSwitchStaffType() == UdeskConst.SwitchStaffType.RECOMMEND){
-                    MessageInfo info = buildMsg(message.getAgent_nick_name(), message.getAgent_avatar(), stringToLong(message.getCreated_at()),
-                            UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_RICH, context.getString(R.string.udesk_recommend_transfer_default),
-                            UdeskConst.ChatMsgReadFlag.read, UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,
-                            "", 0, "", "", "",
-                            content.getData().getSwitchStaffType(), content.getData().getSwitchStaffTips());
-                    info.setLogId(message.getLogId());
-                    messageInfos.add(info);
+                    try {
+                        if(!TextUtils.isEmpty(content.getData().getContent()) && TextUtils.isEmpty(content.getData().getSwitchStaffAnswer()) ){
+                            return messageInfos;
+                        }
+                        MessageInfo info = buildMsg(message.getAgent_nick_name(), message.getAgent_avatar(), stringToLong(message.getCreated_at()),
+                                UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_RICH, context.getString(R.string.udesk_recommend_transfer_default),
+                                UdeskConst.ChatMsgReadFlag.read, UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,
+                                "", 0, "", "", "",
+                                content.getData().getSwitchStaffType(), content.getData().getSwitchStaffTips());
+                        info.setLogId(message.getLogId());
+                        messageInfos.add(info);
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
                 }else if (content.getData().getSwitchStaffType() == UdeskConst.SwitchStaffType.SEND_MESSAGE
                         && !TextUtils.isEmpty(content.getData().getSwitchStaffAnswer())){
                     MessageInfo info = buildMsg(message.getAgent_nick_name(), message.getAgent_avatar(), stringToLong(message.getCreated_at()),
@@ -2214,5 +2245,25 @@ public class UdeskUtil {
             spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, info.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         }
         return spannableString;
+    }
+
+    public static String urlMd5(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            byte[] bytes = digest.digest(password.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : bytes) {
+                int c = b & 0xff;
+                String result = Integer.toHexString(c);
+                if (result.length() < 2) {
+                    sb.append(0);
+                }
+                sb.append(result);
+            }
+            return sb.toString();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return "";
+        }
     }
 }
