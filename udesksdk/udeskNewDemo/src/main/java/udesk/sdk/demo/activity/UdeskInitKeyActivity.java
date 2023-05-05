@@ -90,6 +90,7 @@ public class UdeskInitKeyActivity extends Activity {
 //    // 替换成你们在后台生成的密钥
 //    private String UDESK_SECRETKEY = "5855ec4357df9f58bef15b3742118c92";
 
+
     private EditText mDomainEdit;
 
     private EditText mAppidEdit;

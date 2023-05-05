@@ -1602,6 +1602,11 @@ public class UdeskUtil {
                     if (message.getSender().equals(UdeskConst.Sender.customer)) {
                         info.setDirection(UdeskConst.ChatMsgDirection.Send);
                     }
+                    if (content.getData().getSwitchStaffType() == 1){
+                        info.setDealTransfer(!TextUtils.isEmpty(content.getData().getContent()) && TextUtils.isEmpty(content.getData().getSwitchStaffAnswer()));
+                    }else if (content.getData().getSwitchStaffType() > 1){
+                        info.setDealTransfer(false);
+                    }
                     messageInfos.add(info);
                 }
 
@@ -1622,6 +1627,9 @@ public class UdeskUtil {
                     info.setLogId(message.getLogId());
                     messageInfos.add(info);
                 }else if (content.getData().getSwitchStaffType() == UdeskConst.SwitchStaffType.RECOMMEND){
+                    if(!TextUtils.isEmpty(content.getData().getContent()) && TextUtils.isEmpty(content.getData().getSwitchStaffAnswer()) ){
+                        return messageInfos;
+                    }
                     MessageInfo info = buildMsg(message.getAgent_nick_name(), message.getAgent_avatar(), stringToLong(message.getCreated_at()),
                             UdeskIdBuild.buildMsgId(), UdeskConst.ChatMsgTypeString.TYPE_RICH, context.getString(R.string.udesk_recommend_transfer_default),
                             UdeskConst.ChatMsgReadFlag.read, UdeskConst.SendFlag.RESULT_SUCCESS, UdeskConst.PlayFlag.NOPLAY, UdeskConst.ChatMsgDirection.Recv,

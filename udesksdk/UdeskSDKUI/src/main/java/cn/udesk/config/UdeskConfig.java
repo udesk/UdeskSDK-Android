@@ -189,6 +189,8 @@ public class UdeskConfig {
     //未读消息回调
     public IUnreadMessageCallBack unreadMessageCallBack;
 
+    public boolean recommendedFirstExpand = true;
+
     UdeskConfig(Builder builder) {
 
         this.udeskTitlebarBgResId = builder.udeskTitlebarBgResId;
@@ -268,6 +270,7 @@ public class UdeskConfig {
         this.maxHeightViewDimen = builder.maxHeightViewDimen;
         this.leaveChatViewCallBack = builder.leaveChatViewCallBack;
         this.unreadMessageCallBack = builder.unreadMessageCallBack;
+        this.recommendedFirstExpand = builder.recommendedFirstExpand;
     }
 
     public static UdeskConfig createDefualt() {
@@ -429,6 +432,8 @@ public class UdeskConfig {
         public ILeaveChatViewCallBack leaveChatViewCallBack;
         //未读消息回调
         public IUnreadMessageCallBack unreadMessageCallBack;
+        //常见问题第一项默认展开 true 展开 false 收起
+        public boolean recommendedFirstExpand = true;
         public Builder() {
 
         }
@@ -1074,6 +1079,11 @@ public class UdeskConfig {
          */
         public Builder setUnreadMessageCallBack(IUnreadMessageCallBack unreadMessageCallBack) {
             this.unreadMessageCallBack = unreadMessageCallBack;
+            return this;
+        }
+
+        public Builder setRecommendedFirstExpand(boolean recommendedFirstExpand) {
+            this.recommendedFirstExpand = recommendedFirstExpand;
             return this;
         }
 

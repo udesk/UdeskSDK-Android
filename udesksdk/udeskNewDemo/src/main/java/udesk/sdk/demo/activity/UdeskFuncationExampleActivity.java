@@ -89,7 +89,8 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
             landscape,
             show_customer_nickname,
             show_customer_head,
-            user;
+            user,
+            recommendedFirstExpand;
 
     private EditText nick_name, cellphone, email, description, customer_token, channel,
             textfiledkey, textfiledvalue,
@@ -144,6 +145,7 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
         portrait = (CheckBox) findViewById(R.id.portrait);
         landscape = (CheckBox) findViewById(R.id.landscape);
         user = (CheckBox) findViewById(R.id.user);
+        recommendedFirstExpand = (CheckBox) findViewById(R.id.recommendedFirstExpand);
         portrait.setOnCheckedChangeListener(this);
         landscape.setOnCheckedChangeListener(this);
         user.setOnCheckedChangeListener(this);
@@ -353,7 +355,8 @@ public class UdeskFuncationExampleActivity extends Activity implements CompoundB
                 .isShowCustomerNickname(show_customer_nickname.isChecked())//设置是否显示昵称
                 .isShowCustomerHead(show_customer_head.isChecked()) //设置是否显示头像
                 .setPreSendRobotMessages(robotFirstMessage.getText().toString())//设置带入一条消息  进入机器人界面自动发送
-                .setMaxHeightViewRatio(0.4f); //设置智能提示显示最大高度比例
+                .setMaxHeightViewRatio(0.4f) //设置智能提示显示最大高度比例
+                .setRecommendedFirstExpand(recommendedFirstExpand.isChecked());
 
         return builder;
     }
