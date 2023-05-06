@@ -295,7 +295,8 @@ SDK使用了fresco，eventbus，okhttp，agora等第三方库，具体混淆参�
 | maxHeightViewDimen                     | setMaxHeightViewDimen                                      | 设置智能提示的最大高度                                        |
 | commodityLinkClickCallBack             | setCommodityLinkClickCallBack                              | 设置咨询对象发送链接的点击事件拦截回调                          |
 | leaveChatViewCallBack                  | setLeaveChatViewCallBack                                   | 设置离开IM聊天界面的回调                                      |
-| unreadMessageCallBack                  | setUnreadMessageCallBack                                   | 设置未读消息回调                                             |          
+| unreadMessageCallBack                  | setUnreadMessageCallBack                                   | 设置未读消息回调                                             |      
+| recommendedFirstExpand                 | setRecommendedFirstExpand                                  | 设置机器人常见问题第一项是展开还是收起                                             |          
 
     private UdeskConfig.Builder makeBuilder() {
         if (!TextUtils.isEmpty(edit_language.getText().toString())){
@@ -480,7 +481,8 @@ SDK使用了fresco，eventbus，okhttp，agora等第三方库，具体混淆参�
                 .isShowCustomerNickname(show_customer_nickname.isChecked())//设置是否显示昵称
                 .isShowCustomerHead(show_customer_head.isChecked()) //设置是否显示头像
                 .setPreSendRobotMessages(robotFirstMessage.getText().toString())//设置带入一条消息  进入机器人界面自动发送
-                .setMaxHeightViewRatio(0.4f); //设置智能提示显示最大高度比例
+                .setMaxHeightViewRatio(0.4f) //设置智能提示显示最大高度比例
+				.setRecommendedFirstExpand(recommendedFirstExpand.isChecked()); 
 
         return builder;
     }
@@ -1152,10 +1154,14 @@ UdeskSDKManager.getInstance().toLaunchHelperAcitivty(getApplicationContext(), Ud
 
 ### 更新日志 ###
 
+### 5.4.2（5.x）版本更新：
+
+1、机器人常见问题 默认配置支持 收起和展示
+2、机器人配置图片显示优化
+3、FAQ转人工和触发器转人工显示2条转人工按钮优化
+
 ### 5.4.0（5.x）版本更新：
-
 1. 远程依赖smack修改为本地依赖jar包
-
 
 ### 5.3.8（5.x），5.3.9（5.x_android_Q 分支）版本更新：
 
