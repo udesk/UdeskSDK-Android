@@ -133,6 +133,7 @@ SDK使用了glide，eventbus，okhttp，agora等第三方库，具体混淆参�
 	#udesk
 	-keep class udesk.** {*;} 
 	-keep class cn.udesk.**{*; } 
+	-keep class com.bumptech.glide.Glide{*;}
 	#百度语音(如果使用百度语音识别添加 不使用不用添加)
 	-keep class com.baidu.speech.**{*;}
 	#smack
