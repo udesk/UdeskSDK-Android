@@ -2672,9 +2672,9 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                     if (mAgentInfo != null && isOpenVideo()) {
                         sendVideoMessage(imSetting, mAgentInfo, getApplicationContext());
                     }
-                    if (currentStatusIsOnline) {
+//                    if (currentStatusIsOnline) {
                         udeskViewMode.getApiLiveData().messages("", "",UdeskConst.PullMsgFrom.hasAgent);
-                    }
+//                    }
                     break;
                 case UdeskConst.AgentResponseCode.WaitAgent:
                     if (TextUtils.equals(curentStatus,UdeskConst.Status.leaveMessage)){
