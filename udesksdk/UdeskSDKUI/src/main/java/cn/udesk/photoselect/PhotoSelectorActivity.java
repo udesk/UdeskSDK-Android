@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -29,8 +30,11 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.udesk.PreferenceHelper;
 import cn.udesk.R;
 import cn.udesk.UdeskUtil;
+import cn.udesk.activity.UdeskChatActivity;
+import cn.udesk.camera.UdeskCameraActivity;
 import cn.udesk.permission.RequestCode;
 import cn.udesk.permission.XPermissionUtils;
 import cn.udesk.photoselect.adapter.FolderAdapter;
@@ -38,6 +42,7 @@ import cn.udesk.photoselect.adapter.PhotosAdapter;
 import cn.udesk.photoselect.decoration.GridSpacingItemDecoration;
 import cn.udesk.photoselect.entity.LocalMedia;
 import cn.udesk.photoselect.entity.LocalMediaFolder;
+import cn.udesk.widget.UdeskAppMarketDialog;
 import udesk.core.UdeskConst;
 
 /**
@@ -72,6 +77,43 @@ public class PhotoSelectorActivity extends FragmentActivity implements View.OnCl
 
     int disPlayWidth;
     int disPlayHeghit;
+
+    protected UdeskAppMarketDialog marketDialog;
+
+    public void disMarketDialog() {
+        if (marketDialog != null) {
+            marketDialog.dismiss();
+        }
+    }
+
+    public void showMarketDialog(final String content) {
+
+        if (PhotoSelectorActivity.this.isFinishing()) {
+            return;
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (marketDialog != null && marketDialog.isShowing()) {
+                        return;
+                    }
+                    marketDialog = new UdeskAppMarketDialog(PhotoSelectorActivity.this);
+                    marketDialog.setContentTxtVis(View.VISIBLE);
+                    marketDialog.setContent(content);
+                    marketDialog.setCancleTextViewVis(View.GONE);
+                    marketDialog.setOkTxtTextViewVis(View.GONE);
+                    marketDialog.setudeskBottomViewVis(View.GONE);
+                    marketDialog.setCanceledOnTouchOutside(true);
+                    marketDialog.show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -134,25 +176,38 @@ public class PhotoSelectorActivity extends FragmentActivity implements View.OnCl
                 if (Build.VERSION.SDK_INT >= 33) {
                     permissions = new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO};
                 }
-                XPermissionUtils.requestPermissions(PhotoSelectorActivity.this, RequestCode.EXTERNAL, permissions,
-                        new XPermissionUtils.OnPermissionListener() {
-                            @Override
-                            public void onPermissionGranted() {
-                                readLocalMedia();
-                            }
-
-                            @Override
-                            public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
-                                Toast.makeText(getApplicationContext(),
-                                        getResources().getString(R.string.photo_denied),
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        });
+//                String clickPhoto = PreferenceHelper.readString(getApplicationContext(), "udeks_permission", "clickPhoto");
+                boolean isNeedShowAppMarkDialog = XPermissionUtils.isNeedShowAppMarkDialog(PhotoSelectorActivity.this, permissions);
+                if (isNeedShowAppMarkDialog){
+                    showMarketDialog(getString(R.string.udesk_photo_album_permission));
+                }
+                requestPhotoPermission(permissions);
             }
             setViewEneable();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void requestPhotoPermission(String[] permissions) {
+        XPermissionUtils.requestPermissions(PhotoSelectorActivity.this, RequestCode.EXTERNAL, permissions,
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        disMarketDialog();
+//                        PreferenceHelper.write(getApplicationContext(), "udeks_permission", "clickPhoto", "true");
+                        readLocalMedia();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
+                        disMarketDialog();
+//                        PreferenceHelper.write(getApplicationContext(), "udeks_permission", "clickPhoto", "true");
+                        Toast.makeText(getApplicationContext(),
+                                getResources().getString(R.string.photo_denied),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 

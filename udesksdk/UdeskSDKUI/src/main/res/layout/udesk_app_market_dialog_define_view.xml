@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/udesk_white_bg"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/udesk_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/udesk_20"
+        android:textColor="@color/udesk_color_333333"
+        android:textSize="@dimen/udesk_sp17"
+        android:visibility="gone"
+        />
+
+
+    <TextView
+        android:id="@+id/udesk_content"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/udesk_20"
+        android:gravity="center"
+        android:scrollbars="vertical"
+        android:textColor="@color/udesk_color_adadad"
+        android:textSize="@dimen/udesk_sp15"
+        android:visibility="gone" />
+
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/udesk_20"
+        android:orientation="vertical"
+        android:id="@+id/udesk_bottom_rl"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <View
+            android:background="@color/udesk_color_d8d8d8"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"/>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/udesk_45"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_weight="1"
+                android:id="@+id/udesk_cancle"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:text="@string/udesk_cancel"
+                android:textColor="@color/udesk_color_007aff"
+                android:textSize="@dimen/udesk_sp15" />
+
+            <TextView
+                android:layout_weight="1"
+                android:id="@+id/udesk_ok"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:text="@string/udesk_sure"
+                android:textColor="@color/udesk_color_007aff"
+                android:textSize="@dimen/udesk_sp15" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

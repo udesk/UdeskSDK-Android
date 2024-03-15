@@ -21,11 +21,11 @@ import udesk.sdk.demo.R;
 public class UdeskInitKeyActivity extends Activity {
 
 //    //替换成你们注册生成的域名
-    private String UDESK_DOMAIN = "brazil0326.udesk.cn";
+    private String UDESK_DOMAIN = "udesk-rd-bj-12.s4.udesk.cn";
     //替换成你们生成应用产生的appid
-    private String AppId = "717b563a93e83c26";
+    private String AppId = "9950cd46516a2b16";
     // 替换成你们在后台生成的密钥
-    private String UDESK_SECRETKEY = "12cec1ded15716158f7d50fefd1d42a7";
+    private String UDESK_SECRETKEY = "ba94865ae12b7fa42b396d22be528b0b";
     
 
     private EditText mDomainEdit;

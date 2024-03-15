@@ -26,8 +26,11 @@ import org.json.JSONObject;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import cn.udesk.PreferenceHelper;
 import cn.udesk.permission.RequestCode;
 import cn.udesk.permission.XPermissionUtils;
+import cn.udesk.photoselect.PhotoSelectorActivity;
+import cn.udesk.widget.UdeskAppMarketDialog;
 import udesk.core.event.InvokeEventContainer;
 import udesk.udeskasr.AutoCheck;
 import udesk.udeskasr.R;
@@ -47,6 +50,42 @@ public class UdeskASRActivity extends Activity implements EventListener, View.On
     private static final String TAG = "UdeskASRActivity";
     private boolean isAudioStart = false;
     private StringBuffer audioText;
+
+    protected UdeskAppMarketDialog marketDialog;
+
+    public void disMarketDialog() {
+        if (marketDialog != null) {
+            marketDialog.dismiss();
+        }
+    }
+
+    public void showMarketDialog(final String content) {
+
+        if (UdeskASRActivity.this.isFinishing()) {
+            return;
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (marketDialog != null && marketDialog.isShowing()) {
+                        return;
+                    }
+                    marketDialog = new UdeskAppMarketDialog(UdeskASRActivity.this);
+                    marketDialog.setContentTxtVis(View.VISIBLE);
+                    marketDialog.setContent(content);
+                    marketDialog.setCancleTextViewVis(View.GONE);
+                    marketDialog.setOkTxtTextViewVis(View.GONE);
+                    marketDialog.setudeskBottomViewVis(View.GONE);
+                    marketDialog.setCanceledOnTouchOutside(true);
+                    marketDialog.show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,22 +247,16 @@ public class UdeskASRActivity extends Activity implements EventListener, View.On
                 audioStart();
                 mic.start();
             } else {
-                XPermissionUtils.requestPermissions(UdeskASRActivity.this, RequestCode.ASR,
+
+//                String clickRecording = PreferenceHelper.readString(getApplicationContext(), "udeks_permission", "Recording");
+                boolean isNeedShowAppMarkDialog = XPermissionUtils.isNeedShowAppMarkDialog(UdeskASRActivity.this,
                         new String[]{Manifest.permission.RECORD_AUDIO,
                                 Manifest.permission.INTERNET,
-                                Manifest.permission.READ_PHONE_STATE},
-                        new XPermissionUtils.OnPermissionListener() {
-                            @Override
-                            public void onPermissionGranted() {
-                                onPermissionGranted[0] = true;
-                            }
-
-                            @Override
-                            public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
-                                showToast(getResources().getString(R.string.audio_denied));
-                                onPermissionGranted[0] = false;
-                            }
-                        });
+                                Manifest.permission.READ_PHONE_STATE});
+                if (isNeedShowAppMarkDialog){
+                    showMarketDialog(getString(cn.udesk.R.string.udesk_voice_permission));
+                }
+                requestAudioPermission(onPermissionGranted);
                 if (onPermissionGranted[0]){
                     changVis(false, false, false, false);
                     audioStart();
@@ -236,6 +269,31 @@ public class UdeskASRActivity extends Activity implements EventListener, View.On
             showToast(getString(R.string.udesk_asr_fail));
             changVis(true, true, false, false);
         }
+    }
+
+    private void requestAudioPermission(final boolean[] onPermissionGranted) {
+        XPermissionUtils.requestPermissions(UdeskASRActivity.this, RequestCode.ASR,
+                new String[]{Manifest.permission.RECORD_AUDIO,
+                        Manifest.permission.INTERNET,
+                        Manifest.permission.READ_PHONE_STATE},
+
+
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        disMarketDialog();
+//                        PreferenceHelper.write(getApplicationContext(), "udeks_permission", "Recording", "true");
+                        onPermissionGranted[0] = true;
+                    }
+
+                    @Override
+                    public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
+                        disMarketDialog();
+//                        PreferenceHelper.write(getApplicationContext(), "udeks_permission", "Recording", "true");
+                        showToast(getResources().getString(R.string.audio_denied));
+                        onPermissionGranted[0] = false;
+                    }
+                });
     }
 
     /**

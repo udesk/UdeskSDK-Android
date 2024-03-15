@@ -22,10 +22,12 @@ import androidx.fragment.app.FragmentTransaction;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.udesk.PreferenceHelper;
 import cn.udesk.R;
 import cn.udesk.UdeskSDKManager;
 import cn.udesk.UdeskUtil;
 import cn.udesk.activity.NavigationFragment;
+import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.adapter.UdeskFunctionAdapter;
 import cn.udesk.config.UdeskConfig;
 import cn.udesk.emotion.EmotionKeyboard;
@@ -147,22 +149,13 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
                         return true;
                     }else {
                         final boolean[] onPermissionGranted = {false};
-                        XPermissionUtils.requestPermissions(udeskChatActivity, RequestCode.AUDIO,
-                                new String[]{Manifest.permission.RECORD_AUDIO},
-                                new XPermissionUtils.OnPermissionListener() {
-                                    @Override
-                                    public void onPermissionGranted() {
-                                        onPermissionGranted[0] = true;
-                                    }
-
-                                    @Override
-                                    public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
-                                        Toast.makeText(udeskChatActivity.getApplicationContext(),
-                                                getResources().getString(R.string.aduido_denied),
-                                                Toast.LENGTH_SHORT).show();
-                                        onPermissionGranted[0] = false;
-                                    }
-                                });
+//                        String clickRecording = PreferenceHelper.readString(udeskChatActivity.getApplicationContext(), "udeks_permission", "Recording");
+                        boolean isNeedShowAppMarkDialog = XPermissionUtils.isNeedShowAppMarkDialog(udeskChatActivity,
+                                new String[]{Manifest.permission.RECORD_AUDIO});
+                        if (isNeedShowAppMarkDialog){
+                            udeskChatActivity.showMarketDialog(getString(R.string.udesk_voice_permission));
+                        }
+                        requestAudioPermission(onPermissionGranted);
                         return onPermissionGranted[0];
                     }
                 }
@@ -198,6 +191,29 @@ public class UdeskAgentFragment extends UdeskbaseFragment implements View.OnClic
             e.printStackTrace();
         }
 
+    }
+
+    private void requestAudioPermission(final boolean[] onPermissionGranted) {
+        XPermissionUtils.requestPermissions(udeskChatActivity, RequestCode.AUDIO,
+                new String[]{Manifest.permission.RECORD_AUDIO},
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        udeskChatActivity.disMarketDialog();
+//                        PreferenceHelper.write(udeskChatActivity.getApplicationContext(), "udeks_permission", "Recording", "true");
+                        onPermissionGranted[0] = true;
+                    }
+
+                    @Override
+                    public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
+                        udeskChatActivity.disMarketDialog();
+//                        PreferenceHelper.write(udeskChatActivity.getApplicationContext(), "udeks_permission", "Recording", "true");
+                        Toast.makeText(udeskChatActivity.getApplicationContext(),
+                                getResources().getString(R.string.aduido_denied),
+                                Toast.LENGTH_SHORT).show();
+                        onPermissionGranted[0] = false;
+                    }
+                });
     }
 
     /**
