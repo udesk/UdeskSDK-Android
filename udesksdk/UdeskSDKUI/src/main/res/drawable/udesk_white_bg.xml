@@ -6,6 +6,6 @@
     <corners android:radius="@dimen/udesk_5"/>
     <stroke    
         android:width="@dimen/udesk_1"
-        android:color="@color/udesk_color_ffffff" />
+        android:color="@color/udesk_color_747578" />
 
 </shape>
