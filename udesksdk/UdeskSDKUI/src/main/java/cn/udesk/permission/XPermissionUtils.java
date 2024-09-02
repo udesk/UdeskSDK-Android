@@ -29,6 +29,21 @@ public class XPermissionUtils {
     }
 
     @TargetApi(Build.VERSION_CODES.M)
+    public static boolean isNeedShowAppMarkDialog(Activity activity, String[] permissions) {
+        try {
+            String[] deniedPermissions = getDeniedPermissions(activity, permissions);
+            if (deniedPermissions.length > 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                boolean alwaysDenied = hasAlwaysDeniedPermission(activity, permissions);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.M)
     public static void requestPermissionsAgain(Activity activity, String[] permissions,
                                                int requestCode) {
         try {

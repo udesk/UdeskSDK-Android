@@ -98,6 +98,7 @@ import cn.udesk.voice.RecordPlay;
 import cn.udesk.voice.RecordPlayCallback;
 import cn.udesk.widget.RecycleViewDivider;
 import cn.udesk.widget.UDPullGetMoreListView;
+import cn.udesk.widget.UdeskAppMarketDialog;
 import cn.udesk.widget.UdeskConfirmPopWindow;
 import cn.udesk.widget.UdeskConfirmPopWindow.OnPopConfirmClick;
 import cn.udesk.widget.UdeskExpandableLayout;
@@ -228,6 +229,47 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
     private MessageInfo surveyMsg;
     private boolean isShowNews = true;
     private int agentStatus ;
+
+    protected UdeskAppMarketDialog marketDialog;
+
+    public void disMarketDialog() {
+        if (marketDialog != null) {
+            marketDialog.dismiss();
+        }
+    }
+
+    public void showMarketDialog(final String content) {
+        showMarketDialog(content,null);
+    }
+
+
+    public void showMarketDialog(final String content, final View.OnClickListener okClickListener) {
+
+        if (UdeskChatActivity.this.isFinishing()) {
+            return;
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (marketDialog != null && marketDialog.isShowing()) {
+                        return;
+                    }
+                    marketDialog = new UdeskAppMarketDialog(UdeskChatActivity.this);
+                    marketDialog.setContent(content);
+                    marketDialog.setContentTxtVis(View.VISIBLE);
+                    marketDialog.setCancleTextViewVis(View.GONE);
+                    marketDialog.setOkTxtTextViewVis(View.GONE);
+                    marketDialog.setudeskBottomViewVis(View.GONE);
+                    marketDialog.setCanceledOnTouchOutside(true);
+                    marketDialog.show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
 
     public static class MyHandler extends Handler {
         WeakReference<UdeskChatActivity> mWeakActivity;
@@ -1570,24 +1612,39 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
             if (Build.VERSION.SDK_INT < 23) {
                 takePhoto();
             } else {
-                XPermissionUtils.requestPermissions(UdeskChatActivity.this, RequestCode.CAMERA,
-                        new String[]{Manifest.permission.CAMERA},
-                        new XPermissionUtils.OnPermissionListener() {
-                            @Override
-                            public void onPermissionGranted() {
-                                takePhoto();
-                            }
-
-                            @Override
-                            public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
-                                UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.camera_denied));
-                            }
-                        });
+//                String clickCamera = PreferenceHelper.readString(getApplicationContext(), "udeks_permission", "clickCamera");
+                boolean isNeedShowAppMarkDialog = XPermissionUtils.isNeedShowAppMarkDialog(UdeskChatActivity.this,
+                        new String[]{Manifest.permission.CAMERA});
+                if (isNeedShowAppMarkDialog){
+                       showMarketDialog(getString(R.string.udesk_take_photo_album_permission));
+                }
+                requestCameraPermission();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    private void requestCameraPermission() {
+        XPermissionUtils.requestPermissions(UdeskChatActivity.this, RequestCode.CAMERA,
+                new String[]{Manifest.permission.CAMERA},
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        disMarketDialog();
+//                        PreferenceHelper.write(getApplicationContext(), "udeks_permission", "clickCamera", "true");
+                        takePhoto();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
+                        disMarketDialog();
+//                        PreferenceHelper.write(getApplicationContext(), "udeks_permission", "clickCamera", "true");
+                        UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.camera_denied));
+                    }
+                });
+    }
+
 
     //点击相册入口
     public void clickPhoto() {
@@ -1599,22 +1656,37 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 if (Build.VERSION.SDK_INT >= 33) {
                     permissions = new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO};
                 }
-                XPermissionUtils.requestPermissions(UdeskChatActivity.this, RequestCode.EXTERNAL, permissions,
-                        new XPermissionUtils.OnPermissionListener() {
-                            @Override
-                            public void onPermissionGranted() {
-                                selectPhoto();
-                            }
 
-                            @Override
-                            public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
-                                UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.photo_denied));
-                            }
-                        });
+//                String clickPhoto = PreferenceHelper.readString(getApplicationContext(), "udeks_permission", "clickPhoto");
+                boolean isNeedShowAppMarkDialog = XPermissionUtils.isNeedShowAppMarkDialog(UdeskChatActivity.this, permissions);
+                if (isNeedShowAppMarkDialog){
+                    showMarketDialog(getString(R.string.udesk_photo_album_permission));
+                }
+
+                requestPhotoPermission(permissions);
             }
         } catch (Resources.NotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private void requestPhotoPermission(String[] permissions) {
+        XPermissionUtils.requestPermissions(UdeskChatActivity.this, RequestCode.EXTERNAL, permissions,
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        disMarketDialog();
+//                        PreferenceHelper.write(getApplicationContext(), "udeks_permission", "clickPhoto", "true");
+                        selectPhoto();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
+                        disMarketDialog();
+//                        PreferenceHelper.write(getApplicationContext(), "udeks_permission", "clickPhoto", "true");
+                        UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.photo_denied));
+                    }
+                });
     }
 
     //点击文件入口
@@ -1627,22 +1699,36 @@ public class UdeskChatActivity extends UdeskBaseActivity implements IEmotionSele
                 if (Build.VERSION.SDK_INT >= 33) {
                     permissions = new String[]{Manifest.permission.READ_MEDIA_AUDIO, Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO};
                 }
-                XPermissionUtils.requestPermissions(UdeskChatActivity.this, RequestCode.EXTERNAL, permissions,
-                        new XPermissionUtils.OnPermissionListener() {
-                            @Override
-                            public void onPermissionGranted() {
-                                selectFile();
-                            }
+//                String clickFile = PreferenceHelper.readString(getApplicationContext(), "udeks_permission", "clickFile");
+                boolean isNeedShowAppMarkDialog = XPermissionUtils.isNeedShowAppMarkDialog(UdeskChatActivity.this, permissions);
+                if (isNeedShowAppMarkDialog){
+                    showMarketDialog(getString(R.string.udesk_file_storage_permission));
+                }
+                requestFilePermission(permissions);
 
-                            @Override
-                            public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
-                                UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.file_denied));
-                            }
-                        });
             }
         } catch (Resources.NotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    private void requestFilePermission(String[] permissions) {
+        XPermissionUtils.requestPermissions(UdeskChatActivity.this, RequestCode.EXTERNAL, permissions,
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        disMarketDialog();
+//                        PreferenceHelper.write(getApplicationContext(), "udeks_permission", "clickFile", "true");
+                        selectFile();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
+                        disMarketDialog();
+//                        PreferenceHelper.write(getApplicationContext(), "udeks_permission", "clickFile", "true");
+                        UdeskUtils.showToast(getApplicationContext(), getResources().getString(R.string.file_denied));
+                    }
+                });
     }
 
     //点击评价入口

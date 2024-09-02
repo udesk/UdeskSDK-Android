@@ -541,7 +541,7 @@ public class UdeskXmppManager implements ConnectionListener, PacketListener {
                 }
 
                 if (json.has("seq_num")) {
-                    seq_num = json.getInt("seq_num");
+                    seq_num = UdeskUtils.objectToInt(json.opt("seq_num"));
                 }
 
                 if (json.has("im_sub_session_id")) {

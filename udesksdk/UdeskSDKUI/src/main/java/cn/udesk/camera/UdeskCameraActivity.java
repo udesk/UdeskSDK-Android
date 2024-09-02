@@ -13,13 +13,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import cn.udesk.PreferenceHelper;
 import cn.udesk.R;
 import cn.udesk.UdeskUtil;
+import cn.udesk.activity.UdeskChatActivity;
 import cn.udesk.camera.callback.ErrorListener;
 import cn.udesk.camera.callback.PermissionListener;
 import cn.udesk.camera.callback.UdeskCameraListener;
 import cn.udesk.permission.RequestCode;
 import cn.udesk.permission.XPermissionUtils;
+import cn.udesk.widget.UdeskAppMarketDialog;
 import udesk.core.UdeskConst;
 
 /**
@@ -29,6 +32,42 @@ import udesk.core.UdeskConst;
 public class UdeskCameraActivity extends Activity {
 
     UdeskCameraView udeskCameraView;
+
+    protected UdeskAppMarketDialog marketDialog;
+
+    public void disMarketDialog() {
+        if (marketDialog != null) {
+            marketDialog.dismiss();
+        }
+    }
+
+    public void showMarketDialog(final String content) {
+
+        if (UdeskCameraActivity.this.isFinishing()) {
+            return;
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (marketDialog != null && marketDialog.isShowing()) {
+                        return;
+                    }
+                    marketDialog = new UdeskAppMarketDialog(UdeskCameraActivity.this);
+                    marketDialog.setContentTxtVis(View.VISIBLE);
+                    marketDialog.setContent(content);
+                    marketDialog.setCancleTextViewVis(View.GONE);
+                    marketDialog.setOkTxtTextViewVis(View.GONE);
+                    marketDialog.setudeskBottomViewVis(View.GONE);
+                    marketDialog.setCanceledOnTouchOutside(true);
+                    marketDialog.show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,22 +137,14 @@ public class UdeskCameraActivity extends Activity {
                         return true;
                     }else {
                         final boolean[] onPermissionGranted = {false};
-                        XPermissionUtils.requestPermissions(UdeskCameraActivity.this, RequestCode.AUDIO,
-                                new String[]{Manifest.permission.RECORD_AUDIO},
-                                new XPermissionUtils.OnPermissionListener() {
-                                    @Override
-                                    public void onPermissionGranted() {
-                                        onPermissionGranted[0] = true;
-                                    }
 
-                                    @Override
-                                    public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
-                                        Toast.makeText(getApplicationContext(),
-                                                getResources().getString(R.string.aduido_denied),
-                                                Toast.LENGTH_SHORT).show();
-                                        onPermissionGranted[0] = false;
-                                    }
-                                });
+//                        String clickRecording = PreferenceHelper.readString(getApplicationContext(), "udeks_permission", "Recording");
+                        boolean isNeedShowAppMarkDialog = XPermissionUtils.isNeedShowAppMarkDialog(UdeskCameraActivity.this,
+                                new String[]{Manifest.permission.RECORD_AUDIO});
+                        if (isNeedShowAppMarkDialog){
+                            showMarketDialog(getString(R.string.udesk_voice_permission));
+                        }
+                        requestAudioPermission(onPermissionGranted);
                         return onPermissionGranted[0];
                     }
                 }
@@ -121,6 +152,29 @@ public class UdeskCameraActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void requestAudioPermission(final boolean[] onPermissionGranted) {
+        XPermissionUtils.requestPermissions(UdeskCameraActivity.this, RequestCode.AUDIO,
+                new String[]{Manifest.permission.RECORD_AUDIO},
+                new XPermissionUtils.OnPermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        disMarketDialog();
+//                        PreferenceHelper.write(getApplicationContext(), "udeks_permission", "Recording", "true");
+                        onPermissionGranted[0] = true;
+                    }
+
+                    @Override
+                    public void onPermissionDenied(String[] deniedPermissions, boolean alwaysDenied) {
+                        disMarketDialog();
+//                        PreferenceHelper.write(getApplicationContext(), "udeks_permission", "Recording", "true");
+                        Toast.makeText(getApplicationContext(),
+                                getResources().getString(R.string.aduido_denied),
+                                Toast.LENGTH_SHORT).show();
+                        onPermissionGranted[0] = false;
+                    }
+                });
     }
 
     @Override

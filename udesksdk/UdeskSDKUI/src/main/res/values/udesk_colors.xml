@@ -104,6 +104,9 @@
     <color name="udesk_color_b3212121">#b3212121</color>
     <color name="udesk_color_66212121">#66212121</color>
     <color name="udesk_color_D7D7D7">#D7D7D7</color>
+    <color name="udesk_color_ffffff">#ffffff</color>
+    <color name="udesk_color_adadad">#adadad</color>
+    <color name="udesk_color_007aff">#007aff</color>
 
     <color name="line">#ccc</color>
     <color name="white">#fff</color>

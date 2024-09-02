@@ -156,5 +156,10 @@
 
     <string name="udesk_file_downloaded">文件已下载</string>
     <string name="udesk_file_downloading">文件正在下载中...</string>
-
+    <string name="udesk_telephone_permission">授权后可通过拨打电话的方式快捷联系客服</string>
+    <string name="udesk_photo_album_permission">授权后获取访问相册的权限，可将相册中的图片发送给客服，准确描述问题</string>
+    <string name="udesk_take_photo_album_permission">授权后可通过拍照方式生成图片并发给客服</string>
+    <string name="udesk_storage_permission">授权后可将拍照生成的图片保存在存储卡中，方便后续查看</string>
+    <string name="udesk_file_storage_permission">授权后获取访问文件的权限，可选择手机中文件直接发送给客服</string>
+    <string name="udesk_voice_permission">授权后可给客服发送语音内容，方便快速准确的表达问题</string>
 </resources>

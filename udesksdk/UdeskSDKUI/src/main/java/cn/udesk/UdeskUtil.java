@@ -1828,6 +1828,8 @@ public class UdeskUtil {
                     UdeskConst.Subdomain = domain;
                 }
 
+                UdeskConst.UniqueId = UdeskSDKManager.getInstance().getSdkToken(context);
+
 //                InvokeEventContainer.getInstance().event_OnConnectWebsocket.invoke(context);
             }
         } catch (Exception e) {

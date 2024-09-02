@@ -52,11 +52,12 @@ public class Util {
     }
 
     public static String getUniqueId(Context context) {
-        String androidID = "";
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.CUPCAKE) {
-            androidID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        }
-        return androidID + Build.SERIAL;
+//        String androidID = "";
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.CUPCAKE) {
+//            androidID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+//        }
+//        return androidID + Build.SERIAL;
+        return UdeskConst.UniqueId;
     }
 
     public static String getUa() {

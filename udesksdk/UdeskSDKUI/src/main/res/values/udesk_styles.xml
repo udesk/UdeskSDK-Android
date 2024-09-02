@@ -57,4 +57,11 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
+    <style name="udesk_app_market_dialog" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowFrame">@android:color/transparent</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
 </resources>
