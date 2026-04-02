@@ -9,6 +9,10 @@ androidQ，androidX 适配在5.x_android_Q 分支下。
 
 [5.x_android_Q 链接](https://github.com/udesk/UdeskSDK-Android/tree/5.x_android_Q)
 
+### 隐私政策
+
+Udesk SDK 重视用户隐私保护，详细的隐私政策请查看 [PRIVACY_POLICY.md](PRIVACY_POLICY.md) 文件。
+
 ## 目录
 - [一、特别声明](#1)
 - [二、集成SDK](#2)
